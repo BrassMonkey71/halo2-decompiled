@@ -2180,6 +2180,9 @@ void function_1055b0(vector3f *direction, vector3f const *axis, short index, sho
 	}
 }
 
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1027b0
 void function_1027b0(long weapon_index, long trigger_index, bool *pressed, bool *held, bool *released)
 {
@@ -2187,12 +2190,7 @@ void function_1027b0(long weapon_index, long trigger_index, bool *pressed, bool 
 	s_weapon_trigger *trigger = &weapon->triggers[trigger_index];
 	s_weapon_trigger_definition *definition = &WEAPON_DEFINITION(weapon)->triggers[trigger_index];
 	real duration = g_510c54->field_2_3 * definition->value_10;
-	long ticks;
-	__asm
-	{
-		fld duration
-		fistp ticks
-	}
+	long ticks = real_to_long(duration);
 	long threshold = (byte)(long)(definition->value_14 * 255.0f);
 	*pressed = false;
 	*held = false;
@@ -2445,12 +2443,7 @@ void function_100520(long weapon_index, s_weapon_status *status)
 			if (weapon->triggers[0].state == 5)
 			{
 				real duration = g_510c54->field_2_3 * 0.5f;
-				long ticks;
-				__asm
-				{
-					fld duration
-					fistp ticks
-				}
+				long ticks = real_to_long(duration);
 				status->target_charging = true;
 				status->target_fraction = 1.0f - (real)weapon->triggers[0].timer / ticks;
 			}
