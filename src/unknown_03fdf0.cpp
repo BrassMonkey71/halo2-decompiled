@@ -150,7 +150,6 @@ void function_402b0(long cache_index, long mode)
 // @retail 0x404b0
 bool function_404b0(long mode)
 {
-    (void)&mode;
     for (long cache_index = 0; cache_index < g_509440; ++cache_index)
     {
         if (g_4c6b00[cache_index].count <= 0) continue;
