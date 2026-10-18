@@ -2245,9 +2245,7 @@ void function_152240(long player_index, short effect)
 // @retail 0x1522b0
 void function_1522b0(long player_index, short effect)
 {
-	short const *effect_reference = &effect;
-
-	if (*effect_reference == 0)
+	if (effect == 0)
 	{
 		long unit_index = engine_player_get(player_index)->unit_index;
 		s_engine_unit_effect *unit = (s_engine_unit_effect *)effect_object_get(unit_index);
