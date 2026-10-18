@@ -68,7 +68,6 @@ struct c_vertex_reference
 {
 	word allocation_size;
 	word references;
-	c_vertex_reference() { references = 1; }
 };
 
 struct c_vertex_shape : c_vertex_reference
@@ -113,25 +112,21 @@ PRIVATE inline void shape_transform_point(const transform4x3f *matrix, const poi
 c_vertex_shape::c_vertex_shape(s_shape_source *source, byte type, long data, long index,
 	long user_data, const transform4x3f *matrix)
 {
-	s_shape_source *const *source_reference = &source;
-	const volatile byte *type_reference = &type;
-	const volatile long *data_reference = &data;
-	const long *index_reference = &index;
-	const long *user_reference = &user_data;
 	user = 0;
 	vertex_count = 0;
-	*(byte volatile *)&kind = *type_reference;
-	value = *data_reference;
+	kind = type;
+	surface_index = index;
+	value = data;
+	references = 1;
 	radius = 0.01f;
-	surface_index = *index_reference;
-	s_shape_surface *surface = &(*source_reference)->surfaces[*index_reference];
+	s_shape_surface *surface = &source->surfaces[index];
 	long edge_index = surface->edge;
 	long first_edge = edge_index;
 	do
 	{
-		s_shape_edge *edge = &(*source_reference)->edges[edge_index];
-		bool side = edge->surfaces[1] == *index_reference;
-		const point3f *point = &(*source_reference)->vertices[edge->vertices[side]].point;
+		s_shape_edge *edge = &source->edges[edge_index];
+		bool side = edge->surfaces[1] == index;
+		const point3f *point = &source->vertices[edge->vertices[side]].point;
 		point3f transformed;
 		if (matrix)
 		{
@@ -139,10 +134,7 @@ c_vertex_shape::c_vertex_shape(s_shape_source *source, byte type, long data, lon
 			point = &transformed;
 		}
 		real *vertex = &vertices_raw[vertex_count * 4];
-		real x = point->x, y = point->y, z = point->z;
-		vertex[0] = x;
-		vertex[1] = y;
-		vertex[2] = z;
+		real_point3d_set((point3f *)vertex, point->x, point->y, point->z);
 		vertex[3] = 0.0f;
 		*(long *)&vertices_raw[vertex_count * 4 + 3] = vertex_count | 0x3f000000;
 		vertex_count++;
@@ -150,7 +142,7 @@ c_vertex_shape::c_vertex_shape(s_shape_source *source, byte type, long data, lon
 	} while (edge_index != first_edge);
 	material = surface->material;
 	flags = surface->flags;
-	user = *user_reference;
+	user = user_data;
 }
 
 short function_120850(const vector3f *vector);
