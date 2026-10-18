@@ -192,6 +192,121 @@ void network_session_check_tracking(c_class_58d20 *session)
 	}
 }
 
+struct s_helper_source;
+
+struct s_helper_output
+{
+	long l0;
+	long l4;
+	long l8;
+	long lc;
+	long l10;
+	long l14;
+	long l18;
+	long l1c;
+	long l20;
+	long l24;
+	long l28;
+};
+
+
+struct s_online_match_session_info
+{
+	XNKEY key;
+	XNKID session_id;
+	XNADDR address;
+	s_helper_output output;
+};
+
+class c_helper_a
+{
+public:
+	virtual void v0(long a, long b);
+	virtual void v1();
+	virtual void v2();
+	virtual void v3(s_helper_output *out);
+	virtual long v4();
+	virtual long v5(long size, void *data);
+	virtual long v6();
+	virtual bool v7();
+	virtual void v8(long a);
+
+	s_helper_source *source;
+	bool b8;
+	bool b9;
+	bool ba;
+	byte unknownb;
+	long lc;
+	long l10;
+	long l14;
+	long l18;
+	long l1c;
+	long l20;
+	bool listening;
+	byte unknown25[3];
+	long listen_time;
+	long l2c;
+	bool b30;
+	byte unknown31[3];
+	s_online_match_session_info info;
+};
+
+struct s_session_search
+{
+	long unknown00;
+	s_session_owner *owner;
+	bool active;
+	bool unknown09;
+	bool unknown0a;
+	byte unknown0b;
+	long task0c;
+	long value10;
+	long task14;
+	long value18;
+	long value1c;
+	long value20;
+	byte unknown24[8];
+	long type;
+	bool unknown30;
+	byte unknown31[0x9c - 0x31];
+};
+
+struct s_session_searches
+{
+	bool initialized;
+	s_session_search search_a;
+	c_session_state_matchmaking *matchmaking;
+	s_session_search search_b;
+};
+
+extern s_session_searches g_477088;
+
+struct s_network_session_list;
+void function_6dec0(s_session_owner_view *owner);
+void function_737b0(c_helper_a *helper);
+c_class_58d20 *network_session_manager_find_session(s_network_session_list *manager, s_session_id const *id);
+
+// @retail 0x59940
+void function_59940(void)
+{
+	if (g_527330.initialized)
+	{
+		function_6dec0((s_session_owner_view *)&g_527330.state);
+		((c_helper_a *)&g_477088.search_a)->c_helper_a::v2();
+		((c_helper_a *)&g_477088.search_b)->c_helper_a::v2();
+		function_737b0((c_helper_a *)&g_477088.search_b);
+		if (g_510518 && !network_session_manager_find_session(
+			(s_network_session_list *)g_527330.unknown30, &g_510528))
+		{
+			if (g_510518)
+			{
+				g_51051c = true;
+				g_51051d = false;
+			}
+		}
+	}
+}
+
 // @retail 0x59360
 void network_session_manager_leave_session_a(bool close)
 {

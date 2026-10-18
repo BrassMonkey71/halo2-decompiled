@@ -98,7 +98,7 @@ void function_1ecf50(vector3f *forward, vector3f *up, s_direction_rotation_input
 		dot = PIN(dot, -1.0f, 1.0f);
 		if (!(fabs(dot - 1.0f) < 0.0001f))
 		{
-			real volatile angle = (real)acos(PIN(dot, -1.0f, 1.0f));
+			real angle = (real)acos(PIN(dot, -1.0f, 1.0f));
 			if (angle != 0.0f)
 			{
 				vector3f axis;
@@ -108,7 +108,7 @@ void function_1ecf50(vector3f *forward, vector3f *up, s_direction_rotation_input
 				if (function_30bf0(&axis) != 0.0f)
 				{
 					real sine = (real)sin(angle);
-					real volatile cosine = (real)cos(angle);
+					real cosine = (real)cos(angle);
 					*up = input->up;
 					*forward = input->forward;
 					rotate_direction(up, &axis, sine, cosine);

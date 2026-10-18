@@ -115,16 +115,8 @@ struct s_13c780
 	real field_20;
 };
 
-static __forceinline long function_13c781(real arg_1)
-{
-	long local_1;
-	__asm
-	{
-		fld arg_1
-		fistp local_1
-	}
-	return local_1;
-}
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
 
 // @retail 0x13c780
 void function_13c780(void)
@@ -134,8 +126,8 @@ void function_13c780(void)
 	{
 		if (*(real *)local_1 > 0.0f && !function_147d13())
 		{
-			dword local_2 = (dword)(function_13c781(*(real *)local_1 * 255.0f) < 0 ? 0 :
-				function_13c781(*(real *)local_1 * 255.0f) > 255 ? 255 : function_13c781(*(real *)local_1 * 255.0f)) << 24;
+			dword local_2 = (dword)(real_to_long(*(real *)local_1 * 255.0f) < 0 ? 0 :
+				real_to_long(*(real *)local_1 * 255.0f) > 255 ? 255 : real_to_long(*(real *)local_1 * 255.0f)) << 24;
 			short_rectangle2d local_3, local_4, local_5;
 			function_13ccf0(&local_3, &local_4, &local_5);
 			interface_rectangle_fill(&local_4, local_2);
