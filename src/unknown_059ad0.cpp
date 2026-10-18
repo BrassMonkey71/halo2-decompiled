@@ -3893,10 +3893,11 @@ void __stdcall function_61ef0(c_class_58d20 *session)
  {
   if (i != session->current_member)
   {
+   dword pending = transition->pending;
    dword bit = 1 << i;
-   if (transition->pending & bit)
+   if (pending & bit)
    {
-    if (network_session_time_now() - transition->times[i] >= g_network_configuration.value148c)
+    if (network_session_time_since(transition->times[i]) >= g_network_configuration.value148c)
     {
      transition->pending &= ~bit;
      transition->failed |= bit;
@@ -3904,7 +3905,7 @@ void __stdcall function_61ef0(c_class_58d20 *session)
     if (transition->pending & bit)
      continue;
    }
-   if (!(transition->failed & bit) && network_session_time_now() - transition->start_time >= g_network_configuration.value148c)
+   if (!(transition->failed & bit) && network_session_time_since(transition->start_time) >= g_network_configuration.value148c)
     transition->failed |= bit;
   }
  }
@@ -3912,19 +3913,21 @@ void __stdcall function_61ef0(c_class_58d20 *session)
  {
   long failed = 0;
   long missing = 0;
+  s_session_peer_map *map = (s_session_peer_map *)transition->map;
   for (long i = 0; i < session->member_count; i++)
   {
    if (transition->failed & (1 << i))
     failed++;
    else
    {
-    long index = session_peer_map_find_machine((s_session_peer_map *)transition->map, (const s_session_member_header *)&session->members[i]);
-    if (index == NONE || !(*(dword *)(transition->map + 0xbc) & (1 << index)))
-     missing++;
+    long index = session_peer_map_find_machine(map, (const s_session_member_header *)&session->members[i]);
+    bool present = false;
+    if (index != NONE) present = (*(dword *)((byte *)map + 0xbc) & (1 << index)) != 0;
+    if (!present) missing++;
    }
   }
-  if ((!failed || (network_session_time_now() - transition->start_time >= g_network_configuration.value148c &&
-    network_session_time_now() - transition->selection_time >= g_network_configuration.value1490)) && !missing)
+  if ((failed <= 0 || (network_session_time_since(transition->start_time) >= g_network_configuration.value148c &&
+    network_session_time_since(transition->selection_time) >= g_network_configuration.value1490)) && !missing)
    function_061570(session, true);
  }
  else if (transition->failed & (1 << transition->selected))
@@ -3934,8 +3937,8 @@ void __stdcall function_61ef0(c_class_58d20 *session)
  }
  if (session->state == 9)
  {
-  if (!transition->send_time || network_session_time_now() - transition->send_time >= g_network_configuration.value1494 ||
-   (transition->selection_time - transition->send_time > 0 && network_session_time_now() - transition->send_time >= 500))
+  if (!transition->send_time || network_session_time_since(transition->send_time) >= g_network_configuration.value1494 ||
+   (transition->selection_time - transition->send_time > 0 && network_session_time_since(transition->send_time) >= 500))
   {
    struct { s_session_id id; byte map[0xc0]; } message;
    memset(&message, 0, sizeof(message));
@@ -3949,7 +3952,7 @@ void __stdcall function_61ef0(c_class_58d20 *session)
    }
    transition->send_time = network_session_time_now();
   }
-  if (network_session_time_now() - transition->start_time >= g_network_configuration.value1488)
+  if (network_session_time_since(transition->start_time) >= g_network_configuration.value1488)
    network_session_close(session);
  }
 }

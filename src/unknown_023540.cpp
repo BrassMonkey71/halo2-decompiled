@@ -2541,9 +2541,7 @@ void __stdcall function_22cf0(s_light_sample_source const *source, real *red, re
 bool __stdcall function_23690(s_coefficient_layout const *layout, short order, long object_index,
     s_137801 const *vertices, long count, byte const *indices, long tag)
 {
-    (void)&layout; (void)&order; (void)&object_index; (void)&vertices;
-    (void)&indices; (void)&count; (void)&tag;
-    volatile bool found = false;
+    bool found = false;
     for (short i = 0; i < g_5093e8; ++i)
         if (g_4b89b0[i].key == object_index) found = true;
     if (found || g_5093e8 >= 24) return true;
