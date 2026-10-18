@@ -432,7 +432,6 @@ bool c_simulation_view::handle_player_update(bool failed, long a, long b, dword 
 	return result;
 }
 
-#pragma optimize("t", off)
 // @retail 0x86ad0
 bool c_simulation_view::has_pending_entity(void)
 {
@@ -440,16 +439,18 @@ bool c_simulation_view::has_pending_entity(void)
 	{
 		s_simulation_entity_database *database = &world->distribution->field_2098;
 		long handle = NONE;
-		while ((handle = function_98480(handle, (c_handle_table_450cd0 *)data->handles)) != NONE)
+		s_simulation_entity *entity;
+		do
 		{
-			s_simulation_entity *entity = &database->entities[handle & 0x3ff];
-			if (database->definitions->definitions[entity->type]->v6(entity))
-				return true;
-		}
+			handle = function_98480(handle, (c_handle_table_450cd0 *)data->handles);
+			if (handle == NONE)
+				return false;
+			entity = &database->entities[handle & 0x3ff];
+		} while (!database->definitions->definitions[entity->type]->v6(entity));
+		return true;
 	}
 	return false;
 }
-#pragma optimize("", on)
 
 // @retail 0x85cb0
 bool c_simulation_view::function_85cb0(void)

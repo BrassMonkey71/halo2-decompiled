@@ -135,7 +135,7 @@ bool __stdcall function_29e0f0(point3f const *arg_0, long arg_1, s_reference arg
                             if (arg_3->field_0[local_25].field_0 == local_15) { local_20 = local_25; break; }
                         short local_26 = 1;
                         short local_28 = local_19;
-                        for (short local_27 = 0; local_27 < 2; ++local_27)
+                        for (long local_27 = 0; local_27 < 2; ++local_27)
                         {
                             short local_29 = local_19;
                             point3f *local_30 = &local_22->field_4[local_19];

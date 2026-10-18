@@ -311,7 +311,7 @@ void s_player_slot_profile::show_task_text(c_online_task_screen *screen)
 }
 
 #include "online_tasks.h"
-bool function_2bb04e(long task_index, bool * volatile completion);
+bool function_2bb04e(long task_index, bool *completion);
 void online_task_screen_finish(c_online_task_screen *screen);
 extern dword g_54d5b8;
 dword g_51ec94;
@@ -332,8 +332,8 @@ void __stdcall function_24b869(c_class_1473c9 *screen_base)
             long status = online_task_get_logon_status(task);
             XONLINE_USER users[4];
             online_get_logon_users(users);
-            XONLINE_USER *user = &users[profile->player];
-            if (status == 1 && user->xuid.qwUserID && user->szGamertag[0] && user->hr >= 0)
+            if (status == 1 && users[profile->player].xuid.qwUserID &&
+                users[profile->player].szGamertag[0] && users[profile->player].hr >= 0)
             {
                 if (complete) screen->task_index = NONE;
                 online_task_screen_finish(screen);

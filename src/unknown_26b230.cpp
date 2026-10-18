@@ -599,18 +599,22 @@ void function_2687a0(long clump_index)
 	if (clump->active)
 	{
 		s_iterator iterator;
-		iterator.next = clump->first_actor;
+		iterator.next = ((s_clump_activity_view *)(g_502420->data + (clump_index & 0xffff) * sizeof(s_clump_activity_view)))->first_actor;
 		s_actor_view *actor;
 		while ((actor = clump_next_actor(&iterator)) != NULL)
 		{
 			if (actor->unknown009)
-			{
-				clump->active_time = g_510c54->game_time;
-				return;
-			}
+				break;
 		}
-		clump->active = false;
-		clump->active_time = g_510c54->game_time - 1;
+		if (!actor)
+		{
+			clump->active = false;
+			clump->active_time = g_510c54->game_time - 1;
+		}
+		else
+		{
+			clump->active_time = g_510c54->game_time;
+		}
 	}
 }
 

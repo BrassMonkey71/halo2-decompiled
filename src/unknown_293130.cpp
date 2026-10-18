@@ -200,7 +200,10 @@ long __stdcall function_293130(long arg_0)
 					local_15->field_28 = *g_468788;
 					function_2936b0(*local_1, local_0);
 					if (local_3->field_14 > 0)
-						local_15->field_4 = (short)((function_293131() * (short)local_3->field_14) >> 16);
+					{
+						short count = (short)local_3->field_14;
+						local_15->field_4 = (short)((function_293131() * count) >> 16);
+					}
 				}
 				else
 				{

@@ -2895,10 +2895,10 @@ void __stdcall function_273ac0(long ai_index, long target_ai_index)
 	ai_actor_iterator_new(ai_index, &iterator);
 	while ((actor = ai_actor_iterator_next(&iterator)) != NULL)
 	{
-		long clump_index = actor->clump_object_index;
-		if (clump_index == NONE)
+		long clump_object_index = actor->clump_object_index;
+		if (clump_object_index == NONE)
 			continue;
-		clump_index &= 0xffff;
+		word clump_index = (word)clump_object_index;
 		if (bit_vector_test(clump_bits, clump_index))
 			continue;
 		bit_vector_set(clump_bits, clump_index, true);
@@ -2915,9 +2915,9 @@ void __stdcall function_273ac0(long ai_index, long target_ai_index)
 				case _ai_index_type_squad:
 				case _ai_index_type_squad_group:
 				{
-					long squad_index = actor_datum_get(target_actor_index)->squad_index;
-					if (squad_index != NONE)
-						target_matches = function_272c40(target_ai_index, squad_index);
+					s_actor_datum *target_datum = actor_datum_get(target_actor_index);
+					if (target_datum->squad_index != NONE)
+						target_matches = function_272c40(target_ai_index, target_datum->squad_index);
 					break;
 				}
 				case _ai_index_type_actor:
@@ -2938,10 +2938,10 @@ void __stdcall function_273ac0(long ai_index, long target_ai_index)
 						case _ai_index_type_squad:
 						case _ai_index_type_squad_group:
 						{
-							long squad_index = actor_datum_get(actor_index)->squad_index;
-							if (squad_index != NONE)
+							s_actor_datum *datum = actor_datum_get(actor_index);
+							if (datum->squad_index != NONE)
 							{
-								matches = squad_in_ai_273ac0(ai_index, squad_index);
+								matches = squad_in_ai_273ac0(ai_index, datum->squad_index);
 							}
 							break;
 						}

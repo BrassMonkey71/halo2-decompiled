@@ -39,7 +39,7 @@ from capstone import CS_ARCH_X86, CS_MODE_32, Cs
 
 import build
 import reduced
-from inventory import check_retail, read_rows, write_rows
+from inventory import HAVOK, check_retail, in_scope_owner, read_rows, write_rows
 from linkmap import plain_name
 from xbe import FUNCTIONS_CSV, ROOT, Xbe, retail_xbe_path
 
@@ -579,8 +579,8 @@ def main():
               f'({matched} of {total} bytes, {100 * matched / max(total, 1):.2f}%)')
 
     summary('game functions', [r for r in rows.values() if r['owner'] == 'game'])
-    summary('functions in scope',
-            [r for r in rows.values() if r['owner'] != 'eh' and not r['owner'].startswith('third:')])
+    summary('Havok functions', [r for r in rows.values() if r['owner'] == HAVOK])
+    summary('functions in scope', [r for r in rows.values() if in_scope_owner(r['owner'])])
     sys.exit(1 if failed else 0)
 
 

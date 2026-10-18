@@ -51,8 +51,9 @@ void function_29c860(long arg_0, long arg_1, point2f const *arg_2,
 	if (arg_3->y * arg_2->x - arg_2->y * arg_3->x < 0.0f)
 		local_3 = -local_3;
 	local_3 += arg_4;
-	if (local_1->field_38 > 0.0f)
-		local_3 *= local_1->field_38;
+	real gain = local_1->field_38;
+	if (gain > 0.0f)
+		local_3 *= gain;
 	real local_4 = local_1->field_30 > 0.0f ? local_1->field_30 * 0.01745329238474369f : 1.5707963705062866f;
 	if (-local_4 > local_3)
 		local_3 = -local_4;
