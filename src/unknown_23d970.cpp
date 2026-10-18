@@ -782,9 +782,6 @@ byte g_470a39 = 1;
 // @retail 0x23ea80
 bool function_23ea80(long tag, transform4x3f const *matrix, long variant, long stage, long pass)
 {
-	(void)&variant;
-	(void)&stage;
-	(void)&pass;
 	bool result = false;
 	dword kind = ((dword *)g_4e3b44)[(short)tag * 4];
 	long const *reference;
