@@ -1921,9 +1921,6 @@ struct s_player_creation_record
 // @retail 0x14c090
 void __stdcall function_14c090(long index, bool reuse, s_player_creation_record const *record)
 {
-    (void)&index;
-    (void)&reuse;
-    (void)&record;
     byte *player = (byte *)player_get(index);
     long machine_index = NONE;
     if (!record->field_2_2)

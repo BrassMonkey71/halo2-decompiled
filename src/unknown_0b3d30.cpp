@@ -381,7 +381,6 @@ long function_b4670(long kind, long controller, struct _XUID owner, wchar_t cons
 // @retail 0xb42b0
 long function_b42b0(long kind, long controller, struct _XUID owner, wchar_t const *filename, byte *buffer, dword size, long *task_out)
 {
-    (void)&controller;
     long result = 1;
     *task_out = NONE;
     long facility = storage_facility_ab(kind);
@@ -398,29 +397,31 @@ long function_b42b0(long kind, long controller, struct _XUID owner, wchar_t cons
             if (status >= 0)
             {
                 *task_out = task_index;
-                task->controller_index = controller;
+                result = 0;
                 task->flags = 1;
                 task->type = 0x29;
-                return 0;
+                task->controller_index = controller;
             }
-            switch (status)
+            else
             {
-            case 0x8007000e:
-            case 0x80150002:
-            case 0x80150003:
-            case 0x80150005:
-            case 0x80150006:
-            case 0x80150008: result = 2; break;
-            case 0x80150004:
-            case 0x8015c002: result = 3; break;
-            case 0x8015c006:
-            case 0x8015c008:
-            case 0x8015c009: result = 4; break;
-            default: result = 1; break;
+                switch (status)
+                {
+                case 0x8007000e:
+                case 0x80150002:
+                case 0x80150003:
+                case 0x80150005:
+                case 0x80150006:
+                case 0x80150008: result = 2; break;
+                case 0x80150004:
+                case 0x8015c002: result = 3; break;
+                case 0x8015c006:
+                case 0x8015c008:
+                case 0x8015c009: result = 4; break;
+                default: result = 1; break;
+                }
+                function_6b640(task_index);
             }
-            function_6b640(task_index);
         }
-        else return 1;
     }
     return result;
 }
