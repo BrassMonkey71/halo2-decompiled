@@ -7,6 +7,8 @@
 class buffered_2d9c00 : public referenced_2d88a0
 {
 public:
+	REFERENCED_NEW_2D88A0(0x15)
+
 	referenced_2d88a0 *source;
 	void *buffer;
 	long field_10;
@@ -50,6 +52,8 @@ buffered_2d9c00::~buffered_2d9c00()
 	}
 	g_memory_2d88a0->release_aligned(buffer);
 }
+
+// @retail 0x2d9bd0 deleting buffered_2d9c00
 
 // @retail 0x2d9c00
 buffered_2d9c00::buffered_2d9c00(referenced_2d88a0 *source_, long size_)
