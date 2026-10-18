@@ -135,7 +135,7 @@ real function_24e9c7(s_24e9c7_marker const *marker, s_24e9c7_placement const *pl
 			bounds.y0 = 0.0f;
 			bounds.y1 = 1.0f;
 			if (sequence_index < 0)
-				return result;
+				goto done;
 			if (sequence_index < group->sequence_count)
 			{
 				s_24e9c7_sequence *sequence = &group->sequences[sequence_index];
@@ -146,7 +146,7 @@ real function_24e9c7(s_24e9c7_marker const *marker, s_24e9c7_placement const *pl
 			else
 			{
 				if (sequence_index != 0 || ((s_24e9c7_bitmap_group volatile *)group)->sequence_count != 0 || group->bitmap_count <= 0)
-					return result;
+					goto done;
 				first_bitmap = 0;
 			}
 			if (first_bitmap != NONE)
@@ -201,5 +201,6 @@ real function_24e9c7(s_24e9c7_marker const *marker, s_24e9c7_placement const *pl
 			}
 		}
 	}
+done:
 	return result;
 }
