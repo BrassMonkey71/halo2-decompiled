@@ -1061,7 +1061,7 @@ bool function_1101e0(long animation_graph_index, long unit_index, long animation
 			c_type_709360 animation_id = GRAPH_GET(state->graph_tag_index)->animation_by_name(animation_name);
 			function_10f260(unit_index);
 
-			word channel_flags = flag ? 0x4003 : 0x4001;
+			dword channel_flags = flag ? 0x4003 : 0x4001;
 			if (function_1daea0(GRAPH_GET(state->graph_tag_index), animation_id)->type)
 			{
 				control->channel_9c.clear();
@@ -1718,7 +1718,7 @@ void __stdcall function_112070(long unit_index, dword const *node_mask, long nod
 	{
 		if (control->animation_10c.index != NONE)
 		{
-			word flags = 0;
+			dword flags = 0;
 			if (control->slots[0].unknown1 && function_1d9370((s_1d9240 *)&control->slots[0]) < 0.0001f)
 				flags = 0x400;
 			if (state->graph_tag_index != NONE && state->channel_start(&channel, control->animation_10c, NONE, NONE, NONE, NONE, flags))

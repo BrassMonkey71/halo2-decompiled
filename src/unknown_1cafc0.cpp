@@ -374,7 +374,7 @@ c_type_709360 s_animation_state::variant_get(c_type_709360 animation_id)
 
 // @retail 0x1cb410
 bool s_animation_state::channel_start(c_animation_channel *channel, c_type_709360 animation_id, long unknown08,
-	char unknown0c, char unknown0d, char unknown0e, word channel_flags)
+	char unknown0c, char unknown0d, char unknown0e, dword channel_flags)
 {
 	bool result = false;
 
@@ -872,7 +872,7 @@ bool s_animation_state::animation_set(long mode, long weapon_class, long weapon_
 				blend_id = *transition_lookup(&temporary, names.set, names.mode, names.weapon_class, names.weapon_type, &transition_set);
 			}
 			channels_clear();
-			if (channel_start(&channels[0], animation_id, found.set, NONE, NONE, 0, (word)channel_flags))
+			if (channel_start(&channels[0], animation_id, found.set, NONE, NONE, 0, channel_flags))
 			{
 				bool unflagged;
 
@@ -1191,7 +1191,7 @@ bool s_animation_state::update(animation_event_callback callback, long user, lon
 }
 
 // @retail 0x1cb490
-bool s_animation_state::channel_play(c_animation_channel *channel, c_type_709360 animation_id, word channel_flags)
+bool s_animation_state::channel_play(c_animation_channel *channel, c_type_709360 animation_id, dword channel_flags)
 {
 	bool result = false;
 
@@ -1203,7 +1203,7 @@ bool s_animation_state::channel_play(c_animation_channel *channel, c_type_709360
 }
 
 // @retail 0x1cb4c0
-bool s_animation_state::channel_play_named(c_animation_channel *channel, long name, word channel_flags)
+bool s_animation_state::channel_play_named(c_animation_channel *channel, long name, dword channel_flags)
 {
 	bool result = false;
 
@@ -1441,7 +1441,7 @@ c_type_709360 s_animation_state::overlay_kind_get(long kind)
 }
 
 // @retail 0x1cb520
-bool s_animation_state::overlay_play(c_animation_channel *channel, word channel_flags, long set, long weapon_class,
+bool s_animation_state::overlay_play(c_animation_channel *channel, dword channel_flags, long set, long weapon_class,
 	long weapon_type)
 {
 	bool result = false;
@@ -1643,7 +1643,7 @@ bool s_animation_state::channel_play_indexed(c_animation_channel *channel, long 
 	}
 	if (animation_id.index != NONE)
 	{
-		word channel_flags = 0x3f;
+		dword channel_flags = 0x3f;
 		bool result;
 
 		if (set == 0x600008b)
@@ -1679,7 +1679,7 @@ bool s_animation_state::play_indexed(long set, short item_index, short animation
 }
 
 // @retail 0x1ccae0
-bool s_animation_state::play(c_type_709360 animation_id, word channel_flags)
+bool s_animation_state::play(c_type_709360 animation_id, dword channel_flags)
 {
 	bool result;
 
