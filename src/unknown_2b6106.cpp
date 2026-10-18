@@ -378,25 +378,29 @@ word *function_1630e0(word *buffer, const word *format, ...);
 bool function_2b6db1(s_time_left *time, c_widget *screen, word *result_string)
 {
 	bool result = false;
-	word format[0x100];
+	struct s_string_buffer
+	{
+		word text[0x100];
+		void load(c_widget *screen, long handle) { screen->function_230134(handle, text); }
+	} format;
 	long minutes;
 	long seconds;
 
-	format[0] = 0;
+	format.text[0] = 0;
 	if (time->game_seconds > 0)
 	{
 		seconds = time->game_seconds % 60;
 		minutes = time->game_seconds / 60;
-		screen->function_230134(0x13000264, format);
-		function_1630e0(result_string, format, minutes, seconds);
+		format.load(screen, 0x13000264);
+		function_1630e0(result_string, format.text, minutes, seconds);
 		result = true;
 	}
 	else if (time->session_seconds > 0)
 	{
 		seconds = time->session_seconds % 60;
 		minutes = time->session_seconds / 60;
-		screen->function_230134(0x15000265, format);
-		function_1630e0(result_string, format, minutes, seconds);
+		format.load(screen, 0x15000265);
+		function_1630e0(result_string, format.text, minutes, seconds);
 		result = true;
 	}
 	return result;
