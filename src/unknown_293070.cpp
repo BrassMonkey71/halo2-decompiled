@@ -7,6 +7,8 @@
 #include "globals.h"
 #include "data_array.h"
 #include "unknown_0259d0.h"
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
 
 /* a flock (g_51ecb4, ai.cpp): the index of its scenario definition at +2 */
 struct s_flock
@@ -553,13 +555,7 @@ void function_295320(point3f const *point)
 				radius = definition->proximity_radius;
 			if (function_295490(iterator.flock_index, point, radius + 1.0f))
 			{
-				real ticks_real = (real)g_510c54->field_2_3 * 3.0f;
-				long ticks;
-				__asm
-				{
-					fld ticks_real
-					fistp ticks
-				}
+				long ticks = real_to_long((real)g_510c54->field_2_3 * 3.0f);
 				iterator.flock->unknown24 = (short)ticks;
 				iterator.flock->position14 = *point;
 				iterator.flock->value20 = 2.0f;

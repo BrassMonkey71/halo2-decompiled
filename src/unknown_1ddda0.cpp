@@ -217,7 +217,6 @@ PRIVATE __forceinline real function_1de6d4(vector3f const *arg_0, vector3f const
 // @retail 0x1de6d0
 bool __stdcall function_1de6d0(s_1de6d0 *arg_0, long arg_1, real arg_2, real arg_3)
 {
- (void)&arg_0; (void)&arg_1; (void)&arg_2; (void)&arg_3;
  while (!(arg_1 & 0x800000))
  {
   s_1de6d1 const *local_0 = &arg_0->field_4->field_4[arg_1 & 0x7fffff];
@@ -248,7 +247,7 @@ bool __stdcall function_1de6d0(s_1de6d0 *arg_0, long arg_1, real arg_2, real arg
  if (arg_1 != NONE)
  {
   local_8 = arg_1 & 0x7fffff;
-  byte local_18 = *(byte volatile const *)&arg_0->field_4->field_14[local_8].field_0;
+  byte local_18 = arg_0->field_4->field_14[local_8].field_0;
   local_9 = (local_18 & 1) ? 2 : 1;
  }
  dword local_11 = arg_0->field_0;

@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "data_array.h"
 #include "slot_handler.h"
+static __forceinline long real_to_long(real value);
 #include "unknown_2551c0.h"
 #include <string.h>
 
@@ -1562,13 +1563,7 @@ void function_25a380(long arg_0)
 	}
 	if (local_2->unknown83)
 	{
-		real local_16 = g_510c54->field_2_3 * 2.f;
-		long local_17;
-		__asm
-		{
-			fld local_16
-			fistp local_17
-		}
+		long local_17 = real_to_long(g_510c54->field_2_3 * 2.f);
 		if ((short)local_17 > g_4f55d0->unknown22)
 		{
 			g_4f55d0->unknown22 = (short)local_17;
