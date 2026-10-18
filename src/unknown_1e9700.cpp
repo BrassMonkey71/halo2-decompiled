@@ -92,8 +92,7 @@ void function_1ea5b0(long player_index, s_statborg *statistics, long threshold, 
 	}
 	if (g_55e4d0[g_4e9ae8->engine_index])
 	{
-		byte volatile *code_reference = &code;
-		*code_reference = (byte)g_4e6948->flags184.bit0;
+		code = (byte)g_4e6948->flags184.bit0;
 	}
 	else code = 0;
 	if (code && player->team != NONE)
