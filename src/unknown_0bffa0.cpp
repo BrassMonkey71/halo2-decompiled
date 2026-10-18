@@ -559,7 +559,7 @@ static inline void cross_product_c1a80(vector3f const *second, vector3f const *f
     result->k = k;
 }
 
-static inline void point_from_line2d_c1a80(point2f const *point, vector2f const *vector, real scale, point2f *result)
+static inline void advance_along_vector_c1a80(point2f const *point, vector2f const *vector, real scale, point2f *result)
 {
     result->x = vector->i * scale + point->x;
     result->y = vector->j * scale + point->y;
@@ -634,7 +634,7 @@ void function_c1a80(s_light_frame_ab const *frame, s_light_shape_ab *shape, s_li
         cone->size.y = cone->aspect * shape->cone.values[0];
         cone->far_distance = shape->cone.values[4] * frame->radius;
         cone->near_distance = shape->cone.values[3] * frame->radius;
-        point_from_line2d_c1a80(&cone->size, &cone->slope, cone->far_distance, &cone->far_size);
+        advance_along_vector_c1a80(&cone->size, &cone->slope, cone->far_distance, &cone->far_size);
         point_add_scaled_c35a0(&frame->position, direction, cone->far_distance, &cone->endpoint);
     }
     cross_product_c1a80(&frame->up, &frame->forward, &shape->left);
