@@ -13,6 +13,9 @@
 #include "unknown_030290.h"
 #include "unknown_13927e.h"
 
+/* retail calls the pow intrinsic (_CIpow) even though this file is size-optimised */
+#pragma intrinsic(pow)
+
 struct s_link
 {
 	long unknown00;
