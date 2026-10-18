@@ -916,7 +916,7 @@ void __stdcall function_2cbc0(bool enabled)
 void function_3f2c0(s_planar_camera_source const *source, byte const *view, long object_index, long identifier)
 {
 	volatile long context = identifier;
-	byte camera[0x1b4];
+	byte camera[0x1bc]; // a whole s_planar_camera: function_441b0 fills 0x1bc bytes
 	real offset = 0.0f;
 	function_441b0(source, (s_planar_camera *)camera, view);
 	byte *effect = (byte *)function_01fd20(0);
