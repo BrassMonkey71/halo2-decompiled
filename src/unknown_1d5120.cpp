@@ -32,8 +32,6 @@ public:
 
 __declspec(noinline) void function_1d56f0(s_havok_component *component);
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
 // @retail 0x1d56f0
 void function_1d56f0(s_havok_component *component)
 {
@@ -48,6 +46,7 @@ void function_1d56f0(s_havok_component *component)
         if (converted_index != NONE)
         {
             byte *physics = definition + 0x2ac;
+            bool skip = false;
             if (*(long *)(definition + 0x2f8))
             {
                 byte *shape = *(byte **)(physics + 0x50);
@@ -68,16 +67,10 @@ void function_1d56f0(s_havok_component *component)
                 }
                 if (*(long *)(physics + 0x4c))
                 {
-                    bool skip = (bool)((*(dword *)(*(byte **)(physics + 0x50) + 0x3c) >> 1) & 1);
-                    (void)&skip;
-                    _ReadWriteBarrier();
-                    if (skip)
-                        goto label_1d585f;
+                    skip = (bool)((*(dword *)(*(byte **)(physics + 0x50) + 0x3c) >> 1) & 1);
                 }
             }
-            if (function_f1320(component->object_index))
-                return;
-        label_1d585f:
+            if (skip || !function_f1320(component->object_index))
             {
                 real bounds[6];
                 if (function_205510(bounds, physics, component))
@@ -92,7 +85,6 @@ void function_1d56f0(s_havok_component *component)
         }
     }
 }
-#pragma function(_ReadWriteBarrier)
 
 // @retail 0x1d5120
 bool function_1d5120(s_havok_component *arg_0, long arg_1, long arg_2, long arg_3,

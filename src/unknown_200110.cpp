@@ -31,15 +31,21 @@ bool function_200110(long arg_0, long arg_1, point3f *arg_2, s_type_c3b527 *arg_
     }
     point3f local_6;
     s_object_marker local_7;
+    bool local_8;
     if (local_2[0x340] && arg_1 == *(long *)(local_2 + 0x338) &&
         *(long *)(local_2 + 0x33c) &&
         function_200111(local_3, *(long *)(local_2 + 0x33c), &local_7))
+    {
         local_6 = local_7.matrix.position;
+        local_8 = true;
+    }
     else
+    {
         local_6 = *(point3f *)((byte *)function_25d690(local_3) + 0x10);
+        local_8 = true;
+    }
     if (*local_0)
         **local_0 = local_6;
-    bool local_8 = true;
     if (*local_1)
     {
         local_8 = false;

@@ -41,7 +41,7 @@ short __stdcall function_1a8c30(long arg_0, s_slot *arg_1)
     function_1a8fa0(arg_0, 0.0f, NULL, &local_5, NULL);
     if (local_5)
     {
-        real local_6 = function_11e6f0(&local_0->position, &local_0->unknown370, &local_3, local_0->unknown36c);
+        real local_6 = function_11e6f0(&local_0->unknown370, &local_0->position, &local_3, local_0->unknown36c);
         bool local_7 = false;
         if (local_6 < 3.402823466e38f)
             local_6 *= 1.5f;

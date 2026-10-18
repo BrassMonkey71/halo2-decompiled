@@ -179,8 +179,6 @@ short avoidance_add_node(s_avoidance_search *search, point2f const *point, bool 
 		real distance;
 		short index;
 		s_avoidance_node *node;
-		/* This short remains on the stack in the retail calling convention. */
-		(void)&obstacle;
 
 		direction.x = search->goal.x - point->x;
 		direction.y = search->goal.y - point->y;

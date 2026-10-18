@@ -391,7 +391,6 @@ PRIVATE inline bool score_team_present(long team)
 // @retail 0x23f3e0
 void function_23f3e0(s_score_display *display, long mode, bool fallback)
 {
-	(void)&mode;
 	const byte *criteria = score_criteria(mode);
 	s_record_pool *data = g_4e8c24;
 	display->player_count = 0;
@@ -411,7 +410,6 @@ void function_23f3e0(s_score_display *display, long mode, bool fallback)
 	if (g_55e4d0[g_4e9ae8->engine_index])
 	{
 		teams = ((byte *)g_4e6948)[0x184] & 1;
-		volatile byte observed_teams = teams;
 	}
 	if (teams)
 	{

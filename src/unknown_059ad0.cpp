@@ -1799,72 +1799,55 @@ bool network_session_host_set_data49cc(c_class_58d20 *session, const dword *data
 	}
 	return result;
 }
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
 // @retail 0x5c350
 bool network_session_host_set_summary(c_class_58d20 *session, const s_session_summary *summary)
 {
-	c_class_58d20 * const volatile *local_0 = &session;
-	c_class_58d20 *local_1 = *local_0;
 	bool result = false;
-
-	if (session_state_is_live(local_1))
+	if (session_state_is_live(session) && session->function_058d20())
 	{
-		if (local_1->function_058d20())
+		if (!summary || session_summary_valid(summary))
 		{
-			if (summary)
+			if (!summary)
 			{
-				if (!session_summary_valid(summary))
-					goto local_2;
-				local_1->flag49fd = true;
-				memcpy(local_1->data4a00, summary, sizeof(local_1->data4a00));
+				session->flag49fd = false;
+				memset(session->data4a00, 0, sizeof(session->data4a00));
 			}
 			else
 			{
-				local_1->flag49fd = false;
-				memset(local_1->data4a00, 0, sizeof(local_1->data4a00));
+				session->flag49fd = true;
+				memcpy(session->data4a00, summary, sizeof(session->data4a00));
 			}
+			session->update_count++;
 			result = true;
-			_ReadWriteBarrier();
-			local_1->update_count++;
 		}
 	}
-local_2:
 	return result;
 }
 
 // @retail 0x5c3f0
 bool network_session_host_set_data5ddc(c_class_58d20 *session, const s_parameters_part *data)
 {
-	c_class_58d20 * const volatile *local_0 = &session;
-	c_class_58d20 *local_1 = *local_0;
 	bool result = false;
-
-	if (session_state_is_live(local_1))
+	if (session_state_is_live(session) && session->function_058d20())
 	{
-		if (local_1->function_058d20())
+		if (!data || network_session_id_differs(session, data))
 		{
-			if (data)
+			if (!data)
 			{
-				if (!network_session_id_differs(local_1, data))
-					goto local_2;
-				local_1->flag5dd8 = true;
-				memcpy(local_1->data5ddc, data, sizeof(local_1->data5ddc));
+				session->flag5dd8 = false;
+				memset(session->data5ddc, 0, sizeof(session->data5ddc));
 			}
 			else
 			{
-				local_1->flag5dd8 = false;
-				memset(local_1->data5ddc, 0, sizeof(local_1->data5ddc));
+				session->flag5dd8 = true;
+				memcpy(session->data5ddc, data, sizeof(session->data5ddc));
 			}
+			session->update_count++;
 			result = true;
-			_ReadWriteBarrier();
-			local_1->update_count++;
 		}
 	}
-local_2:
 	return result;
 }
-#pragma function(_ReadWriteBarrier)
 
 /* ---- peers ---- */
 
@@ -3234,14 +3217,7 @@ void __stdcall function_061570(c_class_58d20 *session, bool flag)
 {
 	if (session->member_count > 1)
 	{
-		bool hosting = false;
-		long state = session->state;
-		if (state == 5 || state == 6 || state == 7 || state == 8)
-			hosting = true;
-		else
-		{
-			volatile long unused = state;
-		}
+		bool hosting = session->function_058d20();
 		long previous_host = session->member_index;
 		if (!hosting)
 		{
@@ -3671,7 +3647,7 @@ bool __stdcall function_59e50(c_class_58d20 *session, long mode, long local,
  long count, const dword *identities, const long *values, const long *other_values,
  bool reserve, long timeout, const s_session_id *id, const void *extra)
 {
- volatile bool result = false;
+ bool result = false;
  c_class_58d20 *existing = network_session_manager_find_session(
   *(s_network_session_list **)session->unknown0c, (const s_session_id *)kid);
  if (existing)
@@ -3719,7 +3695,8 @@ bool __stdcall function_59e50(c_class_58d20 *session, long mode, long local,
       if (extra)
        memcpy((byte *)&remote + 0x154, extra, 0x2c);
       function_61050(session, channel, host, &remote, &address);
-      return true;
+      result = true;
+      goto done;
      }
      result = false;
     }
@@ -3727,6 +3704,7 @@ bool __stdcall function_59e50(c_class_58d20 *session, long mode, long local,
   }
  }
  network_session_release_key(session);
+done:
  return result;
 }
 

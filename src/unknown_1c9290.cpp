@@ -42,7 +42,6 @@ PRIVATE __forceinline void function_1c9291(point3f const *arg_0, vector3f const 
 bool function_1c9290(long arg_0, point3f const *arg_1, vector3f const *arg_2,
  real arg_3, real arg_4, long arg_5, bool arg_6)
 {
- (void)&arg_6;
  s_ai_capsule_view local_0[32];
  short local_1 = function_1c89b0(arg_0, 32, local_0);
  long local_2 = 0x15808c2f;

@@ -2466,8 +2466,9 @@ bool function_10ff40(long unit_index, long type, short side, short value,
     long set = g_440918[type];
     long mode = g_440938[type];
     long lookup = g_4408f8[type];
-    long animation = lookup == NONE ? NONE : g_46fc30[lookup];
-    volatile bool result = false;
+    long animation = NONE;
+    if (lookup != NONE) animation = g_46fc30[lookup];
+    bool result = false;
     bool force_overlay = false;
     short action;
     c_animation_channel *overlay;
@@ -2499,7 +2500,7 @@ bool function_10ff40(long unit_index, long type, short side, short value,
         {
             if (animation == 0x600008c) animation = 0x600008b;
             else if (animation == 0x600008e) animation = 0x600008d;
-            else return result;
+            else goto done;
             set = NONE;
         }
     }
@@ -2509,7 +2510,7 @@ bool function_10ff40(long unit_index, long type, short side, short value,
         if (TEST_FIELD_BIT(control->flag7) && overlay->graph_tag_index != NONE &&
             overlay->animation_id.index != NONE &&
             *(real *)(definition + 0x108) >= overlay->frame_position * (1.0f / 30.0f))
-            return result;
+            goto done;
     }
     if (set != NONE)
     {
@@ -2535,8 +2536,10 @@ bool function_10ff40(long unit_index, long type, short side, short value,
         if (animated)
         {
             *flag = true;
-            return true;
+            result = true;
+            goto done;
         }
     }
+done:
     return result;
 }

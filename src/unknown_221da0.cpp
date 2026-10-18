@@ -673,22 +673,26 @@ bool function_1de630(dword arg_0, s_slot_entry_list *arg_1, s_collision_bsp_test
 void function_222150(long arg_0, point3f const *arg_1, real const *arg_2,
 	point3f const *arg_3, long arg_4, real *arg_5);
 
+PRIVATE inline void point_along_vector_221e30(point3f const *point, vector3f const *vector, real t, point3f *result)
+{
+	result->x = vector->i * t + point->x;
+	result->y = vector->j * t + point->y;
+	result->z = vector->k * t + point->z;
+}
+
 // @retail 0x221e30
 void function_221e30(s_221e30 *arg_0, real const *arg_1, s_local_camera const *arg_2)
 {
-	(void)&arg_1; (void)&arg_2;
 	if (*(long const *)arg_2->unknown00 != arg_0->field_40)
 	{
 		real local_0 = 0.0f;
-		s_structure_bsp_view *volatile local_13 = (s_structure_bsp_view *)g_4e0348;
+		s_structure_bsp_view *local_13 = (s_structure_bsp_view *)g_4e0348;
 		if (!arg_0->field_47)
 		{
 			s_221e31 local_1, local_2;
 			vector3f ray, reverse_ray;
 			byte const *local_5 = g_4ed280 + g_4686c4 * 0x20 + 1;
-			ray.i = arg_0->field_24.x - arg_2->position.x;
-			ray.j = arg_0->field_24.y - arg_2->position.y;
-			ray.k = arg_0->field_24.z - arg_2->position.z;
+			vector3d_from_points3d(&arg_2->position, &arg_0->field_24, &ray);
 			if (function_1de630(1, g_4e0340, (s_collision_bsp_test_vector_result *)&local_1,
 				1.0f, 0x100, local_5, &arg_2->position, &ray))
 			{
@@ -698,17 +702,14 @@ void function_221e30(s_221e30 *arg_0, real const *arg_1, s_local_camera const *a
 				if (function_1de630(1, g_4e0340, (s_collision_bsp_test_vector_result *)&local_2,
 					1.0f, 0x100, local_5, &arg_0->field_24, &reverse_ray))
 				{
-					local_0 = PIN(1.0f - local_2.field_0 - local_1.field_0, 0.0f, 1.0f);
+					local_0 = 1.0f - local_2.field_0 - local_1.field_0;
+					local_0 = PIN(local_0, 0.0f, 1.0f);
 					if (local_0 > 0.0f)
 					{
 						arg_0->field_45 = true;
-						arg_0->field_4.x = ray.i * local_1.field_0 + arg_2->position.x;
-						arg_0->field_4.y = ray.j * local_1.field_0 + arg_2->position.y;
-						arg_0->field_4.z = ray.k * local_1.field_0 + arg_2->position.z;
+						point_along_vector_221e30(&arg_2->position, &ray, local_1.field_0, &arg_0->field_4);
 						arg_0->field_1c = local_1.field_0;
-						arg_0->field_10.x = reverse_ray.i * local_2.field_0 + arg_0->field_24.x;
-						arg_0->field_10.y = reverse_ray.j * local_2.field_0 + arg_0->field_24.y;
-						arg_0->field_10.z = reverse_ray.k * local_2.field_0 + arg_0->field_24.z;
+						point_along_vector_221e30(&arg_0->field_24, &reverse_ray, local_2.field_0, &arg_0->field_10);
 						arg_0->field_20 = local_2.field_0;
 					}
 				}
@@ -719,7 +720,7 @@ void function_221e30(s_221e30 *arg_0, real const *arg_1, s_local_camera const *a
 		else if (!arg_0->field_44 && arg_2->index != arg_0->field_3c)
 		{
 			real local_6 = function_249d60(local_13, arg_2->index, arg_0->field_3c);
-			real local_7 = distance3d(&arg_0->field_24, &arg_2->position);
+			real local_7 = distance3d(&arg_2->position, &arg_0->field_24);
 			local_0 = 1.0f - local_7 / ((local_7 + local_6) > 0.001f ? (local_7 + local_6) : 0.001f);
 		}
 		if (arg_2->index != NONE && arg_0->field_3c != NONE && arg_2->index != arg_0->field_3c)
@@ -732,12 +733,13 @@ void function_221e30(s_221e30 *arg_0, real const *arg_1, s_local_camera const *a
 			else
 			{
 				real values[2];
-				function_222150(arg_0->field_3c, &arg_0->field_24, arg_1,
-					&arg_2->position, arg_0->field_3c, values);
-				s_221e32 const *local_9 = *(s_221e32 const **)((byte *)g_4e0348 + 0xa0);
-				if (local_9[arg_2->index].field_7a == local_9[arg_0->field_3c].field_7a)
-					values[0] = 0.0f;
-				arg_0->field_34 = values[0];
+				function_222150(arg_2->index, &arg_2->position, arg_1,
+					&arg_0->field_24, arg_0->field_3c, values);
+				s_221e32 const *local_9 = *(s_221e32 const **)((byte *)local_13 + 0xa0);
+				if (local_9[arg_2->index].field_7a != local_9[arg_0->field_3c].field_7a)
+					arg_0->field_34 = values[0];
+				else
+					arg_0->field_34 = 0.0f;
 				arg_0->field_38 = values[1];
 			}
 		}

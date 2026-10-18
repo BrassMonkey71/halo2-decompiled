@@ -329,6 +329,8 @@ struct s_unit_state_0f
 	short state_offset;
 };
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1afb30
 void __stdcall function_1afb30(long actor_index, s_slot *slot)
 {
@@ -358,12 +360,7 @@ void __stdcall function_1afb30(long actor_index, s_slot *slot)
 		}
 		real seconds = slot_random_range(3.0f, 10.0f);
 		real ticks = g_510c54->field_2_3 * seconds;
-		long rounded;
-		__asm
-		{
-			fld ticks
-			fistp rounded
-		}
+		long rounded = real_to_long(ticks);
 		state->ticks = (short)rounded;
 	}
 	if (state->unknown16 && !state->unknown17 && state->unknown34 && actor_get(actor_index)->unknown504 == 2)

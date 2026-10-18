@@ -535,7 +535,6 @@ bool function_216da0(long type, wchar_t *name, wchar_t const *display_name, long
 // @retail 0x215e60
 void __stdcall function_215e60(long file_index)
 {
-    (void)&file_index;
     if (file_index != NONE)
     {
         function_120d50(&g_55c14c, true);

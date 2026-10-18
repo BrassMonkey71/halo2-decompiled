@@ -1698,7 +1698,7 @@ static __forceinline void function_702c0(byte *arg_0, s_matchmaking_summary *arg
 }
 
 // @retail 0x70280
-void function_70280(c_session_state_matchmaking *volatile state)
+void function_70280(c_session_state_matchmaking *state)
 {
 	c_class_58d20 *session = state->owner->session_a;
 	byte *local_0 = (byte *)&session->value4c;
