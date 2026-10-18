@@ -5,7 +5,10 @@ retail, so the caller can match), belongs to a library, or is part of the same
 mutual recursion. Smallest first, one line per function: va, size, name (a
 library signature's, else "-"), calls.
 
-    python tools/ready.py [N] [--claims FILE]
+    python tools/ready.py [N] [--claims FILE] [--owner third:havok]
+
+--owner third:havok lists Havok functions instead, by the same rule: their
+Havok callees decompiled; calls back into the game never block.
 
 --claims FILE is a saved copy of the Active claims table on issue #9
 (markdown). A function is left out when its address sits in one of those
@@ -186,7 +189,11 @@ def _by_size(r):
     return int(r['size']), r['va']
 
 
-def ready(rows):
+def ready(rows, owner='game'):
+    """The functions of one owner (the game by default; 'third:havok' for
+    Havok) whose callees of that same owner are all decompiled. Calls to other
+    owners never block: for the game those are libraries; for Havok, the game's
+    callbacks."""
     def calls(va):
         text = rows[va]['calls']
         return {int(c, 16) for c in text.split()} if text else set()
@@ -194,14 +201,14 @@ def ready(rows):
     def done(va):  # decompiled: matched, or has source the checker re-tests
         return rows[va]['status'] == 'matched' or bool(rows[va].get('source'))
 
-    game = {va for va, r in rows.items() if r['owner'] == 'game'}
-    graph = {va: calls(va) & game for va in game}
+    mine = {va for va, r in rows.items() if r['owner'] == owner}
+    graph = {va: calls(va) & mine for va in mine}
     result = []
     for group in components(graph):
         if all(done(va) for va in group):
             continue
         outside = set().union(*(calls(va) for va in group)) - group
-        if all(c not in rows or rows[c]['owner'] != 'game' or done(c) for c in outside):
+        if all(c not in rows or rows[c]['owner'] != owner or done(c) for c in outside):
             result += [rows[va] for va in group if not done(va)]
     return sorted(result, key=_by_size)
 
@@ -215,9 +222,11 @@ def main():
     ap.add_argument('count', nargs='?', type=int, default=20)
     ap.add_argument('--claims', metavar='FILE',
                     help='markdown copy of the issue #9 Active claims table')
+    ap.add_argument('--owner', default='game',
+                    help="the functions to list: 'game' (default) or 'third:havok' for Havok")
     args = ap.parse_args()
     rows = read_rows(FUNCTIONS_CSV)
-    found = ready(rows)
+    found = ready(rows, args.owner)
     if args.claims:
         with open(args.claims, encoding='utf-8') as fh:
             claims = parse_claims(fh.read(), warn=lambda msg: print(f'warning: {msg}', file=sys.stderr))
