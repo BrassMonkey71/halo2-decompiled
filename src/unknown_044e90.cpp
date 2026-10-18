@@ -4,7 +4,6 @@
 // @retail 0x44e90
 void __stdcall function_44e90(short entry_index, short section_index)
 {
-    (void)&entry_index; (void)&section_index;
     s_visibility_query_workspace workspace;
     s_44940_entry *entry = &g_4ba138[entry_index];
     byte *geometry;

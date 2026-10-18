@@ -76,7 +76,6 @@ bool __stdcall function_71730(c_session_state_matchmaking *arg_0)
 	long local_4 = local_1->state;
 	if (local_4 != 5 && local_4 != 6 && local_4 != 7 && local_4 != 8)
 	{
-		volatile long local_5 = local_4;
 		function_71e00(arg_0);
 		return local_3;
 	}
@@ -84,7 +83,6 @@ bool __stdcall function_71730(c_session_state_matchmaking *arg_0)
 	if (local_4 != 5 && local_4 != 6 && local_4 != 7 && local_4 != 8)
 	{
 		arg_0->mode = 14;
-		volatile long local_6 = local_4;
 		return true;
 	}
 	long local_7 = NONE;
@@ -96,7 +94,6 @@ bool __stdcall function_71730(c_session_state_matchmaking *arg_0)
 	byte *local_11 = *(byte **)((byte *)local_0 + 0x3c);
 	bool local_12 = false;
 	bool local_13 = false;
-	s_session_property_value local_14 = {0};
 	long local_15[16];
 	s_71730 local_16;
 	if ((dword)local_2->player_count > *(dword *)((byte *)arg_0 + 0xa6c))
@@ -105,6 +102,7 @@ bool __stdcall function_71730(c_session_state_matchmaking *arg_0)
 		*(long *)((byte *)arg_0 + 0xa70) = g_510548 ? g_51054c : GetTickCount();
 	}
 	long local_17 = (long)(g_510548 ? g_51054c : GetTickCount()) - *(long *)((byte *)arg_0 + 0xa70);
+	s_session_property_value local_14 = {0};
 	if (!local_8 || !local_9)
 	{
 		arg_0->mode = 7;

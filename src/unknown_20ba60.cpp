@@ -2,6 +2,8 @@
 #include "unknown_11c920.h"
 #include "globals.h"
 #include "unknown_1fb7e0.h"
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
 
 struct s_audio_priority_definition
 {
@@ -74,17 +76,15 @@ bool __stdcall function_20d0c0(s_audio_priority_table *arg_0, long arg_1, short 
     s_audio_selection const *arg_3, s_1fb7e0_data const *arg_4, long arg_5, long *arg_6)
 {
     bool local_7 = false;
-    s_audio_selection const *const volatile *local_12 = &arg_3;
-    long *const volatile *local_13 = &arg_6;
     long local_0 = g_510c54->game_time;
-    s_audio_selection const *local_18 = *local_12;
+    s_audio_selection const *local_18 = arg_3;
     long local_1 = local_18->object_index;
     byte *local_2 = *(byte **)(g_4e0300->data + (local_1 & 0xffff) * 12 + 8);
     short local_11 = *(short *)(local_2 + 0x138);
     short local_3 = (short)function_20f040(local_11);
     byte *local_4 = (byte *)g_4f939c + local_3 * 0x7dc;
     s_audio_priority_definition *local_5 = &arg_0->entries[local_18->type];
-    long *local_19 = *local_13;
+    long *local_19 = arg_6;
     if (local_19)
         *local_19 = NONE;
     s_20d0c0 local_6;
@@ -112,12 +112,7 @@ bool __stdcall function_20d0c0(s_audio_priority_table *arg_0, long arg_1, short 
     if (local_7)
     {
         real local_9 = g_510c54->field_2_3 * *(real *)((byte *)&arg_0->entries[local_18->type] + 0x30);
-        long local_10;
-        __asm
-        {
-            fld local_9
-            fistp local_10
-        }
+        long local_10 = real_to_long(local_9);
         *(long *)(local_4 + local_18->type * 4) = local_0 + local_10;
     }
     return local_7;

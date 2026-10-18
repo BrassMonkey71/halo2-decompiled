@@ -35,8 +35,6 @@ class c_2def90
 public:
  c_2def90(real arg_0);
 };
-// @stub 0x2def90
-c_2def90::c_2def90(real arg_0) {}
 
 class c_contact_query_transform_volume
 {

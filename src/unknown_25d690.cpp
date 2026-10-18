@@ -1171,7 +1171,7 @@ short function_263810(point3f const *origin, long actor_index, point3f const *po
 void function_2640c0(long object_index, s_object_motion_view *result);
 
 // @retail 0x25cb60
-long function_25cb60(long arg_0, long arg_1, short arg_2, void *arg_3, void *arg_4, long arg_5, long arg_6)
+short function_25cb60(long arg_0, long arg_1, short arg_2, void *arg_3, void *arg_4, long arg_5, long arg_6)
 {
 	s_actor_view *local_0 = actor_get(arg_0);
 	s_squad_datum *local_1 = local_0->unknown030 != NONE ? squad_get(local_0->unknown030) : NULL;
@@ -1273,7 +1273,6 @@ bool function_1e1de0(long arg_0);
 // @retail 0x25ccd0
 bool function_25ccd0(s_type_5cfb45 *arg_0, long arg_1, short arg_2, s_2640c0 *arg_3)
 {
-	volatile bool local_0 = true;
 	long local_1 = g_510c54->game_time;
 	if (arg_0->unknown00 == local_1)
 		return false;
@@ -1376,7 +1375,7 @@ bool function_25ccd0(s_type_5cfb45 *arg_0, long arg_1, short arg_2, s_2640c0 *ar
 	arg_0->unknown62 = local_11;
 	arg_0->unknown61 = local_10;
 	arg_0->unknown00 = local_1;
-	return local_0;
+	return true;
 }
 
 

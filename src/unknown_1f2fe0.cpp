@@ -304,6 +304,8 @@ long function_113da0(long unit_index);
 bool __stdcall function_10f430(long unit_index, long mode, long weapon_class, long weapon_type, long set, real blend, bool unknown, long flags);
 long function_1469f0(real seconds);
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1f3640
 void function_1f3640(long actor_index)
 {
@@ -350,11 +352,7 @@ void function_1f3640(long actor_index)
             real seconds = function_259d0(&g_4e7408->unknown0, 0, 0, *(real *)(entry + 4), *(real *)(entry + 8));
             real time = (real)g_510c54->field_2_3 * seconds;
             long ticks;
-            __asm
-            {
-                fld time
-                fistp ticks
-            }
+            ticks = real_to_long(time);
             *(long *)((byte *)actor + 0x6c4) = ticks;
         }
         if (enabled && !active && --*(long *)((byte *)actor + 0x6c4) <= 0)

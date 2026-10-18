@@ -1300,7 +1300,7 @@ void swarm_apply_impulse(long perception_index, vector3f const *velocity);
 // @retail 0x1e0fe0
 long function_1e0fe0(point3f const *point, long unit_index, long character_index, short mode)
 {
-	byte *volatile object = *(byte **)(g_4e0300->data + (unit_index & 0xffff) * 12 + 8);
+	byte *object = *(byte **)(g_4e0300->data + (unit_index & 0xffff) * 12 + 8);
 	short const *mode_reference = &mode;
 	long squad_index = NONE;
 	byte cleanup = false;

@@ -562,6 +562,12 @@ static inline void advance_along_vector_c1a80(point2f const *point, vector2f con
     result->y = vector->j * scale + point->y;
 }
 
+/* result = value scaled by the frame's radius */
+static inline void scale_by_frame_c1a80(real value, s_light_frame_ab const *frame, real *result)
+{
+    *result = value * frame->radius;
+}
+
 // @retail 0xc1a80
 void function_c1a80(s_light_frame_ab const *frame, s_light_shape_ab *shape, s_light_definition_ab const *definition)
 {
@@ -581,17 +587,15 @@ void function_c1a80(s_light_frame_ab const *frame, s_light_shape_ab *shape, s_li
 
     if ((short)shape->kind == 0)
     {
-        shape->sphere_render.radius_a = *(real const volatile *)&shape->sphere.radius_a * frame->radius;
-        shape->sphere_render.radius_b = shape->sphere.radius_b * frame->radius;
+        scale_by_frame_c1a80(shape->sphere.radius_a, frame, &shape->sphere_render.radius_a);
+        scale_by_frame_c1a80(shape->sphere.radius_b, frame, &shape->sphere_render.radius_b);
         shape->sphere_render.radius = shape->sphere_render.radius_a > shape->sphere_render.radius_b ? shape->sphere_render.radius_a : shape->sphere_render.radius_b;
     }
     else
     {
         cone = (s_render_cone *)&shape->cone_render;
         vector3f *direction = &cone->direction;
-        direction->i = frame->endpoint.x - frame->position.x;
-        direction->j = frame->endpoint.y - frame->position.y;
-        direction->k = frame->endpoint.z - frame->position.z;
+        vector3d_from_points3d(&frame->position, &frame->endpoint, &cone->direction);
         cone->distance = dot_product_c1a80(&frame->forward, &cone->direction);
         if (fabs(cone->distance) < 0.0001f || cone->distance < 0.0f)
         {
@@ -616,7 +620,7 @@ void function_c1a80(s_light_frame_ab const *frame, s_light_shape_ab *shape, s_li
         }
         else
         {
-            real slope = (real)tan(shape->cone.values[2] * 0.5f);
+            real slope = tanf(shape->cone.values[2] * 0.5f);
             cone->slope.i = (real)slope;
             cone->slope.j = (real)slope * cone->aspect;
         }

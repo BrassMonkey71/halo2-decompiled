@@ -256,7 +256,7 @@ short __stdcall function_1aa9f0(long actor_index)
 	s_actor_view *actor = actor_get(actor_index);
 	s_ai_object *unit = ai_object_get(actor->unknown018);
 	s_actor_tag_entry *entry = (s_actor_tag_entry *)function_1e4f90(actor_index);
-	volatile short result = 0;
+	short result = 0;
 
 	if (!(unit->flags19 & 1) && entry && actor->prop_index != NONE &&
 		entry->unknown24 >= g_45dbd8 && !actor->unknown229 &&
@@ -265,19 +265,12 @@ short __stdcall function_1aa9f0(long actor_index)
 	{
 		s_prop_datum_view *prop = (s_prop_datum_view *)prop_node_get(actor->prop_index);
 		s_prop_state_64 *state = (s_prop_state_64 *)function_25d690((s_prop_datum *)prop);
-		if (prop->unknown27 >= 1)
+		if (prop->unknown27 >= 1 && (state->unknown64 || prop->unknown28 > entry->unknown1c) && entry->unknown20 > prop->unknown28)
 		{
-			bool flag = ((s_prop_state_64 volatile *)state)->unknown64;
-			if ((flag || prop->unknown28 > entry->unknown1c) && entry->unknown20 > prop->unknown28)
-			{
-				if (flag && !function_1e2030(actor_index))
-				{
-					result = 4;
-					return result;
-				}
-				if (function_1c9ee0(entry->unknown24) > function_259a0(&g_4e7408->unknown0))
-					result = 3;
-			}
+			if (state->unknown64 && !function_1e2030(actor_index))
+				result = 4;
+			else if (function_1c9ee0(entry->unknown24) > function_259a0(&g_4e7408->unknown0))
+				result = 3;
 		}
 	}
 	return result;
@@ -575,6 +568,8 @@ struct s_1aab51
 	real field_28;
 };
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1aab50
 bool __stdcall function_1aab50(long arg_0, s_slot *arg_1)
 {
@@ -736,12 +731,7 @@ bool __stdcall function_1aab50(long arg_0, s_slot *arg_1)
 			else
 			{
 				real local_31 = (real)g_510c54->field_2_3 * local_3->field_14;
-				long local_32;
-				__asm
-				{
-					fld local_31
-					fistp local_32
-				}
+				long local_32 = real_to_long(local_31);
 				if (local_30 >= local_0->field_c + local_32)
 					local_0->field_14 = true;
 			}

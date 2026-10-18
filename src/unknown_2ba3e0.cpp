@@ -298,6 +298,14 @@ void function_2ba100(s_particle_properties_2ba const *definition, void *system, 
 
 #include "unknown_0259a0.h"
 
+PRIVATE __forceinline real particle_direction_squared_2b(vector3f const *v)
+{
+    real squared = v->k * v->k;
+    squared += v->j * v->j;
+    squared += v->i * v->i;
+    return squared;
+}
+
 // @retail 0x2b9a00
 void function_2b9a00(s_particle_2b96 const *particle, real distance, vector3f *result)
 {
@@ -307,22 +315,19 @@ void function_2b9a00(s_particle_2b96 const *particle, real distance, vector3f *r
         s_collision_result_1697c0 value;
         byte storage[0x5c];
     } collision;
-    real squared = direction.i * direction.i + direction.j * direction.j + direction.k * direction.k;
     collision.value.unknown24 = NONE;
+    real squared = particle_direction_squared_2b(&direction);
     if (squared != 0.0f)
     {
         real inverse = inverse_sqrt_2b96(squared);
         scale_particle_vector_2b(inverse, &direction);
     }
-    direction.i *= distance;
-    direction.j *= distance;
-    direction.k *= distance;
+    scale_particle_vector_2b(distance, &direction);
     if (function_1697c0(0x800005, &particle->position, &direction, NONE, NONE, &collision.value))
     {
-        vector3f const *normal = (vector3f const *)(collision.storage + 0x28);
-        result->i += normal->i;
-        result->j += normal->j;
-        result->k += normal->k;
+        result->i += ((vector3f const *)(collision.storage + 0x28))->i;
+        result->j += ((vector3f const *)(collision.storage + 0x28))->j;
+        result->k += ((vector3f const *)(collision.storage + 0x28))->k;
     }
 }
 

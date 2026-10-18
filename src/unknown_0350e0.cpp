@@ -3027,12 +3027,8 @@ void function_4a1e0(s_view_source *source, s_view_camera *camera, long resource_
         g_485a30 = g_485a34 = g_485a38 = g_485a3c = 1.0f;
         g_485a40 = 0.0f;
     }
-    vector3f first = g_485944;
-    vector3f second = g_485950;
-    long mode = g_485a2c;
-    function_0497a0(source, (s_view_result *)g_48597c, camera, flags, &first, &second, g_48595c,
-        &mode, (vector4f *)g_485a0c, (vector4f *)(g_485a0c + 4));
-    g_485a2c = mode;
+    function_0497a0(source, (s_view_result *)g_48597c, camera, flags, &g_485944, &g_485950, g_48595c,
+        &g_485a2c, (vector4f *)g_485a0c, (vector4f *)(g_485a0c + 4));
     s_bounds3d bounds;
     if (resource)
     {
@@ -3724,7 +3720,7 @@ void function_31170(long tag, s_view_camera *camera, long resource, s_view_sourc
     if ((g_4ba014 & 3) == 3) draw_light_source_pass(1, 13, true, false, false, g_4858b8, false);
     g_4858bc = 0;
     g_4b843c = 0;
-    D3DDevice_SetRenderState(D3DRS_FRONTFACE, 0);
+    D3DDevice_SetRenderState(D3DRS_STENCILENABLE, FALSE);
     D3DDevice_SetScissors(0, false, 0);
     function_15720(0, 0);
     function_14bc0((short)g_4858b8, 0, true);

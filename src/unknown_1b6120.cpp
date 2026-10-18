@@ -68,6 +68,8 @@ short __stdcall function_1b6450(long actor_index, s_slot *slot, bool active);
 long __stdcall function_1b6120(long actor_index, s_slot *slot);
 bool function_26ba60(long prop_index, long actor_index, long clump_index);
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1b6120
 long __stdcall function_1b6120(long actor_index, s_slot *slot)
 {
@@ -143,13 +145,7 @@ long __stdcall function_1b6120(long actor_index, s_slot *slot)
 					}
 				}
 				real ticks = function_x82e52f(&g_4e7408->unknown0, __FILE__, __LINE__) * 3.0f * g_510c54->field_2_3;
-				long value;
-
-				__asm
-				{
-					fld ticks
-					fistp value
-				}
+				long value = real_to_long(ticks);
 				state->unknown1c = (short)value;
 			}
 		}

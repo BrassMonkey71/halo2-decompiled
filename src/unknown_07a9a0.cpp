@@ -45,9 +45,6 @@ static __inline dword byte_swap_long(dword v)
 	return (((v & 0xff0000) | (v >> 16)) >> 8) | (((v << 16) | (v & 0xff00)) << 8);
 }
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
-
 // @retail 0x7a9b0
 bool function_07a9b0(void)
 {
@@ -65,7 +62,6 @@ bool function_07a9b0(void)
 			if (flags != XNET_GET_XNADDR_NONE)
 			{
 				g_4cf792 = true;
-				_ReadWriteBarrier();
 				g_4cf793 = xna;
 				if (flags & (XNET_GET_XNADDR_STATIC | XNET_GET_XNADDR_DHCP | XNET_GET_XNADDR_PPPOE))
 				{
@@ -73,7 +69,7 @@ bool function_07a9b0(void)
 					g_4cf7b8.ipv4_address = (((xna.ina.s_addr & 0xff0000) | (xna.ina.s_addr >> 16)) >> 8) | (((xna.ina.s_addr << 16) | (xna.ina.s_addr & 0xff00)) << 8);
 					g_4cf7b8.port = 0;
 				}
-				return g_4cf791 = true;
+				g_4cf791 = true;
 			}
 			else
 				g_4cf792 = false;
@@ -81,7 +77,6 @@ bool function_07a9b0(void)
 	}
 	return g_4cf791;
 }
-#pragma function(_ReadWriteBarrier)
 
 // @retail 0x7ab60 standard
 bool function_07ab60(const s_type_99af70 *address, long local, long *index_out, XNKID *kid_out, XNKEY *key_out, XNADDR *xnaddr_out)
