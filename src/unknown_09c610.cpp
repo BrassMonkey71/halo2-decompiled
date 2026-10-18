@@ -314,6 +314,10 @@ bool c_unit_pickup_event_definition::v11(long arg_0, long const *arg_1, long arg
                     case 0:
                         function_191fab(*(long const *)(local_4 + 4), local_3);
                         break;
+                    case 2:
+                        function_191e51(*(long const *)(local_4 + 4), local_3);
+                        function_f8160(*(long const *)(local_4 + 4));
+                        break;
                     case 1:
                     {
                         byte *local_7 = g_4e3b44[*(long const *)(local_4 + 4) & 0xffff].bytes;
@@ -328,10 +332,6 @@ bool c_unit_pickup_event_definition::v11(long arg_0, long const *arg_1, long arg
                         function_191ec4(*(long const *)(local_4 + 4), local_3, *(short const *)(local_4 + 8));
                         break;
                     }
-                    case 2:
-                        function_191e51(*(long const *)(local_4 + 4), local_3);
-                        function_f8160(*(long const *)(local_4 + 4));
-                        break;
                     case 3:
                     {
                         byte *local_9 = g_4e3b44[*(long const *)(local_4 + 4) & 0xffff].bytes;
