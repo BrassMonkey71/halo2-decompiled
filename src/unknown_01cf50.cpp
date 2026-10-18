@@ -2854,36 +2854,32 @@ dword g_484ce8[53];
 // @retail 0x12490
 bool function_12490()
 {
-    volatile bool result = true;
+    bool result = true;
     D3DPRESENT_PARAMETERS parameters;
     memset(&parameters, 0, sizeof(parameters));
     g_509350 = 1;
-    dword flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+    parameters.FullScreen_RefreshRateInHz = (short)g_485ac0;
+    parameters.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
     parameters.Windowed = false;
     parameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
     parameters.EnableAutoDepthStencil = true;
     parameters.AutoDepthStencilFormat = D3DFMT_D24S8;
     parameters.BackBufferFormat = D3DFMT_A8R8G8B8;
-    parameters.FullScreen_RefreshRateInHz = (short)g_485ac0;
     parameters.BackBufferWidth = 640;
     parameters.BackBufferHeight = 480;
     parameters.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
     if (g_485ac2)
-        flags |= D3DPRESENTFLAG_WIDESCREEN;
+        parameters.Flags |= D3DPRESENTFLAG_WIDESCREEN;
     if (g_485ac6)
-        flags |= D3DPRESENTFLAG_PROGRESSIVE;
-    parameters.Flags = flags;
-    D3DDevice *device = NULL;
-    Direct3D_CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &parameters, &device);
-    g_5093b0 = device;
+        parameters.Flags |= D3DPRESENTFLAG_PROGRESSIVE;
+    Direct3D_CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &parameters, (D3DDevice **)&g_5093b0);
     if (!g_5093b0)
     {
         g_5093b0 = NULL;
         result = false;
-        goto done;
     }
-    memcpy(g_484ce8, g_47ffd8, sizeof(g_484ce8));
-done:
+    else
+        memcpy(g_484ce8, g_47ffd8, sizeof(g_484ce8));
     return result;
 }
 
@@ -2965,10 +2961,8 @@ bool g_5093bc;
 // @retail 0x128c0
 bool function_128c0(s_128c0_settings const *settings)
 {
-    g_runtime_device_configuration.packed = *(dword const *)settings;
-    g_485acc = settings->quality;
-    g_485ad0 = settings->extra;
-    volatile bool result = true;
+    g_runtime_device_configuration = *(s_runtime_device_configuration const *)settings;
+    bool result = true;
     D3DPRESENT_PARAMETERS parameters;
     memset(&parameters, 0, sizeof(parameters));
     parameters.Windowed = false;
@@ -3000,24 +2994,23 @@ bool function_128c0(s_128c0_settings const *settings)
     }
     parameters.FullScreen_RefreshRateInHz = (short)g_485ac0;
     if (!g_5093b0)
-    {
-        D3DDevice *device = NULL;
-        Direct3D_CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &parameters, &device);
-        g_5093b0 = device;
-    }
+        Direct3D_CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &parameters, (D3DDevice **)&g_5093b0);
     else
         D3DDevice_Reset(&parameters);
     if (!g_5093b0)
     {
         g_5093b0 = NULL;
-        return false;
+        result = false;
     }
-    memcpy(g_484ce8, g_47ffd8, sizeof(g_484ce8));
-    if (g_485acc < 0 || g_485acc > 5)
-        g_485acc = 3;
-    g_467008 = NONE;
-    g_46700c = NONE;
-    g_5093bc = true;
+    else
+    {
+        memcpy(g_484ce8, g_47ffd8, sizeof(g_484ce8));
+        if (g_485acc < 0 || g_485acc > 5)
+            g_485acc = 3;
+        g_467008 = NONE;
+        g_46700c = NONE;
+        g_5093bc = true;
+    }
     return result;
 }
 
@@ -3166,7 +3159,7 @@ void __stdcall function_1e930(long opaque)
 bool g_55e6bc;
 
 // @retail 0x12d50
-void function_12d50(real const *projection, bool scaled, real *output)
+void function_12d50(bool scaled, real const *projection, real *output)
 {
     real constants[16];
     real near_plane = scaled ? 0.15f : 1.0f;
@@ -3488,8 +3481,8 @@ short __stdcall function_467c0(short first, short second, short count)
 // @retail 0x4d640
 void __stdcall function_4d640(short index, long mode, bool setup)
 {
-    (void)&index;
-    s_44940_entry *entry = &g_4ba138[index];
+    /* read from the stack: retail passes index there, and mode in edi */
+    s_44940_entry *entry = &g_4ba138[*(short const volatile *)&index];
     if (entry->unknown10[10] != 0xff)
     {
         real opacity = (real)entry->unknown10[10] * (1.0f / 255.0f);
@@ -3500,7 +3493,7 @@ void __stdcall function_4d640(short index, long mode, bool setup)
         }
     }
     if (entry->unknown00 & 0x800)
-        function_12d50(NULL, true, NULL);
+        function_12d50(true, NULL, NULL);
     if (mode == 1 || mode == 3)
     {
         if (g_485a75 || g_485a76)
@@ -3523,23 +3516,17 @@ void __stdcall function_4d640(short index, long mode, bool setup)
 // @retail 0x4d720
 void function_4d720(short index, long mode)
 {
-    short const *material_index = &index;
-    s_44940_entry *entry = &g_4ba138[index];
+    /* read from the stack: retail passes index there, and mode in edi */
+    s_44940_entry *entry = &g_4ba138[*(short const volatile *)&index];
     if (entry->unknown10[10] != 0xff && !(fabs(g_4b8494 - 1.0f) < 0.0001f))
     {
         D3DDevice_SetStipple(function_1c290(1.0f));
         g_4b8494 = 1.0f;
     }
     if (entry->unknown00 & 0x800)
-        function_12d50(NULL, false, NULL);
-    switch (mode)
-    {
-    case 1:
-    case 3:
-        if (g_485a75 || g_485a76 || (g_4ba138[*material_index].unknown00 & 0x4000))
-            function_15370(1);
-        break;
-    }
+        function_12d50(false, NULL, NULL);
+    if ((mode == 1 || mode == 3) && ((entry->unknown00 & 0x4000) || g_485a75 || g_485a76))
+        function_15370(1);
 }
 
 
@@ -3728,10 +3715,7 @@ void function_12fa0(byte const *camera, real const *projection, bool scaled, lon
     real scale;
     if (scaled && !g_5093fc)
     {
-        real input = g_4670c8;
-        if (input < 0.0625f) scale = 0.0625f;
-        else if (input > 1.0f) scale = 1.0f;
-        else scale = input;
+        scale = g_4670c8 < 0.0625f ? 0.0625f : g_4670c8 > 1.0f ? 1.0f : g_4670c8;
     }
     else scale = 1.0f;
     real bias = 0.03125f;
@@ -3743,7 +3727,7 @@ void function_12fa0(byte const *camera, real const *projection, bool scaled, lon
         bias = 0.0f;
     }
     real constants[48];
-    function_12d50(projection, false, constants);
+    function_12d50(false, projection, constants);
     constants[16] = projection[14];
     constants[17] = projection[15];
     constants[18] = projection[16];
@@ -3766,11 +3750,11 @@ void function_12fa0(byte const *camera, real const *projection, bool scaled, lon
     constants[34] = 0.0f;
     constants[35] = ((width + 1.0f) * 0.5f + left) * scale + bias;
     constants[36] = 0.0f;
-    constants[37] = height * -0.5f * scale;
+    constants[37] = scale * (height * -0.5f);
     constants[38] = 0.0f;
     constants[39] = ((height + 1.0f) * 0.5f + top) * scale + bias;
     constants[40] = half_width * scale;
-    constants[41] = height * -0.5f * scale;
+    constants[41] = scale * (height * -0.5f);
     constants[42] = 16777215.0f;
     constants[43] = 0.0f;
     constants[44] = (half_width + left) * scale + 0.5f;
@@ -3888,8 +3872,10 @@ void function_40890(void)
 	if (!g_485870) return;
 	color4f color, inverse;
 	color.red = g_485874 * g_48587c;
-	color.alpha = inverse.alpha = g_485874 * g_485878;
+	real alpha = g_485878 * g_485874;
 	color.green = g_485874 * g_485880;
+	color.alpha = alpha;
+	inverse.alpha = alpha;
 	color.blue = g_485874 * g_485884;
 	inverse.red = (1.0f - g_48587c) * g_485874;
 	inverse.green = (1.0f - g_485880) * g_485874;
@@ -3964,15 +3950,15 @@ void function_40890(void)
 		extern dword g_4b81fc[];
 		g_4b81fc[D3DRS_ZENABLE] = 0;
 		D3DDevice_SetRenderState_ZEnable(0);
+		g_4b81fc[D3DRS_ZBIAS] = 0;
+		D3DDevice_SetRenderState_ZBias(0);
 	}
-	function_0222d0(D3DRS_ZBIAS, 0);
 	function_1cc30(13);
 	function_1c710(g_51f0f0);
 	real x = 1.0f / (short)(g_48564e - g_48564a);
-	real y = 1.0f / (short)(g_48564c - g_485648);
 	real constants[20] = {
 		2.0f * x, 0, 0, -1.0f - x,
-		0, -2.0f * y, 0, 1.0f + y,
+		0, -2.0f * (1.0f / (short)(g_48564c - g_485648)), 0, 1.0f + 1.0f / (short)(g_48564c - g_485648),
 		0, 0, 0, 0.5f,
 		0, 0, 0, 1.0f,
 		0, 0, 0, 1.0f
@@ -4739,7 +4725,7 @@ void function_4d9c0(byte const *source, long tag, byte value, short index,
         D3DDevice_SetRenderState(D3DRS_POLYGONOFFSETZSLOPESCALE, *(dword *)&slope);
     }
     function_1bd50(*(void **)entry->unknown10);
-    function_1bbf0(first, tag, second, third, fourth, scale);
+    function_1bbf0(first, second, tag, third, fourth, scale);
 }
 
 extern real g_4c19b0, g_4c19b4;
@@ -7377,7 +7363,6 @@ void __stdcall function_1f490(long unused, long font, long character, long color
 }
 #endif
 
-// Disabled: the frame copies overlap independently declared shared camera/projection globals.
 
 extern dword g_5093b4;
 dword g_5093b8;
@@ -7385,19 +7370,20 @@ dword __cdecl pack_color3f(color3f const *color);
 void function_25a10(vector3f const *direction, point3f const *position, byte const *state);
 void __stdcall function_14b60(dword flags, dword color, real depth, byte stencil);
 
-#if 0
-// Retail 0x132d0
+// @retail 0x132d0
 void __stdcall function_132d0(s_frame_view_2c560 const *frame)
 {
-    s_frame_view_2c560 const *const *frame_reference = &frame;
-    memcpy(g_frame_storage.data, *frame_reference, sizeof(*frame));
-    short mode = *(short const *)(((byte const *)frame) + 2);
-    switch (mode) { case 0: g_4858b8 = 0; break; case 1: g_4858b8 = 18; break; default: g_4858b8 = 0; break; }
+    memcpy(g_frame_storage.data, frame, sizeof(*frame));
+    switch (frame->mode)
+    {
+    case 0: g_4858b8 = 0; break;
+    case 1: g_4858b8 = 18; break;
+    default: g_4858b8 = 0; break;
+    }
     function_15370(0);
-    long setup_mode = frame->mode;
     g_5093b4 = 0x901;
     g_5093b8 = 0x900;
-    function_12fa0(((byte const *)frame) + 0x18, (real const *)(((byte const *)frame) + 0x8c), ((byte const *)frame)[7] != 0, setup_mode);
+    function_12fa0(frame->view, (real const *)frame->projection, frame->scaled, frame->mode);
     if (*(short *)(g_frame_storage.data + 8))
     {
         dword color = 0;
@@ -7411,7 +7397,7 @@ void __stdcall function_132d0(s_frame_view_2c560 const *frame)
         function_14b60(flags, color, 1.0f, 0);
     }
     else function_14bc0((short)g_4858b8, 0, true);
-    D3DDevice_SetVertexData4f(7, 0.0f, 0.5f, 1.0f, 42.0f);
+    D3DDevice_SetVertexData4f(15, 0.0f, 0.5f, 1.0f, 42.0f);
     function_0222d0(D3DRS_FILLMODE, D3DFILL_SOLID);
     g_4670bc = 1;
     function_16b10((s_render_reset_state *)g_485b48);
@@ -7421,7 +7407,6 @@ void __stdcall function_132d0(s_frame_view_2c560 const *frame)
         function_25a10(&g_4b9dac, &g_4b9da0, (byte const *)&g_48574c);
     }
 }
-#endif
 
 
 
