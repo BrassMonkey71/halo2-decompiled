@@ -48,18 +48,20 @@ static inline long online_task_new_inline(void)
 // @retail 0x92220
 long online_stats_read(word count, XONLINE_STAT_SPEC *specs)
 {
-	dword *local_0 = &specs[0].xuidUser.dwUserFlags;
-	for (long i = 0; i < count; i++, local_0 = (dword *)((byte *)local_0 + sizeof(*specs)))
+	long result = NONE;
+	for (long i = 0; i < count; i++)
 	{
-		if (*local_0 == 0xbad00000 || (*local_0 & 3))
-			return NONE;
+		dword flags = specs[i].xuidUser.dwUserFlags;
+		if (flags == 0xbad00000 || (flags & 3))
+			goto done;
 	}
-	long task_index = NONE;
-	if (online_logon_connected())
-		task_index = online_task_new_inline();
-	if (task_index != NONE)
 	{
-		s_type_9df9da *task = online_task_try_and_get(task_index);
+		long task_index;
+		if (online_logon_connected())
+			task_index = online_task_new_inline();
+		else
+			task_index = NONE;
+		s_type_9df9da *task = (s_type_9df9da *)datum_get_inlined(g_4cf78c, task_index);
 		if (task)
 		{
 			if (SUCCEEDED(XOnlineStatRead(count, specs, NULL, (PXONLINETASK_HANDLE)&task->handle)))
@@ -74,8 +76,10 @@ long online_stats_read(word count, XONLINE_STAT_SPEC *specs)
 				return NONE;
 			}
 		}
+		result = task_index;
 	}
-	return task_index;
+done:
+	return result;
 }
 
 /* retrieves the requested statistics */

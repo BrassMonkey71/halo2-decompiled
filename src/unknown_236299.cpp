@@ -167,10 +167,9 @@ void function_236299(long sound)
 					__assume(0);
 				}
 
-				s_sound_set_view *set_entry = &((s_sound_globals_view *)g_51ebd4)->sets[tag->first_set];
 				for (long i = 0; i < tag->set_count; i++)
 				{
-					if (((s_sound_globals_view *)g_51ebd4)->names[set_entry->name] == name)
+					if (((s_sound_globals_view *)g_51ebd4)->names[((s_sound_globals_view *)g_51ebd4)->sets[tag->first_set + i].name] == name)
 					{
 						set[0] = (byte)i;
 						set[1] = (byte)function_219070(i, (s_sound_definition const *)tag);
@@ -181,7 +180,6 @@ void function_236299(long sound)
 						function_189760((s_sound_label_play const *)&play);
 						break;
 					}
-					set_entry++;
 				}
 			}
 			else

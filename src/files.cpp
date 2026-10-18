@@ -9,7 +9,7 @@
 
 #define MAXIMUM_PATH_SIZE 256
 
-void function_1374c0(char *dest, const char *path); /* unknown_136770.cpp: the path a reference names */
+void function_1374c0(const char *path, char *dest); /* unknown_136770.cpp: the path a reference names */
 
 /* a reference to a file, or to a directory, by its path */
 // @retail 0x136710
@@ -38,7 +38,7 @@ s_type_acf665 *file_ref_create(s_type_acf665 *file, bool directory, const char *
 bool function_1367d0(s_type_acf665 *file)
 {
 	char path[MAXIMUM_PATH_SIZE] = { 0 };
-	function_1374c0(path, file->path);
+	function_1374c0(file->path, path);
 
 	if (file->flags & _file_reference_flag_is_file)
 	{
@@ -64,7 +64,7 @@ bool function_1367d0(s_type_acf665 *file)
 bool file_ref_delete(s_type_acf665 *file)
 {
 	char path[MAXIMUM_PATH_SIZE] = { 0 };
-	function_1374c0(path, file->path);
+	function_1374c0(file->path, path);
 
 	if (file->flags & _file_reference_flag_is_file)
 	{
@@ -89,7 +89,7 @@ bool function_1368f0(s_type_acf665 *file)
 {
 	char path[MAXIMUM_PATH_SIZE] = { 0 };
 	bool success = false;
-	function_1374c0(path, file->path);
+	function_1374c0(file->path, path);
 
 	if (GetFileAttributesA(path) != 0xFFFFFFFF)
 	{
@@ -115,7 +115,7 @@ bool function_136970(s_type_acf665 *file, dword flags, dword *error)
 	dword attributes = FILE_ATTRIBUTE_NORMAL;
 
 	*error = _file_open_error_none;
-	function_1374c0(path, file->path);
+	function_1374c0(file->path, path);
 
 	if (flags & _file_open_flag_read)
 	{
@@ -335,7 +335,7 @@ bool file_ref_modified_time(s_type_acf665 *file, FILETIME *time)
 	WIN32_FILE_ATTRIBUTE_DATA data;
 
 	memset(time, 0, sizeof(FILETIME));
-	function_1374c0(path, file->path);
+	function_1374c0(file->path, path);
 	if (GetFileAttributesExA(path, GetFileExInfoStandard, &data))
 	{
 		time->dwLowDateTime = data.ftLastWriteTime.dwLowDateTime;
@@ -365,7 +365,7 @@ bool file_ref_size(s_type_acf665 *file, dword *size)
 	char path[MAXIMUM_PATH_SIZE] = { 0 };
 	WIN32_FILE_ATTRIBUTE_DATA data;
 
-	function_1374c0(path, file->path);
+	function_1374c0(file->path, path);
 	if (GetFileAttributesExA(path, GetFileExInfoStandard, &data))
 	{
 		*size = data.nFileSizeLow;

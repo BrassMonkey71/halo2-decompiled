@@ -184,7 +184,7 @@ byte *function_183fc0(long index)
 }
 
 // @retail 0x184000
-long function_184000(long bit, long index)
+long function_184000(long index, long bit)
 {
 	if (bit != NONE)
 	{
