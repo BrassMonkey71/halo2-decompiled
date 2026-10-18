@@ -962,6 +962,13 @@ void c_postgame_statistics_list_459750::fill_row(c_class_1a2c81 *item, long row)
 	}
 }
 
+/* a string buffer the screen's strings load into */
+struct s_string_buffer
+{
+	word text[0x100];
+	void load(c_widget *screen, long handle) { screen->function_230134(handle, text); }
+};
+
 /* the player's name, team and the game engine's two scores */
 // @retail 0x2342e9
 void c_postgame_statistics_list_459680::fill_row(c_class_1a2c81 *item, long row)
@@ -988,21 +995,21 @@ void c_postgame_statistics_list_459680::fill_row(c_class_1a2c81 *item, long row)
 	}
 	if (score1_text && score2_text)
 	{
-		word format[0x100];
+		s_string_buffer format;
 		word score1[0x100];
 		word score2[0x100];
 		long value1 = 0;
 		long value2 = 0;
 
-		format[0] = 0;
+		format.text[0] = 0;
 		score1[0] = 0;
 		score2[0] = 0;
 		if (g_50224c == 2)
 		{
 			value1 = g_55caf0[row].value10c;
 			value2 = g_55caf0[row].value110;
-			((c_widget *)get_screen())->function_230134(0xb000736, format);
-			function_1630e0(score1, format, value1 / 60, value1 % 60);
+			format.load((c_widget *)get_screen(), 0xb000736);
+			function_1630e0(score1, format.text, value1 / 60, value1 % 60);
 		}
 		else
 		{
@@ -1131,11 +1138,11 @@ void c_postgame_statistics_list_459500::fill_row(c_class_1a2c81 *item, long row)
 	{
 		if (g_55caf0[row].medals)
 		{
-			word medal_name[0x100];
+			s_string_buffer medal_name;
 			long shown;
 			long i;
 
-			medal_name[0] = 0;
+			medal_name.text[0] = 0;
 			text[0] = 0;
 			shown = 0;
 			long string_ids[0x18] =
@@ -1154,8 +1161,8 @@ void c_postgame_statistics_list_459500::fill_row(c_class_1a2c81 *item, long row)
 						unicode_string_append(text, (const word *)L", ", 0x100);
 						text[0xff] = 0;
 					}
-					((c_widget *)get_screen())->function_230134(string_ids[i], medal_name);
-					unicode_string_append(text, medal_name, 0x100);
+					medal_name.load((c_widget *)get_screen(), string_ids[i]);
+					unicode_string_append(text, medal_name.text, 0x100);
 					shown++;
 					text[0xff] = 0;
 				}
@@ -1175,10 +1182,10 @@ void c_postgame_statistics_list_459500::fill_row(c_class_1a2c81 *item, long row)
 // @retail 0x234a97
 void c_postgame_statistics_list_4594a0::fill_row(c_class_1a2c81 *item, long row)
 {
-	word text[256];
+	s_string_buffer text;
 	word percent_text[256];
 
-	text[0] = 0;
+	text.text[0] = 0;
 	c_class_1a2c81 *header = item->find_child(10, 0, false);
 	c_class_1a2c81 *name = header->find_child(6, 0, false);
 	c_class_1a2c81 *score = header->find_child(6, 1, false);
@@ -1192,13 +1199,13 @@ void c_postgame_statistics_list_4594a0::fill_row(c_class_1a2c81 *item, long row)
 	}
 	if (score)
 	{
-		function_1630e0(text, (const word *)L"%d", g_55caf0[row].value);
-		score->function_22f52e()->set_text(text);
+		function_1630e0(text.text, (const word *)L"%d", g_55caf0[row].value);
+		score->function_22f52e()->set_text(text.text);
 	}
 	if (total)
 	{
-		function_1630e0(text, (const word *)L"%d", g_55caf0[row].count);
-		total->function_22f52e()->set_text(text);
+		function_1630e0(text.text, (const word *)L"%d", g_55caf0[row].count);
+		total->function_22f52e()->set_text(text.text);
 	}
 	if (percent)
 	{
@@ -1210,14 +1217,14 @@ void c_postgame_statistics_list_4594a0::fill_row(c_class_1a2c81 *item, long row)
 		{
 			percentage = (long)((real)g_55caf0[row].value * 100.0f / (real)g_55caf0[row].count);
 		}
-		((c_widget *)get_screen())->function_230134(0x11000759, text);
-		function_1630e0(percent_text, text, percentage);
+		text.load((c_widget *)get_screen(), 0x11000759);
+		function_1630e0(percent_text, text.text, percentage);
 		percent->function_22f52e()->set_text(percent_text);
 	}
 	if (extra)
 	{
-		function_1630e0(text, (const word *)L"%d", g_55caf0[row].value2);
-		extra->function_22f52e()->set_text(text);
+		function_1630e0(text.text, (const word *)L"%d", g_55caf0[row].value2);
+		extra->function_22f52e()->set_text(text.text);
 	}
 }
 

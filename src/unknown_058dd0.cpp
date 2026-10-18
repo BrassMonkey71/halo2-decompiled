@@ -1244,19 +1244,6 @@ long function_193340(s_surface_description *variant);
 long function_193370(s_surface_description *variant);
 long function_193440(s_surface_description *variant);
 
-static inline long matchmaking_variant_width(s_surface_description *variant)
-{
-	switch (*(long *)variant)
-	{
-	case 1: return NONE;
-	case 2: return NONE;
-	case 3: return *(long *)((byte *)variant + 0x5ec);
-	case 4: return *(long *)((byte *)variant + 0x5ec);
-	case 5: return *(long *)((byte *)variant + 0x5ec);
-	default: __assume(0);
-	}
-}
-
 #pragma inline_depth(0)
 static __forceinline void function_72349(c_class_58d20 *arg_0)
 {
@@ -1318,7 +1305,7 @@ void function_72330(c_session_state_matchmaking *state)
 	local_special:
 		{
 			_ReadWriteBarrier();
-			if (matchmaking_variant_width(variant) > 0 && function_72458(variant) > 0)
+			if (function_193440(variant) > 0 && function_72458(variant) > 0)
 			{
 				long count = level / function_193440(variant);
 				if (count >= function_72458(variant))
