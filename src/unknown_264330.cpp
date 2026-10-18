@@ -806,7 +806,7 @@ void __stdcall function_264b50(long actor_index, long prop_ref_index, s_2641c0 *
 		if (!prop[0x26] && !suppressed)
 		{
 			short priority = (short)function_25c9d0(actor_index, prop_ref_index, prop[0x25] != 0, sight,
-				&motion->field_c, (byte *)sample, (long)&suppressed);
+				sample, (byte *)motion, (long)&suppressed);
 			if (reference->state >= 3 && view)
 			{
 				s_type_5cfb45 *state = function_25d690(reference);
