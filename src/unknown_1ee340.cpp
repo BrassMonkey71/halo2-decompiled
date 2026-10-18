@@ -584,10 +584,11 @@ PRIVATE __forceinline void query_transform(const transform4x3f *matrix, c_query_
  a[4] = matrix->left.i; a[5] = matrix->left.j; a[6] = matrix->left.k; a[7] = 0.0f;
  a[8] = matrix->up.i; a[9] = matrix->up.j; a[10] = matrix->up.k; a[11] = 0.0f;
  __m128 translation;
- ((real *)&translation)[0] = matrix->position.x;
- ((real *)&translation)[1] = matrix->position.y;
- ((real *)&translation)[2] = matrix->position.z;
- ((real *)&translation)[3] = 0.0f;
+ real *t = (real *)&translation;
+ t[0] = matrix->position.x;
+ t[1] = matrix->position.y;
+ t[2] = matrix->position.z;
+ t[3] = 0.0f;
  output->position = translation;
 }
 

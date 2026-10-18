@@ -71,13 +71,14 @@ void function_26def0(long actor_index, long owner_index)
 long function_26d3f0(long object_index, short type)
 {
 	long const volatile *object_reference = &object_index;
+	long result = NONE;
 	long location_index = NONE;
 	s_type_c3b527 location;
 	vector3f up, forward;
 	function_26bfa0(object_index, &location_index, (s_location_view *)&location);
 	if (location_index != NONE)
 	{
-		long result = record_pool_allocate(g_51eca4);
+		result = record_pool_allocate(g_51eca4);
 		if (result != NONE)
 		{
 			s_location_record_view *record = (s_location_record_view *)(g_51eca4->data + (result & 0xffff) * sizeof(s_location_record_view));
@@ -93,11 +94,9 @@ long function_26d3f0(long object_index, short type)
 			record->forward = forward;
 			record->valid = true;
 			record->time = g_510c54->game_time;
-			return result;
 		}
-		return result;
 	}
-	return NONE;
+	return result;
 }
 
 // @retail 0x26d500

@@ -333,7 +333,7 @@ bool function_1ab950(long actor_index, long prop_index, s_tag_element_52 *elemen
 }
 
 // @retail 0x1aba50
-bool function_1aba50(long prop_index, long actor_index, real *out)
+bool function_1aba50(long actor_index, long prop_index, real *out)
 {
 	s_actor_view *actor = actor_get(actor_index);
 	s_slot_object_view *unit = object_get(actor->unknown26c);
@@ -384,7 +384,7 @@ short __stdcall function_1abbc0(long actor_index)
 			if ((actor->unknown229 || !((s_prop_state_53 *)prop_node_state(prop))->unknown64) &&
 				(element->unknown84 == g_45dbd8 || element->unknown84 > prop->unknown28) &&
 				prop->unknown27 >= 2 &&
-				function_1aba50(actor->prop_index, actor_index, &value) &&
+				function_1aba50(actor_index, actor->prop_index, &value) &&
 				function_1ab950(actor_index, actor->prop_index, element, value, false))
 			{
 				long time = actor->unknown3e8;
@@ -415,7 +415,7 @@ short __stdcall function_1abda0(long actor_index, s_slot *slot, bool active)
 		{
 			real value;
 			real random;
-			bool close = function_1aba50(actor->prop_index, actor_index, &value);
+			bool close = function_1aba50(actor_index, actor->prop_index, &value);
 
 			if (element->unknown14 * 2.0f > prop->unknown28)
 				close = false;
