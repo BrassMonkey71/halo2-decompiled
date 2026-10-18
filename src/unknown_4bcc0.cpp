@@ -24,11 +24,10 @@ void function_4c0d0(long object_index, byte *output, long mode);
 short function_4bcc0(byte *output, long object_index, real distance, long override,
     bool *cached, bool force, signed char *level)
 {
-    (void)&object_index; (void)&distance; (void)&override;
-    (void)&cached; (void)&force; (void)&level;
-    volatile short result = 0;
+    short result = 0;
     *(dword *)(output + 0x16c) = 0;
-    bool volatile eligible = false;
+    {
+    bool eligible = false;
     bool current = false;
     if (!object_or_parent_hidden(object_index))
     {
@@ -36,12 +35,12 @@ short function_4bcc0(byte *output, long object_index, real distance, long overri
         current = object_index == g_4c1bd0;
     }
     if (cached) *cached = current;
-    if (!eligible) return result;
+    if (!eligible) goto done;
     byte *object = (byte *)((s_render_object_header *)g_4e0300->data)[object_index & 0xffff].object;
     byte *definition = g_4e3b44[*(long *)object & 0xffff].bytes;
     if (force) *cached = false;
     long model_index = *(long *)(definition + 0x38);
-    if (model_index == NONE) return 0;
+    if (model_index == NONE) goto done;
     byte *model = g_4e3b44[model_index & 0xffff].bytes;
     result = function_3d3e0(object_index, *cached);
     if (result > 0)
@@ -59,8 +58,9 @@ short function_4bcc0(byte *output, long object_index, real distance, long overri
         {
             byte *object_definition = g_4e3b44[*(long *)object & 0xffff].bytes;
             byte *level_definition = g_4e3b44[*(long *)(object_definition + 0x38) & 0xffff].bytes;
+            bool special = (bool)((*(dword *)(object + 4) >> 19) & 1);
             if (g_4ba019) distance *= 0.3f;
-            if ((bool)((*(dword *)(object + 4) >> 19) & 1))
+            if (special)
                 *level = 5;
             else
             {
@@ -143,5 +143,7 @@ short function_4bcc0(byte *output, long object_index, real distance, long overri
         }
     }
     function_4c0d0(object_index, output, result);
+    }
+done:
     return result;
 }

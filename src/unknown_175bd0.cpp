@@ -2797,11 +2797,6 @@ PRIVATE inline real effect_remaining_fraction_179880(s_effect_datum const *effec
 // @retail 0x179880
 void __stdcall function_179880(s_effect_datum *effect, long effect_index)
 {
-	/* Retail keeps both arguments on the stack; their local references retain that convention. */
-	s_effect_datum *const *effect_reference = &effect;
-	long const *index_reference = &effect_index;
-	effect = *effect_reference;
-	effect_index = *index_reference;
 	s_effect_definition *definition = TAG_GET(s_effect_definition, effect->tag_index);
 	s_effect_event *event = &definition->events[effect->event_index];
 	long flare_index = 0;

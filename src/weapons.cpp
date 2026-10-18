@@ -2592,19 +2592,21 @@ bool __stdcall function_fdd50(long weapon_index, long magazine_index)
     s_weapon *weapon = WEAPON_GET(weapon_index);
     s_weapon_magazine *magazine = &weapon->magazines[magazine_index];
     s_weapon_magazine_definition *definition = &WEAPON_DEFINITION(weapon)->magazines[magazine_index];
-    volatile bool result = false;
-    short const volatile *recharge_reference = (short *)((byte *)definition + 4);
-    short recharge = *(short *)((byte *)definition + 4);
-    if (recharge > 0 && magazine->rounds_loaded < definition->rounds_loaded_maximum)
+    bool result = false;
+    if (*(short *)((byte *)definition + 4) > 0 && magazine->rounds_loaded < definition->rounds_loaded_maximum)
     {
-        short recharge_divisor = g_510c54->field_2_3;
+        short loaded = magazine->rounds_loaded;
+        long recharge_divisor = g_510c54->field_2_3;
         short *fraction = (short *)((byte *)magazine + 0xa);
-        *fraction += *recharge_reference % recharge_divisor;
-        magazine->rounds_loaded += *recharge_reference / recharge_divisor;
-        if (*fraction >= recharge_divisor)
+        long rounds = *(short *)((byte *)definition + 4) / recharge_divisor;
+        long remainder = *(short *)((byte *)definition + 4) % recharge_divisor;
+        *fraction += (short)remainder;
+        loaded += rounds;
+        magazine->rounds_loaded = loaded;
+        if (*fraction >= g_510c54->field_2_3)
         {
+            *fraction -= g_510c54->field_2_3;
             magazine->rounds_loaded++;
-            *fraction -= recharge_divisor;
         }
         if (magazine->rounds_loaded > definition->rounds_loaded_maximum)
             magazine->rounds_loaded = definition->rounds_loaded_maximum;
