@@ -56,10 +56,6 @@ void function_1d6ad0(s_havok_component *arg_0, s_physics_model_owner *arg_1);
 // @retail 0x1d5940
 long __stdcall function_1d5940(s_havok_component *arg_0, bool arg_1, bool arg_2, bool arg_3)
 {
- (void)&arg_0; (void)&arg_1; (void)&arg_2; (void)&arg_3;
- /* keeps the component on the stack, as retail passes it */
- s_havok_component *const *component_reference = &arg_0;
- (void)component_reference;
  long local_0 = 0;
  long local_1;
  dword local_2[8];

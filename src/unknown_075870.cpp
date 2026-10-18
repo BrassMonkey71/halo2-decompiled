@@ -1896,13 +1896,10 @@ void function_79480(s_network_observer *observer)
 // @retail 0x79660
 void function_79660(s_network_observer *observer, long index, long bytes, long delay, long stream_delay)
 {
-	s_network_observer *const *observer_reference = &observer;
-	long const *index_reference = &index;
-	long const *stream_delay_reference = &stream_delay;
-	s_observer_bandwidth_channel *channel = (s_observer_bandwidth_channel *)&(*observer_reference)->channels[*index_reference];
+	s_observer_bandwidth_channel *channel = (s_observer_bandwidth_channel *)&observer->channels[index];
 	long local_0 = *(volatile long *)&channel->received_bytes;
 	channel->received_bytes = bytes + local_0;
-	channel->stream_delay = *stream_delay_reference;
+	channel->stream_delay = stream_delay;
 	long interval = 0;
 	long last = channel->sample_time;
 	if (last != NONE)
