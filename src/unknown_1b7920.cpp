@@ -4,6 +4,8 @@
 #include "unknown_20fe20.h"
 #include "unknown_1e1f20.h"
 
+static __forceinline long real_to_long(real value);
+
 /* slot type 0x1e: the actor goes to its prop's point */
 
 struct s_slot_1e
@@ -68,7 +70,7 @@ short __stdcall function_1b7920(long actor_index)
 // @retail 0x1b79d0
 bool __stdcall function_1b79d0(long actor_index, s_slot *slot)
 {
-	volatile bool result = false;
+	bool result = false;
 	s_character_e50 *character = (s_character_e50 *)function_1e4e50(actor_index);
 	s_prop_node_view *node = prop_node_get(actor_get(actor_index)->prop_index);
 	s_prop_state_view *s_type_5cfb45 = prop_node_state(node);
@@ -80,27 +82,13 @@ bool __stdcall function_1b79d0(long actor_index, s_slot *slot)
 		real sample = function_x82e52f(&g_4e7408->unknown0, __FILE__, __LINE__);
 		real ticks = character->unknown08 + sample * 2.0f;
 		real delay = function_259d0(&g_4e7408->unknown0, __FILE__, __LINE__, character->unknown1c, character->unknown20);
-		real seconds;
-		long value;
 
 		state->point = view->unknown18;
 		state->point.point.z += s_type_5cfb45->unknown38 - s_type_5cfb45->position.z;
 		function_1f86a0(actor_index);
-		seconds = g_510c54->field_2_3 * ticks;
-		__asm
-		{
-			fld seconds
-			fistp value
-		}
-		state->ticks = (short)value;
+		state->ticks = (short)real_to_long(g_510c54->field_2_3 * ticks);
 		state->start_time = g_510c54->game_time;
-		seconds = g_510c54->field_2_3 * delay;
-		__asm
-		{
-			fld seconds
-			fistp value
-		}
-		state->delay = (short)value;
+		state->delay = (short)real_to_long(g_510c54->field_2_3 * delay);
 		result = true;
 	}
 	return result;

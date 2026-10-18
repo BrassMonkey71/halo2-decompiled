@@ -22,7 +22,10 @@ struct array_2dc1c0
 class array_owner_2dc1c0 : public referenced_2d88a0
 {
 public:
+	REFERENCED_NEW_2D88A0(0x13)
+
 	array_2dc1c0 items;
 };
 
+// @retail 0x2dc190 deleting array_owner_2dc1c0
 // @retail 0x2dc1c0 destructor array_owner_2dc1c0

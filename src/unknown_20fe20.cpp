@@ -12,6 +12,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+static __forceinline long real_to_long(real value);
 
 void function_210e20(void);
 void function_210f00(void);
@@ -119,8 +120,7 @@ struct s_audio_object_state_20f960
 // @retail 0x20f960
 long function_20f960(long index, s_audio_priority_table *table, bool *expired)
 {
-	(void)&expired;
-	volatile bool result = false;
+	bool result = false;
 	byte *record = g_4f9398->data + (index & 0xffff) * 0x54;
 	long time = g_510c54->game_time;
 	s_audio_priority_definition *definition = &table->entries[*(short *)(record + 2)];
@@ -130,12 +130,7 @@ long function_20f960(long index, s_audio_priority_table *table, bool *expired)
 		goto rejected;
 	{
 		real seconds = g_510c54->field_2_3 * *(real *)((byte *)definition + 0x20);
-		long ticks;
-		__asm
-		{
-			fld seconds
-			fistp ticks
-		}
+		long ticks = real_to_long(seconds);
 		if (time - *(long *)(record + 0x10) > ticks)
 			goto report_expiration;
 	}

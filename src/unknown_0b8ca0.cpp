@@ -833,20 +833,10 @@ void __stdcall function_b87b0(volatile long object_index)
     s_object_header_view *header = OBJECT_HEADER_GET(object_index);
     s_object_view *object = header->object;
     function_bef30(object_index, 1, 0, 0, false);
-    s_cluster_partition partition;
-    if (TEST_FIELD_BIT(object->flag9))
-    {
-        partition.cluster_first_data_references = (long *)g_4de2e0;
-        partition.data_references = (s_record_pool *)g_4de2e4;
-        partition.cluster_references = (s_record_pool *)g_4de2e8;
-    }
-    else
-    {
-        partition.cluster_first_data_references = (long *)g_4de2d4;
-        partition.data_references = (s_record_pool *)g_4de2d8;
-        partition.cluster_references = (s_record_pool *)g_4de2dc;
-    }
-    function_1cae40(&partition, object_index, (long *)((byte *)object + 0x60));
+    s_cluster_partition *partition = TEST_FIELD_BIT(object->flag9)
+        ? &g_partition_colliding_storage
+        : &g_partition_noncolliding_storage;
+    function_1cae40(partition, object_index, (long *)((byte *)object + 0x60));
     object->flag8 = false;
     header->flags &= ~0x40;
 }

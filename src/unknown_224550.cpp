@@ -132,11 +132,10 @@ PRIVATE __forceinline dword function_224551(s_draw_sprite_seed const *arg_0,
 void __stdcall function_224550(s_draw_sprite_seed const *seed,s_draw_value_cache *values,
 	point3f *position,point3f *direction,real scale,color4f const *color,s_draw_sprite_context *context)
 {
-	s_draw_value_cache *const *values_reference=&values;
 	real blend=0.0f;
 	s_draw_sprite_definition const *definition=context->definition;
 	dword mask=definition->field_98&0xf80f;
-	function_173ba0(~values->field_44&mask,values->field_48,values->field_4c,values->field_50,(*values_reference)->values);
+	function_173ba0(~values->field_44&mask,values->field_48,values->field_4c,values->field_50,values->values);
 	values->field_44|=mask;
 	real angle=function_246cd0(&definition->angle,values->values)*6.2831854820251465f;
 	dword packed=function_224551(seed,values,color,definition);
@@ -185,15 +184,16 @@ void __stdcall function_224550(s_draw_sprite_seed const *seed,s_draw_value_cache
 				}
 			}
 		}
+		real remaining_blend=1.0f-blend;
 		real ax=a.x1-a.x0,ay=a.y1-a.y0,bx=b.x1-b.x0,by=b.y1-b.y0;
 		real inv_ax=1.0f/ax,inv_ay=1.0f/ay,inv_bx=1.0f/bx,inv_by=1.0f/by;
 		long flip=sprite_flip(definition,seed);
 		real aspect_x=1.0f,aspect_y=1.0f;
 		if(ax>ay) aspect_y=ay*inv_ax; else aspect_x=ax*inv_ay;
-		if(bx>by) aspect_y=by*inv_bx*blend+(1.0f-blend)*aspect_y;
-		else aspect_x=bx*inv_by*blend+(1.0f-blend)*aspect_x;
-		real inv_x=(1.0f-blend)*inv_ax+inv_bx*blend;
-		real inv_y=(1.0f-blend)*inv_ay+inv_by*blend;
+		if(bx>by) aspect_y=by*inv_bx*blend+remaining_blend*aspect_y;
+		else aspect_x=bx*inv_by*blend+remaining_blend*aspect_x;
+		real inv_x=remaining_blend*inv_ax+inv_bx*blend;
+		real inv_y=remaining_blend*inv_ay+inv_by*blend;
 		real width=context->width*aspect_x;
 		function_x0ec080(&a,flip,uv_a.values); function_x0ec080(&b,flip,uv_b.values);
 		real x=inv_x*pivot.x*2.0f-1.0f,y=inv_y*pivot.y*2.0f-1.0f;

@@ -339,20 +339,17 @@ void function_1e6120(s_biped_physics_output *output, void *physics, real rate,
 	bool airborne, bool limited, bool mode, real crouch)
 {
 	s_physics_movement_output *state = (s_physics_movement_output *)output;
+	bool is_limited = limited;
 	s_physics_movement_input *input = (s_physics_movement_input *)physics;
-	const bool *airborne_reference = &airborne;
-	const bool *limited_reference = &limited;
-	const bool *mode_reference = &mode;
-	const real *crouch_reference = &crouch;
 	state->index = input->index;
 	state->matrix = input->matrix;
 	state->vector = input->vector;
 	state->rate = rate;
-	state->field_a8 = *mode_reference;
+	state->field_a8 = mode;
 	state->direction = state->default_direction;
 	state->enabled = true;
-	real blend = (state->flags & 4) ? 0.0f : *crouch_reference;
-	if ((bool)((state->definition->flags >> 2) & 1) && !*airborne_reference)
+	real blend = (state->flags & 4) ? 0.0f : crouch;
+	if ((bool)((state->definition->flags >> 2) & 1) && !airborne)
 	{
 		s_physics_movement_settings *settings = ((s_physics_movement_globals *)g_4e034c)->settings;
 		vector3f control = state->control;
@@ -365,21 +362,16 @@ void function_1e6120(s_biped_physics_output *output, void *physics, real rate,
 			control.i = (real)(control.i * scale);
 			control.j = (real)(control.j * scale);
 		}
-		state->velocity.k = 0.0f;
 		real remaining = 1.0f - blend;
-		real first, second;
-		if (!(control.i > 0.0f)) {
-			first = settings->backward;
-			second = settings->crouched_backward;
-		} else {
-			first = settings->forward;
-			second = settings->crouched_forward;
-		}
-		state->velocity.i = first * remaining + second * blend;
+		if (control.i > 0.0f)
+			state->velocity.i = settings->forward * remaining + settings->crouched_forward * blend;
+		else
+			state->velocity.i = settings->backward * remaining + settings->crouched_backward * blend;
 		state->velocity.j = settings->sideways * remaining + settings->crouched_sideways * blend;
+		state->velocity.k = 0.0f;
 		state->speed = settings->speed * remaining + settings->crouched_speed * blend;
 		state->field_148 = settings->field_4c;
-		if (*limited_reference)
+		if (is_limited)
 		{
 			state->velocity.i = control.i > 0.0f ? settings->limited_speed : 0.0f;
 			state->velocity.j = 0.0f;

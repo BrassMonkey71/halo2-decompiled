@@ -95,7 +95,6 @@ void function_3d2c0()
 // @retail 0x3db00
 s_lighting_record *function_3db00(long object_index, real priority)
 {
-    (void)&priority;
     byte *object = ((s_3dd10_object_header *)g_4e0300->data)[object_index & 0xffff].object;
     if (object[7] & 1) return (s_lighting_record *)((byte *)g_4de2f4 + 0x1c);
     long cluster = *(short *)(object + 0xd0);

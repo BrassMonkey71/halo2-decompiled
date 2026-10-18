@@ -64,17 +64,16 @@ bool function_29d740(vector3f *arg_0, s_pathfinding_data const *arg_1, long arg_
 bool function_29d7b0(long index, s_pathfinding_data *pathfinding, s_type_d4fbfa *definition,
 	vector3f const *direction, point3f *point, vector3f *normal, char *side)
 {
-	vector3f const *const *direction_reference = &direction;
-	long result = 0;
+	bool result = false;
 	if (index < 0 || index >= *(long *)((byte *)pathfinding + 8))
 		return result != 0;
 	vector3f edge_normal;
 	if (!function_29d740(&edge_normal, pathfinding, index))
 		return result != 0;
 	vector3f local_direction;
-	if (*direction_reference)
+	if (direction)
 	{
-		function_210770(definition->unknown0c, *direction_reference, &local_direction);
+		function_210770(definition->unknown0c, direction, &local_direction);
 		real alignment = local_direction.k * edge_normal.k + local_direction.i * edge_normal.i + local_direction.j * edge_normal.j;
 		if (0.0f > alignment)
 			return false;
@@ -101,7 +100,7 @@ bool function_29d7b0(long index, s_pathfinding_data *pathfinding, s_type_d4fbfa 
 			*side = 0;
 		bool check_end;
 		bool check_start;
-		if (*direction_reference)
+		if (direction)
 		{
 			real alignment = local_direction.k * edge_normal.k + local_direction.j * (0.0f - edge_normal.i) + local_direction.i * edge_normal.j;
 			check_start = alignment > 0.0f;

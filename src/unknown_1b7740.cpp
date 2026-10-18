@@ -33,6 +33,8 @@ short __stdcall function_1b7740(long actor_index)
 	return result;
 }
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1b7770
 bool __stdcall function_1b7770(long actor_index, s_slot *slot)
 {
@@ -51,13 +53,7 @@ bool __stdcall function_1b7770(long actor_index, s_slot *slot)
 			double local_2 = local_0 * local_1;
 			real local_3 = (real)(bounds->lower + local_2 * actor->unknown3bc);
 			real ticks = local_3 * g_510c54->field_2_3;
-			long rounded;
-
-			__asm
-			{
-				fld ticks
-				fistp rounded
-			}
+			long rounded = real_to_long(ticks);
 			state->ticks = (short)rounded;
 			state->vector.i = actor->unknown3c0.i;
 			state->vector.j = actor->unknown3c0.j;

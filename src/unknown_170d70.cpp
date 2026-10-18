@@ -1684,7 +1684,7 @@ void __stdcall function_170fd0(long user_index)
 		offset->j += translation->j;
 		offset->k += translation->k;
 	}
-	if (!(state->flags & 0x10) && distance == 0.0f)
+	if (!(state->flags & 0x10) && distance != 0.0f)
 		function_171830(&position, &view->forward, &view->up, &distance, 0.02f);
 	view->position.x = position.x - view->forward.i * distance;
 	view->position.y = position.y - view->forward.j * distance;

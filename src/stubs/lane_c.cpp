@@ -65,8 +65,6 @@ public:
 };
 // @stub 0x3101c0
 c_3101c0::c_3101c0(s_3111d0 const &arg_0, long arg_1) {}
-// @stub 0x30c1a0
-void c_3101c0::function_30c1a0(byte *arg_0) {}
 // @stub 0x30cb70
 void c_3101c0::function_30cb70(s_30cb70 arg_0) {}
 // @stub 0x30c500
@@ -183,9 +181,6 @@ void hkRigidBody::setTransform(hkTransform const &transform) { }
 
 /* callees of the physics code (unknown_1c25a0.cpp, unknown_1cec30.cpp) */
 
-// @stub 0x30bd50
-void hkEntityApi::removeEntityListener(hkEntityListener *listener) { }
-
 // @stub 0x30f800
 hkBool hkWorld::removeEntity(hkEntity *entity) { return hkBool(); }
 
@@ -216,13 +211,9 @@ void hkEntityApi::activate(void) { }
 // @stub 0x30bc60
 void hkRigidBody::activate(void) { }
 
-// @stub 0x2da5d0
-void hkTransform::setMulEq(hkTransform const &b) { }
 
 /* callees of ai.cpp's 0x1caa40 */
 
-// @stub 0x2da3f0
-void hkTransform::setInverse(hkTransform const &t) { }
 
 
 struct real_quaternion_transform;
@@ -428,14 +419,8 @@ public:
     void function_2dbcf0(s_2dc030 const *arg_0);
 };
 
-// @stub 0x2dbfc0
-c_2dbfc0::c_2dbfc0(long arg_0, void *arg_1, real arg_2) {}
-
 // @stub 0x2dc030
 s_2dc030::s_2dc030() {}
-
-// @stub 0x2dbcf0
-void c_2dbfc0::function_2dbcf0(s_2dc030 const *arg_0) {}
 
 struct s_1d1870
 {
@@ -460,8 +445,6 @@ struct c_shape_library_base_a
 {
  c_shape_library_base_a(c_havok_reference_counted *arg_0, long arg_1);
 };
-// @stub 0x2df760
-c_shape_library_base_a::c_shape_library_base_a(c_havok_reference_counted *arg_0, long arg_1) {}
 
 struct s_2e5a10 { byte field_0; s_2e5a10(const s_2e5a10 &arg_0) : field_0(arg_0.field_0) {} };
 
