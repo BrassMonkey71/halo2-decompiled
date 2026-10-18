@@ -1,0 +1,54 @@
+// @flags /O2 /GL-
+// Havok (third-party physics library): resets a 32x32 table of handlers to
+// its defaults. The three default handlers are empty functions; retail's
+// linker folded them (with the game's own empty functions) into 0x175f40.
+
+typedef void (__cdecl *handler_2e5990)(void);
+
+static void __cdecl default_handler_a(void)
+{
+}
+
+static void __cdecl default_handler_b(void)
+{
+}
+
+static void __cdecl default_handler_c(void)
+{
+}
+
+struct cell_2e5990
+{
+    char unknown0[2];
+    char weight;
+};
+
+struct table_2e5990
+{
+    char unknown0[8];
+    void *default_entry;
+    char unknown_c[0x18c - 0xc];
+    void *entry[32][32];
+    handler_2e5990 first[32][32];
+    handler_2e5990 second[32][32];
+    handler_2e5990 third[32][32];
+    cell_2e5990 cell[32][32];
+
+    void reset();
+};
+
+// @retail 0x2e5990
+void table_2e5990::reset()
+{
+    for (int i = 0; i < 32; i++)
+    {
+        for (int j = 0; j < 32; j++)
+        {
+            entry[i][j] = default_entry;
+            first[i][j] = default_handler_a;
+            second[i][j] = default_handler_b;
+            third[i][j] = default_handler_c;
+            cell[i][j].weight = 100;
+        }
+    }
+}
