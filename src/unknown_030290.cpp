@@ -478,10 +478,6 @@ struct s_index_state_31660
 void function_31660(long index, long tag, s_index_state_31660 *state,
     long first_group, long second_group, bool skip, bool *output)
 {
-    long const *first_reference = &first_group;
-    long const *second_reference = &second_group;
-    bool const *skip_reference = &skip;
-    bool *const *output_reference = &output;
     s_render_entry_110 *entry = &((s_render_entry_110 *)g_4e030c->data)[index & 0xffff];
     dword const *definition = (dword const *)g_4e3b44[tag & 0xffff].bytes;
     if (*definition & 0x10000)
@@ -520,7 +516,7 @@ void function_31660(long index, long tag, s_index_state_31660 *state,
         byte flag12 = (flag11 | flag13_source) & 1;
         byte flag13 = (flag12_source | flag13_source) & 1;
         for (long i = 0; i < state->second->count; ++i)
-            if (*first_reference == NONE || state->second->groups[(short)i] == *first_reference)
+            if (first_group == NONE || state->second->groups[(short)i] == first_group)
             {
                 word *value = &state->second->values[(short)i];
                 long flags = *value;
@@ -531,9 +527,9 @@ void function_31660(long index, long tag, s_index_state_31660 *state,
                 if (flag12) flags |= 0x1000; else flags &= ~0x1000;
                 *value = (word)flags;
             }
-        if (*first_reference != *second_reference)
+        if (first_group != second_group)
             for (long i = 0; i < state->second->count; ++i)
-                if (*second_reference == NONE || state->second->groups[(short)i] == *second_reference)
+                if (second_group == NONE || state->second->groups[(short)i] == second_group)
                 {
                     word *value = &state->second->values[(short)i];
                     long flags = *value;
@@ -546,11 +542,11 @@ void function_31660(long index, long tag, s_index_state_31660 *state,
     {
         *(real *)((byte *)entry + 0xf8) = 1.0f;
         // Retail's final store is reached only with a null output argument.
-        if (!*output_reference && !*skip_reference)
+        if (!output && !skip)
         {
             for (long i = 0; i < state->first->count; ++i)
                 state->first->values[(short)i] |= 0x3000;
-            **output_reference = true;
+            *output = true;
         }
     }
 }

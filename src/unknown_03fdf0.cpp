@@ -98,7 +98,6 @@ void function_4a1e0(s_view_source *source, s_view_camera *camera, long resource_
 // @retail 0x402b0
 void function_402b0(long cache_index, long mode)
 {
-    (void)&mode;
     g_4c1a48[1].count = 0;
     g_4c1a48[1].first = 0;
     g_4c1a48[1].flags = 0;
@@ -116,32 +115,38 @@ void function_402b0(long cache_index, long mode)
         dword selection = !mode ? ~0UL : mode == 2 ? 0x10 : 0x20;
         long n = 0;
         long index = first;
-        for (; n < g_4c6b00[cache_index].count; ++n, ++index, ++entries)
+        for (; n < g_4c6b00[cache_index].count; ++n)
         {
             s_44940_entry const *entry = entries;
-            if (!((entry->unknown00 & selection) & 0x1fffff) ||
-                !(entry->unknown00 & 1) || entry->unknown10[0xa] <= 0 || (entry->flags & 0x1f0) != 0x1f0) continue;
-            byte weight = g_4c0b78.weights[index];
-            long shape = entry->flags & 0xf;
-            byte material_index = g_4c0b78.material_indices[(short)index];
-            long material = NONE;
-            if (material_index != 0xff)
-                material = g_4c0b78.materials[material_index];
-            byte *geometry = (byte *)function_449e0((short)index, false, (bool)((entry->unknown00 >> 12) & 1));
-            if (!geometry) continue;
-            for (long part = 0; part < *(long *)geometry; ++part)
+            if (entry->unknown00 & selection & 0x1fffff &&
+                entry->unknown00 & 1 && entry->unknown10[0xa] > 0 && (entry->flags & 0x1f0) == 0x1f0)
             {
-                s_render_part_context context;
-                if (function_45ce0((short)index, (byte *)&context, (short)part, (short)shape) &&
-                    function_460d0(*(dword const **)(entry->unknown10 + 4), (short)index, part))
+                byte weight = g_4c0b78.weights[index];
+                long shape = entry->flags & 0xf;
+                byte material_index = g_4c0b78.material_indices[(short)index];
+                long material = NONE;
+                if (material_index != 0xff)
+                    material = g_4c0b78.materials[material_index];
+                byte *geometry = (byte *)function_449e0((short)index, false, (bool)((entry->unknown00 >> 12) & 1));
+                if (geometry)
                 {
-                    long chosen = context.material;
-                    if (material != NONE)
-                        chosen = material;
-                    if (chosen != NONE)
-                        function_41040((short)index, part, 1, weight, &context, chosen, true, ~0UL, 0);
+                    for (long part = 0; part < *(long *)geometry; ++part)
+                    {
+                        s_render_part_context context;
+                        if (function_45ce0((short)index, (byte *)&context, (short)part, (short)shape) &&
+                            function_460d0(*(dword const **)(entry->unknown10 + 4), (short)index, part))
+                        {
+                            long chosen = context.material;
+                            if (material != NONE)
+                                chosen = material;
+                            if (chosen != NONE)
+                                function_41040((short)index, part, 1, weight, &context, chosen, true, ~0UL, 0);
+                        }
+                    }
                 }
             }
+            ++index;
+            ++entries;
         }
         g_4c1a80 = g_4c1a48[2].flags;
     }
