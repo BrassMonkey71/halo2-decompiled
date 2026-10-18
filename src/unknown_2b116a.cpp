@@ -6014,8 +6014,8 @@ long function_c38e0(short index);
 real function_30bf0(vector3f *v);
 void __stdcall function_2cbc0(bool enabled);
 void function_44720();
-void function_2c560(point3f const *position, vector3f const *forward,
-    short left, short top, short right, short bottom, vector3f const *up, real angle);
+void function_2c560(short left, short top, short right, short bottom,
+    vector3f const *up, real angle, vector3f const *forward, point3f const *position);
 
 // @retail 0x2b0baa
 void c_class_2b0b5e::v4(long frame)
@@ -6087,8 +6087,8 @@ void c_class_2b0b5e::v4(long frame)
         visibility_object_lists_add(extra_indices, extra_count, model_visibility_lists, object_indices, object_count, false);
         function_2cbc0(true);
         function_44720();
-        function_2c560(&position, &forward, (short)(left + x), (short)(top + y),
-            (short)(right + x), (short)(bottom + y), &up, angle);
+        function_2c560((short)(left + x), (short)(top + y), (short)(right + x),
+            (short)(bottom + y), &up, angle, &forward, &position);
         if (show_label)
         {
             c_user_interface_text_buffer_32 text;

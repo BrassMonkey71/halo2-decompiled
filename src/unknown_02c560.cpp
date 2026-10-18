@@ -157,10 +157,10 @@ void function_2ca00(point3f const *position, t_aux_view_callback callback, void 
     function_2f800((s_2f800_view *)frame.view, 0, 0, 0);
     memcpy(frame.view + 0x30, &g_485a8a, sizeof(g_485a8a));
     function_2fd90((s_2f800_view const *)frame.view, 0, frame.projection);
-    s_frame_view_2c560 *saved = &g_4850d0[++g_46701c];
+    long saved_index = ++g_46701c;
     g_camera_storage = *(s_camera_storage const *)frame.view;
-    *saved = frame;
-    function_132d0(saved);
+    g_4850d0[saved_index] = frame;
+    function_132d0(&g_4850d0[saved_index]);
     if (callback) callback(context);
     function_13c20();
     function_13cd0();
@@ -184,9 +184,9 @@ void __stdcall function_2c8a0(byte const *source)
     frame.position = *g_468718;
     frame.mode = 0;
     frame.location = 1;
-    s_frame_view_2c560 *saved = &g_4850d0[++g_46701c];
-    *saved = frame;
-    function_132d0(saved);
+    long saved_index = ++g_46701c;
+    g_4850d0[saved_index] = frame;
+    function_132d0(&g_4850d0[saved_index]);
     if (g_4e9194) function_156040();
     *(long *)g_54d598.unknown00 = NONE;
     function_147af1(4, NONE, (c_render_window *)(source + 0xb0));
@@ -201,24 +201,25 @@ void __stdcall function_2c8a0(byte const *source)
 }
 
 // @retail 0x2c560
-void function_2c560(point3f const *position, vector3f const *forward,
-    short left, short top, short right, short bottom, vector3f const *up, real angle)
+void function_2c560(short left, short top, short right, short bottom,
+    vector3f const *up, real angle, vector3f const *forward, point3f const *position)
 {
     s_location location;
     function_11bed0(&location, position);
     s_frame_view_2c560 frame;
     *(vector3f *)(frame.view + 0x18) = *forward;
-    *(point3f *)frame.view = *position;
     *(vector3f *)(frame.view + 0xc) = *up;
     *(short *)(frame.view + 0x30) = top;
     *(short *)(frame.view + 0x32) = left;
     *(short *)(frame.view + 0x34) = bottom;
     *(short *)(frame.view + 0x36) = right;
     memcpy(frame.view + 0x38, frame.view + 0x30, sizeof(short_rectangle2d));
-    *(dword *)(frame.view + 0x40) = g_467014;
-    *(dword *)(frame.view + 0x44) = g_467018;
+    /* the two clip distances are reals: read them as such (retail copies them with movss) */
+    *(real *)(frame.view + 0x40) = *(real const *)&g_467014;
+    *(real *)(frame.view + 0x44) = *(real const *)&g_467018;
     *(real *)(frame.view + 0x28) = angle;
     *(real *)(frame.view + 0x2c) = 1.0f;
+    *(point3f *)frame.view = *position;
     frame.view[0x24] = false;
     frame.view[0x58] = false; frame.view[0x68] = false;
     *(long *)(frame.unknown26c + 0x24) = 0;
@@ -227,11 +228,12 @@ void function_2c560(point3f const *position, vector3f const *forward,
     *(long *)(frame.unknown26c + 4) = 0;
     *(long *)(frame.unknown26c + 0x1c) = 0;
     frame.unknown26c[0x28] = false;
-    real clip[4];
+    union { real clip[4]; double clip_alignment; } clip_storage;
+    real *clip = clip_storage.clip;
     function_2f970((s_2f970_view const *)frame.view, clip);
     function_2fd90((s_2f800_view const *)frame.view, (box2f const *)clip, frame.projection);
-    ++g_4ba038;
     g_4ba019 = true;
+    ++g_4ba038;
     g_4b9ed4 = frame.index;
     g_4b9ee4 = 0; g_4b9ee0 = 0; g_4b9ee8 = false;
     g_4b9ed8 = NONE; g_4b9edc = NONE; g_4b9eec = NONE; g_4b9ee9 = false;
@@ -241,9 +243,9 @@ void function_2c560(point3f const *position, vector3f const *forward,
     memcpy(&g_camera_storage, frame.view, sizeof(g_camera_storage));
     function_2fd90((s_2f800_view const *)&g_camera_storage, (box2f const *)clip, (byte *)&g_projection_storage);
     function_3d2c0(); function_3ea60(); function_c15a0();
-    s_frame_view_2c560 *saved = &g_4850d0[++g_46701c];
-    *saved = frame;
-    function_132d0(saved);
+    long saved_index = ++g_46701c;
+    g_4850d0[saved_index] = frame;
+    function_132d0(&g_4850d0[saved_index]);
     function_2bcd0(2, 1, false, 0, 0, 0, 0.0f);
     function_13c20();
     g_4ba010 = false;
