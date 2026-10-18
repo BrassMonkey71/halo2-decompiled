@@ -48,10 +48,6 @@ void function_184060(long arg_0, byte arg_1, s_type_1e6529 *arg_2, long arg_3);
 
 typedef void *(__fastcall *constructor_proc)(void *);
 void __stdcall vector_constructor_iterator(void *arg_0, unsigned arg_1, int arg_2, constructor_proc arg_3);
-PRIVATE void *__fastcall function_1d96d5(void *arg_0)
-{
- return new (arg_0) s_collision_damage_entry;
-}
 
 PRIVATE __forceinline real function_1d96d2(hkRigidBody *arg_0)
 {
@@ -91,9 +87,7 @@ void function_1d96d0(long arg_0)
   if (((1 << local_2[(local_1 & 0xffff) * 12 + 3]) & 1) && function_e58e0(local_1))
    return;
  }
- byte local_48[16 * sizeof(s_collision_damage_entry)];
- s_collision_damage_entry *local_3 = (s_collision_damage_entry *)local_48;
- vector_constructor_iterator(local_3, sizeof(s_collision_damage_entry), 16, function_1d96d5);
+ s_collision_damage_entry local_3[16];
  byte *local_4 = (byte *)havok_object_get(local_1);
  byte *local_5 = (byte *)g_4e3b44[*(long *)local_4 & 0xffff].data;
  bool local_6 = !TEST_FIELD_BIT(((s_1d96d7 *)local_5)->field_3);

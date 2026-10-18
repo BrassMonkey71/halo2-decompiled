@@ -260,9 +260,10 @@ void function_112e20(transform4x3f *matrix, point3f const *target, transform4x3f
 			relative.j *= inverse;
 			relative.k *= inverse;
 		}
-		direction.i = dot3f(&frame.forward, &relative);
-		direction.j = dot3f(&frame.left, &relative);
-		direction.k = dot3f(&frame.up, &relative);
+		// summed k, j, i as retail does
+		direction.i = frame.forward.k * relative.k + frame.forward.j * relative.j + frame.forward.i * relative.i;
+		direction.j = frame.left.k * relative.k + frame.left.j * relative.j + frame.left.i * relative.i;
+		direction.k = frame.up.k * relative.k + frame.up.j * relative.j + frame.up.i * relative.i;
 	}
 	else
 		direction.i = direction.j = direction.k = 0.0f;
@@ -276,7 +277,8 @@ void function_112e20(transform4x3f *matrix, point3f const *target, transform4x3f
 		direction.k *= inverse;
 	}
 	real yaw = (real)atan2(direction.j, direction.i);
-	real pitch = (real)atan2(direction.k, sqrt(direction.i * direction.i + direction.j * direction.j));
+	// retail keeps the planar length on the x87 stack: fsqrt and fpatan see it unrounded
+	real pitch = (real)atan2((double)direction.k, sqrt((double)direction.j * direction.j + (double)direction.i * direction.i));
 	if (0.0f - yaw_limit > yaw)
 		yaw = 0.0f - yaw_limit;
 	else if (yaw > yaw_limit)
