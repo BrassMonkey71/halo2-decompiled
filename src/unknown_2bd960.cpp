@@ -1727,22 +1727,17 @@ void c_game_engine_45c948::v14(long local_player)
 			s_color_bits color;
 			territory_marker_color(player_index, i, &color);
 			s_marker_list list;
-			point3f const *position = &g_4e0350->marker_entries[(short)state->w60[i]].position;
-			long position_bits[3];
-			position_bits[1] = ((long const *)position)[1];
-			position_bits[0] = ((long const *)position)[0];
-			*(long *)&list.position.x = position_bits[0];
-			position_bits[2] = ((long const *)position)[2];
-			*(long *)&list.position.y = position_bits[1];
-			*(long *)&list.position.z = position_bits[2];
+			point3f position = g_4e0350->marker_entries[(short)state->w60[i]].position;
+			long holder = state->l70[i];
 			list.b0 = 0;
 			list.b1 = 0;
 			list.l4 = 1;
+			list.position = position;
 			list.r14 = 0.4f;
 			list.r18 = 0.1f;
 			list.r1c = 0.0f;
 			list.l20 = NONE;
-			if (!datum_get_inlined(g_4e8c24, state->l70[i]))
+			if (!datum_get_inlined(g_4e8c24, holder))
 				list.r14 = 0.0f;
 			list.r3c = 1.0f;
 			list.r40 = 1.0f;
