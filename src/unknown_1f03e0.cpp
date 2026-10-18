@@ -629,9 +629,9 @@ PRIVATE __forceinline void function_1f087a(byte *arg_0, byte *arg_1, vector3f co
 {
 #define settings (*(byte **)(arg_3 + 8))
     dword mode = *(dword *)settings;
+    bool flying = ((mode >> 3) & 1) != 0;
     dword flags = *(dword *)(arg_3 + 0x14);
     bool damping = ((flags >> 4) & 1) != 0;
-    bool flying = ((mode >> 3) & 1) != 0;
     bool direct = ((flags >> 2) & 1) != 0;
     volatile bool gravity = ((flags >> 3) & 1) != 0;
     vector3f const &input = *(vector3f const *)(arg_3 + 0x138);
@@ -751,17 +751,13 @@ PRIVATE __forceinline void function_1f087a(byte *arg_0, byte *arg_1, vector3f co
         function_1f087d(&delta, &desired, (*(real *)(arg_3 + 0x20)) * magnitude, arg_2);
         vector3f limited = delta;
         real step = *(real *)(arg_3 + 0x144) * g_510c54->rate;
-        if (function_30bf0(&limited) > step)
-        {
+        bool limited_step = function_30bf0(&limited) > step;
+        if (limited_step)
             function_1f087e(&limited, step);
-            if (flying)
-                gravity = false;
-        }
         else
-        {
             limited = delta;
+        if (!limited_step || flying)
             gravity = false;
-        }
         if (!arg_3[0xa8] && *(long *)((byte *)g_51e9c4 + 0x18) - g_510c54->game_time <= 0)
             function_1f087f(&limited, &limited, &normal, 0.234f);
         if (damping)

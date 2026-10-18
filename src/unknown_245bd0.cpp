@@ -280,36 +280,6 @@ PRIVATE inline real shape_dot_reverse(vector3f const *a, vector3f const *b)
 	return a->k * b->k + a->j * b->j + a->i * b->i;
 }
 
-PRIVATE __forceinline bool shape_sphere_ray_interval(vector3f const *d, vector3f const *direction, real radius, real *t)
-{
-	real radius_squared = radius * radius;
-	real c = d->k * d->k;
-	c += d->i * d->i;
-	c += d->j * d->j;
-	c -= radius_squared;
-	if (0.f >= c)
-	{
-		*t = 0.f;
-		return true;
-	}
-	real b = dot3f(direction, d);
-	if (b > 0.f)
-	{
-		real a = length_sq3f(direction);
-		real discriminant = b * b - a * c;
-		if (discriminant >= g_45dbd8)
-		{
-			real root = b - (real)sqrt(discriminant);
-			if (a >= root)
-			{
-				*t = root / a;
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
 // @retail 0x2461a0
 bool function_2461a0(
 	real *t,
@@ -321,9 +291,36 @@ bool function_2461a0(
 	bool result = false;
 	vector3f d;
 	vector3d_from_points3d(point, &sphere->center, &d);
-	if (shape_sphere_ray_interval(&d, direction, sphere->radius, t))
+	real radius_squared = sphere->radius * sphere->radius;
+	real c = d.k * d.k;
+	c += d.i * d.i;
+	c += d.j * d.j;
+	c -= radius_squared;
+	if (0.f >= c)
 	{
+		*t = 0.f;
 		result = true;
+	}
+	else
+	{
+		real b = dot3f(direction, &d);
+		if (b > 0.f)
+		{
+			real a = length_sq3f(direction);
+			real discriminant = b * b - a * c;
+			if (discriminant >= g_45dbd8)
+			{
+				real root = b - (real)sqrt(discriminant);
+				if (a >= root)
+				{
+					*t = root / a;
+					result = true;
+				}
+			}
+		}
+	}
+	if (result)
+	{
 		vector3f scaled;
 		shape_scale3d(direction, *t, &scaled);
 		plane->i = scaled.i - d.i;

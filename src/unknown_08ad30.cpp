@@ -869,6 +869,47 @@ struct s_distribution_event_setup
  c_entry_table *entities;
 };
 
+/* whether the world replicates entities through a distribution (states 4 and 5) */
+inline bool simulation_world_distributes(c_class_6a600 const *world)
+{
+ return world->state == 4 || world->state == 5;
+}
+
+/* the sender tables of a distribution, empty and bound to its handle peers */
+inline void distribution_senders_initialize(s_distribution_sender_setup *senders, s_handle_peers *peers)
+{
+ senders->peers = peers;
+ senders->owner = 0;
+ senders->mask = 0;
+ memset(senders->senders, 0, sizeof(senders->senders));
+ senders->count = 0;
+ senders->head = 0;
+}
+
+/* binds the entity table to its world and handlers and resets its entries */
+inline void entry_table_initialize(c_entry_table *table, c_class_6a600 *world, s_simulation_distribution *distribution,
+ void *definitions)
+{
+ table->busy = false;
+ table->unknown08 = (long)world;
+ table->unknown0c = (long)distribution;
+ *(void **)&table->handlers = definitions;
+ ((s_handle_peers *)distribution->peers)->owner = (c_handle_owner *)table;
+ table->function_08a030();
+ table->initialized = true;
+}
+
+inline void distribution_events_initialize(s_distribution_event_setup *events, c_class_6a600 *world,
+ s_distribution_sender_setup *senders, c_entry_table *entities, void *definitions)
+{
+ events->definitions = definitions;
+ events->world = world;
+ events->senders = senders;
+ events->entities = entities;
+ senders->owner = events;
+ events->initialized = true;
+}
+
 // @retail 0x68c00
 void function_68c00(s_simulation_world_owner *owner, void *definitions,
  s_simulation_distribution *distribution, c_class_6a600 *world)
@@ -893,32 +934,16 @@ void function_68c00(s_simulation_world_owner *owner, void *definitions,
  world->unknown30 = 0;
  world->time34 = g_510548 ? g_51054c : GetTickCount();
  world->unknown38 = 0;
- if (world->state == 4 || world->state == 5)
+ if (simulation_world_distributes(world))
  {
   world->distribution = distribution;
   replication_table_initialize((s_handle_peers *)distribution->peers);
-  s_distribution_sender_setup *senders = (s_distribution_sender_setup *)world->distribution->unknown2048;
-  senders->peers = (s_handle_peers *)world->distribution->peers;
-  senders->owner = 0;
-  senders->mask = 0;
-  memset(senders->senders, 0, sizeof(senders->senders));
-  senders->count = 0;
-  senders->head = 0;
-  c_entry_table *entities = (c_entry_table *)&world->distribution->field_2098;
-  entities->busy = false;
-  entities->unknown08 = (long)world;
-  entities->unknown0c = (long)world->distribution;
-  *(void **)&entities->handlers = definitions;
-  ((s_handle_peers *)world->distribution->peers)->owner = (c_handle_owner *)entities;
-  entities->function_08a030();
-  entities->initialized = true;
-  s_distribution_event_setup *events = (s_distribution_event_setup *)((byte *)world->distribution + 0xa0ac);
-  events->definitions = definitions;
-  events->world = world;
-  events->senders = (s_distribution_sender_setup *)world->distribution->unknown2048;
-  events->entities = (c_entry_table *)&world->distribution->field_2098;
-  events->senders->owner = events;
-  events->initialized = true;
+  distribution_senders_initialize((s_distribution_sender_setup *)world->distribution->unknown2048,
+   (s_handle_peers *)world->distribution->peers);
+  entry_table_initialize((c_entry_table *)&world->distribution->field_2098, world, world->distribution, definitions);
+  distribution_events_initialize((s_distribution_event_setup *)((byte *)world->distribution + 0xa0ac), world,
+   (s_distribution_sender_setup *)world->distribution->unknown2048, (c_entry_table *)&world->distribution->field_2098,
+   definitions);
  }
  else
  {

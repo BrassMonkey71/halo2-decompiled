@@ -1163,7 +1163,7 @@ void function_bc190(long, s_damage_owner *);
 void function_d6660(s_type_1e6529 *, long);
 long __stdcall function_d6c80(s_type_1e6529 *, long);
 void function_bba20(long);
-long function_184000(long, long);
+long function_184000(long index, long bit);
 void __stdcall function_b8540(long);
 
 static __forceinline void item_release_impulse_10b4d0(long object_index)
@@ -1192,7 +1192,7 @@ bool __stdcall function_10b4d0(long object_index)
                 {
                     if (item->value_136 & 8)
                     {
-                        if (!(byte)function_184000(item->value_137, item->surface_index))
+                        if (!(byte)function_184000(item->surface_index, item->value_137))
                         {
                             item->flags_12c &= 0xdf;
                             item_release_impulse_10b4d0(object_index);
