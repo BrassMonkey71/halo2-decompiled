@@ -1107,17 +1107,10 @@ void function_25c050(long player_index, long actor_index)
 		}
 		else
 		{
-			volatile long local_0;
-
-			if (actor->unknown268)
-			{
-				local_0 = 0x6b;
-			}
-			else
-			{
-				local_0 = 0x6c;
-			}
-			function_1fb7e0((short)local_0, actor_index, NULL, target_index, NONE);
+			short type = 0x6b;
+			if (!actor->unknown268)
+				type = 0x6c;
+			function_1fb7e0(type, actor_index, NULL, target_index, NONE);
 		}
 		memset(&request, 0, sizeof(request));
 		request.type = 0x1d;

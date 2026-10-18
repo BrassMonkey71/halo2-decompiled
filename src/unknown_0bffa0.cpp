@@ -1,6 +1,7 @@
 #include "effects.h"
 #include "unknown_11c920.h"
 #include "unknown_0259d0.h"
+#include "unknown_11cc90.h"
 #include "camera_storage.h"
 #include "globals.h"
 #include <string.h>
@@ -542,6 +543,35 @@ struct s_light_frame_ab
 };
 extern point2f *g_468774;
 
+static inline real dot_product_c1a80(vector3f const *a, vector3f const *b)
+{
+    return a->k * b->k + a->j * b->j + a->i * b->i;
+}
+
+/* result = first x second; the second operand comes first */
+static inline void cross_product_c1a80(vector3f const *second, vector3f const *first, vector3f *result)
+{
+    real k = first->i * second->j - first->j * second->i;
+    real j = first->k * second->i - first->i * second->k;
+    real i = first->j * second->k - first->k * second->j;
+    result->i = i;
+    result->j = j;
+    result->k = k;
+}
+
+static inline void point_from_line2d_c1a80(point2f const *point, vector2f const *vector, real scale, point2f *result)
+{
+    result->x = vector->i * scale + point->x;
+    result->y = vector->j * scale + point->y;
+}
+
+static __forceinline void point_add_scaled_c35a0(point3f const *point, vector3f const *vector, real scale, point3f *result)
+{
+    result->x = point->x + vector->i * scale;
+    result->y = point->y + vector->j * scale;
+    result->z = point->z + vector->k * scale;
+}
+
 // @retail 0xc1a80
 void function_c1a80(s_light_frame_ab const *frame, s_light_shape_ab *shape, s_light_definition_ab const *definition)
 {
@@ -550,10 +580,11 @@ void function_c1a80(s_light_frame_ab const *frame, s_light_shape_ab *shape, s_li
             real unused;
             vector3f direction;
             real distance;
-            real slope_x, slope_y, aspect;
-            real width, height;
+            vector2f slope;
+            real aspect;
+            point2f size;
             real near_distance, far_distance;
-            real far_width, far_height;
+            point2f far_size;
             point3f endpoint;
         };
     s_render_cone *cone = 0;
@@ -571,7 +602,7 @@ void function_c1a80(s_light_frame_ab const *frame, s_light_shape_ab *shape, s_li
         direction->i = frame->endpoint.x - frame->position.x;
         direction->j = frame->endpoint.y - frame->position.y;
         direction->k = frame->endpoint.z - frame->position.z;
-        cone->distance = frame->forward.k * *(real const volatile *)&direction->k + frame->forward.j * direction->j + frame->forward.i * direction->i;
+        cone->distance = dot_product_c1a80(&frame->forward, &cone->direction);
         if (fabs(cone->distance) < 0.0001f || cone->distance < 0.0f)
         {
             *direction = frame->forward;
@@ -590,39 +621,29 @@ void function_c1a80(s_light_frame_ab const *frame, s_light_shape_ab *shape, s_li
         }
         if (shape->kind == 1)
         {
-            cone->slope_x = g_468774->x;
-            cone->slope_y = g_468774->y;
+            cone->slope.i = g_468774->x;
+            cone->slope.j = g_468774->y;
         }
         else
         {
             real slope = (real)tan(shape->cone.values[2] * 0.5f);
-            cone->slope_x = (real)slope;
-            cone->slope_y = (real)slope * cone->aspect;
+            cone->slope.i = (real)slope;
+            cone->slope.j = (real)slope * cone->aspect;
         }
-        cone->width = shape->cone.values[0];
-        cone->height = cone->aspect * shape->cone.values[0];
+        cone->size.x = shape->cone.values[0];
+        cone->size.y = cone->aspect * shape->cone.values[0];
         cone->far_distance = shape->cone.values[4] * frame->radius;
         cone->near_distance = shape->cone.values[3] * frame->radius;
-        real far_distance = cone->far_distance;
-        cone->far_width = cone->slope_x * far_distance + cone->width;
-        cone->far_height = cone->slope_y * far_distance + cone->height;
-        real distance = shape->cone_render.far_distance;
-        cone->endpoint.x = direction->i * distance + frame->position.x;
-        cone->endpoint.y = direction->j * distance + frame->position.y;
-        cone->endpoint.z = direction->k * distance + frame->position.z;
+        point_from_line2d_c1a80(&cone->size, &cone->slope, cone->far_distance, &cone->far_size);
+        point_add_scaled_c35a0(&frame->position, direction, cone->far_distance, &cone->endpoint);
     }
-    real y = frame->up.i * frame->forward.k - frame->forward.i * frame->up.k;
-    real z = frame->up.j * frame->forward.i - frame->forward.j * frame->up.i;
-    real x = frame->up.k * frame->forward.j - frame->forward.k * frame->up.j;
-    shape->left.j = y;
-    shape->left.k = z;
-    shape->left.i = x;
+    cross_product_c1a80(&frame->up, &frame->forward, &shape->left);
     point3f *origin = &shape->origin;
     shape->origin_offset = 0.0f;
     *origin = frame->position;
-    if (shape->kind == 2 && cone->slope_x > 0.0001f)
+    if (shape->kind == 2 && cone->slope.i > 0.0001f)
     {
-        shape->origin_offset = shape->cone.values[0] / cone->slope_x * 0.5f;
+        shape->origin_offset = shape->cone.values[0] / cone->slope.i * 0.5f;
         real distance = 0.0f - shape->origin_offset;
         origin->x = cone->direction.i * distance + frame->position.x;
         origin->y = cone->direction.j * distance + frame->position.y;
@@ -661,13 +682,6 @@ bool function_c17f0(long light_index, s_light_shape_ab *shape, bool respect_engi
         result = light_shape_visible_c17f0(shape);
     }
     return result;
-}
-
-static __forceinline void point_add_scaled_c35a0(point3f const *point, vector3f const *vector, real scale, point3f *result)
-{
-    result->x = point->x + vector->i * scale;
-    result->y = point->y + vector->j * scale;
-    result->z = point->z + vector->k * scale;
 }
 
 // @retail 0xc35a0
