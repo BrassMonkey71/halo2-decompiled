@@ -1577,11 +1577,11 @@ long __stdcall function_c0230(long tag_index, long object_index, short node_inde
     if (result != NONE)
     {
         byte *light = g_4e030c->data + (result & 0xffff) * 0x110;
-        *(long volatile *)(light + 4) = tag_index;
+        *(long *)(light + 4) = tag_index;
         *(long *)(light + 0x4c) = object_index;
-        *(word volatile *)(light + 2) = 0;
+        *(word *)(light + 2) = 0;
         *(short *)(light + 0x54) = node_index;
-        *(long volatile *)(light + 0x50) = name;
+        *(long *)(light + 0x50) = name;
         *(long *)(light + 0x14) = NONE;
         *(long *)(light + 8) = NONE;
         *(short *)(light + 0x56) = value;
@@ -1590,8 +1590,8 @@ long __stdcall function_c0230(long tag_index, long object_index, short node_inde
         *(real *)(light + 0xd0) = 1.0f;
         *(real *)(light + 0xcc) = 1.0f;
         byte flag = (byte)((~definition[0]) & 1);
-        *(word volatile *)(light + 2) = (word)flag;
-        light[2] &= ~0x10;
+        *(word *)(light + 2) = (word)flag;
+        *(word *)(light + 2) &= ~0x10;
         *(long *)(light + 0x10) = NONE;
         function_c0c80(result);
         *(long *)(light + 0xc) = g_4e0308 - 1;
