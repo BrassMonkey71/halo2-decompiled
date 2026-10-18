@@ -556,6 +556,8 @@ long c_device_type::v27(long a, long b, long c, long d)
 }
 
 #include "unknown_1946f0.h"
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
 void simulation_write_position(long bits, s_bitstream *stream, real const *position, bool keep_inside);
 void simulation_read_position(s_bitstream *stream, real *position, long bits);
 void scenario_object_name_encode(long object_name, s_bitstream *stream);
@@ -576,14 +578,7 @@ struct s_z_impact_payload
 
 PRIVATE inline void z_write_impact_scale(s_bitstream *stream, real value)
 {
- real scaled = value * 126.0f;
- long quantized;
- __asm
- {
-  fld scaled
-  fistp quantized
- }
- function_195720(stream, quantized, 7);
+ function_195720(stream, real_to_long(value * 126.0f), 7);
 }
 
 PRIVATE inline real z_read_impact_scale(s_bitstream *stream)
@@ -1001,14 +996,7 @@ bool c_item_type::v14(long a1, long a2, long a3, long a4, long a5, long a6, long
 
 PRIVATE inline void z_write_weapon_fraction(s_bitstream *stream, real value)
 {
- real scaled = value * 126.0f;
- long quantized;
- __asm
- {
-  fld scaled
-  fistp quantized
- }
- function_195720(stream, quantized, 7);
+ function_195720(stream, real_to_long(value * 126.0f), 7);
 }
 
 // @retail 0xa2470

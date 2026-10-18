@@ -28,6 +28,3 @@ void __stdcall function_6d4c0(void *object) { }
 
 // @stub 0x3361a4
 void function_3361a4() { }
-
-// @stub 0x59940
-void function_59940(void) { }

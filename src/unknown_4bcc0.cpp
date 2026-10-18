@@ -8,6 +8,20 @@ struct s_render_object_header
     long *object;
 };
 
+struct s_object_flags_view_4bcc0
+{
+    dword : 19;
+    dword flag19 : 1;
+    dword : 12;
+};
+
+struct s_object_word_flags_view_4bcc0
+{
+    word : 2;
+    word flag2 : 1;
+    word : 13;
+};
+
 struct s_geometry_block_info;
 #include "target_cache_storage.h"
 extern long g_4ba01c;
@@ -24,11 +38,10 @@ void function_4c0d0(long object_index, byte *output, long mode);
 short function_4bcc0(byte *output, long object_index, real distance, long override,
     bool *cached, bool force, signed char *level)
 {
-    (void)&object_index; (void)&distance; (void)&override;
-    (void)&cached; (void)&force; (void)&level;
-    volatile short result = 0;
+    short result = 0;
     *(dword *)(output + 0x16c) = 0;
-    bool volatile eligible = false;
+    {
+    bool eligible = false;
     bool current = false;
     if (!object_or_parent_hidden(object_index))
     {
@@ -36,23 +49,26 @@ short function_4bcc0(byte *output, long object_index, real distance, long overri
         current = object_index == g_4c1bd0;
     }
     if (cached) *cached = current;
-    if (!eligible) return result;
+    if (!eligible) goto done;
     byte *object = (byte *)((s_render_object_header *)g_4e0300->data)[object_index & 0xffff].object;
     byte *definition = g_4e3b44[*(long *)object & 0xffff].bytes;
     if (force) *cached = false;
     long model_index = *(long *)(definition + 0x38);
-    if (model_index == NONE) return 0;
+    if (model_index == NONE) goto done;
     byte *model = g_4e3b44[model_index & 0xffff].bytes;
     result = function_3d3e0(object_index, *cached);
     if (result > 0)
     {
-        long geometry = *(long *)(model + 4);
-        if (!override && geometry != NONE)
+        if (!override)
         {
-            byte *geometry_definition = g_4e3b44[geometry & 0xffff].bytes;
-            if (*(long *)(geometry_definition + 0x74) > 0 &&
-                function_12de70((s_geometry_block_info *)(*(byte **)(geometry_definition + 0x78) + 0x34), 3))
-                *(dword *)(output + 0x16c) |= 0x40;
+            long geometry = *(long *)(model + 4);
+            if (geometry != NONE)
+            {
+                byte *geometry_definition = g_4e3b44[geometry & 0xffff].bytes;
+                if (*(long *)(geometry_definition + 0x74) > 0 &&
+                    function_12de70((s_geometry_block_info *)(*(byte **)(geometry_definition + 0x78) + 0x34), 3))
+                    *(dword *)(output + 0x16c) |= 0x40;
+            }
         }
         *level = *cached ? 4 : -1;
         if (!*cached)
@@ -60,11 +76,11 @@ short function_4bcc0(byte *output, long object_index, real distance, long overri
             byte *object_definition = g_4e3b44[*(long *)object & 0xffff].bytes;
             byte *level_definition = g_4e3b44[*(long *)(object_definition + 0x38) & 0xffff].bytes;
             if (g_4ba019) distance *= 0.3f;
-            if ((bool)((*(dword *)(object + 4) >> 19) & 1))
+            if (TEST_FIELD_BIT(((s_object_flags_view_4bcc0 const *)(object + 4))->flag19))
                 *level = 5;
             else
             {
-                if ((bool)((object[0x10a] >> 2) & 1)) distance *= 1.7f;
+                if (TEST_FIELD_BIT(((s_object_word_flags_view_4bcc0 const *)(object + 0x10a))->flag2)) distance *= 1.7f;
                 real fraction;
                 *level = (signed char)function_4c450(object_index, distance, (real const *)(level_definition + 0x28), &fraction);
                 long maximum = (*(dword *)(output + 0x16c) & 0x40) ? 4 : g_4ba01c;
@@ -143,5 +159,7 @@ short function_4bcc0(byte *output, long object_index, real distance, long overri
         }
     }
     function_4c0d0(object_index, output, result);
+    }
+done:
     return result;
 }

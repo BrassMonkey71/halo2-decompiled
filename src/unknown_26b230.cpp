@@ -136,12 +136,7 @@ void function_268c90()
 			else
 			{
 				real interval = (real)g_510c54->field_2_3 * 10.0f;
-				long ticks;
-				__asm
-				{
-					fld interval
-					fistp ticks
-				}
+				long ticks = real_to_long(interval);
 				expired = *(long *)(clump + 0x38) + ticks < g_510c54->game_time;
 			}
 		}
