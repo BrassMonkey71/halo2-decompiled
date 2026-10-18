@@ -157,8 +157,6 @@ public:
 	s_278b60_filter *filter_object;
 };
 
-// @stub 0x30c190
-c_278b60_filter *c_library_30c190::filter() { return NULL; }
 #include "slot_owner.h"
 #include "unknown_1c62f0.h"
 #include "unknown_0259a0.h"
@@ -167,8 +165,6 @@ c_278b60_filter *c_library_30c190::filter() { return NULL; }
 // @stub 0x2d91d0
 void __cdecl function_2d91d0(void *array, long element_size) { }
 
-// @stub 0x30c170
-byte *__fastcall function_30c170(hkWorld *world) { return 0; }
 
 // @stub 0x3123a0
 hkPropertyValue hkEntity::removeProperty(dword key) { return hkPropertyValue(0); }
@@ -505,8 +501,6 @@ struct s_1c3a40
 // @stub 0x2e5e70
 void s_1c3a40::function_2e5e70(long arg_0, long arg_1) {}
 
-// @stub 0x2e5a10
-void s_1c3a40::function_2e5a10(s_2e5a10 arg_0) {}
 
 // @stub 0x2e6190
 void __cdecl function_2e6190(s_1c3a40 *arg_0) {}
