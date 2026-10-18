@@ -17,7 +17,7 @@ public:
 	__m128 points[1];
 
 	points_2fca10(points_info_2fca10 const &info);
-	virtual void slot_1();
+	virtual void slot_1() {}
 };
 
 // @retail 0x2fca10

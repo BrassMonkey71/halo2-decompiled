@@ -9,7 +9,7 @@ public:
 	__m128 half_extents;
 
 	box_2fe6d0(radius_info_2de750 const &info);
-	virtual void slot_1();
+	virtual void slot_1() {}
 };
 
 // @retail 0x2fe6d0

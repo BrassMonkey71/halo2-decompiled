@@ -60,7 +60,7 @@ public:
 		corners[1] = info.second;
 		corners[2] = info.third;
 	}
-	virtual void slot_1();
+	virtual void slot_1() {}
 };
 
 // @retail 0x2fcaf0

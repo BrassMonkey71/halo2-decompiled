@@ -29,7 +29,7 @@ public:
 class interface_b_2da9f0
 {
 public:
-	virtual void slot_0(void *arg);
+	virtual void slot_0(void *arg) {}
 	virtual void slot_1() {}
 	virtual void slot_2() {}
 };
