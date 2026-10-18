@@ -990,45 +990,67 @@ transform4x3f const *__stdcall function_bd610(long object_index, byte const *nod
 #endif
 
 #include <math.h>
+/* the point and direction 0xbc070 sets in the list at g_4de2f4 */
+struct s_direction_state_bc070
+{
+	byte unknown00[0x54];
+	point3f point;
+	vector3f direction;
+};
+
+PRIVATE __forceinline void vector3f_negate(vector3f const *vector, vector3f *result)
+{
+	result->i = 0.0f - vector->i;
+	result->j = 0.0f - vector->j;
+	result->k = 0.0f - vector->k;
+}
+
+/* sets the direction to the reverse of the one two angles in degrees give,
+   and sets the point */
 // @retail 0xbc070
 void __stdcall function_bc070(real a, real b, real c, real d, real e)
 {
-    (void)&a; (void)&b; (void)&c; (void)&d; (void)&e;
-    volatile real *state = (volatile real *)g_4de2f4;
+    s_direction_state_bc070 *state = (s_direction_state_bc070 *)g_4de2f4;
     real vertical = a * 0.01745329238474369f;
     real horizontal = b * 0.01745329238474369f;
-    state[0x60 / 4] = (real)(cos(horizontal) * cos(vertical));
-    state[0x64 / 4] = (real)(sin(horizontal) * cos(vertical));
-    state[0x68 / 4] = (real)sin(vertical);
-    state[0x60 / 4] = 0.0f - state[0x60 / 4];
-    state[0x64 / 4] = 0.0f - state[0x64 / 4];
-    state[0x68 / 4] = 0.0f - state[0x68 / 4];
-    state[0x54 / 4] = c;
-    state[0x58 / 4] = d;
-    state[0x5c / 4] = e;
+    state->direction.i = (real)(cos(horizontal) * cos(vertical));
+    state->direction.j = (real)(sin(horizontal) * cos(vertical));
+    state->direction.k = (real)sin(vertical);
+    vector3f_negate(&state->direction, &state->direction);
+    real_point3d_set(&state->point, c, d, e);
 }
 
 
+/* the second point and direction 0xbbfc0 sets in the same list */
+struct s_direction_state_bbfc0
+{
+	byte unknown00[0x28];
+	vector3f direction_copy;
+	real value34;
+	real value38;
+	point3f point;
+	vector3f direction;
+	byte unknown54[0x6c - 0x54];
+	short unknown6c;
+};
+
+/* the same for the second direction, which it also copies to 0x28; sets the
+   floats at 0x34 and 0x38 to 0.8 and the word at 0x6c to NONE */
 // @retail 0xbbfc0
 void __stdcall function_bbfc0(real a, real b, real c, real d, real e)
 {
-    (void)&a; (void)&b; (void)&c; (void)&d; (void)&e;
-    volatile real *state = (volatile real *)g_4de2f4;
+    s_direction_state_bbfc0 *state = (s_direction_state_bbfc0 *)g_4de2f4;
     real vertical = a * 0.01745329238474369f;
     real horizontal = b * 0.01745329238474369f;
-    state[0x48 / 4] = (real)(cos(horizontal) * cos(vertical));
-    state[0x4c / 4] = (real)(sin(horizontal) * cos(vertical));
-    state[0x50 / 4] = (real)sin(vertical);
-    state[0x48 / 4] = 0.0f - state[0x48 / 4];
-    state[0x4c / 4] = 0.0f - state[0x4c / 4];
-    state[0x50 / 4] = 0.0f - state[0x50 / 4];
-    state[0x3c / 4] = c;
-    state[0x40 / 4] = d;
-    state[0x44 / 4] = e;
-    *(vector3f *)((byte *)state + 0x28) = *(vector3f *)((byte *)state + 0x48);
-    state[0x34 / 4] = 0.8f;
-    state[0x38 / 4] = 0.8f;
-    *(volatile short *)((byte *)state + 0x6c) = NONE;
+    state->direction.i = (real)(cos(horizontal) * cos(vertical));
+    state->direction.j = (real)(sin(horizontal) * cos(vertical));
+    state->direction.k = (real)sin(vertical);
+    vector3f_negate(&state->direction, &state->direction);
+    real_point3d_set(&state->point, c, d, e);
+    state->direction_copy = state->direction;
+    state->value34 = 0.8f;
+    state->value38 = 0.8f;
+    state->unknown6c = NONE;
 }
 
 void function_1c4b00(long object_index, void *linear, void *angular, long force);

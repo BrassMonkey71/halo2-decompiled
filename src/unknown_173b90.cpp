@@ -119,13 +119,9 @@ void function_174f80(s_particle_system_datum *system, void *a, void *b, void *c)
 	definition->render(system, a, b, c);
 	if (!enabled)
 	{
-		real divisor = g_4b9fa4;
-		if (0.0001f > divisor)
-			divisor = 0.0001f;
+		real divisor = 0.0001f > g_4b9fa4 ? 0.0001f : g_4b9fa4;
 		real reciprocal = 1.0f / divisor;
-		real value = g_4b9ff8;
-		value *= reciprocal;
-		value = 0.0f - value;
+		real value = 0.0f - g_4b9ff8 * reciprocal;
 		real constants[4];
 		constants[0] = value < 0.0f ? 0.0f : value > 1.0f ? 1.0f : value;
 		constants[1] = 0.0f;

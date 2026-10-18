@@ -120,13 +120,13 @@ void function_22aff1(long arg_0, byte const *arg_1, byte const *arg_2, real cons
 			{
 				bool local_14 = local_13 > 1;
 				bool local_15 = local_13 == 1 || local_13 == 2;
-				real vertical_offset = local_14 ? (real)function_1d6d0((coordinates.y1 - anchor.y) * vertical_scale) :
+				real offset_along_vertical_axis = local_14 ? (real)function_1d6d0((coordinates.y1 - anchor.y) * vertical_scale) :
 					(real)-function_2b460((anchor.y - coordinates.y0) * vertical_scale);
 				real &local_17 = *(real *)&arg_3;
 				local_17 = local_15 ? (real)function_1d6d0((coordinates.x1 - anchor.x) * horizontal_scale) :
 					(real)-function_2b460((anchor.x - coordinates.x0) * horizontal_scale);
-				vertices[local_13].x = horizontal_axis.x * local_17 + vertical_axis.x * vertical_offset + origin.x;
-				vertices[local_13].y = horizontal_axis.y * local_17 + vertical_axis.y * vertical_offset + origin.y;
+				vertices[local_13].x = horizontal_axis.x * local_17 + vertical_axis.x * offset_along_vertical_axis + origin.x;
+				vertices[local_13].y = horizontal_axis.y * local_17 + vertical_axis.y * offset_along_vertical_axis + origin.y;
 			}
 			if (*(word const *)(arg_2 + 0x1e) & 1)
 			{

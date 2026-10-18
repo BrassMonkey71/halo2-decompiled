@@ -43,7 +43,6 @@ long function_26d100(vector3f const *up, long *unknown, s_collision_result_1697c
 // @retail 0x26bfa0
 void function_26bfa0(long object_index, long *location_index, s_location_view *location)
 {
-	s_location_view *const *location_reference = &location;
 	long result = NONE;
 	long root = NONE;
 
@@ -61,32 +60,32 @@ void function_26bfa0(long object_index, long *location_index, s_location_view *l
 	{
 	case 0:
 		function_dfdb0(root, 0, &query.index, &query.point, &query.a, &query.b);
-		if (*location_reference)
+		if (location)
 		{
 			if (query.index != NONE)
 			{
-				function_210420(&query.point, query.a, query.b, &(*location_reference)->point);
+				function_210420(&query.point, query.a, query.b, &location->point);
 			}
 			else
 			{
-				(*location_reference)->point.point = query.point;
-				(*location_reference)->point.output_index = NONE;
+				location->point.point = query.point;
+				location->point.output_index = NONE;
 			}
 		}
 		result = query.index;
 		break;
 	case 1:
 		function_f1070(root, 0, &query.index, &query.point, &query.a, &query.b);
-		if (*location_reference)
+		if (location)
 		{
 			if (query.index != NONE)
 			{
-				function_210420(&query.point, query.a, query.b, &(*location_reference)->point);
+				function_210420(&query.point, query.a, query.b, &location->point);
 			}
 			else
 			{
-				(*location_reference)->point.point = query.point;
-				(*location_reference)->point.output_index = NONE;
+				location->point.point = query.point;
+				location->point.output_index = NONE;
 			}
 		}
 		result = query.index;
@@ -103,7 +102,8 @@ void function_26bfa0(long object_index, long *location_index, s_location_view *l
 				query.point.y = object->center.y;
 				query.point.z = object->center.z;
 				contact.collision.unknown24 = NONE;
-				result = function_26d100(g_4687b0, (long *)*location_reference, &contact.collision, &query.point);
+				/* read from the argument's stack slot: retail passes the location on the stack */
+				result = function_26d100(g_4687b0, (long *)(*(s_location_view *const volatile *)&location), &contact.collision, &query.point);
 			}
 		}
 		break;
