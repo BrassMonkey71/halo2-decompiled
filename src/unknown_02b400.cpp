@@ -675,8 +675,6 @@ void function_28580(long tag, real time, vector3f *out)
 }
 
 #include <string.h>
-extern real g_4b9d90, g_4b9d94;
-extern bool g_4b9d9c;
 extern double g_4858a0;
 extern transform4x3f *g_4687d0;
 
@@ -690,9 +688,8 @@ struct s_27aa0_record
     real weights[4];
     real coordinates[8];
 };
-extern real g_4b9c74[5][14];
-long g_4b9d8c;
-real g_4b9d98;
+#include "filter_kernel_storage.h"
+s_filter_kernel_storage g_filter_kernel_storage;
 byte g_55e6c4;
 
 PRIVATE __forceinline double filter_random_fraction(void)
@@ -707,8 +704,9 @@ PRIVATE __forceinline void filter_random_pair(point2f *point)
     *(dword volatile *)&g_4e7408->seed = seed;
     seed = seed * 1664525 + 1013904223;
     g_4e7408->seed = seed;
+    /* the high half of the stored seed, read back as a word */
+    point->y = (real)*((word const *)&g_4e7408->seed + 1) * (1.0f / 65535.0f);
     point->x = (real)(seed >> 16) * (1.0f / 65535.0f);
-    point->y = (real)(word)(g_4e7408->seed >> 16) * (1.0f / 65535.0f);
 }
 
 /* standard (frame alignment): retail's prologue realigns this frame itself
@@ -769,7 +767,7 @@ void function_27aa0(void)
     real angle_delta = (real)atan2(relative.forward.j + (relative.left.j + relative.up.j) * 0.0f,
         relative.forward.i + (relative.left.i + relative.up.i) * 0.0f);
     real *angle = (real *)(state->field_00 + 0x3c);
-    *angle -= angle_delta * *(real *)(definition + 4);
+    *angle -= -(angle_delta * *(real *)(definition + 4));
     real cosine = (real)cos((double)*angle);
     real sine = (real)sin((double)*angle);
     real volatile *phase_reference = (real volatile *)(state->field_00 + 0x40);
@@ -783,7 +781,7 @@ void function_27aa0(void)
     while (*ring >= 4) *ring -= 4;
     if (crossing < 0.0f) filter_random_pair(points + ((*ring + 3) % 4));
     else if (crossing > 0.0f) filter_random_pair(points + *ring);
-    if (*phase_reference < 0.0f || *phase_reference >= 1.0f) return;
+    if (*(real *)(state->field_00 + 0x40) < 0.0f || *phase_reference >= 1.0f) return;
     real offsets[4] = { 0.0f, 0.7135000228881836f, 0.34220001101493835f, 0.579800009727478f };
     for (long i = 0; i < 4; ++i)
     {
@@ -810,7 +808,7 @@ void function_27aa0(void)
     for (long j = 0; j < 4; ++j)
     {
         long index = (*ring + j) % 4;
-        real distance = (j + *phase_reference) * step + g_4857dc;
+        real distance = (j + *(real *)(state->field_00 + 0x40)) * step + g_4857dc;
         real fraction = (distance - g_4857dc) * inverse_span;
         real centered = fraction * 2.0f - 1.0f;
         real offset_from_center = centered >= 0.0f ? centered : 0.0f - centered;
@@ -823,35 +821,38 @@ void function_27aa0(void)
         real dy = relative.up.j * z + relative.left.j * y + relative.forward.j * x + relative.position.y;
         points[index].x -= (dy * sine * g_4b9d94 + dx * cosine) * *(real *)(definition + 8) * radius * 0.5f;
         points[index].y -= (dy * cosine * g_4b9d94 - dx * sine) * *(real *)(definition + 8) * radius * 0.5f;
-        real bounded = fraction < 0.0f ? 0.0f : fraction > 1.0f ? 1.0f : fraction;
         if (*(real *)(definition + 0x28) != 0.0f)
         {
-            real t = records[index].fraction;
+            real t = ((s_27aa0_record *)g_4b9c74 + 1)[index].fraction;
+            real bounded = fraction < 0.0f ? 0.0f : fraction > 1.0f ? 1.0f : fraction;
             real weight_third = t * t * weight;
             weight_third = weight_third < 0.0f ? 0.0f : weight_third > 1.0f ? 1.0f : weight_third;
-            real weight_second = t * 2.0f * (1.0f - t) * weight;
+            real weight_second = (t * 2.0f) * (1.0f - t) * weight;
             weight_second = weight_second < 0.0f ? 0.0f : weight_second > 1.0f ? 1.0f : weight_second;
-            real weight_first = (1.0f - t) * (1.0f - t) * weight;
+            real weight_first = ((1.0f - t) * (1.0f - t)) * weight;
             weight_first = weight_first < 0.0f ? 0.0f : weight_first > 1.0f ? 1.0f : weight_first;
-            records[index].weights[0] = weight_first;
-            records[index].weights[2] = weight_third;
-            records[index].weights[1] = weight_second;
+            ((s_27aa0_record *)g_4b9c74 + 1)[index].weights[0] = weight_first;
+            ((s_27aa0_record *)g_4b9c74 + 1)[index].weights[2] = weight_third;
+            ((s_27aa0_record *)g_4b9c74 + 1)[index].weights[1] = weight_second;
+            ((s_27aa0_record *)g_4b9c74 + 1)[index].weights[3] = bounded;
         }
         else
         {
-            records[index].weights[0] = 0.0f;
-            records[index].weights[1] = weight < 0.0f ? 0.0f : weight > 1.0f ? 1.0f : weight;
-            records[index].weights[2] = 0.0f;
+            real bounded = fraction < 0.0f ? 0.0f : fraction > 1.0f ? 1.0f : fraction;
+            real clamped = weight < 0.0f ? 0.0f : weight > 1.0f ? 1.0f : weight;
+            ((s_27aa0_record *)g_4b9c74 + 1)[index].weights[0] = 0.0f;
+            ((s_27aa0_record *)g_4b9c74 + 1)[index].weights[1] = clamped;
+            ((s_27aa0_record *)g_4b9c74 + 1)[index].weights[2] = 0.0f;
+            ((s_27aa0_record *)g_4b9c74 + 1)[index].weights[3] = bounded;
         }
-        records[index].weights[3] = bounded;
-        records[index].coordinates[0] = size * cosine * 0.5f;
-        records[index].coordinates[1] = size * sine * aspect * 0.5f;
-        records[index].coordinates[2] = 0.0f;
-        records[index].coordinates[3] = points[index].x;
-        records[index].coordinates[4] = size * sine * -0.5f;
-        records[index].coordinates[5] = size * cosine * aspect * 0.5f;
-        records[index].coordinates[6] = 0.0f;
-        records[index].coordinates[7] = points[index].y;
+        ((s_27aa0_record *)g_4b9c74 + 1)[index].coordinates[0] = size * cosine * 0.5f;
+        ((s_27aa0_record *)g_4b9c74 + 1)[index].coordinates[2] = 0.0f;
+        ((s_27aa0_record *)g_4b9c74 + 1)[index].coordinates[3] = points[index].x;
+        ((s_27aa0_record *)g_4b9c74 + 1)[index].coordinates[1] = size * sine * aspect * 0.5f;
+        ((s_27aa0_record *)g_4b9c74 + 1)[index].coordinates[4] = size * sine * -0.5f;
+        ((s_27aa0_record *)g_4b9c74 + 1)[index].coordinates[5] = size * cosine * aspect * 0.5f;
+        ((s_27aa0_record *)g_4b9c74 + 1)[index].coordinates[6] = 0.0f;
+        ((s_27aa0_record *)g_4b9c74 + 1)[index].coordinates[7] = points[index].y;
     }
 }
 

@@ -158,18 +158,18 @@ local_8:
 			long local_20 = local_9->field_2c;
 			if (local_20 <= 0)
 				goto local_16;
-			long const *local_18 = arg_1->field_c;
 			for (short local_10 = 0; local_10 < local_17; local_10++)
 			{
+				long const *local_21 = &arg_1->field_c[local_10];
 				for (short local_11 = 0; local_11 < arg_3; local_11++)
 				{
-					if (arg_2->field_50[local_11] == local_18[local_10])
-					goto local_13;
+					if (arg_2->field_50[local_11] == *local_21)
+						goto local_13;
 				}
 				for (short local_12 = 0; local_12 < local_20; local_12++)
 				{
 					s_291802 const *local_19 = &local_9->field_30[local_12];
-					if (local_19->field_8 == local_18[local_10])
+					if (local_19->field_8 == *local_21)
 					{
 						*arg_4 = local_19->field_8;
 						*arg_5 = local_19->field_4;

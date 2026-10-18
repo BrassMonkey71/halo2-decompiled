@@ -51,6 +51,7 @@ void *function_1e4d10(long actor_index);
 void function_1f86a0(long index);
 
 short function_2684f0(s_actor_view *actor);
+void function_e70b0(long unit_index, short *value);
 long function_1469f0(real seconds);
 
 #pragma intrinsic(_ReadWriteBarrier)
@@ -67,10 +68,9 @@ short __stdcall function_1bf0f0(long actor_index, s_slot *slot, bool active)
 	}
 	else if (actor->unknown504 == 2)
 	{
-		long local_1 = (actor->unknown018 & 0xffff) * 3;
-		_ReadWriteBarrier();
-		byte *unit = *(byte **)(g_4e0300->data + local_1 * 4 + 8);
-		if (*(short *)(unit + *(short *)(unit + 0x346) + 0x36) == 5)
+		short action;
+		function_e70b0(actor->unknown018, &action);
+		if (action == 5)
 		{
 			if (state->unknown12 > 0)
 				state->unknown12--;
@@ -167,9 +167,9 @@ bool __stdcall function_1befd0(long actor_index, s_slot *slot)
 // @retail 0x1bf230
 bool __stdcall function_1bf230(long actor_index, s_slot *slot)
 {
-	bool result = true;
 	s_actor_view *actor = actor_get(actor_index);
 	s_slot_0a *state = (s_slot_0a *)slot;
+	bool result = true;
 
 	if (!REFERENCE_EQUAL(state->reference, g_470fa0) && actor->unknown5b4 > 0)
 		state->reference = g_470fa0;

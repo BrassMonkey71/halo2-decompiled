@@ -2,6 +2,33 @@
 
 The newest entry comes first.
 
+## 2026-10-18: 9115 functions match
+
+```
+matched 9115 of 11321 game functions (1305886 of 2784283 bytes, 46.90%)
+```
+
+9 new matches, none lost:
+- Machine 3's batch 71 (#564): `0x5c010`, `0x68c00`, `0x69a00`, `0x9d110`, `0xa9570`, `0xb4670`, `0x137000`, `0x1bf230` and `0x291800` match.
+
+## 2026-10-18: 9106 functions match
+
+```
+matched 9106 of 11321 game functions (1302419 of 2784283 bytes, 46.78%)
+```
+
+1 new matches, none lost:
+- Our key lane's round k3r11 (machine 3's loan): `0x2c790` match.
+
+## 2026-10-18: 9105 functions match
+
+```
+matched 9105 of 11321 game functions (1302156 of 2784283 bytes, 46.77%)
+```
+
+0 new matches, none lost:
+- @BirchWoodGod's #562:  match.
+
 ## 2026-10-18: 9105 functions match
 
 ```

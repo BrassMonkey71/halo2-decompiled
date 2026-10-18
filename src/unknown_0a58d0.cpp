@@ -1099,7 +1099,7 @@ void function_a9b40(long index, s_z_copy_state *state)
   real squared = blended.w * blended.w + blended.k * blended.k + blended.j * blended.j + blended.i * blended.i;
   if (squared > 0.0f)
   {
-   double scale = 1.0f / sqrt(squared);
+   real scale = 1.0f / sqrt(squared);
    blended.i = (real)(blended.i * scale);
    blended.j = (real)(blended.j * scale);
    blended.k = (real)(blended.k * scale);
@@ -1132,10 +1132,10 @@ void function_a9570(long index)
    function_a9640(index);
   else
   {
+   bool changed = false;
    s_z_copy_state state;
    z_copy_state_clear(&state);
    function_a9820((long *)&state, index);
-   bool changed = false;
    if (state.flags & 1)
    {
     function_a9a70(index, &state);
