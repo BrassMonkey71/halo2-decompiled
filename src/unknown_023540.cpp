@@ -2015,7 +2015,6 @@ static __forceinline void *surface_texture_get(long index)
 // @retail 0x24ee0
 void function_24ee0(s_24ee0_state const *state, short mode)
 {
-    (void)&mode;
     D3DTexture *texture = (D3DTexture *)surface_texture_get(15);
     texture->Size = 0;
     texture->Format = 0x06610629;
