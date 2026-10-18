@@ -158,8 +158,8 @@ void function_8d9f0(void)
 			handler->observer = NULL;
 			handler->sessions = NULL;
 			handler->initialized = true;
-			if (network_observer_initialize(g_510570, g_51056c,
-				(s_network_observer_configuration *)((byte *)&g_network_configuration + 0x14a0), g_510560, g_510564))
+			if (network_observer_initialize(g_510570, g_510560,
+				(s_network_observer_configuration *)((byte *)&g_network_configuration + 0x14a0), g_510568, g_510564))
 				observer_ready = true;
 		}
 		((s_08d9f0_handler *)g_51056c)->observer = g_510570;
