@@ -2,6 +2,60 @@
 
 The newest entry comes first.
 
+## 2026-10-18: 9105 functions match
+
+```
+matched 9105 of 11321 game functions (1302156 of 2784283 bytes, 46.77%)
+```
+
+0 new matches, none lost:
+- @BirchWoodGod's #562:  match.
+
+## 2026-10-18: 9105 functions match
+
+```
+matched 9105 of 11321 game functions (1302156 of 2784283 bytes, 46.77%)
+```
+
+1 new matches, none lost:
+- Our key lane's round k3r10 (machine 3's loan): `0x2c8a0` match.
+
+## 2026-10-18: 9104 functions match
+
+```
+matched 9104 of 11321 game functions (1301807 of 2784283 bytes, 46.76%)
+```
+
+0 new matches, none lost:
+- @BirchWoodGod's #563:  match.
+
+## 2026-10-18: 9104 functions match
+
+```
+matched 9104 of 11321 game functions (1301807 of 2784283 bytes, 46.76%)
+```
+
+6 new matches, none lost:
+- @BirchWoodGod's #560: `0x12fa0`, `0x4c2b0`, `0x4d640`, `0x4d720`, `0x4d9c0` and `0x4daa0` match.
+
+## 2026-10-18: 9098 functions match
+
+```
+matched 9098 of 11321 game functions (1299557 of 2784283 bytes, 46.67%)
+```
+
+1 new matches, none lost:
+- @BirchWoodGod's #555: `0x1892a0` match.
+
+## 2026-10-18: 9097 functions match
+
+```
+matched 9097 of 11321 game functions (1299405 of 2784283 bytes, 46.67%)
+```
+
+1 new matches, none lost:
+- @BirchWoodGod's #559: `0x16f120` match.
+
 ## 2026-10-18: 9096 functions match
 
 ```
