@@ -181,9 +181,6 @@ void hkRigidBody::setTransform(hkTransform const &transform) { }
 
 /* callees of the physics code (unknown_1c25a0.cpp, unknown_1cec30.cpp) */
 
-// @stub 0x30bd50
-void hkEntityApi::removeEntityListener(hkEntityListener *listener) { }
-
 // @stub 0x30f800
 hkBool hkWorld::removeEntity(hkEntity *entity) { return hkBool(); }
 
@@ -421,9 +418,6 @@ public:
     c_2dbfc0(long arg_0, void *arg_1, real arg_2);
     void function_2dbcf0(s_2dc030 const *arg_0);
 };
-
-// @stub 0x2dbfc0
-c_2dbfc0::c_2dbfc0(long arg_0, void *arg_1, real arg_2) {}
 
 // @stub 0x2dc030
 s_2dc030::s_2dc030() {}

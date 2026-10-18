@@ -1,7 +1,7 @@
 // @flags /O2 /GL- /GX
 // Havok (third-party physics library): a stream over another stream lets go
 // of the stream beneath it when it is destroyed.
-#include "reference_counted_2d88a0.h"
+#include "stream_holder_2d8e70.h"
 
 bool __cdecl function_279740(long value);
 
@@ -11,13 +11,6 @@ public:
 	virtual void destroy(unsigned int flags) = 0;
 };
 
-class stream_holder_2d8e70 : public referenced_2d88a0
-{
-public:
-	referenced_2d88a0 *stream;
-
-	~stream_holder_2d8e70();
-};
 
 // @retail 0x2d8e70
 stream_holder_2d8e70::~stream_holder_2d8e70()

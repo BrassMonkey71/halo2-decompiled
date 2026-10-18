@@ -74,5 +74,3 @@ struct c_child_transform
  c_child_transform(c_havok_reference_counted *child);
 };
 
-// @stub 0x2de890
-c_child_transform::c_child_transform(c_havok_reference_counted *child) {}
