@@ -376,16 +376,17 @@ static __forceinline real cache_map_progress(char const *name)
 {
 	real progress = 0.0f;
 	long location = map_location_get(name);
-	switch (location)
+	if (location == 3)
 	{
-	case 3:
 		progress = 1.0f;
-		break;
-	case 2:
+	}
+	else if (location == 2)
+	{
 		if (map_names_equal(g_55bd21, name))
 			function_2148b0((long)&progress);
-		break;
-	default:
+	}
+	else
+	{
 		progress = 0.0f;
 	}
 	return progress;
@@ -438,14 +439,14 @@ real __stdcall function_122dd0(byte *map_name, long mode, long type)
 			goto done;
 		}
 	}
-	switch (mode)
+	if (mode == 0)
 	{
-	case 0:
 		progress /= weight;
 		if (progress < 0.0f) progress = 0.0f;
 		else if (progress > 1.0f) progress = 1.0f;
-		break;
-	default:
+	}
+	else
+	{
 		progress = weight - progress;
 	}
 done:
