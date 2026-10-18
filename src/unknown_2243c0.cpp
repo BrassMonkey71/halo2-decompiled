@@ -63,7 +63,6 @@ void __stdcall function_2243c0(s_interface_definition *arg_0, long arg_1, long a
 	s_2243c0 local_0;
 	s_2243c1 local_1;
 	byte const *local_2 = (byte const *)arg_0;
-	(void)&arg_1; (void)&arg_2; (void)&arg_3; (void)&arg_4; (void)&arg_5;
 	if (*(long const *)(local_2 + 0x8c) > 0)
 	{
 		function_2c3b0(&g_55edd8);
@@ -95,8 +94,8 @@ void __stdcall function_2243c0(s_interface_definition *arg_0, long arg_1, long a
 					if (*(long const *)(local_0.field_4 + 0x44) <= 0)
 						goto local_7;
 					byte const *local_8 = *(byte const *const *)(local_0.field_4 + 0x48);
-					short local_9 = *(short const *)(local_8 + 4);
-					short local_10 = *(short const *)(local_8 + 6);
+					long local_9 = *(short const *)(local_8 + 4);
+					long local_10 = *(short const *)(local_8 + 6);
 					if (local_9 != local_10)
 						local_0.field_c = (real)local_9 / (real)local_10;
 				}

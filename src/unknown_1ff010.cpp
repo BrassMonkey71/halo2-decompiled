@@ -456,3 +456,65 @@ bool __stdcall function_1ff010(long arg_0, point3f const *arg_1)
 done:
     return local_0;
 }
+
+#include "props.h"
+
+void __stdcall function_26c2d0(long prop_index);
+bool function_1fef40(s_type_c3b527 const *target, long actor_index);
+extern vector3f *g_4687b0;
+void rotate_direction(vector3f *vector, vector3f const *axis, real sine, real cosine); /* forced inline in src/unknown_1eb8a0.cpp */
+
+// @retail 0x1ff360
+long function_1ff360(long actor_index, point3f const *target, vector3f *velocity)
+{
+	s_actor_view *actor = actor_get(actor_index);
+	long object_index = NONE;
+	long prop_index = *(long *)((byte *)actor + 0x7e0);
+	if (prop_index != NONE)
+	{
+		s_prop_node_view *node = prop_node_get(prop_index);
+		if (node->unknown24 >= 1)
+			object_index = node->object_index;
+		if (node->unknown24 > 0 && *(bool *)((byte *)actor + 0x7cc))
+		{
+			s_type_5cfb45 *state = function_25d690((s_prop_datum *)node);
+			function_26c2d0(prop_index);
+			s_type_c3b527 point = *(s_type_c3b527 const *)&state->unknown48;
+			point.point.z += 0.2f;
+			function_1fef40(&point, actor_index);
+		}
+	}
+	function_1ff010(actor_index, target);
+	vector3f direction = *(vector3f *)((byte *)actor + 0x7e8);
+	if (actor->unknown26c == NONE)
+	{
+		point2f horizontal;
+		horizontal.x = direction.i;
+		horizontal.y = direction.j;
+		real magnitude = normalize2d(&horizontal);
+		if (magnitude > 0.0f && actor->unknown290.j * horizontal.y + actor->unknown290.i * horizontal.x < 0.0f)
+		{
+			bool left = actor->unknown290.i * horizontal.y - actor->unknown290.j * horizontal.x > 0.0f;
+			vector3f turned = actor->unknown290;
+			real sine = (left ? 1 : -1) * 0.5f;
+			rotate_direction(&turned, g_4687b0, sine, 0.0f);
+			if (normalize2d((point2f *)&turned) > 0.0f)
+			{
+				turned.i *= magnitude;
+				turned.j *= magnitude;
+			}
+			else
+			{
+				turned.i = direction.i;
+				turned.j = direction.j;
+			}
+			turned.k = direction.k;
+			direction = turned;
+		}
+	}
+	real speed = *(real *)((byte *)actor + 0x7f4);
+	velocity->i = direction.i * speed;
+	velocity->j = direction.j * speed;
+	velocity->k = direction.k * speed;
+	return object_index;
+}
