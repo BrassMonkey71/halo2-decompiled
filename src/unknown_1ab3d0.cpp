@@ -130,6 +130,8 @@ PRIVATE __forceinline vector3f *function_1ab4b1(vector3f const *arg_0, real arg_
     return arg_4;
 }
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1ab4b0
 bool __stdcall function_1ab4b0(long actor_index, s_slot *slot)
 {
@@ -160,12 +162,7 @@ bool __stdcall function_1ab4b0(long actor_index, s_slot *slot)
 				if (!element || (ticks = (short)function_1469f0(element->unknown8c)) <= 0)
 				{
 					real seconds = (real)g_510c54->field_2_3 * 2.5f;
-					long rounded;
-					__asm
-					{
-						fld seconds
-						fistp rounded
-					}
+					long rounded = real_to_long(seconds);
 					ticks = (short)rounded;
 				}
 				slot_state->ticks = ticks;

@@ -3217,14 +3217,7 @@ void __stdcall function_061570(c_class_58d20 *session, bool flag)
 {
 	if (session->member_count > 1)
 	{
-		bool hosting = false;
-		long state = session->state;
-		if (state == 5 || state == 6 || state == 7 || state == 8)
-			hosting = true;
-		else
-		{
-			volatile long unused = state;
-		}
+		bool hosting = session->function_058d20();
 		long previous_host = session->member_index;
 		if (!hosting)
 		{
