@@ -38,6 +38,8 @@ real function_30bf0(vector3f *v);
 extern vector3f *g_4687bc;
 void __stdcall actor_behavior_81_update48(long object_index, long unused);
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1c19b0
 bool __stdcall function_1c19b0(long actor_index, vector3f const *direction, s_type_f17a25 *path)
 {
@@ -109,17 +111,9 @@ bool __stdcall function_1c19b0(long actor_index, vector3f const *direction, s_ty
 				real seconds = g_510c54->field_2_3;
 				real seconds_extra;
 
-				__asm
-				{
-					fld seconds
-					fistp ticks
-				}
+				ticks = real_to_long(seconds);
 				seconds_extra = g_510c54->field_2_3 * 1.5f;
-				__asm
-				{
-					fld seconds_extra
-					fistp ticks_extra
-				}
+				ticks_extra = real_to_long(seconds_extra);
 				return function_1f34b0(actor_index, &actor->position, direction,
 					(i + 1) * 0.25f + distance + 0.5f, (short)((real)ticks * distance + (real)ticks_extra));
 			}

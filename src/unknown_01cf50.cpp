@@ -4840,7 +4840,7 @@ void function_2d140(long tag, real const *weights, long columns, long rows, s_fi
                         x = (x - left) * scale;
                         y = (y - top) * scale;
                     }
-                    D3DDevice_SetVertexData4f(D3DVSDE_VERTEX, x, y, 16777215.0f, 16777215.0f);
+                    D3DDevice_SetVertexData4f(D3DVSDE_POSITION, x, y, 16777215.0f, 16777215.0f);
                 }
             }
             D3DDevice_End();

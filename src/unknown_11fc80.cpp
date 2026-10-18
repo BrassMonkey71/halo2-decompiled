@@ -53,13 +53,26 @@ long function_11fc80(
 	{
 		real offset = keep_inside ? tolerance : 0.f - tolerance;
 		point3f const *previous = &points[point_count - 1];
-		real previous_distance = plane->i * previous->x + plane->j * previous->y + plane->k * previous->z - plane->d - offset;
+		// retail evaluates the distances in SSE single precision: every product and sum is rounded to float
+		real previous_z = plane->k * previous->z;
+		real previous_y = plane->j * previous->y;
+		real previous_distance = previous_z + previous_y;
+		real previous_x = plane->i * previous->x;
+		previous_distance += previous_x;
+		previous_distance -= plane->d;
+		previous_distance -= offset;
 		bool previous_inside = previous_distance >= 0.f;
 
 		for (long i = 0; i < point_count; i++)
 		{
 			point3f const *current = &points[i];
-			real distance = plane->j * current->y + (plane->i * current->x + plane->k * current->z) - plane->d - offset;
+			real current_x = plane->i * current->x;
+			real current_z = plane->k * current->z;
+			real distance = current_x + current_z;
+			real current_y = plane->j * current->y;
+			distance += current_y;
+			distance -= plane->d;
+			distance -= offset;
 			bool inside = distance >= 0.f;
 
 			if (inside != previous_inside)
@@ -68,7 +81,8 @@ long function_11fc80(
 					break;
 				vector3f delta;
 				vector3d_from_points3d(previous, current, &delta);
-				real t = previous_distance / (previous_distance - distance);
+				real span = previous_distance - distance;
+				real t = previous_distance / span;
 				function_11fc81(&out[count], previous, &delta, t);
 				count++;
 			}

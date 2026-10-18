@@ -638,7 +638,7 @@ short __stdcall function_bb050(long mask, dword type_mask, void const *location,
     for (short i = 0; i < cluster_count; ++i)
     {
         long cluster = clusters[i];
-        struct search_slots { s_object_cluster_reference *record; s_object_cluster_iterator first, second; } search;
+        struct search_slots { s_object_cluster_reference *record; s_object_cluster_iterator second, first; } search;
         search.record = 0;
         if (mask & 1)
         {

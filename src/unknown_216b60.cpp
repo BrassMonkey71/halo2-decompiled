@@ -25,8 +25,6 @@ void unicode_string_snprintf(word *buffer, long maximum_count, word const *forma
 // @retail 0x215f40
 bool __stdcall function_215f40(long type, byte *buffer)
 {
-	(void)&type;
-	(void)&buffer;
 	word *name = (word *)buffer;
 	name[0] = 0;
 	s_saved_game_drive drive = g_4e61c0;
