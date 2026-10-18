@@ -19,20 +19,18 @@ void function_3e4e0(dword *current, dword const *target, real step);
 // @retail 0x3dfe0
 void function_3dfe0(long cache_index, long object_index, real priority)
 {
-    (void)&cache_index; (void)&object_index;
     s_3dfe0_cache *cache = (s_3dfe0_cache *)(g_509434->data + (cache_index & 0xffff) * 0x100);
     s_effect_color_query *current = &cache->current;
     long elapsed = g_4ba034 - cache->sample_time;
     if (!elapsed) return;
     long update_elapsed = g_4ba034 - cache->update_time;
     byte *object = ((s_3dd10_object_header *)g_4e0300->data)[object_index & 0xffff].object;
-    bool volatile force = !cache->initialized || !cache->valid;
-    bool &update = *(bool *)&cache_index;
-    update = false;
+    bool force = !cache->initialized || !cache->valid;
+    bool update = false;
     if (elapsed < 0) elapsed = 1;
     if (force) update = true;
     else if (object[0xc1] & 1) return;
-    short sample = 1;
+    bool sample = true;
     if (cache->sample_time != (dword)NONE)
     {
         if (priority > 400.0f) sample = elapsed > 3;
