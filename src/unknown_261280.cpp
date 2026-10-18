@@ -284,72 +284,65 @@ void function_29db90(short range_index, short block_index, s_29db90 *list);
 short __stdcall function_262180(long actor_index, long block_index, long range_index,
     s_261d20_entry *entries, short *count, long maximum_count, s_prop_search *search, short type)
 {
-    long const *actor_reference = &actor_index;
-    long const *block_reference = &block_index;
-    long const *range_reference = &range_index;
-    s_261d20_entry *const *entries_reference = &entries;
-    short *const *count_reference = &count;
-    long const *maximum_reference = &maximum_count;
-    s_prop_search *const *search_reference = &search;
-    short const *type_reference = &type;
-    s_actor_view *actor = actor_get(*actor_reference);
+    s_actor_view *actor = actor_get(actor_index);
     bool special = actor->unknown26c != NONE;
-    if (*block_reference != NONE && *range_reference != NONE)
+    if (block_index != NONE && range_index != NONE)
     {
-        s_type_967e20 *context = (s_type_967e20 *)*search_reference;
+        s_type_967e20 *context = (s_type_967e20 *)search;
         if (!context || !context->unknown68c ||
-            (*block_reference == context->unknown68e && *range_reference == context->unknown690))
+            (block_index == context->unknown68e && range_index == context->unknown690))
         {
-            s_candidate_block *block = &(*(s_candidate_block **)((byte *)g_4e0350 + 0x16c))[*block_reference & 0xffff];
+            s_candidate_block *block = &(*(s_candidate_block **)((byte *)g_4e0350 + 0x16c))[block_index & 0xffff];
             if (block->structure_index == g_4686c4)
             {
-                s_candidate_range *range = &block->ranges[*range_reference];
+                s_candidate_range *range = &block->ranges[range_index];
                 dword flags = range->flags;
-                if (special == (bool)(flags & 1))
+                if (special == ((flags & 1) != 0))
                 {
                     bool allowed = (bool)((flags >> 1) & 1);
+                    bool searchable = true;
                     if (context)
                     {
-                        if (!special && (context->unknown57 || context->unknown59))
-                        {
-                            if (context->unknown57 && !allowed)
-                                goto done;
-                        }
-                        else if (allowed)
-                            goto done;
+                        if (special)
+                            searchable = !allowed;
+                        else if (context->unknown57)
+                            searchable = allowed;
+                        else if (!context->unknown59)
+                            searchable = !allowed;
                     }
-                    if (*count < *maximum_reference)
-                    for (long volatile index = (word)range->first; *count < *maximum_reference && (short)index < range->first + range->count; ++index)
+                    if (searchable)
                     {
-                        s_reference reference;
-                        reference.unknown0 = index;
-                        reference.unknown2 = (short)*block_reference;
-                        if (function_2623a0((s_reference_filter_view const *)context, *actor_reference, actor, reference))
+                        for (short index = range->first; *count < maximum_count && index < range->first + range->count; ++index)
                         {
-                            s_reference_candidate_view *entry = (s_reference_candidate_view *)&(*entries_reference)[*count];
-                            if (function_2624d0((s_261d20_entry *)entry, reference))
+                            s_reference reference;
+                            reference.unknown0 = index;
+                            reference.unknown2 = (short)block_index;
+                            if (function_2623a0((s_reference_filter_view const *)context, actor_index, actor, reference))
                             {
-                                switch (*type_reference)
+                                s_reference_candidate_view *entry = (s_reference_candidate_view *)&entries[*count];
+                                if (function_2624d0((s_261d20_entry *)entry, reference))
                                 {
-                                case 2: ((s_reference_candidate_view *)&(*entries_reference)[*count])->flag5a = true; break;
-                                case 1: ((s_reference_candidate_view *)&(*entries_reference)[*count])->flag5b = true; break;
+                                    switch (type)
+                                    {
+                                    case 2: ((s_reference_candidate_view *)&entries[*count])->flag5a = true; break;
+                                    case 1: ((s_reference_candidate_view *)&entries[*count])->flag5b = true; break;
+                                    }
+                                    ((s_reference_candidate_view *)&entries[*count])->flag58 =
+                                        (bool)(((dword)*(char *)((byte *)((s_reference_candidate_view *)&entries[*count])->location + 0xe) >> 5) & 1);
+                                    ((s_reference_candidate_view *)&entries[*count])->flag59 =
+                                        !(bool)(((dword)*(char *)((byte *)((s_reference_candidate_view *)&entries[*count])->location + 0xe) >> 6) & 1);
+                                    ++*count;
                                 }
-                                ((s_reference_candidate_view *)&(*entries_reference)[*count])->flag58 =
-                                    (bool)(((dword)*(char *)((byte *)((s_reference_candidate_view *)&(*entries_reference)[*count])->location + 0xe) >> 5) & 1);
-                                ((s_reference_candidate_view *)&(*entries_reference)[*count])->flag59 =
-                                    !(bool)(((dword)*((byte *)((s_reference_candidate_view *)&(*entries_reference)[*count])->location + 0xe) >> 6) & 1);
-                                ++*count;
                             }
                         }
+                        if (context && context->unknown56)
+                            function_29db90((short)range_index, (short)block_index, (s_29db90 *)((byte *)context + 0x6a0));
                     }
-                    if (context && context->unknown56)
-                        function_29db90((short)*range_reference, (short)*block_reference, (s_29db90 *)((byte *)context + 0x6a0));
                 }
             }
         }
     }
-done:
-    return **count_reference;
+    return *count;
 }
 
 void function_260060(long actor_index, long mode, s_type_967e20 *context, s_type_b36ac5 *position);

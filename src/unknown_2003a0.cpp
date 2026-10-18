@@ -1,4 +1,5 @@
 #include "unknown_11c920.h"
+#include "slot_handler.h"
 #include "globals.h"
 #include "squads.h"
 #include "unknown_1a58b0.h"
@@ -1436,8 +1437,6 @@ PRIVATE __forceinline s_squad_datum *function_200d83(s_squad_record_iterator *ar
 // @retail 0x204b20
 long function_204b20(long actor_index, short mode)
 {
-    (void)&actor_index;
-    (void)&mode;
     byte *actor = g_4f55f0->data + (actor_index & 0xffff) * 0x888;
     real best = 15.0f;
     long result = NONE;
@@ -2507,6 +2506,8 @@ PRIVATE __forceinline byte *function_202752(s_record_pool_iterator *arg_0)
     return local_0;
 }
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x202720
 void function_202720(void)
 {
@@ -2523,11 +2524,7 @@ void function_202720(void)
         {
             real local_2 = (real)g_510c54->field_2_3 * 2.0f;
             long local_3;
-            __asm
-            {
-                fld local_2
-                fistp local_3
-            }
+            local_3 = real_to_long(local_2);
             *(short *)((byte *)local_0.group + 0x1e) -= (short)local_3;
         }
     }
@@ -2542,11 +2539,7 @@ void function_202720(void)
         {
             real local_2 = (real)g_510c54->field_2_3 * 2.0f;
             long local_3;
-            __asm
-            {
-                fld local_2
-                fistp local_3
-            }
+            local_3 = real_to_long(local_2);
             *(short *)((byte *)local_1.field_0 + 0x64) -= (short)local_3;
         }
     }

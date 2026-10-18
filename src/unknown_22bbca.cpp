@@ -25,6 +25,12 @@ struct s_4e6950
 	byte field_40[0x40];
 };
 
+static inline void point2f_set(point2f *point, real x, real y)
+{
+	point->x = x;
+	point->y = y;
+}
+
 // @retail 0x22bbca
 void function_22bbca(s_22bbca const *arg_0, long arg_1, long arg_2, long arg_3,
 	long arg_4, real arg_5)
@@ -42,12 +48,8 @@ void function_22bbca(s_22bbca const *arg_0, long arg_1, long arg_2, long arg_3,
 		{
 			bool local_3 = local_2 > 1;
 			bool local_4 = local_2 == 1 || local_2 == 2;
-			long local_5 = local_3 ? (long)arg_0->field_4 : (long)arg_0->field_0;
-			long local_6 = local_4 ? (long)arg_0->field_6 : (long)arg_0->field_2;
-			real local_7 = (real)local_5;
-			real local_8 = (real)local_6;
-			local_0[local_2].x = local_8;
-			local_0[local_2].y = local_7;
+			point2f_set(&local_0[local_2], local_4 ? (real)arg_0->field_6 : (real)arg_0->field_2,
+				local_3 ? (real)arg_0->field_4 : (real)arg_0->field_0);
 		}
 		g_4e6950.field_3c = arg_5;
 		g_4e6950.field_0 = *g_46871c;

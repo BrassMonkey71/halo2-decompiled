@@ -1422,7 +1422,6 @@ bool __stdcall function_1697c0(long flags, point3f const *point, vector3f const 
 bool function_171d00(point3f const *start, point3f const *end, real *fraction, bool narrow)
 {
     bool result = false;
-    (void)&fraction;
     s_segment_collision collision;
     collision.material = NONE;
     long flags = 0x808c0f;

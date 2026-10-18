@@ -2118,9 +2118,6 @@ PRIVATE __forceinline void component_surface_property_set(hkEntity *entity, long
 // @retail 0x1d87b0
 void __stdcall function_1d87b0(s_havok_component_rigid_body *body, long body_index, s_havok_component *component)
 {
-    (void)&body;
-    (void)&body_index;
-    (void)&component;
     long material_count = 0;
     long other_contacts = 0;
     vector3f normal = *g_4687a4;

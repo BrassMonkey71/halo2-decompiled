@@ -2,6 +2,7 @@
 /* UNKNOWN_1D9240.CPP */
 
 #include "unknown_11c920.h"
+#include "slot_handler.h"
 #include "globals.h"
 #include "unknown_0259d0.h"
 
@@ -20,6 +21,8 @@ PRIVATE __forceinline real function_1d9241(real arg_0, real arg_1)
 #pragma optimize("", on)
 
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1d9240
 void function_1d9240(s_1d9240 *p, char flag, real x)
 {
@@ -28,11 +31,7 @@ void function_1d9240(s_1d9240 *p, char flag, real x)
 	long q;
 
 	x = g_510c54->field_2_3 * x;
-	__asm
-	{
-		fld x
-		fistp q
-	}
+	q = real_to_long(x);
 	n = q;
 
 	if (n < 1)

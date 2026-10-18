@@ -194,7 +194,6 @@ void __stdcall function_44c90(long group, dword selection_mask, long level,
 // @retail 0x45560
 void function_45560(short entry_index, point3f const *center, real radius)
 {
-    (void)&center; (void)&radius;
     __declspec(align(16)) s_visibility_sphere_query query;
     long selected_entry = entry_index;
     s_44940_entry *entry = &g_4ba138[entry_index];
