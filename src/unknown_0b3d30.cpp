@@ -363,15 +363,17 @@ long function_b4670(long kind, long controller, struct _XUID owner, wchar_t cons
             if (status >= 0)
             {
                 *task_out = task_index;
-                task->controller_index = controller;
+                result = 0;
                 task->flags = 1;
                 task->type = 0x2c;
-                return 0;
+                task->controller_index = controller;
             }
-            result = storage_error_ab(status);
-            function_6b640(task_index);
+            else
+            {
+                result = storage_error_ab(status);
+                function_6b640(task_index);
+            }
         }
-        else return 1;
     }
     return result;
 }

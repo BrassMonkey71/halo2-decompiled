@@ -1150,8 +1150,8 @@ void __stdcall function_25f290(
 				point3f origin;
 
 				function_1b0710(leader_index, actor_index, &inner, &outer);
-				inner = (real)sqrt(inner);
-				outer = (real)sqrt(outer);
+				inner = (real)sqrt((double)inner);
+				outer = (real)sqrt((double)outer);
 				function_b9dd0(leader_index, &origin);
 				for (i = 0; i < count; i++)
 				{
@@ -1166,7 +1166,7 @@ void __stdcall function_25f290(
 						delta.i = position->position.x - origin.x;
 						delta.j = position->position.y - origin.y;
 						delta.k = position->position.z - origin.z;
-						distance = (real)sqrt((delta.i * delta.i + delta.j * delta.j + delta.k * delta.k));
+						distance = (real)sqrt((double)(delta.i * delta.i + delta.j * delta.j + delta.k * delta.k));
 						if (!(inner > distance) && outer > distance)
 						{
 							bonus = (1.f - (distance - inner) / (outer - inner)) * 12.f;

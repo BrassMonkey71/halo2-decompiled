@@ -19,29 +19,37 @@ struct s_view_context_storage
     byte field_15;
     byte unknown_16[0x2];
     long field_18;
-    long field_1c;
+    /* 0x1c-0x13c: one 0x120-byte block, copied whole from a saved frame's records */
     union
     {
-        struct { byte value[0x11c]; } field_20;
-        struct { byte unknown00[0x24]; real value; } field_44;
-        struct { byte unknown00[0x64]; real value; } field_84;
-        struct { byte unknown00[0x68]; long value; } field_88;
-        struct { byte unknown00[0x84]; real value; } field_a4;
-        struct { byte unknown00[0x88]; real value; } field_a8;
-        struct { byte unknown00[0x8c]; real value; } field_ac;
-        struct { byte unknown00[0x90]; real value; } field_b0;
-        struct { byte unknown00[0x94]; byte value; } field_b4;
-        struct { byte unknown00[0x98]; long value; } field_b8;
-        struct { byte unknown00[0xa8]; real value; } field_c8;
-        struct { byte unknown00[0xb0]; real value; } field_d0;
-        struct { byte unknown00[0xdc]; real value; } field_fc;
-        struct { byte unknown00[0xe0]; real value; } field_100;
-        struct { byte unknown00[0xe4]; real value; } field_104;
-        struct { byte unknown00[0xec]; dword value; } field_10c;
-        struct { byte unknown00[0x104]; real value; } field_124;
-        struct { byte unknown00[0x108]; real value; } field_128;
-        struct { byte unknown00[0x110]; bool value; } field_130;
-    } group_20;
+        struct
+        {
+            long field_1c;
+            union
+            {
+                struct { byte value[0x11c]; } field_20;
+                struct { byte unknown00[0x24]; real value; } field_44;
+                struct { byte unknown00[0x64]; real value; } field_84;
+                struct { byte unknown00[0x68]; long value; } field_88;
+                struct { byte unknown00[0x84]; real value; } field_a4;
+                struct { byte unknown00[0x88]; real value; } field_a8;
+                struct { byte unknown00[0x8c]; real value; } field_ac;
+                struct { byte unknown00[0x90]; real value; } field_b0;
+                struct { byte unknown00[0x94]; byte value; } field_b4;
+                struct { byte unknown00[0x98]; long value; } field_b8;
+                struct { byte unknown00[0xa8]; real value; } field_c8;
+                struct { byte unknown00[0xb0]; real value; } field_d0;
+                struct { byte unknown00[0xdc]; real value; } field_fc;
+                struct { byte unknown00[0xe0]; real value; } field_100;
+                struct { byte unknown00[0xe4]; real value; } field_104;
+                struct { byte unknown00[0xec]; dword value; } field_10c;
+                struct { byte unknown00[0x104]; real value; } field_124;
+                struct { byte unknown00[0x108]; real value; } field_128;
+                struct { byte unknown00[0x110]; bool value; } field_130;
+            } group_20;
+        };
+        byte frame_records[0x120];
+    };
 };
 
 extern s_view_context_storage g_view_context_storage;

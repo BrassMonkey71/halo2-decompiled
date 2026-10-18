@@ -184,9 +184,9 @@ inline s_50241c_element_25 *element_50241c_25_get(long index)
 // @retail 0x1b6450
 short __stdcall function_1b6450(long actor_index, s_slot *slot, bool active)
 {
+	short result = g_46fbe8;
 	s_actor_view *actor = actor_get(actor_index);
 	s_prop_node_view *node = prop_node_get(actor->prop_index);
-	short result = g_46fbe8;
 	s_slot_25 *state = (s_slot_25 *)slot;
 	s_502424_element_25 *joint = (s_502424_element_25 *)element_502424_get(state->element_index);
 
