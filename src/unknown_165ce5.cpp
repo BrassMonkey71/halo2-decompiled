@@ -1205,7 +1205,7 @@ void __stdcall function_167e86(long user_index, long field_x11c898)
 
 	if (user->unit_index != NONE && user->character_index >= 0 && user->character_index < globals->representation_count)
 	{
-		s_player_representation *volatile representation = &globals->representations[user->character_index];
+		s_player_representation *representation = &globals->representations[user->character_index];
 		s_first_person_unit_view *unit = (s_first_person_unit_view *)first_person_object_get(user->unit_index);
 		long weapon_index = function_cbd50(user->unit_index, unit->weapon_slots[field_x11c898]);
 
