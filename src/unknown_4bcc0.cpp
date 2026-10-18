@@ -8,6 +8,20 @@ struct s_render_object_header
     long *object;
 };
 
+struct s_object_flags_view_4bcc0
+{
+    dword : 19;
+    dword flag19 : 1;
+    dword : 12;
+};
+
+struct s_object_word_flags_view_4bcc0
+{
+    word : 2;
+    word flag2 : 1;
+    word : 13;
+};
+
 struct s_geometry_block_info;
 #include "target_cache_storage.h"
 extern long g_4ba01c;
@@ -45,26 +59,28 @@ short function_4bcc0(byte *output, long object_index, real distance, long overri
     result = function_3d3e0(object_index, *cached);
     if (result > 0)
     {
-        long geometry = *(long *)(model + 4);
-        if (!override && geometry != NONE)
+        if (!override)
         {
-            byte *geometry_definition = g_4e3b44[geometry & 0xffff].bytes;
-            if (*(long *)(geometry_definition + 0x74) > 0 &&
-                function_12de70((s_geometry_block_info *)(*(byte **)(geometry_definition + 0x78) + 0x34), 3))
-                *(dword *)(output + 0x16c) |= 0x40;
+            long geometry = *(long *)(model + 4);
+            if (geometry != NONE)
+            {
+                byte *geometry_definition = g_4e3b44[geometry & 0xffff].bytes;
+                if (*(long *)(geometry_definition + 0x74) > 0 &&
+                    function_12de70((s_geometry_block_info *)(*(byte **)(geometry_definition + 0x78) + 0x34), 3))
+                    *(dword *)(output + 0x16c) |= 0x40;
+            }
         }
         *level = *cached ? 4 : -1;
         if (!*cached)
         {
             byte *object_definition = g_4e3b44[*(long *)object & 0xffff].bytes;
             byte *level_definition = g_4e3b44[*(long *)(object_definition + 0x38) & 0xffff].bytes;
-            bool special = (bool)((*(dword *)(object + 4) >> 19) & 1);
             if (g_4ba019) distance *= 0.3f;
-            if (special)
+            if (TEST_FIELD_BIT(((s_object_flags_view_4bcc0 const *)(object + 4))->flag19))
                 *level = 5;
             else
             {
-                if ((bool)((object[0x10a] >> 2) & 1)) distance *= 1.7f;
+                if (TEST_FIELD_BIT(((s_object_word_flags_view_4bcc0 const *)(object + 0x10a))->flag2)) distance *= 1.7f;
                 real fraction;
                 *level = (signed char)function_4c450(object_index, distance, (real const *)(level_definition + 0x28), &fraction);
                 long maximum = (*(dword *)(output + 0x16c) & 0x40) ? 4 : g_4ba01c;
