@@ -255,7 +255,7 @@ hkMemory *function_146e30(void)
 {
 	if (!g_4798a0)
 	{
-		long volatile size = 0x800000;
+		long size = 0x800000;
 		byte *block;
 		long adjustment;
 

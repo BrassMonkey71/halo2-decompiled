@@ -66,7 +66,7 @@ color3f *function_131d60(color4f const *a, color4f const *b, dword flags, real t
 		if (a->alpha > 0.0001f || b->alpha > 0.0001f)
 		{
 			real alpha = (1.0f - t) * a->alpha + b->alpha * t;
-			result->red = *(volatile real const *)&tint->red * (1.0f - alpha) + result->red * alpha;
+			result->red = tint->red * (1.0f - alpha) + result->red * alpha;
 			result->green = tint->green * (1.0f - alpha) + result->green * alpha;
 			result->blue = tint->blue * (1.0f - alpha) + result->blue * alpha;
 		}

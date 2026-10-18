@@ -80,7 +80,6 @@ void function_1d1540(s_havok_component *arg_0)
  byte *local_0 = (byte *)havok_object_get(arg_0->object_index);
  for (long local_1 = 0; local_1 < arg_0->rigid_bodies.size; ++local_1)
  {
-  (void)&local_1;
   __declspec(align(16)) hkRigidBody *local_2 = arg_0->rigid_bodies.data[local_1].rigid_body;
   ((s_1d1540 *)local_2)->function_30be00(g_51eca8);
   if ((arg_0->unknown04 & 1) && !local_2->m_fixed && local_2->m_motion->getType() != 6)

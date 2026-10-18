@@ -26,7 +26,6 @@ struct s_1d5bf0
 bool function_1d5bf0(s_havok_component *arg_0, s_physics_model_owner *arg_1, char const *arg_2,
  bool arg_3, long arg_4, long *arg_5, dword *arg_6, s_physics_body_groups *arg_7, s_1d5bf0 *arg_8)
 {
- (void)&arg_0; (void)&arg_1; (void)&arg_3; (void)&arg_4; (void)&arg_5; (void)&arg_6; (void)&arg_7; (void)&arg_8;
  bool local_0 = false;
  char local_1[64];
  long local_2 = 0;
@@ -68,7 +67,7 @@ bool function_1d5bf0(s_havok_component *arg_0, s_physics_model_owner *arg_1, cha
   arg_8->field_48 = local_4;
   arg_8->field_44 = local_2;
   local_0 = true;
-  if (local_5) (*(s_havok_component *const *)&arg_0)->unknown04 |= 0x4000;
+  if (local_5) arg_0->unknown04 |= 0x4000;
  }
  return local_0;
 }

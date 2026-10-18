@@ -4560,7 +4560,6 @@ void parse_text(word *text);
 // @retail 0x159250
 void function_159250(long player_index, real alpha)
 {
-	(void)&alpha;
 	s_engine_player *player = 0;
 	if (player_index != NONE)
 	{

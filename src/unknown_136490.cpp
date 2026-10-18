@@ -444,19 +444,16 @@ union s_136141
 // @retail 0x136140
 dword __fastcall function_136140(long arg_1, long arg_2, s_136141 arg_3, long size, void const *pixels, short x, short height, short format, word flags)
 {
-	void const *const *pixels_reference = &pixels;
 	void const *base = arg_3.field_0;
 	short y = (short)arg_1;
 	short width = (short)arg_2;
-	short const *x_reference = &x;
-	x = *x_reference;
 	if (flags & 2)
 	{
 		long bits = 0;
 		if (format != NONE)
 			bits = g_453550[format];
 		short block_bytes = (short)((short)bits * 16 / 8);
-		byte const *block = (byte const *)*pixels_reference + ((short)(y / 4) * width / 4 + (short)(x / 4)) * block_bytes;
+		byte const *block = (byte const *)pixels + ((short)(y / 4) * width / 4 + (short)(x / 4)) * block_bytes;
 		x &= 3;
 		y &= 3;
 		if (block < base || block >= (byte const *)base + size)
@@ -476,13 +473,16 @@ dword __fastcall function_136140(long arg_1, long arg_2, s_136141 arg_3, long si
 		}
 		return result;
 	}
+	long index;
 	if (flags & 8)
 	{
 		dword offsets[2];
 		function_358d0(width, x, y, height, offsets);
-		return function_135ca0(pixels, format, offsets[0] | offsets[1]);
+		index = offsets[0] | offsets[1];
 	}
-	return function_135ca0(pixels, format, y * width + x);
+	else
+		index = y * width + x;
+	return function_135ca0(pixels, format, index);
 }
 
 __forceinline long bitmap_round(real value)

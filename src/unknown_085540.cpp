@@ -906,8 +906,6 @@ bool function_869a0(c_simulation_view *view, void *block)
  byte encoded[0xffff];
  long encoded_size;
  bool result = false;
- volatile bool local_0 = result;
- c_simulation_view *const *local_1 = &view;
  if (function_685f0(block, &encoded_size, encoded, sizeof(encoded)))
  {
   struct { short kind; short size; long sequence; } header;
@@ -922,7 +920,6 @@ bool function_869a0(c_simulation_view *view, void *block)
    view->unknownac++;
    result = true;
   }
-  else return local_0;
  }
  return result;
 }

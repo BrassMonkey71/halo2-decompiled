@@ -12,32 +12,24 @@ public:
 };
 // @stub 0x30ca30
 hkBool c_1d1261::function_30ca30(void *arg_0) { return hkBool(); }
-// @stub 0x30bd10
-void c_1d1261::function_30bd10(void *arg_0) {}
 
 class c_2df9d0
 {
 public:
  virtual hkBool function_2df9d0(void const *arg_0, void const *arg_1);
 };
-// @stub 0x2df9d0
-hkBool c_2df9d0::function_2df9d0(void const *arg_0, void const *arg_1) { return hkBool(); }
 
 class c_2df8f0
 {
 public:
  virtual hkBool function_2df8f0(void const *arg_0, void const *arg_1);
 };
-// @stub 0x2df8f0
-hkBool c_2df8f0::function_2df8f0(void const *arg_0, void const *arg_1) { return hkBool(); }
 
 class c_2dfae0
 {
 public:
  virtual hkBool function_2dfae0(void const *arg_0, void const *arg_1);
 };
-// @stub 0x2dfae0
-hkBool c_2dfae0::function_2dfae0(void const *arg_0, void const *arg_1) { return hkBool(); }
 
 class c_2dfbf0
 {
@@ -48,10 +40,6 @@ public:
 };
 // @stub 0x2dfbf0
 c_2dfbf0::c_2dfbf0() {}
-// @stub 0x2df950
-void c_2dfbf0::function_2df950(long arg_0, long arg_1) {}
-// @stub 0x2df990
-void c_2dfbf0::function_2df990(long arg_0, long arg_1) {}
 
 struct s_3111d0
 {
@@ -77,8 +65,6 @@ public:
 };
 // @stub 0x3101c0
 c_3101c0::c_3101c0(s_3111d0 const &arg_0, long arg_1) {}
-// @stub 0x30c1a0
-void c_3101c0::function_30c1a0(byte *arg_0) {}
 // @stub 0x30cb70
 void c_3101c0::function_30cb70(s_30cb70 arg_0) {}
 // @stub 0x30c500
@@ -112,8 +98,6 @@ public:
 };
 void c_278370::function_a9ef0(void *arg_0) {}
 
-// @stub 0x2d8910
-void __cdecl function_2d8910(long arg_0) {}
 // @stub 0x2d8890
 void __cdecl function_2d8890() {}
 class c_2d8ab0
@@ -130,8 +114,6 @@ public:
 	void detach(void *callback);
 };
 
-// @stub 0x30c470
-void c_library_30c470::detach(void *callback) { }
 
 class c_278da0_kind;
 class c_library_311690
@@ -228,19 +210,13 @@ void hkEntityApi::activate(void) { }
 
 /* the rigid body accessors of the havok components (unknown_1cec30.cpp) */
 
-// @stub 0x30bc40
-hkBool hkRigidBody::isActive(void) const { return hkBool(); }
 
 // @stub 0x30bc60
 void hkRigidBody::activate(void) { }
 
-// @stub 0x2da5d0
-void hkTransform::setMulEq(hkTransform const &b) { }
 
 /* callees of ai.cpp's 0x1caa40 */
 
-// @stub 0x2da3f0
-void hkTransform::setInverse(hkTransform const &t) { }
 
 
 struct real_quaternion_transform;
@@ -276,13 +252,6 @@ public:
  hkBool accepts(long a, long b);
 };
 
-// @stub 0x2df8a0
-hkBool c_contact_rule_fallback::accepts(long a, long b)
-{
- hkBool result;
- result.m_bool = 0;
- return result;
-}
 
 class c_component_joint_strength
 {
@@ -365,8 +334,6 @@ public:
     void remove(void *callback);
 };
 
-// @stub 0x30c3e0
-void c_world_callback_registration::remove(void *callback) {}
 
 struct c_contact_query_bounds_info { c_contact_query_bounds_info(); };
 struct c_contact_query_transform_info { c_contact_query_transform_info(); };
@@ -461,9 +428,6 @@ c_2dbfc0::c_2dbfc0(long arg_0, void *arg_1, real arg_2) {}
 // @stub 0x2dc030
 s_2dc030::s_2dc030() {}
 
-// @stub 0x2dbcf0
-void c_2dbfc0::function_2dbcf0(s_2dc030 const *arg_0) {}
-
 struct s_1d1870
 {
  char field_0;
@@ -487,8 +451,6 @@ struct c_shape_library_base_a
 {
  c_shape_library_base_a(c_havok_reference_counted *arg_0, long arg_1);
 };
-// @stub 0x2df760
-c_shape_library_base_a::c_shape_library_base_a(c_havok_reference_counted *arg_0, long arg_1) {}
 
 struct s_2e5a10 { byte field_0; s_2e5a10(const s_2e5a10 &arg_0) : field_0(arg_0.field_0) {} };
 
@@ -588,8 +550,6 @@ struct s_2da8c0
 {
  void function_2da8c0(hkRotation const *arg_0, hkRotation const *arg_1);
 };
-// @stub 0x2da8c0
-void s_2da8c0::function_2da8c0(hkRotation const *arg_0, hkRotation const *arg_1) {}
 
 
 
