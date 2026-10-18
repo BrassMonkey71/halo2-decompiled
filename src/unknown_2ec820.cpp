@@ -22,8 +22,19 @@ struct array_2ec820
 class array_owner_2ec820 : public referenced_2d88a0
 {
 public:
+	REFERENCED_NEW_2D88A0(0x1a)
+
 	long value;
 	array_2ec820 items;
 };
 
 // @retail 0x2ec820 destructor array_owner_2ec820
+// @retail 0x2eca20 deleting array_owner_2ec820
+
+// a kind derived from it that adds nothing
+class derived_2ecb70 : public array_owner_2ec820
+{
+};
+
+// @retail 0x2ecb40 deleting derived_2ecb70
+// @retail 0x2ecb70 destructor derived_2ecb70

@@ -2540,7 +2540,7 @@ void __stdcall function_22cf0(s_light_sample_source const *source, real *red, re
 
 // @retail 0x23690
 bool __stdcall function_23690(s_coefficient_layout const *layout, short order, long object_index,
-    s_137801 const *vertices, byte const *indices, short count, long tag)
+    s_137801 const *vertices, long count, byte const *indices, long tag)
 {
     (void)&layout; (void)&order; (void)&object_index; (void)&vertices;
     (void)&indices; (void)&count; (void)&tag;
@@ -2567,7 +2567,7 @@ bool __stdcall function_23690(s_coefficient_layout const *layout, short order, l
     real const *data = layout->data + layout->levels[level].offset;
     long stride = layout->groups * (layout->columns * 3 + 4);
     s_bucket_source const *buckets = (s_bucket_source const *)vertices;
-    long total = function_023540(count, buckets, entry, stride);
+    long total = function_023540((short)count, buckets, entry, stride);
     long bytes = total * stride * sizeof(real);
     if (!bytes) return true;
     long next = g_487b18.size + bytes;
@@ -2602,10 +2602,8 @@ bool __stdcall function_23690(s_coefficient_layout const *layout, short order, l
                 if (position)
                 {
                     byte *bsp = *(byte **)(structure + 0x84);
-                    vector3f direction;
                     function_22cf0((s_light_sample_source const *)(bsp + 0x38), red, green, blue,
-                        (byte)layout->order, &direction, position);
-                    entry->scale = direction;
+                        (byte)layout->order, &entry->scale, position);
                 }
             }
             real rotated_red[16], rotated_green[16], rotated_blue[16];

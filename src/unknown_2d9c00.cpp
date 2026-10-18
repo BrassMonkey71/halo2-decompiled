@@ -7,6 +7,8 @@
 class buffered_2d9c00 : public referenced_2d88a0
 {
 public:
+	REFERENCED_NEW_2D88A0(0x15)
+
 	referenced_2d88a0 *source;
 	void *buffer;
 	long field_10;
@@ -16,7 +18,42 @@ public:
 	long field_20;
 
 	buffered_2d9c00(referenced_2d88a0 *source_, long size_);
+	~buffered_2d9c00();
 };
+
+bool __cdecl function_279740(long value);
+
+class deletable_2d8e70
+{
+public:
+	virtual void destroy(unsigned int flags) = 0;
+};
+
+// @retail 0x2d9b40
+buffered_2d9c00::~buffered_2d9c00()
+{
+	referenced_2d88a0 *object = source;
+	if (object)
+	{
+		object->reference_count--;
+		if (object->reference_count == 0)
+		{
+			if (function_279740((long)object))
+			{
+				object->reference_count = 1;
+			}
+			else
+			{
+				// the deleting destructor, first in the vtable, without the
+				// null test `delete` adds
+				((deletable_2d8e70 *)object)->destroy(1);
+			}
+		}
+	}
+	g_memory_2d88a0->release_aligned(buffer);
+}
+
+// @retail 0x2d9bd0 deleting buffered_2d9c00
 
 // @retail 0x2d9c00
 buffered_2d9c00::buffered_2d9c00(referenced_2d88a0 *source_, long size_)
