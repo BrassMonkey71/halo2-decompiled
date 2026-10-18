@@ -22,8 +22,21 @@ struct array_2f9380
 class holder_2f9380 : public referenced_2d88a0
 {
 public:
+	REFERENCED_NEW_2D88A0(0x1a)
+
 	long field_8;
 	array_2f9380 items;
 };
 
 // @retail 0x2f9380 destructor holder_2f9380
+// @retail 0x2f9500 deleting holder_2f9380
+
+// a holder that adds nothing to its base
+class derived_2f9620 : public holder_2f9380
+{
+public:
+	REFERENCED_NEW_2D88A0(0x1a)
+};
+
+// @retail 0x2f9620 deleting derived_2f9620
+// @retail 0x2f9650 destructor derived_2f9620
