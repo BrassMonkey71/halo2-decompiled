@@ -22,7 +22,10 @@ symbols, names, strings, comments or other material from:
 - confidential or internal documentation;
 - material obtained in breach of a non-disclosure agreement;
 - stolen development material;
-- proprietary SDK/XDK files.
+- proprietary SDK/XDK files;
+- Havok SDK material: headers, documentation, samples or source, including
+  versions that were once free to download. The project's Havok code is
+  recreated from the retail executable alone.
 
 Sources that are acceptable, where appropriate:
 
@@ -72,6 +75,11 @@ address range or by source file:
      bytes, inside any maintainer lane, and the lanes then leave it alone.
    - Only another person's claim (an `@user` row) is off limits.
    - A claim with no activity for two weeks lapses.
+   - Havok, the physics library (rows with `owner` `third:havok`, mostly
+     `0x2d0000`–`0x31ffff`), is open for claims the same way.
+     `python tools/ready.py --owner third:havok` lists the ready functions,
+     and [docs/DECOMPILING.md](docs/DECOMPILING.md#havok) has its flags and
+     conventions.
    - Merged work is open for follow-up, but ask its author first, on the
      issue or on their pull request. If they haven't answered within 7 days,
      others may go ahead. The author's work and credit stay, and the change

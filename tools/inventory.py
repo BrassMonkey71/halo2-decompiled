@@ -225,6 +225,17 @@ def style(before, start, first):
     return kind, ' '.join(evidence)
 
 
+HAVOK = 'third:havok'
+
+
+def in_scope_owner(owner):
+    """Owners the decompilation covers: the game, the SDK libraries it was
+    linked with, and Havok, whose physics must stay exactly as retail. The
+    exception-handling stubs and the other third-party libraries (Bink, which
+    a port replaces) are left out."""
+    return owner != 'eh' and (not owner.startswith('third:') or owner == HAVOK)
+
+
 def read_rows(path):
     if not os.path.exists(path):
         return {}
