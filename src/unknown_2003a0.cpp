@@ -1437,8 +1437,6 @@ PRIVATE __forceinline s_squad_datum *function_200d83(s_squad_record_iterator *ar
 // @retail 0x204b20
 long function_204b20(long actor_index, short mode)
 {
-    (void)&actor_index;
-    (void)&mode;
     byte *actor = g_4f55f0->data + (actor_index & 0xffff) * 0x888;
     real best = 15.0f;
     long result = NONE;

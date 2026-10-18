@@ -81,7 +81,7 @@ struct s_animation_state
 	s_graph_inheritance *inheritance_get(c_type_709360 animation_id);
 	c_type_709360 variant_get(c_type_709360 animation_id);
 	bool channel_start(c_animation_channel *channel, c_type_709360 animation_id, long unknown08, char unknown0c,
-		char unknown0d, char unknown0e, word channel_flags);
+		char unknown0d, char unknown0e, dword channel_flags);
 	void translation_apply(real_orientation_1ce110 *orientation, real scale);
 	void resources_request(long mode, long weapon_class, long weapon_type, bool urgent, bool other);
 	void channels_finish();
@@ -92,8 +92,8 @@ struct s_animation_state
 	void nodes_compute(transform4x3f *matrices, rigid_transform_scaled const *orientations, transform4x3f const *root);
 	void orientations_blend(s_blend_orientation const *targets, short count, dword const *mask,
 		s_blend_orientation *orientations);
-	bool channel_play(c_animation_channel *channel, c_type_709360 animation_id, word channel_flags);
-	bool channel_play_named(c_animation_channel *channel, long name, word channel_flags);
+	bool channel_play(c_animation_channel *channel, c_type_709360 animation_id, dword channel_flags);
+	bool channel_play_named(c_animation_channel *channel, long name, dword channel_flags);
 	bool blend_counters_update();
 	void sample(long unused1, real weight, dword const *node_mask, real_quaternion_transform *transforms, long unused5,
 		long unused6, long node_count);
@@ -107,7 +107,7 @@ struct s_animation_state
 	c_type_709360 overlay_get(long set);
 	bool overlay_exists();
 	c_type_709360 overlay_kind_get(long kind);
-	bool overlay_play(c_animation_channel *channel, word channel_flags, long set, long weapon_class, long weapon_type);
+	bool overlay_play(c_animation_channel *channel, dword channel_flags, long set, long weapon_class, long weapon_type);
 	bool channel_refresh(c_animation_channel *channel, long weapon_class, long weapon_type);
 	bool update(animation_event_callback callback, long user, long node_count, s_blend_orientation *orientations,
 		s_blend_orientation const *targets);
@@ -117,7 +117,7 @@ struct s_animation_state
 		short *found_item_index, short *found_animation_index);
 	__declspec(noinline) bool play_indexed(long set, short item_index, short animation_index, short *found_item_index,
 		short *found_animation_index);
-	bool play(c_type_709360 animation_id, word channel_flags);
+	bool play(c_type_709360 animation_id, dword channel_flags);
 };
 
 /* an overlay of the set, or else its animation (0x1cbad0), and that animation's

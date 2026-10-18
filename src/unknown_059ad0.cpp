@@ -3647,7 +3647,7 @@ bool __stdcall function_59e50(c_class_58d20 *session, long mode, long local,
  long count, const dword *identities, const long *values, const long *other_values,
  bool reserve, long timeout, const s_session_id *id, const void *extra)
 {
- volatile bool result = false;
+ bool result = false;
  c_class_58d20 *existing = network_session_manager_find_session(
   *(s_network_session_list **)session->unknown0c, (const s_session_id *)kid);
  if (existing)
@@ -3695,7 +3695,8 @@ bool __stdcall function_59e50(c_class_58d20 *session, long mode, long local,
       if (extra)
        memcpy((byte *)&remote + 0x154, extra, 0x2c);
       function_61050(session, channel, host, &remote, &address);
-      return true;
+      result = true;
+      goto done;
      }
      result = false;
     }
@@ -3703,6 +3704,7 @@ bool __stdcall function_59e50(c_class_58d20 *session, long mode, long local,
   }
  }
  network_session_release_key(session);
+done:
  return result;
 }
 

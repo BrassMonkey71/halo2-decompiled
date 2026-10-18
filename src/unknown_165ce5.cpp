@@ -84,7 +84,7 @@ struct s_animation_state
 	c_type_709360 overlay_get(long set);
 	short node_count_get();
 	bool pairs_iterate(s_graph_pair_iterator *iterator);
-	bool channel_play(c_animation_channel *channel, c_type_709360 animation_id, word channel_flags);
+	bool channel_play(c_animation_channel *channel, c_type_709360 animation_id, dword channel_flags);
 	void sample(long unused1, real weight, dword const *node_mask, real_quaternion_transform *transforms, long unused5,
 		long unused6, long node_count);
 	void orientations_blend(s_blend_orientation const *targets, short count, dword const *mask,
@@ -96,7 +96,7 @@ struct s_animation_state
 	bool blend_counters_update();
 	bool update(animation_event_callback callback, long user, long node_count, s_blend_orientation *orientations,
 		s_blend_orientation const *targets);
-	bool overlay_play(c_animation_channel *channel, word channel_flags, long set, long weapon_class, long weapon_type);
+	bool overlay_play(c_animation_channel *channel, dword channel_flags, long set, long weapon_class, long weapon_type);
 	c_type_709360 overlay_find(long set, long weapon_class, long weapon_type);
 };
 
@@ -1543,7 +1543,7 @@ void __stdcall function_166d75(long user_index)
 				if ((zoomed || scoped) && !function_0b6760((s_index_pair *)channel))
 				{
 					long set;
-					word channel_flags;
+					dword channel_flags;
 
 					if (scoped)
 					{

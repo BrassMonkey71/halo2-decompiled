@@ -1186,7 +1186,6 @@ void __cdecl function_24970(s_histogram_state *state)
 // @retail 0x27520
 bool __stdcall function_27520(long mode, real const *bounds, real const *t, real *out, long unused)
 {
-    (void)&mode; (void)&bounds; (void)&t; (void)&out; (void)&unused;
     if (g_509400 <= 0.0f)
         g_509400 = g_485ae0;
     switch (mode)
