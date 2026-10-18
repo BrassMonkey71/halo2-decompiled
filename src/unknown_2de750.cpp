@@ -6,6 +6,8 @@
 class two_point_2de750 : public radius_shape_2de750
 {
 public:
+	REFERENCED_NEW_2D88A0(0x22)
+
 	__m128 first;
 	__m128 second;
 
