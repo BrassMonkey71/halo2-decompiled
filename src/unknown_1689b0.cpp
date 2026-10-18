@@ -608,8 +608,6 @@ void function_d8ae0(long object_index, long region_index, short *material);
 bool __stdcall function_169510(long object_index, bool a, dword flags, dword test_flags, point3f const *point,
 	vector3f const *vector, long ignore_object_index, long ignore_unit_index, s_collision_result_1697c0 *result)
 {
-	(void)&object_index; (void)&a; (void)&flags; (void)&test_flags; (void)&point;
-	(void)&vector; (void)&ignore_object_index; (void)&ignore_unit_index; (void)&result;
 	bool found = false;
 	s_lookup lookup;
 	s_lookup_ray_result hit;
