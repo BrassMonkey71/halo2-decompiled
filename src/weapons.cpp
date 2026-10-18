@@ -2590,6 +2590,18 @@ bool __stdcall function_fdc70(long weapon_index, short magazine_index)
     return result;
 }
 
+/* the weapon's flag word at 0x16e, as bits */
+struct s_weapon_flags_view_1023d0
+{
+    word flag0 : 1;
+    word flag1 : 1;
+    word flag2 : 1;
+    word flag3 : 1;
+    word flag4 : 1;
+    word flag5 : 1;
+    word : 10;
+};
+
 // @retail 0xfdd50
 bool __stdcall function_fdd50(long weapon_index, long magazine_index)
 {
@@ -2645,8 +2657,8 @@ bool __stdcall function_fdd50(long weapon_index, long magazine_index)
                 function_105a80(0, weapon_index, (short)magazine_index);
             else
                 function_105a80(4, weapon_index, (short)magazine_index);
-            bool first = (weapon->value_16e & 2) && function_102540(weapon_index, 0, true);
-            bool second = (weapon->value_16e & 4) && function_102540(weapon_index, 1, true);
+            bool first = TEST_FIELD_BIT(((s_weapon_flags_view_1023d0 const *)&weapon->value_16e)->flag1) && function_102540(weapon_index, 0, true);
+            bool second = TEST_FIELD_BIT(((s_weapon_flags_view_1023d0 const *)&weapon->value_16e)->flag2) && function_102540(weapon_index, 1, true);
             if (!(reserve > 0 && magazine->rounds_loaded < definition->rounds_loaded_maximum &&
                 !(definition->flags & 1) && !first && !second && function_fdc70(weapon_index, (short)magazine_index)))
                 function_102c60(weapon_index, (short)magazine_index, first | second);
@@ -2833,17 +2845,6 @@ s_weapon_type_definition_view g_467cd0 =
 
 
 bool function_1023d0(long weapon_index, long barrel_index);
-
-struct s_weapon_flags_view_1023d0
-{
-    word flag0 : 1;
-    word flag1 : 1;
-    word flag2 : 1;
-    word flag3 : 1;
-    word flag4 : 1;
-    word flag5 : 1;
-    word : 10;
-};
 
 static __forceinline bool weapon_barrel_ammunition_check(long weapon_index, long barrel_index)
 {
