@@ -490,33 +490,45 @@ long function_0209b0(s_slot_key *key, const void *data, long size)
 
 	long index;
 	s_slot *slot;
+	bool found = false;
 
 	for (index = 0; index < g_51f40c.count; index++)
 	{
 		slot = &g_51f40c.slots[index];
 		if (slot->used && key->a == slot->a && key->b == slot->b && key->c == slot->c && key->d == slot->d && key->e == slot->e)
-			goto found;
+		{
+			found = true;
+			break;
+		}
 	}
 
-	for (index = 0; index < 511; index++)
+	if (!found)
 	{
-		slot = &g_51f40c.slots[index];
-		if (!slot->used)
-			goto create;
+		for (index = 0; index < 511; index++)
+		{
+			slot = &g_51f40c.slots[index];
+			if (!slot->used)
+			{
+				found = true;
+				break;
+			}
+		}
+		if (found)
+		{
+			function_20e50(index);
+			slot->a = key->a != 0;
+			slot->b = key->b;
+			slot->c = key->c;
+			slot->d = key->d;
+			slot->e = key->e;
+			if (index + 1 > g_51f40c.count)
+				g_51f40c.count = index + 1;
+		}
 	}
-	return NONE;
 
-create:
-	function_20e50(index);
-	slot->a = key->a != 0;
-	slot->b = key->b;
-	slot->c = key->c;
-	slot->d = key->d;
-	slot->e = key->e;
-	if (index + 1 > g_51f40c.count)
-		g_51f40c.count = index + 1;
+	if (!found)
+		return NONE;
 
-found:
 	slot = &g_51f40c.slots[index];
 	if (!slot->valid)
 	{
