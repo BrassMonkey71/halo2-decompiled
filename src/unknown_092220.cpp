@@ -29,21 +29,6 @@ static inline s_type_9df9da *online_task_try_and_get(long task_index)
 	return task;
 }
 
-/* online_task_new (src/online_tasks.cpp), which retail inlines here */
-static inline long online_task_new_inline(void)
-{
-	long task_index = record_pool_allocate(g_4cf78c);
-	if (task_index != NONE)
-	{
-		s_type_9df9da *task = (s_type_9df9da *)g_4cf78c->data + (task_index & 0xffff);
-		task->handle = 0;
-		task->type = NONE;
-		task->controller_index = NONE;
-		task->flags = 0;
-	}
-	return task_index;
-}
-
 /* starts reading the given statistics */
 // @retail 0x92220
 long online_stats_read(word count, XONLINE_STAT_SPEC *specs)
@@ -58,7 +43,7 @@ long online_stats_read(word count, XONLINE_STAT_SPEC *specs)
 	{
 		long task_index;
 		if (online_logon_connected())
-			task_index = online_task_new_inline();
+			task_index = online_task_new();
 		else
 			task_index = NONE;
 		s_type_9df9da *task = (s_type_9df9da *)datum_get_inlined(g_4cf78c, task_index);

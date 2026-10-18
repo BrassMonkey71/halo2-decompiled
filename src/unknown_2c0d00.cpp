@@ -589,10 +589,10 @@ short obstacle_list_find_containing(s_obstacle_list const *list, short ignore_in
 
 			real distance_squared;
 
+			distance = obstacle->radius + radius;
 			vector2d_from_points2d(point, &obstacle->center, &offset);
 			distance_squared = length_sq2f(&offset);
-			distance = obstacle->radius + radius;
-			if (distance * distance >= distance_squared)
+			if (distance_squared <= distance * distance)
 			{
 				return i;
 			}

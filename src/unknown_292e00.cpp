@@ -67,7 +67,7 @@ void function_292f60()
     function_292e19(&local_0);
     while (function_292e30(&local_0))
     {
-        function_292ea2(((s_292e00 *)g_51ecb4->data)[local_0.field_10 & 0xffff].field_4);
+        function_292ea2(local_0.field_0->field_4);
         record_pool_release(g_51ecb4, local_0.field_10);
     }
 }

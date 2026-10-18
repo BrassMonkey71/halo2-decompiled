@@ -571,8 +571,6 @@ void function_24cf66(long local_player_index)
 		short left;
 		short_rectangle2d bounds;
 		short_rectangle2d text_bounds;
-		color4f color;
-		color4f field_24;
 		word text[0x100];
 
 		function_1396c7(1, &origin);
@@ -591,6 +589,8 @@ void function_24cf66(long local_player_index)
 
 		if (timer_message || tutorial_message || scripted_message)
 		{
+			color4f color;
+			color4f field_24;
 			if (timer_message)
 			{
 				s_hud_globals_definition *globals = g_510c94;
@@ -675,11 +675,12 @@ void function_24cf66(long local_player_index)
 		}
 
 		top += (short)height;
-		qsort(player->messages, 4, sizeof(s_hud_message), hud_message_compare);
-
 		short y = top;
+		qsort(player->messages, 4, sizeof(s_hud_message), hud_message_compare);
 		for (short i = 0; i < count; i++)
 		{
+			color4f color;
+			color4f field_24;
 			s_hud_message *message = &player->messages[i];
 
 			if (!message->active)
@@ -735,6 +736,8 @@ void function_24cf66(long local_player_index)
 			y = (short)((real)message_height * view->line_spacing + (real)y);
 		}
 
+		color4f color;
+		color4f field_24;
 		player = hud_player_get(local_player_index);
 		field_24 = *(color4f *)g_4686d4;
 		long game_time = g_510c54->game_time;

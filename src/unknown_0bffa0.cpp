@@ -411,33 +411,31 @@ extern s_bsp3d *g_4e033c;
 long function_14a280(s_bsp3d *bsp, long index, point3f *point);
 real function_30bf0(vector3f *vector);
 
+static __forceinline void point_add_scaled_c35a0(point3f const *point, vector3f const *vector, real scale, point3f *result)
+{
+    result->x = point->x + vector->i * scale;
+    result->y = point->y + vector->j * scale;
+    result->z = point->z + vector->k * scale;
+}
+
 // @retail 0xc0840
 bool function_c0840(point3f const *start, point3f const *end, point3f *out, real *distance)
 {
     bool result = false;
-    real length;
-    real x, y, z;
     real travelled = 0.0f;
     real step = 0.001f;
-    {
-        vector3f direction;
-        vector3d_from_points3d(start, end, &direction);
-        length = normalize_inline(&direction);
-        x = direction.i;
-        y = direction.j;
-        z = direction.k;
-    }
+    vector3f direction;
+    vector3d_from_points3d(start, end, &direction);
+    real length = normalize_inline(&direction);
     if (length > 0.0f)
     {
-        s_bsp3d *bsp = g_4e033c;
-        short bsp_index = g_4686c4;
         s_match_globals *structure = g_4e0348;
-        while (length > travelled)
+        short bsp_index = g_4686c4;
+        s_bsp3d *bsp = g_4e033c;
+        while (!result && length > travelled)
         {
             point3f point;
-            point.x = x * travelled + start->x;
-            point.y = y * travelled + start->y;
-            point.z = z * travelled + start->z;
+            point_add_scaled_c35a0(start, &direction, travelled, &point);
             if (bsp_index != NONE)
             {
                 long leaf = function_14a280(bsp, 0, &point);
@@ -446,15 +444,14 @@ bool function_c0840(point3f const *start, point3f const *end, point3f *out, real
                     *distance = travelled;
                     *out = point;
                     result = true;
-                    goto done;
+                    continue;
                 }
             }
             travelled += step;
-            step *= 2.0f;
-            if (step > 0.1f) step = 0.1f;
+            real next = step * 2.0f;
+            step = next > 0.1f ? 0.1f : next;
         }
     }
-done:
     return result;
 }
 
@@ -563,13 +560,6 @@ static inline void advance_along_vector_c1a80(point2f const *point, vector2f con
 {
     result->x = vector->i * scale + point->x;
     result->y = vector->j * scale + point->y;
-}
-
-static __forceinline void point_add_scaled_c35a0(point3f const *point, vector3f const *vector, real scale, point3f *result)
-{
-    result->x = point->x + vector->i * scale;
-    result->y = point->y + vector->j * scale;
-    result->z = point->z + vector->k * scale;
 }
 
 // @retail 0xc1a80
