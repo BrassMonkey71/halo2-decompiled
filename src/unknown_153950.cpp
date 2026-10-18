@@ -457,9 +457,9 @@ void function_154df0(long index, s_speed_bounds *bounds, s_speed_slot *slot, vec
 			real c = (real)cos(rotation);
 			real t = (u->k * e->k + u->j * e->j + e->i * u->i) * (1.0f - c);
 			vector3f axis_cross;
-			axis_cross.i = u->j * e->k - u->k * e->j;
 			axis_cross.j = u->k * e->i - u->i * e->k;
 			axis_cross.k = u->i * e->j - u->j * e->i;
+			axis_cross.i = u->j * e->k - u->k * e->j;
 
 			u->i = e->i * t + u->i * c - axis_cross.i * s;
 			u->j = e->j * t + u->j * c - axis_cross.j * s;

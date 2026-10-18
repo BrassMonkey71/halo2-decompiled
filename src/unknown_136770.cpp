@@ -22,8 +22,7 @@ struct s_type_b56524
 struct file_reference_data
 {
 	dword signature;
-	byte flags;
-	byte unknown05;
+	word flags;
 	word unknown06;
 	char path[256];
 	byte unknown108[8];
@@ -35,7 +34,7 @@ struct s_file_time
 	dword high;
 };
 
-void function_1374c0(char *dest, const char *path);
+void function_1374c0(const char *path, char *dest);
 void function_137320(char *path, const char *name);
 void function_1373c0(char *path);
 
@@ -119,7 +118,7 @@ bool function_137000(s_type_b56524 *find, file_reference_data *file, s_file_time
 		HANDLE *handle = &find->handles[depth];
 		if (*handle == INVALID_HANDLE_VALUE)
 		{
-			function_1374c0(buffer, path);
+			function_1374c0(path, buffer);
 			find_files_path_append(buffer, find->root);
 			*handle = FindFirstFileA(buffer, data);
 			if (*handle == INVALID_HANDLE_VALUE)
@@ -148,8 +147,8 @@ bool function_137000(s_type_b56524 *find, file_reference_data *file, s_file_time
 			if (find->flags & 1)
 			{
 				function_137320(path, data->cFileName);
-				depth++;
 				descended = true;
+				depth++;
 			}
 			if (find->flags & 6)
 			{
@@ -296,7 +295,7 @@ void function_137400(char *path, char **a, char **b, char **c, char **d, bool fl
 char g_453588[256];
 
 // @retail 0x1374c0
-void function_1374c0(char *dest, const char *path)
+void function_1374c0(const char *path, char *dest)
 {
 	dest[0] = 0;
 	char c = path[0];

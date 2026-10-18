@@ -1,4 +1,4 @@
-// @flags /O1 /arch:SSE /Gr
+// @flags /O2 /arch:SSE /Gr
 #include "view_context_storage.h"
 /* UNKNOWN_033A0B.CPP: vector getters */
 
@@ -176,6 +176,12 @@ void function_33980(long selector, vector3f *out)
 		out->j = pin_unit(out->j * g_485a6c);
 		out->k = pin_unit(out->k * g_485a6c);
 		return;
+	case 35:
+		copy_vector(out, &(g_485a58 ? g_485a58->vector30 : g_4686d4->vector));
+		out->i = pin_unit(out->i * g_485a6c * 0.5f);
+		out->j = pin_unit(out->j * g_485a6c * 0.5f);
+		out->k = pin_unit(out->k * g_485a6c * 0.5f);
+		return;
 	case 24:
 		copy_vector(out, &(g_485a58 ? g_485a58->vector10 : g_4686d4->vector));
 		out->i = pin_unit((g_485a70 + 1.0f) * out->i);
@@ -208,12 +214,6 @@ void function_33980(long selector, vector3f *out)
 		return;
 	case 33: copy_vector(out, &(*(vector3f *)(g_4e6950.unknown00 + 0x00))); return;
 	case 34: copy_vector(out, &(*(vector3f *)(g_4e6950.unknown00 + 0x0c))); return;
-	case 35:
-		copy_vector(out, &(g_485a58 ? g_485a58->vector30 : g_4686d4->vector));
-		out->i = pin_unit(out->i * g_485a6c * 0.5f);
-		out->j = pin_unit(out->j * g_485a6c * 0.5f);
-		out->k = pin_unit(out->k * g_485a6c * 0.5f);
-		return;
 	case 36: copy_vector(out, &(*(vector3f *)(g_4e6950.unknown00 + 0x40))); return;
 	case 37: copy_vector(out, &(*(vector3f *)(g_4e6950.unknown00 + 0x4c))); return;
 	case 38: copy_vector(out, &(*(vector3f *)(g_4e6950.unknown00 + 0x58))); return;

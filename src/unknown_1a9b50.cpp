@@ -579,179 +579,181 @@ struct s_1aab51
 bool __stdcall function_1aab50(long arg_0, s_slot *arg_1)
 {
 	s_1aa0d0 *local_0 = (s_1aa0d0 *)arg_1;
-	if (local_0->field_13 || local_0->field_14 || local_0->field_2d)
-		return false;
-	s_actor_view *local_1 = actor_get(arg_0);
-	bool local_2 = true;
-	s_1aab50 *local_3 = (s_1aab50 *)function_1e4f90(arg_0);
-	s_prop_node_view *local_4 = NULL;
-	if (local_3)
+	bool local_2 = false;
+	if (!local_0->field_13 && !local_0->field_14 && !local_0->field_2d)
 	{
-		if (local_1->prop_index != NONE)
+		s_actor_view *local_1 = actor_get(arg_0);
+		s_1aab50 *local_3 = (s_1aab50 *)function_1e4f90(arg_0);
+		s_prop_node_view *local_4 = NULL;
+		if (local_3)
 		{
-			local_4 = prop_node_get(local_1->prop_index);
-			real local_5 = 3.402823466e+38f;
-			bool local_6 = true;
-			if (!local_0->field_12 && !local_0->field_17 && !local_0->field_18)
+			if (local_1->prop_index != NONE)
 			{
-				if (local_1->unknown225 || !function_1e2030(arg_0))
-					local_5 = local_3->field_10;
-				if (local_4->unknown28 > local_5 && function_1e2030(arg_0))
+				local_4 = prop_node_get(local_1->prop_index);
+				real local_5 = 3.402823466e+38f;
+				bool local_6 = true;
+				if (!local_0->field_12 && !local_0->field_17 && !local_0->field_18)
 				{
-					local_0->field_14 = true;
-					goto local_7;
-				}
-			}
-			else
-				local_6 = false;
-			local_0->field_2c = true;
-			if (local_6 && !((s_prop_state_64 *)function_25d690((s_prop_datum *)local_4))->unknown64 && local_3->field_1c > local_4->unknown28)
-			{
-				local_0->field_10 = 0x10;
-				local_0->field_14 = true;
-			}
-		}
-		else
-			local_0->field_2c = false;
-	}
-local_7:
-	if (local_0->field_12)
-		local_0->field_13 = local_1->unknown018 == NONE || !function_110ab0(local_1->unknown018);
-	else if (!local_0->field_18)
-	{
-		s_1aa0d2 *local_8 = (s_1aa0d2 *)function_25d690((s_prop_datum *)local_4);
-		s_prop_view_fields *local_9 = (s_prop_view_fields *)function_25d740((s_prop_node *)local_4);
-		bool local_10 = false;
-		vector3f local_11;
-		if (0.8f > local_4->unknown28)
-		{
-			local_11 = local_9->unknown2c;
-			local_10 = true;
-		}
-		else
-		{
-			real local_12 = (real)sqrt(local_8->field_1c.i * local_8->field_1c.i + local_8->field_1c.j * local_8->field_1c.j + local_8->field_1c.k * local_8->field_1c.k);
-			s_ai_object *local_13 = ai_object_get(local_1->unknown018);
-			real local_14 = 0.0f;
-			if (local_12 > 0.0f)
-				local_14 = (1.0f + (local_8->field_1c.k * local_9->unknown2c.k + local_8->field_1c.j * local_9->unknown2c.j + local_8->field_1c.i * local_9->unknown2c.i) / local_12) * 0.5f;
-			real local_15 = (real)local_0->field_30;
-			real local_16 = local_15 * g_510c54->rate * local_14;
-			local_11.k = local_16 * local_8->field_1c.k + local_8->field_4.z - local_1->position.z;
-			local_11.j = local_16 * local_8->field_1c.j + local_8->field_4.y - local_1->position.y;
-			local_11.i = local_16 * local_8->field_1c.i + local_8->field_4.x - local_1->position.x;
-			real local_17 = 0.0f;
-			if (0.0f > local_9->unknown2c.k * local_11.k + local_9->unknown2c.j * local_11.j + local_9->unknown2c.i * local_11.i)
-				local_11 = local_9->unknown2c;
-			else
-			{
-				local_17 = function_30bf0(&local_11);
-				if (local_17 == 0.0f)
-					local_11 = local_9->unknown2c;
-			}
-			if (!local_0->field_17)
-			{
-				if (local_3->field_1c > local_17 && !function_25d9b0(local_1->prop_index) && !((s_prop_state_64 *)local_8)->unknown64)
-				{
-					local_0->field_14 = true;
-					goto local_18;
-				}
-				if (local_3->field_20 > local_17)
-				{
-					real local_19 = local_3->field_28;
-					real local_20;
-					real local_21;
-					vector3f local_22;
-					if (function_fa1a0(local_19, 1.0f, &local_8->field_4, &local_1->position, &local_15, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_21, &local_20) ||
-						(local_3->field_2c > local_15 && function_fa1a0(local_15 + 0.03f, 1.0f, &local_8->field_4, &local_1->position, NULL, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_21, &local_20)))
+					if (local_1->unknown225 || !function_1e2030(arg_0))
+						local_5 = local_3->field_10;
+					if (local_4->unknown28 > local_5 && function_1e2030(arg_0))
 					{
-						if (normalize2d((point2f *)&local_22) == 0.0f)
+						local_0->field_14 = true;
+						goto local_7;
+					}
+				}
+				else
+					local_6 = false;
+				local_0->field_2c = true;
+				if (local_6 && !((s_prop_state_64 *)function_25d690((s_prop_datum *)local_4))->unknown64 && local_3->field_1c > local_4->unknown28)
+				{
+					local_0->field_10 = 0x10;
+					local_0->field_14 = true;
+				}
+			}
+			else
+				local_0->field_2c = false;
+		}
+	local_7:
+		if (local_0->field_12)
+			local_0->field_13 = local_1->unknown018 == NONE || !function_110ab0(local_1->unknown018);
+		else if (!local_0->field_18)
+		{
+			s_1aa0d2 *local_8 = (s_1aa0d2 *)function_25d690((s_prop_datum *)local_4);
+			s_prop_view_fields *local_9 = (s_prop_view_fields *)function_25d740((s_prop_node *)local_4);
+			bool local_10 = false;
+			vector3f local_11;
+			if (0.8f > local_4->unknown28)
+			{
+				local_11 = local_9->unknown2c;
+				local_10 = true;
+			}
+			else
+			{
+				real local_12 = (real)sqrt(local_8->field_1c.i * local_8->field_1c.i + local_8->field_1c.j * local_8->field_1c.j + local_8->field_1c.k * local_8->field_1c.k);
+				s_ai_object *local_13 = ai_object_get(local_1->unknown018);
+				real local_14 = 0.0f;
+				if (local_12 > 0.0f)
+					local_14 = (1.0f + (local_8->field_1c.k * local_9->unknown2c.k + local_8->field_1c.j * local_9->unknown2c.j + local_8->field_1c.i * local_9->unknown2c.i) / local_12) * 0.5f;
+				real local_15 = (real)local_0->field_30;
+				real local_16 = local_15 * g_510c54->rate * local_14;
+				local_11.k = local_16 * local_8->field_1c.k + local_8->field_4.z - local_1->position.z;
+				local_11.j = local_16 * local_8->field_1c.j + local_8->field_4.y - local_1->position.y;
+				local_11.i = local_16 * local_8->field_1c.i + local_8->field_4.x - local_1->position.x;
+				real local_17 = 0.0f;
+				if (0.0f > local_9->unknown2c.k * local_11.k + local_9->unknown2c.j * local_11.j + local_9->unknown2c.i * local_11.i)
+					local_11 = local_9->unknown2c;
+				else
+				{
+					local_17 = function_30bf0(&local_11);
+					if (local_17 == 0.0f)
+						local_11 = local_9->unknown2c;
+				}
+				if (!local_0->field_17)
+				{
+					if (local_3->field_1c > local_17 && !function_25d9b0(local_1->prop_index) && !((s_prop_state_64 *)local_8)->unknown64)
+					{
+						local_0->field_14 = true;
+						goto local_18;
+					}
+					if (local_3->field_20 > local_17)
+					{
+						real local_19 = local_3->field_28;
+						real local_20;
+						real local_21;
+						vector3f local_22;
+						if (function_fa1a0(local_19, 1.0f, &local_8->field_4, &local_1->position, &local_15, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_21, &local_20) ||
+							(local_3->field_2c > local_15 && function_fa1a0(local_15 + 0.03f, 1.0f, &local_8->field_4, &local_1->position, NULL, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_21, &local_20)))
 						{
-							local_22 = local_1->unknown290;
 							if (normalize2d((point2f *)&local_22) == 0.0f)
-								local_22 = *g_4687a8;
+							{
+								local_22 = local_1->unknown290;
+								if (normalize2d((point2f *)&local_22) == 0.0f)
+									local_22 = *g_4687a8;
+							}
+							s_1aab51 *local_24 = (s_1aab51 *)local_0;
+							local_24->field_24 = local_20;
+							local_0->field_18 = true;
+							local_24->field_1c = *(point2f *)&local_22;
+							local_24->field_28 = local_19;
 						}
-						s_1aab51 *local_24 = (s_1aab51 *)local_0;
-						local_24->field_24 = local_20;
-						local_0->field_18 = true;
-						local_24->field_1c = *(point2f *)&local_22;
-						local_24->field_28 = local_19;
+					}
+				}
+				else if (local_0->field_2e)
+				{
+					if (local_0->field_34 > local_17 || (0.0f > local_17 &&
+						(local_8->field_1c.k - local_13->velocity.k) * local_11.k + (local_8->field_1c.j - local_13->velocity.j) * local_11.j + (local_8->field_1c.i - local_13->velocity.i) * local_11.i > 0.7f))
+						local_10 = true;
+				}
+				else if (0.5f > local_17 - (local_13->velocity.k * local_11.k + local_13->velocity.j * local_11.j + local_11.i * local_13->velocity.i) * local_15 * g_510c54->rate)
+					local_10 = true;
+			}
+		local_18:
+			if (local_0->field_18 || (local_10 && !local_0->field_2e))
+			{
+				point2f local_25 = {local_11.i, local_11.j};
+				if (normalize2d(&local_25) > 0.0f)
+				{
+					real local_26 = local_0->field_17 ? 0.0f : 0.95f;
+					if (local_26 > local_1->unknown290.j * local_25.y + local_1->unknown290.i * local_25.x)
+					{
+						local_0->field_18 = false;
+						goto local_27;
 					}
 				}
 			}
-			else if (local_0->field_2e)
+			if (local_10)
 			{
-				if (local_0->field_34 > local_17 || (0.0f > local_17 &&
-					(local_8->field_1c.k - local_13->velocity.k) * local_11.k + (local_8->field_1c.j - local_13->velocity.j) * local_11.j + (local_8->field_1c.i - local_13->velocity.i) * local_11.i > 0.7f))
-					local_10 = true;
-			}
-			else if (0.5f > local_17 - (local_13->velocity.k * local_11.k + local_13->velocity.j * local_11.j + local_11.i * local_13->velocity.i) * local_15 * g_510c54->rate)
-				local_10 = true;
-		}
-	local_18:
-		if (local_0->field_18 || (local_10 && !local_0->field_2e))
-		{
-			point2f local_25 = {local_11.i, local_11.j};
-			if (normalize2d(&local_25) > 0.0f)
-			{
-				real local_26 = local_0->field_17 ? 0.0f : 0.95f;
-				if (local_26 > local_1->unknown290.j * local_25.y + local_1->unknown290.i * local_25.x)
+				s_unit_request local_28;
+				memset(&local_28, 0, sizeof(local_28));
+				local_28.type1a.unknown4 = 0;
+				local_28.type = 0x1a;
+				point2f *local_29 = (point2f *)(local_28.arguments + 4);
+				*local_29 = *(point2f *)&local_11;
+				local_28.type1a.unknown6 = true;
+				if (normalize2d(local_29) == 0.0f)
 				{
-					local_0->field_18 = false;
-					goto local_27;
+					*local_29 = *(point2f *)&local_1->unknown290;
+					if (normalize2d(local_29) == 0.0f)
+						*local_29 = *g_468778;
+				}
+				if (function_e6900(local_1->unknown018, &local_28))
+				{
+					unit_submit_entry_request(0x13, NONE, local_1->unknown018, 0xd, NULL);
+					local_0->field_12 = true;
 				}
 			}
 		}
-		if (local_10)
+	local_27:
+		long local_30 = g_510c54->game_time;
+		if (!local_0->field_12 && !local_0->field_18)
 		{
-			s_unit_request local_28;
-			memset(&local_28, 0, sizeof(local_28));
-			local_28.type1a.unknown4 = 0;
-			local_28.type = 0x1a;
-			point2f *local_29 = (point2f *)(local_28.arguments + 4);
-			*local_29 = *(point2f *)&local_11;
-			local_28.type1a.unknown6 = true;
-			if (normalize2d(local_29) == 0.0f)
+			if (local_0->field_17)
 			{
-				*local_29 = *(point2f *)&local_1->unknown290;
-				if (normalize2d(local_29) == 0.0f)
-					*local_29 = *g_468778;
+				if ((real)*(short *)((byte *)local_0 + 0x1a) * g_510c54->rate > 0.5f)
+					local_0->field_14 = true;
 			}
-			if (function_e6900(local_1->unknown018, &local_28))
+			else
 			{
-				unit_submit_entry_request(0x13, NONE, local_1->unknown018, 0xd, NULL);
-				local_0->field_12 = true;
+				real local_31 = (real)g_510c54->field_2_3 * local_3->field_14;
+				long local_32;
+				__asm
+				{
+					fld local_31
+					fistp local_32
+				}
+				if (local_30 >= local_0->field_c + local_32)
+					local_0->field_14 = true;
 			}
 		}
-	}
-local_27:
-	long local_30 = g_510c54->game_time;
-	if (!local_0->field_12 && !local_0->field_18)
-	{
-		if (local_0->field_17)
-		{
-			if ((real)*(short *)((byte *)local_0 + 0x1a) * g_510c54->rate > 0.5f)
-				local_0->field_14 = true;
-		}
+		if (!local_0->field_12 && !local_0->field_17 && !local_0->field_18)
+			function_1a9d80(arg_0, local_3->field_1c, &local_0->field_2c, &local_0->field_2d);
 		else
-		{
-			real local_31 = (real)g_510c54->field_2_3 * local_3->field_14;
-			long local_32;
-			__asm
-			{
-				fld local_31
-				fistp local_32
-			}
-			if (local_30 >= local_0->field_c + local_32)
-				local_0->field_14 = true;
-		}
+			function_1f4280(arg_0);
+		if (!local_0->field_17 && !local_0->field_18 && !local_0->field_12)
+			function_1a9e00(arg_0, local_0->field_34, local_0->field_2d);
+		local_2 = true;
 	}
-	if (!local_0->field_12 && !local_0->field_17 && !local_0->field_18)
-		function_1a9d80(arg_0, local_3->field_1c, &local_0->field_2c, &local_0->field_2d);
-	else
-		function_1f4280(arg_0);
-	if (!local_0->field_17 && !local_0->field_18 && !local_0->field_12)
-		function_1a9e00(arg_0, local_0->field_34, local_0->field_2d);
 	return local_2;
 }
 
