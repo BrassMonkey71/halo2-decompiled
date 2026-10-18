@@ -118,12 +118,13 @@ long __stdcall function_1bead0(long actor_index, s_slot *slot)
 }
 
 /* invites the actor's clump members near enough, the nearest first */
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1beb70
 short __stdcall function_1beb70(long actor_index, s_slot *slot, bool active)
 {
 	s_slot_36 *state = (s_slot_36 *)slot;
 	s_joint_36 *joint = (s_joint_36 *)element_502424_get(state->element_index);
-	long accepted = 0;
 	s_actor_view *actor = actor_get(actor_index);
 
 	if (actor->prop_index != NONE)
@@ -140,6 +141,7 @@ short __stdcall function_1beb70(long actor_index, s_slot *slot, bool active)
 			}
 			else
 			{
+				long accepted = 0;
 				long declined = 0;
 				short i;
 
@@ -169,11 +171,7 @@ short __stdcall function_1beb70(long actor_index, s_slot *slot, bool active)
 					real seconds = g_510c54->field_2_3 * 1.5f;
 					long ticks;
 
-					__asm
-					{
-						fld seconds
-						fistp ticks
-					}
+					ticks = real_to_long(seconds);
 					state->unknown1c = (short)ticks;
 					if ((short)declined > 1)
 						function_1fb7e0(0x86, actor_index, NULL, NONE, NONE);

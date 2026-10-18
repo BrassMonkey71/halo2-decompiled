@@ -43,7 +43,6 @@ void function_22b8e2(s_22b8e2 const *arg_0, long arg_1, color4f const *arg_2)
 	long local_1;
 	long local_2;
 	point2f local_4;
-	(void)&arg_1; (void)&arg_2;
 	switch (local_0)
 	{
 	case 0: local_1 = arg_0->field_2c; break;

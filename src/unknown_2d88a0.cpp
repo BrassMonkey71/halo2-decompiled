@@ -31,3 +31,5 @@ void __cdecl function_2d8910(long size)
 		g_480158 = g_48015c - 16;
 	}
 }
+
+// @retail 0x2d8960 deleting scratch_owner_2d88a0

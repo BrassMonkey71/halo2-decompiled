@@ -100,8 +100,6 @@ PRIVATE __forceinline void scripted_vector_add_scaled(vector3f const *a, vector3
 // @retail 0x10b010
 void function_10b010(long object_index, real forward_speed, real left_speed, real up_speed)
 {
-	(void)&left_speed;
-	(void)&up_speed;
 	if (object_index != NONE)
 	{
 		s_scripted_object *object = SCRIPTED_OBJECT_GET(object_index);

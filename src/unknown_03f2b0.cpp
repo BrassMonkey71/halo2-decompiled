@@ -916,7 +916,7 @@ void __stdcall function_2cbc0(bool enabled)
 void function_3f2c0(s_planar_camera_source const *source, byte const *view, long object_index, long identifier)
 {
 	volatile long context = identifier;
-	byte camera[0x1b4];
+	byte camera[0x1bc]; // a whole s_planar_camera: function_441b0 fills 0x1bc bytes
 	real offset = 0.0f;
 	function_441b0(source, (s_planar_camera *)camera, view);
 	byte *effect = (byte *)function_01fd20(0);
@@ -1334,7 +1334,7 @@ struct s_shader_cache;
 struct s_coefficient_layout;
 struct s_lighting_record;
 bool __stdcall function_23690(s_coefficient_layout const *layout, short order, long object_index,
-    s_137801 const *vertices, byte const *indices, short count, long tag);
+    s_137801 const *vertices, long count, byte const *indices, long tag);
 bool function_3d480(long object_index, long count, transform4x3f const *matrices, transform4x3f *out);
 void function_3dd10(long object_index, bool force);
 s_lighting_record *function_3db00(long object_index, real priority);
@@ -1460,7 +1460,7 @@ void function_4b5d0(long object_index, long override, bool force, real distance,
                 if (*handle != NONE && *handle >= 0)
                     vertices = (s_137801 const *)(g_487b18.data + (*handle & 0x0fffffff));
                 success = function_23690(layout, *(short *)(output + 0x164), *source_object,
-                    vertices, (byte const *)sections, (short)*count, *tag);
+                    vertices, *count, (byte const *)sections, *tag);
             }
             function_3dd10(*source_object, false);
             if (*cache_slot)

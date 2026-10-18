@@ -19,6 +19,8 @@ struct values_2d96c0
 class eight_values_2d96c0 : public referenced_2d88a0
 {
 public:
+	REFERENCED_NEW_2D88A0(0x19)
+
 	long field_8;
 	long field_c;
 	long field_10;

@@ -98,29 +98,31 @@ struct s_28e601
 void function_b9fc0(long arg_0, vector3f *arg_1, vector3f *arg_2);
 vector3f *function_11d090(vector3f const *arg_0, vector3f *arg_1);
 
-__forceinline void function_28e65d(vector3f const *arg_1, vector3f const *arg_0, vector3f *arg_2)
+__forceinline void function_28e65d(vector3f const *a, vector3f const *b, vector3f *out)
 {
-	real local_1 = arg_1->i * arg_0->k - arg_1->k * arg_0->i;
-	real local_2 = arg_1->k * arg_0->j - arg_1->j * arg_0->k;
-	real local_0 = arg_1->j * arg_0->i - arg_1->i * arg_0->j;
-	arg_2->i = local_2;
-	arg_2->j = local_1;
-	arg_2->k = local_0;
+	real k = a->i * b->j - a->j * b->i;
+	real j = a->k * b->i - a->i * b->k;
+	real i = a->j * b->k - a->k * b->j;
+	out->i = i;
+	out->j = j;
+	out->k = k;
 }
 
 // @retail 0x28e600
 void function_28e600(long arg_0, s_28e600 *arg_1)
 {
-	s_28e601 *local_0 = (s_28e601 *)handler_object_get(arg_0);
+	s_28e601 *local_0 = (s_28e601 *)object_get(arg_0);
 	if (local_0->field_17c == 1 && !(bool)local_0->field_12c_5)
 	{
-		arg_1->field_8c = local_0->field_1f0;
+		vector3f const *new_up = &local_0->field_1f0;
+		arg_1->field_8c = *new_up;
 		vector3f local_1;
-		function_28e65d(&arg_1->field_80, &arg_1->field_8c, &local_1);
+		function_28e65d(&arg_1->field_8c, &arg_1->field_80, &local_1);
 		if (function_30bf0(&local_1) > 0.0f)
 		{
-			function_28e65d(&arg_1->field_8c, &local_1, &arg_1->field_80);
-			if (function_30bf0(&arg_1->field_80) != 0.0f)
+			vector3f *forward = &arg_1->field_80;
+			function_28e65d(&local_1, &arg_1->field_8c, forward);
+			if (function_30bf0(forward) != 0.0f)
 				return;
 		}
 		function_b9fc0(arg_0, &arg_1->field_80, &arg_1->field_8c);

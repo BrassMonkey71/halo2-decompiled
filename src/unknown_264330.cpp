@@ -710,7 +710,7 @@ short __stdcall function_1c8df0(long object_index, point3f const *target, short 
 	void const *source, long mode, bool narrow, bool attached, bool alternate, long *hit_object);
 short function_25c9d0(long actor_index, long prop_ref_index, bool player, long sight,
 	void *point, byte *sample, long reported);
-long function_25cb60(long actor_index, long object_index, short type, void *sample,
+short function_25cb60(long actor_index, long object_index, short type, void *sample,
 	void *point, long location, long sight);
 short function_25cca0(long prop_ref_index);
 short function_263810(point3f const *origin, long actor_index, point3f const *point, point3f const *endpoint, char posture, short mode, bool use_facing, bool *out_of_range);
@@ -806,7 +806,7 @@ void __stdcall function_264b50(long actor_index, long prop_ref_index, s_2641c0 *
 		if (!prop[0x26] && !suppressed)
 		{
 			short priority = (short)function_25c9d0(actor_index, prop_ref_index, prop[0x25] != 0, sight,
-				&motion->field_c, (byte *)sample, (long)&suppressed);
+				sample, (byte *)motion, (long)&suppressed);
 			if (reference->state >= 3 && view)
 			{
 				s_type_5cfb45 *state = function_25d690(reference);
@@ -826,7 +826,7 @@ void __stdcall function_264b50(long actor_index, long prop_ref_index, s_2641c0 *
 						*(long *)(actor + 0x348) = NONE;
 				}
 			}
-			short object_priority = (short)function_25cb60(actor_index, reference->object_index, reference->unknown1c,
+			short object_priority = function_25cb60(actor_index, reference->object_index, reference->unknown1c,
 				sample, &motion->field_c, (long)&motion->field_24, sight);
 			short extra_priority = function_25cca0(prop_ref_index);
 			reference->unknown27 = (char)priority;
