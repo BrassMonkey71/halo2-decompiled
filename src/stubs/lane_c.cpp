@@ -12,8 +12,6 @@ public:
 };
 // @stub 0x30ca30
 hkBool c_1d1261::function_30ca30(void *arg_0) { return hkBool(); }
-// @stub 0x30bd10
-void c_1d1261::function_30bd10(void *arg_0) {}
 
 class c_2df9d0
 {
@@ -48,10 +46,6 @@ public:
 };
 // @stub 0x2dfbf0
 c_2dfbf0::c_2dfbf0() {}
-// @stub 0x2df950
-void c_2dfbf0::function_2df950(long arg_0, long arg_1) {}
-// @stub 0x2df990
-void c_2dfbf0::function_2df990(long arg_0, long arg_1) {}
 
 struct s_3111d0
 {
@@ -130,8 +124,6 @@ public:
 	void detach(void *callback);
 };
 
-// @stub 0x30c470
-void c_library_30c470::detach(void *callback) { }
 
 class c_278da0_kind;
 class c_library_311690
@@ -365,8 +357,6 @@ public:
     void remove(void *callback);
 };
 
-// @stub 0x30c3e0
-void c_world_callback_registration::remove(void *callback) {}
 
 struct c_contact_query_bounds_info { c_contact_query_bounds_info(); };
 struct c_contact_query_transform_info { c_contact_query_transform_info(); };
