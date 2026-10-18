@@ -6,6 +6,16 @@ The newest entry comes first.
 
 ```
 matched 9163 of 11321 game functions (1322388 of 2784283 bytes, 47.49%)
+matched 363 of 1041 Havok functions (19117 of 234536 bytes, 8.15%)
+```
+
+0 new matches, none lost:
+- @andrewnakas's #571 (five commits): behaviour fixes for machine 3's unmatched 0x1d96d0, 0x4ff50, 0x497a0, 0x133390 and 0x112e20.
+
+## 2026-10-18: 9163 functions match
+
+```
+matched 9163 of 11321 game functions (1322388 of 2784283 bytes, 47.49%)
 matched 318 of 1041 Havok functions (14861 of 234536 bytes, 6.34%)
 ```
 
