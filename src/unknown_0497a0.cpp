@@ -160,9 +160,7 @@ void function_0497a0(
 			{
 				real h = (shape1->f2c - shape1->f28) * 0.025f * 0.5f;
 				result->v50.i = h * result->v40.i;
-				int tmp0;
-				tmp0 = result->v40.j * h;
-				result->v50.j = tmp0;
+				result->v50.j = h * result->v40.j;
 				result->v50.k = result->v40.k * h;
 				result->f5c = (source->f28 + 0.0078125f) * h * inv + 0.5f;
 			}
