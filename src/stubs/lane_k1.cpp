@@ -6,3 +6,9 @@ void *__cdecl function_2ee390(long arg_0, long arg_1, long arg_2, long value)
 {
 	return 0;
 }
+
+// @stub 0x2dae40
+void *__cdecl function_2dae40(long arg_0, long arg_1, long arg_2, long value)
+{
+	return 0;
+}
