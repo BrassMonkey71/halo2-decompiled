@@ -111,6 +111,9 @@ short __stdcall function_272af0(s_match_globals *structure, point3f const *point
 
 PRIVATE __forceinline byte function_1b69e6(long arg_0, long arg_1)
 {
+    bool unknown;
+    long level;
+    s_261d20_entry entry;
     s_2605d0_request request;
     byte result = 0;
     s_actor_view *actor = actor_get(arg_1);
@@ -146,9 +149,6 @@ PRIVATE __forceinline byte function_1b69e6(long arg_0, long arg_1)
         }
         *(real *)((byte *)&request + 0x1c) = 20.0f;
         byte *scratch = ai_scratch_buffer_get();
-        bool unknown;
-        long level;
-        s_261d20_entry entry;
         s_reference reference = function_2605d0(arg_1, &request, (long)&entry, (long)&level, scratch, &unknown);
         if (!REFERENCE_EQUAL(reference, g_470fa0) && reference.unknown2 >= 0)
         {

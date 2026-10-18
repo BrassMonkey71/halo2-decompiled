@@ -1341,7 +1341,7 @@ bool __stdcall function_1103a0(long unit_index, long requested, bool allow)
 	s_unit_animation_control *control = UNIT_ANIMATION_CONTROL(unit);
 	s_animation_state *state = UNIT_ANIMATION_STATE(unit);
 	long controlling = unit->field_13c;
-	bool result = true;
+	bool result;
 	bool depleted = false;
 	bool interruptible = false;
 	if (controlling != NONE)
@@ -1386,8 +1386,7 @@ bool __stdcall function_1103a0(long unit_index, long requested, bool allow)
 		case 0xe00002a:
 		case 0xe0000c3:
 		case 0x1000006c:
-			if (requested != 0x600008c)
-				result = interruptible;
+			result = requested != 0x600008c ? interruptible : true;
 			break;
 		case 0x500000a:
 		case 0x5000024:
@@ -1445,8 +1444,7 @@ bool __stdcall function_1103a0(long unit_index, long requested, bool allow)
 		case 0x800061e:
 		case 0x900000e:
 		case 0xa00000f:
-			if (requested == 0x400000c)
-				result = allow;
+			result = requested == 0x400000c ? allow : true;
 			break;
 		case 0x800001c:
 		case 0xa00001d:
@@ -1455,6 +1453,9 @@ bool __stdcall function_1103a0(long unit_index, long requested, bool allow)
 		case 0xe00003b:
 		case 0xf00003a:
 			result = false;
+			break;
+		default:
+			result = true;
 			break;
 		}
 	}

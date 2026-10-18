@@ -182,8 +182,8 @@ bool function_137000(s_type_b56524 *find, file_reference_data *file, s_file_time
 			{
 				function_1373c0(file->path);
 			}
-			function_137320(file->path, data->cFileName);
 			file->flags |= 1;
+			function_137320(file->path, data->cFileName);
 			if (time)
 			{
 				time->low = data->ftLastWriteTime.dwLowDateTime;
