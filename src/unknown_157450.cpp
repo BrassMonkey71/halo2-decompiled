@@ -15,6 +15,7 @@
 #include "game_engine_events.h"
 #include "unknown_163110.h"
 #include "slot_handler.h"
+static __forceinline long real_to_long(real value);
 #include <string.h>
 #include <math.h>
 
@@ -1377,8 +1378,7 @@ struct s_item_collection
 long function_15ac50(long index)
 {
 	s_scenario_netgame_equipment *equipment = &((s_scenario_netgame_equipment_view *)g_4e0350)->equipment[index];
-	struct { real seconds; long result; } rounding;
-	rounding.seconds = 30.0f;
+	real seconds = 30.0f;
 	short spawn_time = equipment->spawn_time;
 	long ticks;
 	if (spawn_time)
@@ -1394,14 +1394,9 @@ long function_15ac50(long index)
 			goto done;
 		ticks = collection_time;
 	}
-	rounding.seconds = (real)ticks;
+	seconds = (real)ticks;
 done:
-	__asm
-	{
-		fld rounding.seconds
-		fistp rounding.result
-	}
-	return rounding.result;
+	return real_to_long(seconds);
 }
 
 // @retail 0x15b1e0
@@ -4231,7 +4226,6 @@ struct s_input_state
     byte unknown00[0x10];
     byte values[0x38];
 };
-static __forceinline long real_to_long(real value);
 extern byte g_4e61b9;
 extern s_input_state g_4e61dc[3];
 extern s_input_state g_4e630c;

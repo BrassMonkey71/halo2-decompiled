@@ -1197,7 +1197,9 @@ void network_observer_channel_probe(s_network_observer *observer, long channel_i
 struct s_observer_bandwidth_channel
 {
 	long state;
-	byte unknown04[0x250 - 4];
+	byte unknown04[0xc - 4];
+	long connection_index;
+	byte unknown10[0x250 - 0x10];
 	long sample_count;
 	byte unknown254[0x358 - 0x254];
 	long sample_losses;
@@ -1306,15 +1308,12 @@ void function_79600(s_network_observer *observer, long index, long budget, long 
 void function_79d90(s_network_observer *observer, long index);
 void function_7a110(s_network_observer *observer, long index);
 
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
+
 static __forceinline long observer_round(real value)
 {
-	long result;
-	__asm
-	{
-		fld value
-		fistp result
-	}
-	return result;
+	return real_to_long(value);
 }
 
 // @retail 0x79850
@@ -1379,36 +1378,33 @@ void function_797b0(s_network_observer *observer, long index, bool received)
 void function_78e60(s_network_observer *observer, long index)
 {
 	s_observer_bandwidth_channel *channel = (s_observer_bandwidth_channel *)&observer->channels[index];
-	s_link_connection *connection = link_connection_get(observer->channels[index].connection_index);
 	long total = 0;
 	long count = 0;
-	s_observer_bandwidth_channel *local_0 = (s_observer_bandwidth_channel *)&observer->channels[0];
-	const byte *local_1 = (const byte *)&observer->channels[MAXIMUM_OBSERVER_CHANNELS];
-	do
+	s_link_connection *connection = link_connection_get(channel->connection_index);
+	for (short i = 0; i < MAXIMUM_OBSERVER_CHANNELS; i++)
 	{
-		if (local_0->state && local_0->active)
+		s_observer_bandwidth_channel *other = (s_observer_bandwidth_channel *)&observer->channels[i];
+		if (other->state && other->active)
 		{
 			count++;
-			total += local_0->budget;
+			total += other->budget;
 		}
-		local_0 = (s_observer_bandwidth_channel *)((byte *)local_0 + sizeof(observer->channels[0]));
-	} while ((const byte *)local_0 != local_1);
+	}
 	long budget = *(long *)((byte *)observer->configuration + 0x158);
 	long requested = budget + total;
-	long cap;
-	long available;
+	long limit;
 	if (observer->unknown4e01[0])
 	{
-		cap = *(long *)((byte *)observer->configuration + 0x160);
-		available = observer->value4e04 * 3 / 4;
+		long available = observer->value4e04 * 3 / 4;
+		long cap = *(long *)((byte *)observer->configuration + 0x160);
+		limit = available > cap ? cap : available;
 	}
 	else
 	{
-		cap = *(long *)((byte *)observer->configuration + 0x15c);
-		available = observer->value4e04 / 2;
+		long available = observer->value4e04 / 2;
+		long cap = *(long *)((byte *)observer->configuration + 0x15c);
+		limit = available > cap ? cap : available;
 	}
-	long limit = available;
-	if (available > cap) limit = cap;
 	long last = observer->time4f2c;
 	if (observer_time_get() - last <= *(long *)((byte *)observer->configuration + 0x154))
 	{
@@ -1467,14 +1463,7 @@ void function_78e60(s_network_observer *observer, long index)
 	long minimum_burst = *(long *)((byte *)observer->configuration + 0xe0);
 	if (burst <= minimum_burst) burst = minimum_burst;
 	real frame_rate = network_frame_rate();
-	bool limited = false;
-	if (channel->wanted && rate + 0.0001f < observer->configuration->real110 * frame_rate)
-		limited = true;
-	if (channel->has_callback)
-	{
-		if (channel->callback_inactive) frame_rate *= 0.5f;
-		if (rate + 0.0001f < frame_rate) limited = true;
-	}
+	bool limited = function_78190(frame_rate, rate, observer, channel->wanted, channel->has_callback, channel->callback_inactive);
 	channel->budget = budget;
 	channel->rate = rate;
 	channel->rate_limited = limited;
