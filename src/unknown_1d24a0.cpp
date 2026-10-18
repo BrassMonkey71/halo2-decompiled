@@ -109,8 +109,6 @@ PRIVATE __forceinline real function_1d24a7(point3f const *arg_0, point3f const *
 // @retail 0x1d24a0
 void __stdcall function_1d24a0(s_havok_component *arg_0, float arg_1)
 {
- (void)&arg_0;
- (void)&arg_1;
  if (!(arg_0->unknown04 & 0x104000)) return;
  bool local_0 = !(fabs(arg_1) < 0.0001f);
  bool local_1 = local_0 && !(bool)((arg_0->unknown04 >> 13) & 1);
@@ -159,10 +157,7 @@ void __stdcall function_1d24a0(s_havok_component *arg_0, float arg_1)
    else if (local_27 & 0x1000) function_119250(local_14->object_index);
    local_15 = local_10->field_1;
    point3f const *local_76 = (point3f const *)((byte *)local_14->rigid_bodies.data[local_15].rigid_body->m_motion + 0x70);
-   point3f local_28;
-   local_28.x = local_76->x;
-   local_28.y = local_76->y;
-   local_28.z = local_76->z;
+   point3f local_28 = *local_76;
    vector3f local_29;
    vector3f local_30;
    havok_component_rigid_body_angular_velocity_get(local_14, local_15, &local_29);
