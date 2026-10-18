@@ -560,7 +560,7 @@ void function_1e3b60(long actor_index)
 		s_object_marker marker;
 		function_b8d30(actor->unit_index, 0x40000bd, &marker, 1, false);
 		point3f point = marker.matrix.position;
-		bool volatile below_plane = false;
+		bool below_plane = false;
 		short plane_index = *(short *)(actor_bytes + 0x254);
 		if (plane_index != NONE)
 		{
@@ -608,15 +608,14 @@ void function_1e3b60(long actor_index)
 				{
 					actor->unknown266 = true;
 					*(short *)(actor_bytes + 0x270) = 1;
-					dword flags = *(dword *)(definition + 0x1ec);
-					if (flags & 0x800)
+					if ((bool)((*(dword *)(definition + 0x1ec) >> 11) & 1))
 					{
-						if (flags & 0x1000)
+						if ((bool)((*(dword *)(definition + 0x1ec) >> 12) & 1))
 						{
 							actor->unknown229 = true;
-							*(short *)(actor_bytes + 0x270) = (flags & 0x2000) ? 2 : 4;
+							*(short *)(actor_bytes + 0x270) = ((bool)((*(dword *)(definition + 0x1ec) >> 13) & 1)) ? 2 : 4;
 						}
-						else if (flags & 0x2000)
+						else if ((bool)((*(dword *)(definition + 0x1ec) >> 13) & 1))
 							*(short *)(actor_bytes + 0x270) = 3;
 						else
 						{
@@ -691,14 +690,24 @@ void function_1e3b60(long actor_index)
 		vector3f *up = (vector3f *)(actor_bytes + 0x2a8);
 		*up = *(vector3f *)(object + 0x18c);
 		vector3f *left = (vector3f *)(actor_bytes + 0x2b4);
-		left->i = up->k * g_4687b0->j - g_4687b0->k * up->j;
-		left->j = g_4687b0->k * up->i - g_4687b0->i * up->k;
-		left->k = g_4687b0->i * up->j - up->i * g_4687b0->j;
+		{
+			real i = up->k * g_4687b0->j - g_4687b0->k * up->j;
+			real j = g_4687b0->k * up->i - g_4687b0->i * up->k;
+			real k = g_4687b0->i * up->j - up->i * g_4687b0->j;
+			left->i = i;
+			left->j = j;
+			left->k = k;
+		}
 		function_30bf0(left);
 		vector3f *forward = (vector3f *)(actor_bytes + 0x2c0);
-		forward->i = up->j * left->k - left->j * up->k;
-		forward->j = left->i * up->k - up->i * left->k;
-		forward->k = left->j * up->i - up->j * left->i;
+		{
+			real i = up->j * left->k - left->j * up->k;
+			real j = left->i * up->k - up->i * left->k;
+			real k = left->j * up->i - up->j * left->i;
+			forward->i = i;
+			forward->j = j;
+			forward->k = k;
+		}
 		*(long *)(actor_bytes + 0x2d0) = *(long *)(object + 0xec);
 		*(long *)(actor_bytes + 0x2d4) = *(long *)(object + 0xf0);
 		*(long *)(actor_bytes + 0x2d8) = *(long *)(object + 0x100);
@@ -927,7 +936,8 @@ long __stdcall function_1e0850(long character_index, long squad_index, s_203780 
 			bool enabled = false, forced = false;
 			real probability = 0.0f;
 			function_2036c0(character_index, *(short *)(squad + 0x30), &enabled, &forced, &probability);
-			bool replace = forced ? function_203900((short)squad_index, probability) : enabled;
+			bool replace = enabled;
+			if (forced) replace = function_203900((short)squad_index, probability);
 			if (!replace) break;
 			character_index = *(long *)(definition + 0x28);
 			definition = g_4e3b44[character_index & 0xffff].bytes;
