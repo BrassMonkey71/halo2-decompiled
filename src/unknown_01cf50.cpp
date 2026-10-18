@@ -3766,7 +3766,7 @@ void function_12fa0(byte const *camera, real const *projection, bool scaled, lon
 
 
 real *table_entry_data(long handle);
-long function_184000(long bit, long index);
+long function_184000(long index, long bit);
 
 // @retail 0x45ce0
 bool function_45ce0(short index, byte *out, short part, short transform_index)
@@ -3807,7 +3807,7 @@ bool function_45ce0(short index, byte *out, short part, short transform_index)
         long instance = (entry->flags >> 18) & 0x7ff;
         if (instance == 0x7ff) instance = NONE;
         long bit = material[0x1c] == 0xff ? NONE : material[0x1c];
-        visible = (byte)function_184000(bit, instance) != 0;
+        visible = (byte)function_184000(instance, bit) != 0;
     }
     *(long *)out = *(long *)(material + 0xc);
     out[0x14] = false;

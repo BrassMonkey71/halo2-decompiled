@@ -329,7 +329,7 @@ struct s_slot_entry_list;
 extern s_slot_entry_list *g_4e0340;
 extern byte *g_4ed280;
 extern long *g_51e9cc;
-long function_184000(long bit, long index);
+long function_184000(long index, long bit);
 
 struct s_surface_flags
 {
@@ -388,7 +388,7 @@ bool function_1ef3e0(dword key)
 		{
 			s_surface_globals *globals = (s_surface_globals *)g_4e0348;
 			s_surface_flags *surface = &globals->owners[globals->instances[object_index].owner].surfaces[surface_index];
-			if ((surface->flags & 8) && !(byte)function_184000(surface->bit, object_index))
+			if ((surface->flags & 8) && !(byte)function_184000(object_index, surface->bit))
 				result = false;
 		}
 		break;
