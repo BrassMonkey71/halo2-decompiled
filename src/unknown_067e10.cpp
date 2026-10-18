@@ -2175,9 +2175,8 @@ void __stdcall function_683a0(byte *block)
 	{
 		if (input->actor_mask & (1 << i))
 		{
-			long index = input->actor_indices[i];
-			if (function_badc0(index, 3))
-				function_c6de0(index, input->actor_states[i]);
+			if (function_badc0(input->actor_indices[i], 3))
+				function_c6de0(input->actor_indices[i], input->actor_states[i]);
 		}
 	}
 	if (*(bool *)(block + 0xdd0))
