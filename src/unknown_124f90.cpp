@@ -216,7 +216,7 @@ static __forceinline s_125262 function_125262(long arg_0, real const volatile *a
     s_125262 local_0;
     local_0.field_0 = *(real *)&arg_0;
     long volatile local_1 = arg_2;
-    real local_2 = *(real const volatile *)&local_1;
+    real local_2 = *(real const *)&local_1;
     local_0.field_0 = (local_0.field_0 - local_2) * *arg_1 + local_2;
     return local_0;
 }
