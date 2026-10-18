@@ -667,8 +667,7 @@ bool __stdcall function_0254c0(
 real g_509400;
 extern real g_485ae0;
 
-real g_4b9c74[5][14];
-real g_4b9d90, g_4b9d94;
+#include "filter_kernel_storage.h"
 void function_350e0(real const *a, real const *b, real *out, real x);
 
 // @retail 0x26710
@@ -1188,8 +1187,6 @@ void __cdecl function_24970(s_histogram_state *state)
     function_24c70(histogram, &state->range);
     XRestoreFloatingPointStateForDpc();
 }
-
-bool g_4b9d9c;
 
 // @retail 0x27520
 bool __stdcall function_27520(long mode, real const *bounds, real const *t, real *out, long unused)

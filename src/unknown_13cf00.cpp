@@ -65,7 +65,7 @@ void function_13cf00(void)
 				{
 					short_rectangle2d local_14, local_15;
 					function_13e9c0(local_11, &local_6, &local_14, &local_15, 1.0f);
-					local_2 = (local_15.top - local_6.top) / local_4;
+					local_2 = (local_15.bottom - local_6.top) / local_4;
 				}
 			}
 			short local_12 = local_6.bottom;

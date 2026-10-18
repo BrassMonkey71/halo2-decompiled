@@ -84,7 +84,7 @@ struct s_184256
 
 void voice_fpu_enter(void);
 void voice_fpu_leave(void);
-long function_184000(long arg_0, long arg_1);
+long function_184000(long index, long bit);
 void function_184060(long arg_0, unsigned char arg_1, s_type_1e6529 *arg_2, long arg_3);
 
 // @retail 0x184250
@@ -122,7 +122,7 @@ void __stdcall function_184250(s_type_1e6529 const *arg_0)
 				s_184255 *local_9 = &((s_184256 *)g_4e0348)->field_210[local_6.field_0[local_8]];
 				long local_10 = local_9->field_0;
 				long local_11 = local_9->field_2;
-				if ((bool)(byte)function_184000(local_10, local_11))
+				if ((bool)(byte)function_184000(local_11, local_10))
 				{
 					function_184060(local_10, (byte)local_11, (s_type_1e6529 *)arg_0, local_9->field_4);
 					local_3 = true;
@@ -227,7 +227,7 @@ void function_1c55e0(real const *bounds);
 void function_184060(long index, byte bit_index, s_type_1e6529 *input_data, long surface_index)
 {
 	s_184061 const *input = (s_184061 const *)input_data;
-	if (!*g_4ed280 || input->definition_index == NONE || !((bool)(byte)function_184000(bit_index, index)))
+	if (!*g_4ed280 || input->definition_index == NONE || !((bool)(byte)function_184000(index, bit_index)))
 		return;
 
 	s_184067 *globals = (s_184067 *)g_4e0348;
