@@ -3577,10 +3577,9 @@ void function_2ba10(s_2f970_view const *view, long cluster, long player,
     memcpy(frame + 0x270, speed, 24);
     frame[0x294] = (byte)unknown3;
     *(byte const **)(frame + 0x290) = lighting;
-    ++g_46701c;
-    byte *stored_frame = (byte *)&g_4850d0 + g_46701c * 0x298;
-    memcpy(stored_frame, frame, sizeof(frame));
-    function_132d0((s_frame_view_2c560 *)stored_frame);
+    long frame_index = ++g_46701c;
+    memcpy(&g_4850d0[frame_index], frame, sizeof(frame));
+    function_132d0(&g_4850d0[frame_index]);
     function_1beb0();
     if (g_4e9194)
     {
