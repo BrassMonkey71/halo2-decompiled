@@ -575,6 +575,8 @@ struct s_1aab51
 	real field_28;
 };
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1aab50
 bool __stdcall function_1aab50(long arg_0, s_slot *arg_1)
 {
@@ -736,12 +738,7 @@ bool __stdcall function_1aab50(long arg_0, s_slot *arg_1)
 			else
 			{
 				real local_31 = (real)g_510c54->field_2_3 * local_3->field_14;
-				long local_32;
-				__asm
-				{
-					fld local_31
-					fistp local_32
-				}
+				long local_32 = real_to_long(local_31);
 				if (local_30 >= local_0->field_c + local_32)
 					local_0->field_14 = true;
 			}
