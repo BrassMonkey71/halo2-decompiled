@@ -12,11 +12,11 @@ struct entry_2dfec0
 class sorted_2dfec0
 {
 public:
-	entry_2dfec0 *lower_bound(entry_2dfec0 *begin, entry_2dfec0 *end, unsigned short key) const;
+	entry_2dfec0 *first_not_below(entry_2dfec0 *begin, entry_2dfec0 *end, unsigned short key) const;
 };
 
 // @retail 0x2dfec0
-entry_2dfec0 *sorted_2dfec0::lower_bound(entry_2dfec0 *begin, entry_2dfec0 *end, unsigned short key) const
+entry_2dfec0 *sorted_2dfec0::first_not_below(entry_2dfec0 *begin, entry_2dfec0 *end, unsigned short key) const
 {
 	while (end - begin > 16)
 	{

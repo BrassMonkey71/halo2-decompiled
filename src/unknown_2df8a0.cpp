@@ -79,21 +79,12 @@ public:
 	hkBool accepts(long a, long b);
 };
 
-// the filter's settings: the value kept at +0x18 and the 32-word table
-struct settings_2dfb30
-{
-	long field_18;
-	unsigned long enabled[32];
-};
-
 class c_2dfbf0 : public c_contact_rule_fallback, public c_2df9d0,
 	public c_contact_rule_filter, public c_2df8f0, public c_2dfae0
 {
 public:
 	long field_18;
 	unsigned long enabled[32];
-
-	c_2dfbf0(settings_2dfb30 const &settings);
 
 	virtual hkBool function_2df9d0(void const *arg_0, void const *arg_1);
 	virtual hkBool function_2df8f0(void const *arg_0, void const *arg_1, long arg_2);
@@ -137,14 +128,4 @@ hkBool c_2dfbf0::function_2dfae0(void const *arg_0, void const *arg_1)
 {
 	return test(((keyed_object_2df9d0 const *)arg_0)->key_24,
 		((keyed_object_2df9d0 const *)arg_1)->key_1c);
-}
-
-// @retail 0x2dfb30
-c_2dfbf0::c_2dfbf0(settings_2dfb30 const &settings)
-{
-	for (int i = 0; i < 32; i++)
-	{
-		enabled[i] = settings.enabled[i];
-	}
-	field_18 = settings.field_18;
 }
