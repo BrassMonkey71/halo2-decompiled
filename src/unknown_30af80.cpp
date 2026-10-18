@@ -4,6 +4,21 @@
 
 class class_30af80;
 
+struct bool_30af80
+{
+	bool value;
+
+	bool_30af80(bool value_)
+	{
+		value = value_;
+	}
+	bool_30af80(bool_30af80 const &other)
+	{
+		value = other.value;
+	}
+};
+
+
 struct s_30af80_event
 {
 	class_30af80 *source;
@@ -25,16 +40,16 @@ public:
 	class_30af80_listener **listeners;
 	int listener_count;
 
-	void function_30af80(long value, bool flag);
+	void function_30af80(long value, bool_30af80 flag);
 };
 
 // @retail 0x30af80
-void class_30af80::function_30af80(long value, bool flag)
+void class_30af80::function_30af80(long value, bool_30af80 flag)
 {
 	s_30af80_event event;
 	event.value = value;
 	event.source = this;
-	event.flag = flag;
+	event.flag = flag.value;
 	for (int i = listener_count - 1; i >= 0; i--)
 	{
 		class_30af80_listener *listener = listeners[i];
