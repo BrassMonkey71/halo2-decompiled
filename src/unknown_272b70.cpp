@@ -2654,7 +2654,7 @@ void function_2769d0(long point_reference)
 			if (point_set_index >= 0 && point_set_index < local_0->point_set_count)
 			{
 				s_scenario_point_set *point_set = &local_0->point_sets[point_set_index];
-				volatile real best_distance = 3.4028235e38f;
+				real best_distance = 3.4028235e38f;
 				short best_index = NONE;
 				for (; point_index < point_set->point_count; point_index++)
 				{
