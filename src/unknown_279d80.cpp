@@ -1052,8 +1052,8 @@ void function_279860(void)
 
 /* the two decoded orientations of an interpolation: the second frame's, and
    the first frame's when the method blends */
-static __declspec(align(16)) s_animation_output g_504410;
-static __declspec(align(16)) s_animation_output g_504430;
+PRIVATE __declspec(align(16)) s_animation_output g_504410;
+PRIVATE __declspec(align(16)) s_animation_output g_504430;
 
 /* the sign bit of the first lane */
 static __declspec(align(16)) dword const g_47ffc0[4] = { 0x80000000, 0, 0, 0 };

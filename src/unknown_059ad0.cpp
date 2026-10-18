@@ -1369,14 +1369,42 @@ static inline char *function_x91aa57(char *destination, const char *source, dwor
 	return destination;
 }
 
+/* retail inlines 0x58d50 and 0x58d20 into the parameter setters; their
+   definitions live in another file, so these local copies stand in */
+static inline bool session_member_is_value50(c_class_58d20 *s)
+{
+	bool result = false;
+	if (s->state > 2 && s->state <= 8)
+	{
+		result = s->current_member == s->value50;
+	}
+	return result;
+}
+
+static inline bool session_state_in_5_8(c_class_58d20 *s)
+{
+	bool result = false;
+	long current = s->state;
+	if (current == 5 || current == 6 || current == 7 || current == 8)
+	{
+		result = true;
+	}
+	else
+	{
+		/* retail's dead stack store of the state, as in 0x58d20 */
+		volatile long unused = current;
+	}
+	return result;
+}
+
 // @retail 0x5b790
 bool network_session_parameters_set_value4d08(c_class_58d20 *session, long value4d08, long value4d0c, const char *string)
 {
 	bool result = false;
 
-	if (session_state_is_live(session) && function_058d50(session))
+	if (session_state_is_live(session) && session_member_is_value50(session))
 	{
-		if (!session->function_058d20())
+		if (!session_state_in_5_8(session))
 		{
 			s_network_message_parameters_request request;
 			parameters_request_initialize(session, &request);

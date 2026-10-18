@@ -1171,7 +1171,7 @@ short function_263810(point3f const *origin, long actor_index, point3f const *po
 void function_2640c0(long object_index, s_object_motion_view *result);
 
 // @retail 0x25cb60
-long function_25cb60(long arg_0, long arg_1, short arg_2, void *arg_3, void *arg_4, long arg_5, long arg_6)
+short function_25cb60(long arg_0, long arg_1, short arg_2, void *arg_3, void *arg_4, long arg_5, long arg_6)
 {
 	s_actor_view *local_0 = actor_get(arg_0);
 	s_squad_datum *local_1 = local_0->unknown030 != NONE ? squad_get(local_0->unknown030) : NULL;
