@@ -372,13 +372,6 @@ PRIVATE __forceinline real function_293d31(vector3f const *arg_0, vector3f const
 	return local_0;
 }
 
-struct s_293d32
-{
-	real field_0;
-	real field_4;
-	long field_8;
-};
-
 /* steers a flock member away from its volume's faces, optionally moving
    an outside point back into the volume */
 // @retail 0x293d30
@@ -386,15 +379,14 @@ void function_293d30(s_scenario_flock const *definition, point3f *point, real *s
 {
 	/* Taking the address preserves retail's stack-passed horizontal flag. */
 	bool const *horizontal_reference = &horizontal_only;
-	s_293d32 local_0;
-	local_0.field_4 = 1.0f;
+	real boundary_range = 1.0f;
 	s_scenario_flock_volumes_view *scenario = (s_scenario_flock_volumes_view *)g_4e0350;
 	bool clamp_position = (definition->flags & 1) != 0;
 	*strength = 0.0f;
 	*direction = *g_4687a4;
 	*moved = false;
 	if (definition->boundary_distance > 0.0f)
-		local_0.field_4 = definition->boundary_distance;
+		boundary_range = definition->boundary_distance;
 	if (definition->trigger_volume_index >= 0 && definition->trigger_volume_index < scenario->trigger_volume_count)
 	{
 		transform4x3f matrix;
@@ -402,42 +394,42 @@ void function_293d30(s_scenario_flock const *definition, point3f *point, real *s
 		{
 			s_flock_trigger_volume *volume = &((s_scenario_flock_volumes_view *)g_4e0350)->trigger_volumes[definition->trigger_volume_index];
 			real const *extents = volume->extents;
-			local_0.field_0 = 0.0f;
+			real maximum_strength = 0.0f;
 			vector3f relative;
 			vector3d_from_points3d(&matrix.position, point, &relative);
-			local_0.field_8 = 0;
+			long axis_index = 0;
 			long axis_count = *horizontal_reference ? 2 : 3;
-			for (; (short)local_0.field_8 < axis_count; local_0.field_8++)
+			for (; (short)axis_index < axis_count; axis_index++)
 			{
-				vector3f const *axis = &(&matrix.forward)[(short)local_0.field_8];
+				vector3f const *axis = &(&matrix.forward)[(short)axis_index];
 				real distance = function_293d31(axis, &relative);
-				if (local_0.field_4 >= distance)
+				if (boundary_range >= distance)
 				{
-					real value = flock_boundary_clip(local_0.field_4 - distance, local_0.field_4) / local_0.field_4 * 3.0f;
+					real value = flock_boundary_clip(boundary_range - distance, boundary_range) / boundary_range * 3.0f;
 					flock_add_direction(direction, axis, value);
-					if (value > local_0.field_0)
-						local_0.field_0 = value;
+					if (value > maximum_strength)
+						maximum_strength = value;
 					if (clamp_position && distance < 0.0f)
 					{
 						flock_move_point(point, axis, 0.0f - distance);
 						*moved = true;
 					}
 				}
-				if (distance >= extents[(short)local_0.field_8] - local_0.field_4)
+				if (distance >= extents[(short)axis_index] - boundary_range)
 				{
-					real value = (1.0f - flock_boundary_clip(extents[(short)local_0.field_8] - distance, local_0.field_4) / local_0.field_4) * 3.0f;
+					real value = (1.0f - flock_boundary_clip(extents[(short)axis_index] - distance, boundary_range) / boundary_range) * 3.0f;
 					flock_add_direction(direction, axis, 0.0f - value);
-					if (value > local_0.field_0)
-						local_0.field_0 = value;
-					if (clamp_position && distance > extents[(short)local_0.field_8])
+					if (value > maximum_strength)
+						maximum_strength = value;
+					if (clamp_position && distance > extents[(short)axis_index])
 					{
-						flock_move_point(point, axis, extents[(short)local_0.field_8] - distance);
+						flock_move_point(point, axis, extents[(short)axis_index] - distance);
 						*moved = true;
 					}
 				}
 			}
 			function_30bf0(direction);
-			*strength = local_0.field_0;
+			*strength = maximum_strength;
 		}
 	}
 }

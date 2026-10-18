@@ -374,7 +374,6 @@ PRIVATE __forceinline real function_1de2c2(point3f const *arg_0, point3f const *
 // @retail 0x1de2c0
 void function_1de2c0(s_1de2c0 *arg_0, long arg_1)
 {
- (void)&arg_1;
  s_1debd0 const *local_0 = &((s_1debd0 const *)arg_0->field_0->field_2c)[arg_1];
  if ((local_0->field_4 & 8) && (short)local_0->field_5 < arg_0->field_4 &&
   !(arg_0->field_8[local_0->field_5 >> 5] & (1 << (local_0->field_5 & 31)))) return;

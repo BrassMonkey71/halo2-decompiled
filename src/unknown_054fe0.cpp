@@ -1644,7 +1644,7 @@ struct s_type_66052
 // @retail 0x66050
 long function_66050(c_class_58d20 *session, long variant_index)
 {
- volatile long result;
+ long result;
  long local_1 = variant_index;
  bool different;
  bool compatible;
@@ -1667,7 +1667,7 @@ long function_66050(c_class_58d20 *session, long variant_index)
    if ((local_0->field_10d0 & (1 << i)) && (local_0->field_10d4[i].user_flags & 3))
    {
     result = 12;
-    return result;
+    goto local_66050;
    }
  }
  dword mask = local_0->field_10d0;
@@ -1675,7 +1675,7 @@ long function_66050(c_class_58d20 *session, long variant_index)
   if ((mask & (1 << i)) && local_0->field_10d4[i].user_flags == 0xbad00000)
   {
    result = 13;
-   return result;
+   goto local_66050;
   }
  for (long member = 0; member < local_0->field_8; member++)
  {
@@ -1689,23 +1689,23 @@ long function_66050(c_class_58d20 *session, long variant_index)
     {
      long outcome = state == 3 ? 2 : 11;
      result = outcome;
-     return outcome;
+     goto local_66050;
     }
-   return result;
+   goto local_66050;
   }
  }
  for (long i = 0; i < 16; i++)
   if ((mask & (1 << i)) && (signed char)local_0->field_10d4[i].propertiesa8[0x81] < variant->field5e4)
   {
    result = 15;
-   return result;
+   goto local_66050;
   }
  const long &type = variant->type;
  if (type == 5 && !compatible)
  {
   long outcome = missing ? 8 : 9;
   result = outcome;
-  return outcome;
+  goto local_66050;
  }
  long minimum;
  if (type > 3)
@@ -1721,12 +1721,12 @@ long function_66050(c_class_58d20 *session, long variant_index)
  if (count < minimum)
  {
   result = 6;
-  return result;
+  goto local_66050;
  }
  if (count > function_193250(variant))
  {
   result = 7;
-  return result;
+  goto local_66050;
  }
  if (type == 5)
  {
