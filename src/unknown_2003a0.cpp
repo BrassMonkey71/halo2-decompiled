@@ -1921,7 +1921,7 @@ void function_203d70(long actor_index, short squad_index, bool keep_team)
 #include "object_queries.h"
 void function_11bed0(s_location *location, point3f const *point);
 
-PRIVATE inline long squad_tick_round(real ticks)
+PRIVATE __forceinline long squad_tick_round(real ticks)
 {
     long result;
     __asm
