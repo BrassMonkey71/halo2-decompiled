@@ -3597,9 +3597,9 @@ void function_125b40(void)
 			vector3f *local_3[0x40];
 			vector3f *local_4[0x80];
 			s_voice_position_batch local_5;
+			local_5.count = 0;
 			memset(local_3, 0, sizeof(local_3));
 			memset(local_4, 0, sizeof(local_4));
-			local_5.count = 0;
 			function_129100(&local_5, local_3, local_4);
 			long local_6 = players_first_active_local_player();
 			while (local_6 != NONE)

@@ -693,7 +693,7 @@ bool __stdcall function_1e9140(s_request_screen_bounds const *bounds)
 		if (!function_3bcb0(edge_bitmap))
 			result = false;
 		if (!function_3bcb0(center_bitmap))
-			return false;
+			result = false;
 		if (result)
 		{
 			s_request_screen_bounds const *input = bounds;
