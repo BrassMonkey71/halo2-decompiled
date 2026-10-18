@@ -9,6 +9,12 @@ the same bytes. That check is what makes the recreated code verifiable. A
 longer-term research goal is to study how the game's code could run on other
 platforms, using game data that each user supplies from their own copy.
 
+Alongside the game's own code, the project also decompiles **Havok**, the
+physics library linked into the game, because Halo 2's vehicles, ragdolls and
+projectiles have to behave exactly as they do on the Xbox. The executable's
+other libraries (the Xbox SDK's, Bink video and so on) are not decompiled; a
+port would replace them.
+
 The project is non-commercial and is not affiliated with or endorsed by
 Microsoft, Bungie or 343 Industries. **Read [LEGAL.md](LEGAL.md)** for the
 project's scope, what it does not contain, and its rules for contributions,
@@ -33,6 +39,9 @@ a range, and a prompt you can paste into an AI coding agent. Then see
 - No Halo 2 game assets: no maps, textures, models, audio or cinematics.
 - No game executable (XBE) and no disc image.
 - No Microsoft Xbox SDK/XDK: no compiler, libraries or headers.
+- No Havok SDK material: no headers, documentation, samples or source. The
+  Havok code here is recreated from the retail executable and named by what it
+  does.
 - No original or leaked Halo 2 source code.
 - No leaked symbols, PDBs or linker maps. Names that came from such sources
   through a third-party dataset have been removed from the inventory, and
@@ -73,7 +82,8 @@ Matched code so far includes:
 - sound sources, looping sounds and Bink movie playback;
 - the game's data arrays, object lists and hash tables;
 - geometry, quaternion and matrix maths;
-- input, file paths, localized strings, random numbers and game state.
+- input, file paths, localized strings, random numbers and game state;
+- the first functions of the Havok physics library.
 
 Every function is checked automatically on every build, so a match stays a
 match. Refer to [docs/PROGRESS.md](docs/PROGRESS.md), which is updated as work
@@ -123,7 +133,12 @@ So the work runs in stages:
    matches, it gets names from what the code does, structs for the data it
    reads, and a source file named after its subsystem, without changing a byte
    of the build.
-5. **Native port.**
+5. **Havok (started, alongside 3).** The physics library is decompiled the
+   same way. It was a prebuilt library compiled without LTCG, so it matches
+   with plain per-file flags; see
+   [docs/DECOMPILING.md](docs/DECOMPILING.md#havok).
+6. **Native port.** The game and Havok code from stages 3 and 5, with the Xbox
+   SDK, Bink and the other libraries replaced.
 
 ## Build and check
 
@@ -162,7 +177,7 @@ So the work runs in stages:
 | `tools/libsig.py` | Recognises library code by byte signature from the SDK's `.lib` files. |
 | `tools/build.py` | Builds the whole game as one LTCG image, with each source file's flags. |
 | `tools/check.py` | Compares our functions with retail and records progress. Needs the SDK and capstone. |
-| `tools/ready.py` | Lists the functions that are ready to decompile next. `--claims` drops addresses from a saved copy of the Active claims table. |
+| `tools/ready.py` | Lists the functions that are ready to decompile next. `--claims` drops addresses from a saved copy of the Active claims table; `--owner third:havok` lists Havok functions instead of the game's. |
 | `tools/open_work.py` | Lists work a contributor can claim (source files with functions left, and functions ready to write) outside every person's claim, with the claim line to use. Takes a saved copy of issue #9. |
 | `tools/permute.py` | Searches variants of a source function for ones that turn a near-miss into a match. |
 | `tools/near.py` | Counts the near-misses in the csv by source file (functions, bytes). No XBE. `--list` prints each function. |
@@ -185,6 +200,10 @@ ready-made prompt for AI coding agents.
 3. Decompile, run `python tools/check.py`, and push as functions match.
    [docs/DECOMPILING.md](docs/DECOMPILING.md) explains the conventions and
    the compiler's quirks.
+
+Havok functions are open too, and they are a gentle start: no whole-program
+optimisation, and many small ones. `python tools/ready.py --owner third:havok`
+lists the ready ones; claim a range the same way.
 
 Not ready to write code? Analysis helps too: several contributors have
 mapped a function or a subsystem in a `docs/` note that the next person then
