@@ -779,25 +779,21 @@ long __stdcall function_1e0160(long squad_index, long entry_index, long unit_ind
 				function_203d70(actor_index, (short)resolved_squad, false);
 			}
 			byte *unit = (byte *)ai_object_get(*unit_reference);
-			short team = 0;
+			extern short const g_44aee8[20];
+			short entry_team = 0;
 			if (resolved_squad != NONE)
 			{
 				byte *entry = *(byte **)((byte *)g_4e0350 + 0x164) + (resolved_squad & 0xffff) * 0x74;
 				if (entry)
-					team = *(short *)(entry + 0x24);
+					entry_team = *(short *)(entry + 0x24);
 			}
-			if (team == 0 && unit)
-			{
-				short unit_team = *(short *)(unit + 0x138);
-				if (unit_team != NONE && unit_team != 0)
-					team = unit_team;
-			}
-			if (team == 0)
-			{
-				extern short const g_44aee8[20];
-				team = g_44aee8[actor->unknown004];
-			}
-			function_1e1150(actor_index, team);
+			short unit_team;
+			if (entry_team != 0)
+				function_1e1150(actor_index, entry_team);
+			else if (unit && (unit_team = *(short *)(unit + 0x138)) != NONE && unit_team != 0)
+				function_1e1150(actor_index, unit_team);
+			else
+				function_1e1150(actor_index, g_44aee8[actor->unknown004]);
 			if (squad && !squad[0x76] && actor->unknown024 != 0)
 				squad[0x76] = (byte)actor->unknown024;
 			actor->unknown084 = *flag_reference ? 0 : 3;

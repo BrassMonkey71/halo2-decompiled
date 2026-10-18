@@ -373,6 +373,7 @@ PRIVATE inline real polygon_distance_19f(real x, real y)
     return (real)sqrt(x * x + y * y);
 }
 
+PRIVATE __forceinline long polygon_round_19f(real value);
 PRIVATE inline long polygon_round_19f(real value)
 {
     long result;
@@ -390,6 +391,7 @@ void function_19f680(long tag, long group, long pass, long variant, void *contex
     real perimeter, point3f const *color, real height)
 {
     long const volatile *variant_reference = &variant;
+    real inner_radius = radius - 0.0001f;
     double delta_x = (double)center->x - (double)g_4b9da0.x;
     double delta_y = (double)center->y - (double)g_4b9da0.y;
     real distance = (real)(sqrt(delta_x * delta_x + delta_y * delta_y) - radius);
@@ -398,7 +400,7 @@ void function_19f680(long tag, long group, long pass, long variant, void *contex
     if (fade > 0.0f)
     {
         real spread = fade * radius * 2.0f;
-        real maximum_distance = radius - 0.0001f + spread;
+        real maximum_distance = inner_radius + spread;
         function_1bd50(0);
         function_1cdd0(0, 0);
         function_4b2d0(tag, group, (*variant_reference), ((byte *)context)[4], pass);
