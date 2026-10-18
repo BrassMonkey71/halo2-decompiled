@@ -107,10 +107,8 @@ PRIVATE __forceinline void store_current_projection(byte const *projection)
 void __stdcall function_2c790(byte const *source)
 {
     g_4b9ed4 = NONE;
-    byte projection[0xc0];
     memcpy(&g_camera_storage, source + 0xc, sizeof(g_camera_storage));
-    function_2fd90((s_2f800_view const *)(source + 0xc), 0, projection);
-    memcpy(&g_projection_storage, projection, sizeof(g_projection_storage));
+    function_2fd90((s_2f800_view const *)&g_camera_storage, 0, (byte *)&g_projection_storage);
     s_frame_view_2c560 frame;
     memset(&frame, 0, sizeof(frame));
     memcpy(frame.view, source + 0x80, sizeof(frame.view));
@@ -118,17 +116,15 @@ void __stdcall function_2c790(byte const *source)
     frame.mode = 0;
     if (*(long const *)source == 1) frame.location = 0;
     else { frame.location = 1; frame.position = *g_468718; }
-    s_frame_view_2c560 *saved = &g_4850d0[++g_46701c];
+    long saved_index = ++g_46701c;
     frame.index = NONE;
-    *saved = frame;
-    function_132d0(saved);
-    long mode = *(long const *)source;
+    g_4850d0[saved_index] = frame;
+    function_132d0(&g_4850d0[saved_index]);
+    /* retail stores the view's mode to the stack and never reads it back */
+    long volatile unused_view_mode = *(long const *)source;
     function_13c780();
     function_13e635();
-    short_rectangle2d bounds;
-    bounds.top = g_4b9dd0; bounds.left = g_4b9dd2;
-    bounds.bottom = g_4b9dd4; bounds.right = g_4b9dd6;
-    function_147af1(4, NONE, (c_render_window *)&bounds);
+    function_147af1(4, NONE, (c_render_window *)&g_4b9dd0);
     function_13c20();
 }
 
@@ -237,8 +233,7 @@ void function_2c560(short left, short top, short right, short bottom,
     g_4b9ed4 = frame.index;
     g_4b9ee4 = 0; g_4b9ee0 = 0; g_4b9ee8 = false;
     g_4b9ed8 = NONE; g_4b9edc = NONE; g_4b9eec = NONE; g_4b9ee9 = false;
-    g_4b9ef0 = *(long *)frame.records;
-    memcpy(g_4b9ef4, frame.records + 4, sizeof(g_4b9ef4));
+    memcpy(g_view_context_storage.frame_records, frame.records, sizeof(frame.records));
     g_4ba010 = true;
     memcpy(&g_camera_storage, frame.view, sizeof(g_camera_storage));
     function_2fd90((s_2f800_view const *)&g_camera_storage, (box2f const *)clip, (byte *)&g_projection_storage);

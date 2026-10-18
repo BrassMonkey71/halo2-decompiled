@@ -99,8 +99,9 @@ bool function_07ab60(const s_type_99af70 *address, long local, long *index_out, 
 	{
 		if (local)
 		{
+			ina = byte_swap_long(address->ipv4_address);
 			memset(xnaddr_out, 0, sizeof(*xnaddr_out));
-			xnaddr_out->ina.s_addr = byte_swap_long(address->ipv4_address);
+			xnaddr_out->ina.s_addr = ina;
 			result = true;
 		}
 		else if (function_07aec0(address, &ina))

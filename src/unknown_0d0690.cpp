@@ -1203,6 +1203,7 @@ void function_d4080(s_effect_color_query const *query, long type, s_lighting_rec
 	bool const *const flag_reference = &flag;
 	bool flag_value = *flag_reference;
 	(void)flag_value;
+	byte *context = (byte *)g_4e0350;
 	vector3f const *input_normal = (vector3f const *)query;
 	real length = (real)sqrt(input_normal->i * input_normal->i + input_normal->j * input_normal->j + input_normal->k * input_normal->k);
 	volatile bool mobile = false;
@@ -1213,7 +1214,7 @@ void function_d4080(s_effect_color_query const *query, long type, s_lighting_rec
 	color3f base, lightmap;
 	unpack_color3f(query->color_a, &base);
 	unpack_color3f(query->color_b, &lightmap);
-	long tag_index = *(long *)((byte *)g_4e0350 + 0x33c);
+	long tag_index = *(long *)(context + 0x33c);
 	if (tag_index == NONE)
 		tag_index = *(long *)((byte *)g_4e034c + 0x184);
 	s_lighting_parameter_block *block = (s_lighting_parameter_block *)g_4e3b44[tag_index & 0xffff].bytes;
