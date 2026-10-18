@@ -48,8 +48,6 @@ bool function_1d48f0(point3f *arg_11, s_havok_component *arg_0, long arg_1, long
  vector3f const *arg_4, s_location *arg_5, real arg_6, real arg_7, bool arg_8,
  point3f const *arg_9, long arg_10)
 {
- (void)&arg_0; (void)&arg_1; (void)&arg_2; (void)&arg_3; (void)&arg_4; (void)&arg_5;
- (void)&arg_6; (void)&arg_7; (void)&arg_8; (void)&arg_9; (void)&arg_10;
  c_contact_query_bounds_volume *local_1 = NULL;
  long local_2 = NONE;
  _control87(0x9001f, 0x8001f);
