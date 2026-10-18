@@ -2182,11 +2182,9 @@ void __stdcall function_683a0(byte *block)
 	}
 	if (*(bool *)(block + 0xdd0))
 		function_14c630(*(dword *)(block + 0xdd4), (const s_machine_address *)(block + 0xdd8));
-	long count = *(long *)(block + 0xe38);
-	s_simulation_player_update *update = (s_simulation_player_update *)(block + 0xe3c);
-	long j = 0;
-	if (count > 0) do
+	for (long j = 0; j < *(long *)(block + 0xe38); j++)
 	{
+		s_simulation_player_update *update = (s_simulation_player_update *)(block + 0xe3c) + j;
 		bool result;
 		switch (update->type)
 		{
@@ -2214,13 +2212,11 @@ void __stdcall function_683a0(byte *block)
 			g_4cf771 = true;
 			break;
 		}
-		update++;
-		j++;
-	} while (j < *(long *)(block + 0xe38));
+	}
 	if (*(bool *)(block + 0x403c) &&
 		(SIMULATION_WORLD->state == 3 || SIMULATION_WORLD->state == 5))
 	{
-		for (long k = 0; k < 4; k++)
+		for (short k = 0; k < 4; k++)
 			g_46e320[k](0);
 		g_46e320[4](0);
 	}

@@ -716,42 +716,37 @@ bool __stdcall function_26710(long mode, real const *bounds, real const *t, real
 	return true;
 }
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
 // @retail 0x26ca0
 bool __stdcall function_26ca0(long mode, real const *bounds, real const *t, real *out, long unused)
 {
-	(void)&mode;
-	(void)&bounds;
-	(void)&t;
-	(void)&out;
-	(void)&unused;
 	real const *matrix = g_4b9c74[mode];
 	if (g_509400 <= 0.0f)
 		g_509400 = g_485ae0;
-	if (mode > 0 && mode <= 4)
+	switch (mode)
+	{
+	case 1:
+	case 2:
+	case 3:
+	case 4:
 	{
 		out[0] = (t[0] * 2.0f - 1.0f) * matrix[6] - (t[1] * 2.0f - 1.0f) * matrix[7] * g_4b9d94 + matrix[9];
-        _ReadWriteBarrier();
 		out[1] = (t[0] * 2.0f - 1.0f) * matrix[10] - (t[1] * 2.0f - 1.0f) * matrix[11] * g_4b9d94 + matrix[13];
 		out[2] = 0.0f;
 		out[3] = 1.0f;
 		return true;
 	}
-	if (mode == 0)
+	case 0:
 	{
 		out[0] = (bounds[1] - bounds[0]) * t[0] + bounds[0];
 		out[1] = (bounds[3] - bounds[2]) * t[1] + bounds[2];
 		clip_depth_terms(out, 1.0f);
-        _ReadWriteBarrier();
 		out[0] *= g_4b9d90;
-        _ReadWriteBarrier();
 		out[1] *= g_4b9d90;
 		return true;
 	}
+	}
 	return false;
 }
-#pragma function(_ReadWriteBarrier)
 
 // @retail 0x27960
 bool __stdcall function_27960(long mode, real const *bounds, real const *t, real *out, long unused)
@@ -1191,7 +1186,6 @@ void __cdecl function_24970(s_histogram_state *state)
 // @retail 0x27520
 bool __stdcall function_27520(long mode, real const *bounds, real const *t, real *out, long unused)
 {
-    (void)&mode; (void)&bounds; (void)&t; (void)&out; (void)&unused;
     if (g_509400 <= 0.0f)
         g_509400 = g_485ae0;
     switch (mode)

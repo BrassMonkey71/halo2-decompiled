@@ -2194,8 +2194,7 @@ void function_1027b0(long weapon_index, long trigger_index, bool *pressed, bool 
 		fistp ticks
 	}
 	long threshold = (byte)(long)(definition->value_14 * 255.0f);
-	bool *const *pressed_reference = &pressed;
-	**pressed_reference = false;
+	*pressed = false;
 	*held = false;
 	*released = false;
 	if (weapon->value_170 < weapon->value_171)
@@ -2257,8 +2256,13 @@ void function_1027b0(long weapon_index, long trigger_index, bool *pressed, bool 
 		dword flags = *(dword *)((byte *)trigger + 4);
 		if (*pressed && (flags & 0x18))
 			*pressed = false;
-		if (!*released && *held && ((flags & 0x10) || ((*(byte *)definition & 1) && (flags & 8))))
-			*held = false;
+		if (!*released && *held)
+		{
+			if (flags & 0x10)
+				*held = false;
+			else if ((*(byte *)definition & 1) && (flags & 8))
+				*held = false;
+		}
 	}
 	weapon->value_171 = weapon->value_170;
 	weapon->value_170 = 0;
