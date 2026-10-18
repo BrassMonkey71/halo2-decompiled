@@ -77,7 +77,6 @@ void function_2232a0(void)
 // @retail 0x2234e0
 void function_2234e0(void)
 {
-	long local_0 = 0;
 	long local_1 = NONE;
 	long local_2;
 	volatile long local_3;
@@ -108,7 +107,7 @@ void function_2234e0(void)
 	}
 	else
 		local_3 = 0;
-	for (; local_0 < local_2; ++local_0)
+	for (long local_0 = 0; local_0 < local_2; ++local_0)
 	{
 		byte const *local_5 = 0;
 		for (++local_1; local_1 < 4; ++local_1)
