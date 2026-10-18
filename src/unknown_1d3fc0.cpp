@@ -30,7 +30,6 @@ PRIVATE __forceinline void function_1d3fc1(vector3f *arg_0)
 // @retail 0x1d3fc0
 void __stdcall function_1d3fc0(long arg_0, s_havok_component *arg_1)
 {
- (void)&arg_0;
  real local_0;
  transform4x3f local_1[6];
  if (TEST_FIELD_BIT(arg_1->flag10))

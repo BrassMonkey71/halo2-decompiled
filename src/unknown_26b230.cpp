@@ -1524,8 +1524,6 @@ long function_269040(point3f const *center, short team)
 // @retail 0x26a4f0
 long function_26a4f0(s_clump_activity_view *clump, short priority)
 {
-	s_clump_activity_view *const *clump_reference = &clump;
-	short const *priority_reference = &priority;
 	volatile long result = NONE;
 	if (priority >= clump->update_state)
 	{
@@ -1552,7 +1550,7 @@ long function_26a4f0(s_clump_activity_view *clump, short priority)
 						iterator.current = (s_clump *)data_iterator_next_inlined(&iterator.pool);
 					s_clump_activity_view *other = (s_clump_activity_view *)iterator.current;
 					if (!other) break;
-					if (other->update_state >= 4 || (other == *clump_reference && *priority_reference <= other->update_state + 1))
+					if (other->update_state >= 4 || (other == clump && priority <= other->update_state + 1))
 						continue;
 					real score;
 					if (!other->active)
@@ -1881,10 +1879,10 @@ void function_269250(long clump_index, long actor_index)
 // @retail 0x26ae30
 void function_26ae30(long object_index)
 {
-	long const *object_reference = &object_index;
+	bool unit = false;
+	bool group_object = false;
 	s_slot_object_view *object = object_get(object_index);
 	short type = (char)object->type;
-	bool group_object = false, unit = false;
 	long replacement = NONE;
 	if (type == 12)
 	{
@@ -1931,13 +1929,13 @@ void function_26ae30(long object_index)
 		if (g_4f55d0->active)
 			groups.current = (s_clump *)data_iterator_next_inlined(&groups.pool);
 		if (!groups.current) break;
-		volatile bool changed = false;
+		bool changed = false;
 		s_iterator props;
 		props.next = ((s_clump *)(g_502420->data + (groups.pool.datum_index & 0xffff) * sizeof(s_clump)))->first_prop;
 		s_type_76cf92 *prop;
 		while ((prop = clump_next_prop(&props)) != NULL)
 		{
-			if (*(long *)((byte *)prop + 8) == *object_reference)
+			if (*(long *)((byte *)prop + 8) == object_index)
 			{
 				changed = true;
 				if (replacement != NONE)

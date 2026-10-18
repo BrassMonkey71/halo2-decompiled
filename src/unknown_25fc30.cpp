@@ -1733,9 +1733,6 @@ real normalize2d(point2f *v);
 // @retail 0x25f7b0
 void __stdcall function_25f7b0(long arg_0, s_type_967e20 *arg_1, s_type_b36ac5 *arg_2)
 {
-	/* keeps the context on the stack, as retail passes it */
-	s_type_967e20 *const *context_reference = &arg_1;
-	(void)context_reference;
 	s_actor_view *local_0 = actor_get(arg_0);
 	short local_1 = *(short *)arg_1;
 	if (local_1 == 5 && !arg_1->unknown11)
