@@ -614,18 +614,28 @@ bool function_1f9490(long actor_index, s_reference reference, s_actor_move_reque
 	return result;
 }
 
+struct s_1f9762
+{
+	byte field_0[0x1c];
+	byte field_1c[0x11];
+	char field_2d;
+	char field_2e;
+	byte field_2f;
+	s_actor_point_entry field_30[4];
+};
+
 // @retail 0x1f9760
 bool function_1f9760(long actor_index, long object_index, point3f const *point, real distance,
 	bool *last_out, bool *direction_valid_out, vector3f *direction_out)
 {
 	bool reached = false;
 	s_actor_view *actor = actor_get(actor_index);
+	s_1f9762 *path = (s_1f9762 *)((byte *)actor + 0x50c);
 	byte *definition = g_4e3b44[moving_object_get(object_index)->tag_index & 0xffff].bytes;
-	bool last = actor->unknown53a + 1 >= actor->unknown539;
+	bool last = path->field_2e + 1 >= path->field_2d;
 	bool direction_valid = false;
 	vector3f direction;
 	vector3f approach;
-	long current_index;
 	vector3f const *projection_direction;
 	if (actor->unknown456)
 	{
@@ -634,14 +644,13 @@ bool function_1f9760(long actor_index, long object_index, point3f const *point, 
 	}
 	else if (!last)
 	{
-		current_index = actor->unknown53a;
-		s_type_c3b527 *next = &actor->unknown53c[actor->unknown53a + 1].point;
-		function_210be0(&actor->unknown53c[current_index].point, next, &direction);
+		s_type_c3b527 *next = &path->field_30[path->field_2e + 1].point;
+		function_210be0(&path->field_30[path->field_2e].point, next, &direction);
 		if (function_30bf0(&direction) > 0.0001f)
 		{
 			direction_valid = true;
-			s_type_c3b527 *previous = actor->unknown53a > 0 ? &actor->unknown53c[actor->unknown53a - 1].point : (s_type_c3b527 *)actor->unknown528;
-			function_210be0(previous, &actor->unknown53c[current_index].point, &approach);
+			s_type_c3b527 *previous = path->field_2e > 0 ? &path->field_30[path->field_2e - 1].point : (s_type_c3b527 *)path->field_1c;
+			function_210be0(previous, &path->field_30[path->field_2e].point, &approach);
 			if (function_30bf0(&approach) > 0.0f)
 			{
 				projection_direction = &approach;
@@ -661,7 +670,6 @@ bool function_1f9760(long actor_index, long object_index, point3f const *point, 
 			reached = true;
 		else if (direction_valid && actor->unknown4d4)
 		{
-			current_index = actor->unknown53a;
 			projection_direction = &direction;
 			goto projection;
 		}
@@ -669,7 +677,7 @@ bool function_1f9760(long actor_index, long object_index, point3f const *point, 
 	goto finish;
 projection:
 	{
-		real remaining = dot3f((vector3f *)&actor->unknown53c[current_index].point.point, projection_direction) - dot3f((vector3f const *)point, projection_direction);
+		real remaining = dot3f((vector3f *)&path->field_30[path->field_2e].point.point, projection_direction) - dot3f((vector3f const *)point, projection_direction);
 		if (*(real *)(definition + 4) * 1.2f > remaining)
 			reached = true;
 	}
@@ -680,7 +688,9 @@ finish:
 	else
 	{
 		*direction_valid_out = direction_valid;
-		*direction_out = direction;
+		direction_out->i = direction.i;
+		direction_out->j = direction.j;
+		direction_out->k = direction.k;
 	}
 	return reached;
 }
