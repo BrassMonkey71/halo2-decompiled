@@ -13,7 +13,8 @@ This is the procedure for one function, written for a person or a subagent.
 - **The retail XBE:** `orig/default.xbe`. Extract it with
   `python tools/xiso_extract.py "<your Halo 2 image>" orig default.xbe`.
 - **Python:** `pip install -r requirements-dev.txt`.
-- **Pick a function:** take one from `python tools/ready.py`. Every function
+- **Pick a function:** take one from `python tools/ready.py` (or, for Havok,
+  `python tools/ready.py --owner third:havok`; see [Havok](#havok)). Every function
   it calls is already matched, is library code, or is in the same recursion
   group, so the function's own code is the only unknown. Pass
   `--claims` a saved copy of the Active claims table to skip ranges that
@@ -252,6 +253,40 @@ code (zlib, XAPI, Havok, CRT, Rockall, voice, WMA, Bink, DSOUND, compiler stubs)
 `game` rows in `.text` at or above `game_end` become `other:library`, and each
 entry of `ranges` (`{"start", "end", "owner", "note"}`) sets its rows' owner
 outright. The checker's game totals count only `game` rows.
+
+## Havok
+
+Havok, the physics library linked into the game, is decompiled too: its rows
+in `config/functions.csv` have the `owner` `third:havok` (1,041 functions,
+mostly `0x2d0000`–`0x31ffff`). `python tools/check.py` counts them on their
+own line, and `python tools/ready.py --owner third:havok` lists the ones ready
+to write. It is easier than the game code in one way: Havok was a prebuilt
+library, compiled without LTCG, so its conventions don't depend on the rest of
+the program.
+
+- **Flags:** every Havok file starts `// @flags /O2 /GL-`. Don't add
+  `/arch:SSE`: Havok's own `__m128` code doesn't need it, and its scalar code
+  is x87.
+- **Conventions:** standard ones. Member functions are `thiscall`. Write free
+  functions `__cdecl` explicitly, because the build adds `/Gr` to every file.
+  A small struct returned by value comes back through a hidden pointer
+  (`ret 4`).
+- **Code shape:**
+  - Vector code uses SSE intrinsics (`__m128`, `_mm_*`); functions with
+    `__m128` locals realign their frame (`and esp, -16`), as retail does.
+  - Scalars use plain `float`.
+  - Every function is 16-byte aligned, with `int3` fill.
+- **Files:** name a file `src/unknown_<lowest address>.cpp` and group
+  neighbouring functions in it. Don't use a name that sorts before
+  `src/unknown_058dd0.cpp`: code linked ahead of that file costs `0x73360` its
+  match.
+- **Calls:** Havok calls back into the game through ordinary `cdecl` calls and
+  through a game-provided object's vtable. A Havok function's game callees
+  never change its convention.
+- **Provenance:** name Havok code only by what it does, as with the game's.
+  Never use Havok SDK headers, documentation, samples or source, even versions
+  that were once free to download (see
+  [CONTRIBUTING.md](../CONTRIBUTING.md#contribution-provenance)).
 
 ## The whole-program inlining threshold
 

@@ -347,7 +347,7 @@ def _escape(m, name):
     return None
 
 
-def tu_source(source_abs, marked, prefix, classes=(), polymorphic=(), outside=()):
+def tu_source(source_abs, marked, prefix, classes=(), polymorphic=(), outside=(), keep_results=False):
     """The translation unit that holds a source and its stand-ins: the source
     itself; one function per class with a vtable that copy-constructs it,
     which emits the vtable (before the pragmas below, so the compiler-made
@@ -392,6 +392,10 @@ def tu_source(source_abs, marked, prefix, classes=(), polymorphic=(), outside=()
         if stored:
             out.append(f'static {m.returns} volatile standin_{prefix}_result_{k};')
             call = f'standin_{prefix}_result_{k} = {call}'
+        elif keep_results and m.kind in ('function', 'method') and m.returns != 'void':
+            # without /GL the compiler drops a call to a side-effect-free function
+            # whose class result is unused, so store the result in the buffer
+            call = f'*({m.returns} *)(unsigned char *){buffer} = {call}'
         out.append(f'void standin_{prefix}_{k}(void) {{ {call}; }}')
     return '\n'.join(out) + '\n'
 
@@ -725,7 +729,8 @@ def build(root=ROOT, xdk=None, units=None, image=None, include=(), jobs=1, reuse
         compiled, depends = path, [path, os.path.join(root, 'config', 'files.json')]
         if marked:
             compiled = os.path.join(gen, f'{stem}_tu.cpp')
-            source = tu_source(os.path.abspath(path), marked, stem, classes, polymorphic, outside)
+            source = tu_source(os.path.abspath(path), marked, stem, classes, polymorphic, outside,
+                               keep_results='/GL-' in flags)
             if not os.path.exists(compiled) or open(compiled, encoding='utf-8').read() != source:
                 with open(compiled, 'w', encoding='utf-8') as f:
                     f.write(source)

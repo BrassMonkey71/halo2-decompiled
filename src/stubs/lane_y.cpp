@@ -10,8 +10,6 @@ struct c_244980_base
 };
 // @stub 0x2d7210
 long c_244980_base::v1(long first, long second) { return 0; }
-// @stub 0x2fbb30
-void *c_244980_base::v3() { return 0; }
 struct s_244980_ray;
 struct s_244980_output;
 class c_244c10;

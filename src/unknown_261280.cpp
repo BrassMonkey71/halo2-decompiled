@@ -25,7 +25,7 @@ bool function_2613d0(long actor_index, s_reference reference, s_prop_search *sea
 {
 	s_2605d0_request const *request = (s_2605d0_request const *)search;
 	s_actor_view *actor = actor_get(actor_index);
-	s_262b40_result *volatile definition = function_262b40(reference);
+	s_262b40_result *definition = function_262b40(reference);
 	bool result = false;
 	if (definition)
 	{
@@ -55,7 +55,6 @@ bool function_2613d0(long actor_index, s_reference reference, s_prop_search *sea
 				if (REFERENCE_EQUAL(selected, reference))
 					result = true;
 				ai_scratch_buffer_release(scratch);
-				return result;
 			}
 		}
 	}

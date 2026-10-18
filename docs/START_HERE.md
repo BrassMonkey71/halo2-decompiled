@@ -72,6 +72,12 @@ holds (an `@user` row on that issue), and the lanes will leave it alone.
    That is your claim; the maintainers add it to the issue. A claim with no
    activity for two weeks lapses.
 
+Rather work on physics? Havok, the physics library linked into the game, is
+being decompiled too, and its functions are open for claims the same way:
+`python tools/ready.py --owner third:havok` lists the ready ones. Many are
+small, and they match without any whole-program effects. See
+[DECOMPILING.md](DECOMPILING.md#havok) for their flags.
+
 Want to improve code someone else wrote and already merged? Ask its author
 first, on the claims issue or their pull request. If they haven't answered
 within 7 days, you may go ahead; their work and credit stay.
@@ -112,6 +118,7 @@ Work loop:
 
 Rules:
 - Provenance: never use or copy anything from leaked source code, PDBs, linker maps, internal or debug builds, or datasets derived from them: no names, strings, comments or code. Don't look up Halo 2 symbol names online. Name things by what they do, or use the `function_<va>` and `unknown_<va>` placeholders.
+- If my claim is Havok code (`owner` `third:havok` in config/functions.csv), follow docs/DECOMPILING.md's "Havok" section: every file starts `// @flags /O2 /GL-`, free functions are written `__cdecl`, and never use Havok SDK headers, docs, samples or source.
 - Stay inside my claim. Outside it, change only declarations, or the arguments at a call site when a fix needs it, and list every such change.
 - No false matches: never swap the arguments at a call to a function that doesn't match yet, unless you also change that function's definition and every other call site the same way. The bytes can match while the code passes the wrong values.
 - Don't add attributes Bungie's code wouldn't have had.

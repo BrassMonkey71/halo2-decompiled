@@ -1968,7 +1968,7 @@ void function_27bd60(void)
 // @retail 0x27bfe0
 void function_27bfe0(void)
 {
-	compute_orientations(0, 2, true, true);
+	compute_orientations_inheritance_mapping(0, 2, true, true);
 }
 
 // @retail 0x27c490
