@@ -3720,7 +3720,7 @@ void function_31170(long tag, s_view_camera *camera, long resource, s_view_sourc
     if ((g_4ba014 & 3) == 3) draw_light_source_pass(1, 13, true, false, false, g_4858b8, false);
     g_4858bc = 0;
     g_4b843c = 0;
-    D3DDevice_SetRenderState(D3DRS_FRONTFACE, 0);
+    D3DDevice_SetRenderState(D3DRS_STENCILENABLE, FALSE);
     D3DDevice_SetScissors(0, false, 0);
     function_15720(0, 0);
     function_14bc0((short)g_4858b8, 0, true);
