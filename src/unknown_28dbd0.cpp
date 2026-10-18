@@ -130,9 +130,10 @@ long function_28dbd0(long arg_0, long arg_1, long arg_2, s_28dab2 const *arg_3, 
 			local_0.field_28 = local_2;
 		}
 	}
-	*(long *)((byte *)&local_0 + 0xc) = local_4->field_30;
 	if (!local_4->field_30)
 		*(long *)((byte *)&local_0 + 0xc) = function_1e06b0(arg_1);
+	else
+		*(long *)((byte *)&local_0 + 0xc) = local_4->field_30;
 	local_0.field_b4 = 0;
 	local_0.field_b6 = 0xb0;
 	local_1 = function_b7b40(&local_0);

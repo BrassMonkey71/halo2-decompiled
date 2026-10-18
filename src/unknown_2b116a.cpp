@@ -5431,36 +5431,39 @@ bool qos_is_complete(long handle);
 void function_1486b8(long error, bool keep);
 
 // @retail 0x2bb04e
-bool function_2bb04e(long task_index, bool * volatile completion)
+bool function_2bb04e(long task_index, bool *completion)
 {
-    bool *complete = completion;
-    bool result = false;
-    *complete = false;
+    bool result;
+    *completion = false;
     if (g_475338 != NONE)
     {
         result = true;
         if (qos_is_complete(g_475338))
-            *complete = true;
+            *completion = true;
     }
-    else if (task_index != NONE)
+    else
     {
-        s_type_9df9da *task = function_6b910(task_index);
-        if (task)
+        result = false;
+        if (task_index != NONE)
         {
-            long status = online_task_get_logon_status(task_index);
-            long type = online_task_get_type(task_index);
-            if (status != 0)
+            s_type_9df9da *task = function_6b910(task_index);
+            if (task)
             {
-                if (status == 1)
+                long status = online_task_get_logon_status(task_index);
+                long type = online_task_get_type(task_index);
+                if (status != 0)
                 {
-                    g_475338 = qos_service_lookup();
-                    result = true;
+                    if (status == 1)
+                    {
+                        g_475338 = qos_service_lookup();
+                        result = true;
+                    }
+                    else if (type == 1)
+                        function_1486b8(status, true);
                 }
-                else if (type == 1)
-                    function_1486b8(status, true);
+                else if (!(task->flags & 4) && (type == 0 || type == 1))
+                    result = true;
             }
-            else if (!(task->flags & 4) && (type == 0 || type == 1))
-                result = true;
         }
     }
     if (!result || *completion)
