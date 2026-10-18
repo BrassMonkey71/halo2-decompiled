@@ -722,9 +722,6 @@ void motion_sensor_render(long local_player_index, short const *origin)
 	}
 }
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
-
 // @retail 0x1a2965
 bool motion_sensor_enemy_vehicle_ahead(long local_player_index)
 {
@@ -736,12 +733,10 @@ bool motion_sensor_enemy_vehicle_ahead(long local_player_index)
 		s_sensor_player *player = SENSOR_PLAYER(player_index);
 		if (player->unit_index != NONE)
 		{
-			_ReadWriteBarrier();
-			long unit_index = player->unit_index;
 			s_motion_sensor_player *sensor = &g_51e994->players[local_player_index];
-			s_sensor_object *unit = SENSOR_OBJECT(unit_index);
+			s_sensor_object *unit = SENSOR_OBJECT(player->unit_index);
 			point3f unit_position;
-			function_b9dd0(unit_index, &unit_position);
+			function_b9dd0(player->unit_index, &unit_position);
 			for (long i = 0; i < sensor->other_count; i++)
 			{
 				long object_index = sensor->objects[sensor->nearby_count + i];
@@ -789,8 +784,6 @@ bool motion_sensor_enemy_vehicle_ahead(long local_player_index)
 	}
 	return result;
 }
-
-#pragma function(_ReadWriteBarrier)
 
 // @retail 0x1a2b6b
 bool motion_sensor_enemy_nearby(long local_player_index)

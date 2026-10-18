@@ -11,7 +11,7 @@ bool function_f12e0(long unit_index);
 bool __stdcall function_14e200(long player_index, long target_index, point3f const *position, bool detach);
 
 // @retail 0x14e970
-bool function_14e970(long player_index, point3f const *position, long target_index)
+bool function_14e970(long player_index, long target_index, point3f const *position)
 {
 	long unit_index = *(long *)(g_4e8c24->data + (player_index & 0xffff) * 0x21c + 0x2c);
 	s_object *unit = function_badc0(unit_index, 1);

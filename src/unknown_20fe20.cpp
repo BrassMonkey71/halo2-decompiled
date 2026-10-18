@@ -436,9 +436,7 @@ PRIVATE inline long audio_queue_delay(void)
 // @retail 0x20f6a0
 bool function_20f6a0(s_node_owner *owner, long node_index)
 {
-	(void)&owner;
-	(void)&node_index;
-	volatile bool result = false;
+	bool result = false;
 	byte *record = (byte *)NODE(node_index);
 	long filter = *(long *)((byte *)owner + 0x7d8);
 	if (filter == NONE || *(long *)(record + 4) == filter || *(long *)(record + 0x28) == filter)

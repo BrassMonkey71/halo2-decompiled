@@ -2430,7 +2430,7 @@ bool __stdcall function_14f2e0(long player_index);
 
 bool __stdcall function_cc170(long *);
 bool function_1ca670(void);
-bool function_14e970(long, point3f const *, long);
+bool function_14e970(long, long, point3f const *);
 struct s_unknown_13bf00;
 extern s_unknown_13bf00 *g_510c50;
 
@@ -2523,7 +2523,7 @@ void function_14cdd0(void)
                 if (!(player->flags_word & 2) && (player->flags_word & 1) && player->unit_index == NONE)
                 {
                     long index = iterator.datum_index;
-                    if (!function_14f2e0(index) || !function_14e970(index, &last_position, last_unit)) failed = true;
+                    if (!function_14f2e0(index) || !function_14e970(index, last_unit, &last_position)) failed = true;
                 }
             } while (data_datum_iterator_next(&iterator));
         }

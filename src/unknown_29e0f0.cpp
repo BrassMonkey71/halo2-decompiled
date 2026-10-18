@@ -204,7 +204,7 @@ bool function_2702a0(long arg_0, long arg_1, long arg_2, long arg_3, long arg_4,
     point3f const *arg_5, vector3f const *arg_6, point3f *arg_7,
     long *arg_8, vector3f *arg_9, long *arg_10);
 struct s_29db90;
-void function_29db90(short arg_1, short arg_0, s_29db90 *arg_2);
+void function_29db90(s_29db90 *list, short block_index, short range_index);
 bool function_29dd50(point3f const *arg_0, point3f const *arg_1, long arg_2, long arg_3);
 
 struct s_29e730
@@ -304,7 +304,7 @@ local_21:
             s_262b40_result *local_16 = function_262b40(arg_4);
             arg_5 = &local_15;
             local_15.field_b4 = 0;
-            function_29db90(local_16->unknown10, arg_4.unknown2, (s_29db90 *)&local_15);
+            function_29db90((s_29db90 *)&local_15, arg_4.unknown2, local_16->unknown10);
         }
         local_13 = function_29e0f0(arg_2, local_2, arg_4, arg_5, arg_7);
         if (local_13 && arg_7->field_2c && arg_7->field_2d > 0)
