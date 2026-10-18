@@ -38,9 +38,3 @@ struct s_player_creation_record;
 
 
 struct s_type_9df9da;
-
-// @stub 0xa9f70
-long __stdcall function_a9f70(long object_index, long mode, const point3f *position)
-{
- return 0;
-}
