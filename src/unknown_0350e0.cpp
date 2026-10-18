@@ -3027,12 +3027,8 @@ void function_4a1e0(s_view_source *source, s_view_camera *camera, long resource_
         g_485a30 = g_485a34 = g_485a38 = g_485a3c = 1.0f;
         g_485a40 = 0.0f;
     }
-    vector3f first = g_485944;
-    vector3f second = g_485950;
-    long mode = g_485a2c;
-    function_0497a0(source, (s_view_result *)g_48597c, camera, flags, &first, &second, g_48595c,
-        &mode, (vector4f *)g_485a0c, (vector4f *)(g_485a0c + 4));
-    g_485a2c = mode;
+    function_0497a0(source, (s_view_result *)g_48597c, camera, flags, &g_485944, &g_485950, g_48595c,
+        &g_485a2c, (vector4f *)g_485a0c, (vector4f *)(g_485a0c + 4));
     s_bounds3d bounds;
     if (resource)
     {
