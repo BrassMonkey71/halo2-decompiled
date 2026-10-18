@@ -48,7 +48,8 @@ void function_1ea770(byte code, long player_index, s_statborg *statistics, long 
 	s_statborg *const volatile *statistics_reference = &statistics;
 	long volatile other = arg_1f407d_2 & 0xffff;
 	long index = player_index & 0xffff;
-	function_1e9ce0(player_index, 9, *statistics_reference, 3, 1, true);
+	s_statborg *first_statistics = *statistics_reference;
+	function_1e9ce0(player_index, 9, first_statistics, 3, 1, true);
 	function_196e60(index, 1, kind, 1);
 	if (self)
 	{
@@ -57,8 +58,7 @@ void function_1ea770(byte code, long player_index, s_statborg *statistics, long 
 	}
 	else if (friendly && arg_1f407d_2 != NONE)
 	{
-		byte *player = g_4e8c24->data + other * 0x21c;
-		if (*(short *)(player + 0x28) != NONE) function_225880(arg_1f407d_2);
+		if (*(short *)(g_4e8c24->data + other * 0x21c + 0x28) != NONE) function_225880(arg_1f407d_2);
 		function_1e9ce0(arg_1f407d_2, 10, statistics, 5, 1, true);
 		function_196e60(other, 2, kind, 1);
 		function_162bf0(player_index, arg_1f407d_2);
