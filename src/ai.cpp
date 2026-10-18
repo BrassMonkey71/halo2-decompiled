@@ -800,21 +800,24 @@ struct s_ai_position_object
 };
 
 point3f *function_b9ef0(long object_index, point3f *position);
+void function_caf90(long unit_index, point3f *position);
 
-/* where the ai looks at an object: a unit's or vehicle's head marker, the
-   center of mass of a free physics object, otherwise its center */
+/* where the ai looks at an object: the head marker (0xcaf90) of types 0 and
+   1 and, in its own arm, of type 12; the center of mass of a free physics
+   object; otherwise its center */
 // @retail 0x1caa40
 void function_1caa40(long object_index, point3f *position)
 {
 	s_ai_position_object *object = (s_ai_position_object *)((s_ai_object_header *)g_4e0300->data)[object_index & 0xffff].object;
 	long type_mask = 1 << object->type;
-	bool use_marker = (type_mask & 0x1003) != 0;
 
-	if (use_marker)
+	if (type_mask & 3)
 	{
-		s_object_marker marker;
-		function_b8d30(object_index, 0x40000bd, &marker, 1, false);
-		*position = marker.matrix.position;
+		function_caf90(object_index, position);
+	}
+	else if (type_mask & 0x1000)
+	{
+		function_caf90(object_index, position);
 	}
 	else if (object->parent_index == NONE && object->havok_component_index != NONE)
 	{
@@ -893,17 +896,11 @@ long function_1e1f20(long actor_index); /* unknown_1e1f20.cpp */
 point3f *function_b9dd0(long object_index, point3f *result);
 
 /* game ticks in the given number of seconds, rounded */
+static __forceinline long real_to_long(real value);
+
 static inline long ai_seconds_to_ticks(real seconds)
 {
-	real ticks = g_510c54->field_2_3 * seconds;
-	long result;
-
-	__asm
-	{
-		fld ticks
-		fistp result
-	}
-	return result;
+	return real_to_long(g_510c54->field_2_3 * seconds);
 }
 void *function_1e5280(long actor_index, long key); /* unknown_1e5240.cpp */
 
