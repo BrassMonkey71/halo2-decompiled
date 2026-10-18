@@ -908,9 +908,7 @@ PRIVATE __forceinline long controller_direction_sign(short value)
 // @retail 0x190a3d
 void function_190a3d(long controller, short *direction, dword time, long value)
 {
-	// Keep the direction argument in its retail stack slot.
-	short *const *direction_reference = &direction;
-	short x = (*direction_reference)[0];
+	short x = direction[0];
 
 	if (x == 0 && direction[1] == 0)
 	{
@@ -924,9 +922,6 @@ void function_190a3d(long controller, short *direction, dword time, long value)
 		{
 			s_controller_event event;
 
-			event.amount = NONE;
-			event.controller = controller;
-			event.value = value;
 			if (controller_direction_magnitude(x) >= 0x7332)
 			{
 				event.type = controller_direction_sign(x) > 0 ? 4 : 2;
@@ -940,6 +935,9 @@ void function_190a3d(long controller, short *direction, dword time, long value)
 				}
 				event.type = controller_direction_sign(y) <= 0 ? 3 : 1;
 			}
+			event.amount = NONE;
+			event.controller = controller;
+			event.value = value;
 			function_147dbe(&event);
 			g_55e758.last_time[controller] = time;
 		}

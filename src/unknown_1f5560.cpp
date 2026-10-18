@@ -322,11 +322,11 @@ bool function_1f55e0(long actor_index, point3f *point, vector3f *direction)
 {
 	s_actor_moving *actor = actor_moving_get(actor_index);
 	s_heading_unit *unit = ((s_heading_unit_header *)g_4e0300->data)[actor->unit_index & 0xffff].object;
-	volatile bool result = false;
+	bool result = false;
 
 	if (unit->type == 0)
 	{
-		short state = heading_unit_get_state(unit);
+		long state = heading_unit_get_state(unit);
 
 		if (state == 6 || state == 7)
 		{
@@ -353,9 +353,8 @@ bool function_1f55e0(long actor_index, point3f *point, vector3f *direction)
 				direction->j = unit->forward.j * -1.0f;
 				direction->k = unit->forward.k * -1.0f;
 				result = true;
-				return result;
 			}
-			if (actor->unknown264 && g_510c54->game_time < actor->unknown634)
+			else if (actor->unknown264 && g_510c54->game_time < actor->unknown634)
 			{
 				point3f target;
 
@@ -366,7 +365,6 @@ bool function_1f55e0(long actor_index, point3f *point, vector3f *direction)
 				if (function_30bf0(direction) > 0.0f)
 				{
 					result = true;
-					return result;
 				}
 			}
 		}

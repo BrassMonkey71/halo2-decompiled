@@ -30,7 +30,6 @@ byte const g_43f7b9[6] = { 0x2d, 0, 2, 3, 0x10, 0xff };
 // @retail 0x43a40
 void __stdcall function_43a40(long mode)
 {
-    (void)&mode;
     g_4c8790 = mode;
     g_4c878c = NONE;
     g_4c8788 = 0;

@@ -4,6 +4,8 @@
 #include "unknown_1cec30.h"
 #include "impacts.h"
 #include <math.h>
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
 
 #define MIN(arg_0, arg_1) ((arg_0) > (arg_1) ? (arg_1) : (arg_0))
 #define MAX(arg_0, arg_1) ((arg_0) > (arg_1) ? (arg_0) : (arg_1))
@@ -118,9 +120,6 @@ PRIVATE __forceinline void function_206096(vector3f const *arg_0, real arg_1, ve
 // @retail 0x206090
 bool __stdcall function_206090(s_vehicle_physics_state *arg_0, vector3f *arg_1, vector3f *arg_2)
 {
-    (void)&arg_0;
-    (void)&arg_1;
-    (void)&arg_2;
     s_206090 *local_0 = (s_206090 *)arg_0;
     byte *local_1 = local_0->field_4;
     byte *local_2 = *(byte **)(g_4e0300->data + (local_0->field_0 & 0xffff) * 12 + 8);
@@ -411,12 +410,7 @@ bool __stdcall function_206090(s_vehicle_physics_state *arg_0, vector3f *arg_1, 
                     if (!local_84[0x11] || local_92 > *(real *)(local_84 + 0x18))
                     {
                         real local_93 = g_510c54->field_2_3 * 0.2f;
-                        long local_94;
-                        __asm
-                        {
-                            fld local_93
-                            fistp local_94
-                        }
+                        long local_94 = real_to_long(local_93);
                         if (*(long *)(local_84 + 0x94) == NONE || g_510c54->game_time - *(long *)(local_84 + 0x94) > local_94 ||
                             local_92 > *(real *)(local_84 + 0x98) * 1.3f)
                         {

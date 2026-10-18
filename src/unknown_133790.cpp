@@ -105,7 +105,7 @@ typedef void (*t_function_4b5d0_133790)(long arg_1, long arg_2, bool arg_3, real
     s_133f70 *arg_6, point3f const *arg_7, bool arg_8);
 bool function_133790(s_bit_vector_pool *arg_1, short arg_2, bool arg_3, long *arg_4, long arg_5, bool arg_6);
 
-PRIVATE __forceinline real function_133791(point3f const *arg_1, point3f const *arg_2)
+PRIVATE __forceinline double function_133791(point3f const *arg_1, point3f const *arg_2)
 {
     double local_1 = (double)arg_1->x - arg_2->x;
     double local_2 = (double)arg_1->y - arg_2->y;
@@ -148,11 +148,18 @@ bool function_133790(s_bit_vector_pool *arg_1, short arg_2, bool arg_3, long *ar
     local_5.field_0 = local_3;
     local_5.field_194 = local_4->field_30;
     local_5.field_1a0 = local_4->field_3c;
-    real local_6 = local_5.field_194.z * g_4b9e38 + local_5.field_194.y * g_4b9e2c
-        + local_5.field_194.x * g_4b9e20 + g_4b9e44;
+    // retail does these in SSE single precision: every product and sum is rounded to float
+    real local_13 = local_5.field_194.y * g_4b9e2c;
+    real local_6 = local_5.field_194.z * g_4b9e38;
+    local_6 += local_13;
+    real local_14 = local_5.field_194.x * g_4b9e20;
+    local_6 += local_14;
+    local_6 += g_4b9e44;
     if (!(local_6 >= 0.0f)) local_6 = 0.0f - local_6;
     if (!(local_6 > 0.1f)) local_6 = 0.1f;
-    local_5.field_1b4 = (g_4b9ed0 / local_6) * local_5.field_1a0 * 2.0f * g_4ba028;
+    real local_7 = g_4b9ed0 / local_6;
+    real local_8 = local_7 * local_5.field_1a0;
+    local_5.field_1b4 = local_8 * 2.0f * g_4ba028;
     *(real *)local_5.field_1b8 = function_133791(&local_5.field_194, &g_4b9da0) * g_4b9dcc;
     function_4baf0(local_3, *(real *)local_5.field_1b8, (byte *)&local_1, &local_5.field_1bc);
     local_2 = (s_133721 *)arg_1->lists[2];

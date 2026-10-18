@@ -163,33 +163,31 @@ PRIVATE void render_clamp_156b60(real *value)
 void __stdcall function_157020(byte *definition, point3f const *position, vector3f const *forward,
 	real value, long row, long column, long element, long entry)
 {
-	byte *const *definition_reference = &definition;
-	long const *row_reference = &row;
-	long model = *material_reference_156b60(*(long *)((*definition_reference) + 4));
+	long model = *material_reference_156b60(*(long *)(definition + 4));
 	byte *local_0f244f = *(byte **)((byte *)g_4e3b44 + (model & 0xffff) * 16 + 8);
 	byte *tables = *(byte **)(local_0f244f + 0x5c);
 	word *rows = *(word **)(tables + 4);
 	word *columns = *(word **)(tables + 0xc);
 	byte *elements = *(byte **)(tables + 0x14);
-	long column_index = (rows[*row_reference * 5] & 0x1ff) + column;
+	long column_index = (rows[row * 5] & 0x1ff) + column;
 	long element_index = (columns[column_index] & 0x1ff) + element;
 	long selected = *(long *)(elements + element_index * 10 + 4);
 	byte *selected_definition = *(byte **)((byte *)g_4e3b44 + (selected & 0xffff) * 16 + 8);
 	byte *material = *(byte **)(*(byte **)(selected_definition + 0x20) + 4);
-	s_tag_data const *width_curve = (s_tag_data *)((*definition_reference) + 0x1c);
+	s_tag_data const *width_curve = (s_tag_data *)(definition + 0x1c);
 	real width = function_13b390(width_curve, value, 0.0f);
-	s_tag_data const *length_curve = (s_tag_data *)((*definition_reference) + 0x24);
+	s_tag_data const *length_curve = (s_tag_data *)(definition + 0x24);
 	real length = function_13b390(length_curve, value, 0.0f);
 	width = render_range_156b60(width_curve, width);
 	length = render_range_156b60(length_curve, length);
-	s_tag_data *color_curve = (s_tag_data *)((*definition_reference) + 0xc);
+	s_tag_data *color_curve = (s_tag_data *)(definition + 0xc);
 	real color_value = function_13b390(color_curve, value, 0.0f);
 	color4f color;
 	if (color_curve->address && color_curve->size > 0)
 		unpack_color3f(function_13bc00(color_curve, color_value), (color3f *)&color.red);
 	else
 		*(color3f *)&color.red = *(color3f const *)&g_4686cc->red;
-	color.alpha = render_curve_156b60((s_tag_data *)((*definition_reference) + 0x14), value);
+	color.alpha = render_curve_156b60((s_tag_data *)(definition + 0x14), value);
 	render_clamp_156b60(&color.alpha);
 	render_clamp_156b60(&color.red);
 	render_clamp_156b60(&color.green);
@@ -201,7 +199,7 @@ void __stdcall function_157020(byte *definition, point3f const *position, vector
 	D3DDevice_SetVertexShaderConstant(0x4e, matrix, 3);
 	g_4e9268 = entry;
 	function_1bd50(&g_4e9268);
-	function_1bbf0(*(long *)((*definition_reference) + 4), row, column, element, 0, 10000.0f);
+	function_1bbf0(*(long *)(definition + 4), row, column, element, 0, 10000.0f);
 	function_1cf50();
 	function_1c590((s_shader_cache *)g_51f0f0, *(long *)(material + 0x100), 8);
 	function_1c6b0(g_51f0f0);

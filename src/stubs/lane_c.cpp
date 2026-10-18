@@ -18,24 +18,18 @@ class c_2df9d0
 public:
  virtual hkBool function_2df9d0(void const *arg_0, void const *arg_1);
 };
-// @stub 0x2df9d0
-hkBool c_2df9d0::function_2df9d0(void const *arg_0, void const *arg_1) { return hkBool(); }
 
 class c_2df8f0
 {
 public:
  virtual hkBool function_2df8f0(void const *arg_0, void const *arg_1);
 };
-// @stub 0x2df8f0
-hkBool c_2df8f0::function_2df8f0(void const *arg_0, void const *arg_1) { return hkBool(); }
 
 class c_2dfae0
 {
 public:
  virtual hkBool function_2dfae0(void const *arg_0, void const *arg_1);
 };
-// @stub 0x2dfae0
-hkBool c_2dfae0::function_2dfae0(void const *arg_0, void const *arg_1) { return hkBool(); }
 
 class c_2dfbf0
 {
@@ -106,8 +100,6 @@ public:
 };
 void c_278370::function_a9ef0(void *arg_0) {}
 
-// @stub 0x2d8910
-void __cdecl function_2d8910(long arg_0) {}
 // @stub 0x2d8890
 void __cdecl function_2d8890() {}
 class c_2d8ab0
@@ -220,8 +212,6 @@ void hkEntityApi::activate(void) { }
 
 /* the rigid body accessors of the havok components (unknown_1cec30.cpp) */
 
-// @stub 0x30bc40
-hkBool hkRigidBody::isActive(void) const { return hkBool(); }
 
 // @stub 0x30bc60
 void hkRigidBody::activate(void) { }
@@ -268,13 +258,6 @@ public:
  hkBool accepts(long a, long b);
 };
 
-// @stub 0x2df8a0
-hkBool c_contact_rule_fallback::accepts(long a, long b)
-{
- hkBool result;
- result.m_bool = 0;
- return result;
-}
 
 class c_component_joint_strength
 {
@@ -578,8 +561,6 @@ struct s_2da8c0
 {
  void function_2da8c0(hkRotation const *arg_0, hkRotation const *arg_1);
 };
-// @stub 0x2da8c0
-void s_2da8c0::function_2da8c0(hkRotation const *arg_0, hkRotation const *arg_1) {}
 
 
 

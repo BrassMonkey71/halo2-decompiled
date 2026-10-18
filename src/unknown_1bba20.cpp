@@ -85,6 +85,8 @@ void function_1bbc00(long player_index, long vehicle_index)
 	}
 }
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1bbcc0
 void function_1bbcc0(long player_index, long vehicle_index, long seat_index)
 {
@@ -110,11 +112,7 @@ void function_1bbcc0(long player_index, long vehicle_index, long seat_index)
 			player->unit_index = vehicle_index;
 			player->unknown08 = (short)seat_index;
 			time = (real)g_510c54->field_2_3 * 10.0f;
-			__asm
-			{
-				fld time
-				fistp ticks
-			}
+			ticks = real_to_long(time);
 			player->unknown0a = (short)ticks;
 
 			function_d0620(vehicle_index, &iterator);
@@ -128,11 +126,7 @@ void function_1bbcc0(long player_index, long vehicle_index, long seat_index)
 
 					actor->unknown31c = (short)player_slot;
 					time = (real)g_510c54->field_2_3 * 2.0f;
-					__asm
-					{
-						fld time
-						fistp ticks
-					}
+					ticks = real_to_long(time);
 					actor->unknown31e = (short)ticks;
 					*(short *)actor->unknown320 = 0;
 				}

@@ -837,7 +837,7 @@ void function_1c50c0(void)
 		hkSimulationIsland *island = g_51e9a4->m_islands[island_index];
 		long entity_count = island->m_entity_count;
 		long count = 0;
-		volatile bool removed = false;
+		bool removed = false;
 		long i;
 
 		for (i = 0; i < entity_count; i++)
@@ -852,11 +852,10 @@ void function_1c50c0(void)
 		}
 		if (count == entity_count)
 		{
-			g_51e9a4->removeSimulationIsland(island);
 			removed = true;
+			g_51e9a4->removeSimulationIsland(island);
 		}
-		byte local_0 = *(volatile byte const *)&removed;
-		island_index += local_0 == 0;
+		island_index += !removed;
 	}
 }
 

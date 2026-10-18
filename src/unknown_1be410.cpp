@@ -155,24 +155,24 @@ void __stdcall function_1be6b0(long actor_index, s_slot *slot)
 // @retail 0x1be840
 bool __stdcall function_1be840(long actor_index, s_slot *slot)
 {
-	volatile bool result = true;
+	bool result = true;
 	s_actor_view *actor = actor_get(actor_index);
 	s_slot_20 *state = (s_slot_20 *)slot;
 
 	if (state->unknown10 == NONE)
-		return false;
-	if (actor->unknown348 != state->unknown10 && !state->unknown0d)
-		return true;
-	if (state->unknown0c)
+		result = false;
+	else if (actor->unknown348 == state->unknown10 || state->unknown0d)
 	{
-		if (object_get(actor->unknown018)->type != 0)
-			return false;
-		if (function_e4050(actor->unknown018))
-			state->unknown0d = true;
-		return true;
+		if (state->unknown0c)
+		{
+			if (object_get(actor->unknown018)->type != 0)
+				result = false;
+			else if (function_e4050(actor->unknown018))
+				state->unknown0d = true;
+		}
+		else if (!function_1f4460(actor_index, &state->unknown18.point, state->unknown14, state->unknown10, false))
+			result = false;
 	}
-	if (!function_1f4460(actor_index, &state->unknown18.point, state->unknown14, state->unknown10, false))
-		return false;
 	return result;
 }
 

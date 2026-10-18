@@ -93,10 +93,9 @@ struct s_projectile_choices
 
 PRIVATE inline s_projectile_choice *projectile_choice_get(short type)
 {
-	s_projectile_choices *globals = (s_projectile_choices *)g_4e034c;
 	s_projectile_choice *result;
-	if (globals->count)
-		result = &globals->choices[type];
+	if (((s_projectile_choices *)g_4e034c)->count)
+		result = &((s_projectile_choices *)g_4e034c)->choices[type];
 	else
 		result = NULL;
 	return result;
@@ -107,7 +106,6 @@ bool function_1ff200(short type, point3f const *origin, real speed, point3f cons
 	real const *limit, bool alternate, vector3f *direction, real *speed_out, real *time,
 	vector3f *velocity, real *gravity)
 {
-	real *const *speed_reference = &speed_out;
 	s_projectile_choice *choice = projectile_choice_get(type);
 	bool result = false;
 	if (choice && choice->definition_index != NONE)
@@ -116,15 +114,15 @@ bool function_1ff200(short type, point3f const *origin, real speed, point3f cons
 		real adjusted_speed;
 		bool linear = false;
 		if (function_fa6a0(definition_index, &speed, origin, target, &adjusted_speed, limit, NULL,
-			alternate, direction, *speed_reference, time, NULL, &linear) ||
+			alternate, direction, speed_out, time, NULL, &linear) ||
 			(adjusted_speed > 0.0f && speed > adjusted_speed &&
 			function_fa6a0(definition_index, &(adjusted_speed += 0.01f), origin, target, NULL, limit, NULL,
-			alternate, direction, *speed_reference, time, NULL, &linear)))
+			alternate, direction, speed_out, time, NULL, &linear)))
 		{
 			result = true;
 			if (velocity)
 			{
-				real scale = **speed_reference;
+				real scale = *speed_out;
 				velocity->i = direction->i * scale;
 				velocity->j = direction->j * scale;
 				velocity->k = direction->k * scale;

@@ -9,6 +9,8 @@
 bool function_1fdce0(long arg_0, short arg_1);
 void function_1fe410(point3f *arg_0, real arg_1);
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1fe620
 void function_1fe620(long arg_0, byte const *arg_1, byte const *arg_2)
 {
@@ -21,10 +23,7 @@ void function_1fe620(long arg_0, byte const *arg_1, byte const *arg_2)
     real timer_value = slot_random_range(*(real const *)(arg_1 + 0x20), *(real const *)(arg_1 + 0x24)) *
         (real)g_510c54->field_2_3;
     long timer_result;
-    __asm {
-        fld timer_value
-        fistp timer_result
-    }
+    timer_result = real_to_long(timer_value);
     *(short *)(local_1 + 0x700) = (short)timer_result;
     *(long *)(local_1 + 0x718) = g_510c54->game_time;
     local_1[0x714] = local_1[0x5d0];
@@ -103,20 +102,14 @@ void function_1fe620(long arg_0, byte const *arg_1, byte const *arg_2)
             {
                 real timer_value = local_12 / local_19 * (real)local_17;
                 long timer_result;
-                __asm {
-                    fld timer_value
-                    fistp timer_result
-                }
+                timer_result = real_to_long(timer_value);
                 *(short *)(local_1 + 0x700) = (short)timer_result;
             }
             else
             {
                 real timer_value = (real)local_17 * 1.5f;
                 long timer_result;
-                __asm {
-                    fld timer_value
-                    fistp timer_result
-                }
+                timer_result = real_to_long(timer_value);
                 *(short *)(local_1 + 0x700) = (short)timer_result;
                 local_15 *= local_20 / local_12;
                 local_12 = local_20;

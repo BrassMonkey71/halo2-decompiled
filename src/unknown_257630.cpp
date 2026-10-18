@@ -148,7 +148,7 @@ short __stdcall function_2576c0(long actor_index, s_slot *slot, s_slot *next)
 
 			request->unknown20 = true;
 			request->target_index = joint->target.unknown4;
-			volatile long local_0 = g_510c54->field_2_3;
+			long local_0 = g_510c54->field_2_3;
 			local_0 *= 3;
 			request->timer = (short)local_0;
 			result = 0x3a;
