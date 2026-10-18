@@ -738,7 +738,7 @@ void __stdcall function_bc300(long object_index)
 // @retail 0xbc380
 bool function_bc380(long object_index, long block_offset, long size, long alignment_bits)
 {
-	volatile bool result = false;
+	bool result = false;
 	s_object_memory_header_ab *header = (s_object_memory_header_ab *)g_4e0300->data + (object_index & 0xffff);
 	if ((short)size == 0)
 	{
@@ -758,7 +758,7 @@ bool function_bc380(long object_index, long block_offset, long size, long alignm
 		block->offset = (short)((old_size + mask) & ~mask);
 		block->size = (short)size;
 		memset((byte *)header->object + old_size, 0, extra);
-		return true;
+		result = true;
 	}
 	return result;
 }
