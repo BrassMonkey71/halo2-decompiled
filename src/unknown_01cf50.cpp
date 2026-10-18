@@ -2854,36 +2854,32 @@ dword g_484ce8[53];
 // @retail 0x12490
 bool function_12490()
 {
-    volatile bool result = true;
+    bool result = true;
     D3DPRESENT_PARAMETERS parameters;
     memset(&parameters, 0, sizeof(parameters));
     g_509350 = 1;
-    dword flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+    parameters.FullScreen_RefreshRateInHz = (short)g_485ac0;
+    parameters.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
     parameters.Windowed = false;
     parameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
     parameters.EnableAutoDepthStencil = true;
     parameters.AutoDepthStencilFormat = D3DFMT_D24S8;
     parameters.BackBufferFormat = D3DFMT_A8R8G8B8;
-    parameters.FullScreen_RefreshRateInHz = (short)g_485ac0;
     parameters.BackBufferWidth = 640;
     parameters.BackBufferHeight = 480;
     parameters.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
     if (g_485ac2)
-        flags |= D3DPRESENTFLAG_WIDESCREEN;
+        parameters.Flags |= D3DPRESENTFLAG_WIDESCREEN;
     if (g_485ac6)
-        flags |= D3DPRESENTFLAG_PROGRESSIVE;
-    parameters.Flags = flags;
-    D3DDevice *device = NULL;
-    Direct3D_CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &parameters, &device);
-    g_5093b0 = device;
+        parameters.Flags |= D3DPRESENTFLAG_PROGRESSIVE;
+    Direct3D_CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &parameters, (D3DDevice **)&g_5093b0);
     if (!g_5093b0)
     {
         g_5093b0 = NULL;
         result = false;
-        goto done;
     }
-    memcpy(g_484ce8, g_47ffd8, sizeof(g_484ce8));
-done:
+    else
+        memcpy(g_484ce8, g_47ffd8, sizeof(g_484ce8));
     return result;
 }
 
@@ -2965,10 +2961,8 @@ bool g_5093bc;
 // @retail 0x128c0
 bool function_128c0(s_128c0_settings const *settings)
 {
-    g_runtime_device_configuration.packed = *(dword const *)settings;
-    g_485acc = settings->quality;
-    g_485ad0 = settings->extra;
-    volatile bool result = true;
+    g_runtime_device_configuration = *(s_runtime_device_configuration const *)settings;
+    bool result = true;
     D3DPRESENT_PARAMETERS parameters;
     memset(&parameters, 0, sizeof(parameters));
     parameters.Windowed = false;
@@ -3000,24 +2994,23 @@ bool function_128c0(s_128c0_settings const *settings)
     }
     parameters.FullScreen_RefreshRateInHz = (short)g_485ac0;
     if (!g_5093b0)
-    {
-        D3DDevice *device = NULL;
-        Direct3D_CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &parameters, &device);
-        g_5093b0 = device;
-    }
+        Direct3D_CreateDevice(0, D3DDEVTYPE_HAL, NULL, D3DCREATE_HARDWARE_VERTEXPROCESSING, &parameters, (D3DDevice **)&g_5093b0);
     else
         D3DDevice_Reset(&parameters);
     if (!g_5093b0)
     {
         g_5093b0 = NULL;
-        return false;
+        result = false;
     }
-    memcpy(g_484ce8, g_47ffd8, sizeof(g_484ce8));
-    if (g_485acc < 0 || g_485acc > 5)
-        g_485acc = 3;
-    g_467008 = NONE;
-    g_46700c = NONE;
-    g_5093bc = true;
+    else
+    {
+        memcpy(g_484ce8, g_47ffd8, sizeof(g_484ce8));
+        if (g_485acc < 0 || g_485acc > 5)
+            g_485acc = 3;
+        g_467008 = NONE;
+        g_46700c = NONE;
+        g_5093bc = true;
+    }
     return result;
 }
 
@@ -3631,23 +3624,25 @@ void function_2dd30()
         D3DDevice_SetStipple(function_1c290(1.0f));
         g_4b8494 = 1.0f;
     }
-    function_0222d0(D3DRS_ALPHABLENDENABLE, 0);
+    function_0222d0(D3DRS_CULLMODE, 0);
     function_0222d0(D3DRS_COLORWRITEENABLE, 0);
+    function_0222d0(D3DRS_ALPHABLENDENABLE, 0);
     function_0222d0(D3DRS_ALPHATESTENABLE, 0);
-    function_0222d0(D3DRS_ZWRITEENABLE, 0);
     function_0222d0(D3DRS_ZENABLE, 2);
     function_0222d0(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-    function_0222d0(D3DRS_CULLMODE, 0);
-    function_0222d0(D3DRS_STENCILENABLE, 0);
+    function_0222d0(D3DRS_ZWRITEENABLE, 0);
     function_0222d0(D3DRS_ZBIAS, 0);
+    function_0222d0(D3DRS_SAMPLEALPHA, 0);
+    g_51f3c8[1][0] = NULL;
+    g_51f3c8[1][1] = NULL;
+    g_51f3c8[1][2] = NULL;
+    g_51f3c8[1][3] = NULL;
     function_1cf50();
-    D3DPIXELSHADERDEF program;
-    memset(&program, 0, sizeof(program));
-    program.PSCombinerCount = 0x11001;
-    program.PSFinalCombinerInputsABCD = 0;
-    program.PSFinalCombinerInputsEFG = 0;
-    g_484f68 = program;
-    D3DDevice_SetPixelShaderProgram(&program);
+    memset(&g_484f68, 0, sizeof(g_484f68));
+    g_484f68.PSCombinerCount = 0x11001;
+    g_484f68.PSFinalCombinerInputsABCD = 0;
+    g_484f68.PSFinalCombinerInputsEFG = 0;
+    D3DDevice_SetPixelShaderProgram(&g_484f68);
     function_1c590((s_shader_cache *)g_51f0f0, *(long *)(*(byte **)(g_485a80 + 0x5c) + 0x54), 0);
     function_1c710(g_51f0f0);
     if (g_485898 < 4 || g_485898 > 7)
@@ -3885,10 +3880,12 @@ void function_40890(void)
 {
 	if (!g_485870) return;
 	color4f color, inverse;
-	color.alpha = inverse.alpha = g_485878 * g_485874;
-	color.red = g_48587c * g_485874;
-	color.green = g_485880 * g_485874;
-	color.blue = g_485884 * g_485874;
+	color.red = g_485874 * g_48587c;
+	real alpha = g_485878 * g_485874;
+	color.green = g_485874 * g_485880;
+	color.alpha = alpha;
+	inverse.alpha = alpha;
+	color.blue = g_485874 * g_485884;
 	inverse.red = (1.0f - g_48587c) * g_485874;
 	inverse.green = (1.0f - g_485880) * g_485874;
 	inverse.blue = (1.0f - g_485884) * g_485874;
@@ -3945,7 +3942,7 @@ void function_40890(void)
 		rgb_inputs = 0x1411120;
 		local_617c45 = 0;
 		break;
-	default:
+	case 6:
 		function_0222d0(D3DRS_SRCBLEND, 1);
 		function_0222d0(D3DRS_DESTBLEND, 0x8002);
 		function_0222d0(D3DRS_BLENDOP, 0x8006);
@@ -3953,36 +3950,41 @@ void function_40890(void)
 		rgb_inputs = 0x11200000;
 		local_617c45 = 0;
 		break;
+	default:
+		__assume(0);
 	}
 	function_0222d0(D3DRS_ALPHATESTENABLE, 0);
-	function_0222d0(D3DRS_ZENABLE, 0);
-	function_0222d0(D3DRS_ZBIAS, 0);
+	{
+		/* retail has function_0222d0 inlined here, the library call left out of line */
+		extern dword g_4b81fc[];
+		g_4b81fc[D3DRS_ZENABLE] = 0;
+		D3DDevice_SetRenderState_ZEnable(0);
+		g_4b81fc[D3DRS_ZBIAS] = 0;
+		D3DDevice_SetRenderState_ZBias(0);
+	}
 	function_1cc30(13);
 	function_1c710(g_51f0f0);
 	real x = 1.0f / (short)(g_48564e - g_48564a);
-	real y = 1.0f / (short)(g_48564c - g_485648);
 	real constants[20] = {
 		2.0f * x, 0, 0, -1.0f - x,
-		0, -2.0f * y, 0, 1.0f + y,
+		0, -2.0f * (1.0f / (short)(g_48564c - g_485648)), 0, 1.0f + 1.0f / (short)(g_48564c - g_485648),
 		0, 0, 0, 0.5f,
 		0, 0, 0, 1.0f,
 		0, 0, 0, 1.0f
 	};
-	D3DDevice_SetVertexShaderConstant(81, constants, 5);
-	D3DPIXELSHADERDEF program;
-	memset(&program, 0, sizeof(program));
-	program.PSAlphaInputs[0] = local_617c45;
-	program.PSRGBInputs[0] = rgb_inputs;
-	program.PSCombinerCount = 1;
-	program.PSConstant0[0] = constant;
-	program.PSAlphaOutputs[0] = 0xc00;
-	program.PSRGBOutputs[0] = 0xc00;
-	program.PSFinalCombinerInputsABCD = 0xc;
-	program.PSFinalCombinerInputsEFG = 0x1c00;
-	g_484f68 = program;
-	function_15180(&program);
-	short width = g_48564e - g_48564a;
+	D3DDevice_SetVertexShaderConstantNotInline(81 + 96, constants, 4 * 5);
+	memset(&g_484f68, 0, sizeof(g_484f68));
+	g_484f68.PSAlphaInputs[0] = local_617c45;
+	g_484f68.PSRGBInputs[0] = rgb_inputs;
+	g_484f68.PSCombinerCount = 1;
+	g_484f68.PSConstant0[0] = constant;
+	g_484f68.PSAlphaOutputs[0] = 0xc00;
+	g_484f68.PSRGBOutputs[0] = 0xc00;
+	g_484f68.PSFinalCombinerInputsABCD = 0xc;
+	g_484f68.PSFinalCombinerInputsEFG = 0x1c00;
+	function_15180(&g_484f68);
 	short height = g_48564c - g_485648;
+	short width = g_48564e - g_48564a;
 	function_1cf50();
 	D3DDevice_Begin(D3DPT_TRIANGLEFAN);
 	D3DDevice_SetVertexData2s(0, 0, 0);
@@ -7370,7 +7372,6 @@ void __stdcall function_1f490(long unused, long font, long character, long color
 }
 #endif
 
-// Disabled: the frame copies overlap independently declared shared camera/projection globals.
 
 extern dword g_5093b4;
 dword g_5093b8;
@@ -7378,19 +7379,20 @@ dword __cdecl pack_color3f(color3f const *color);
 void function_25a10(vector3f const *direction, point3f const *position, byte const *state);
 void __stdcall function_14b60(dword flags, dword color, real depth, byte stencil);
 
-#if 0
-// Retail 0x132d0
+// @retail 0x132d0
 void __stdcall function_132d0(s_frame_view_2c560 const *frame)
 {
-    s_frame_view_2c560 const *const *frame_reference = &frame;
-    memcpy(g_frame_storage.data, *frame_reference, sizeof(*frame));
-    short mode = *(short const *)(((byte const *)frame) + 2);
-    switch (mode) { case 0: g_4858b8 = 0; break; case 1: g_4858b8 = 18; break; default: g_4858b8 = 0; break; }
+    memcpy(g_frame_storage.data, frame, sizeof(*frame));
+    switch (frame->mode)
+    {
+    case 0: g_4858b8 = 0; break;
+    case 1: g_4858b8 = 18; break;
+    default: g_4858b8 = 0; break;
+    }
     function_15370(0);
-    long setup_mode = frame->mode;
     g_5093b4 = 0x901;
     g_5093b8 = 0x900;
-    function_12fa0(((byte const *)frame) + 0x18, (real const *)(((byte const *)frame) + 0x8c), ((byte const *)frame)[7] != 0, setup_mode);
+    function_12fa0(frame->view, (real const *)frame->projection, frame->scaled, frame->mode);
     if (*(short *)(g_frame_storage.data + 8))
     {
         dword color = 0;
@@ -7404,7 +7406,7 @@ void __stdcall function_132d0(s_frame_view_2c560 const *frame)
         function_14b60(flags, color, 1.0f, 0);
     }
     else function_14bc0((short)g_4858b8, 0, true);
-    D3DDevice_SetVertexData4f(7, 0.0f, 0.5f, 1.0f, 42.0f);
+    D3DDevice_SetVertexData4f(15, 0.0f, 0.5f, 1.0f, 42.0f);
     function_0222d0(D3DRS_FILLMODE, D3DFILL_SOLID);
     g_4670bc = 1;
     function_16b10((s_render_reset_state *)g_485b48);
@@ -7414,7 +7416,6 @@ void __stdcall function_132d0(s_frame_view_2c560 const *frame)
         function_25a10(&g_4b9dac, &g_4b9da0, (byte const *)&g_48574c);
     }
 }
-#endif
 
 
 
