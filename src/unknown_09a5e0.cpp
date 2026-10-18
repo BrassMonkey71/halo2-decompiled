@@ -1365,7 +1365,7 @@ struct s_slot_pair
 extern s_slot_pair g_4eca80[0x100];
 extern byte *g_4ed280;
 byte *function_183fc0(long index);
-long function_184000(long bit, long index);
+long function_184000(long index, long bit);
 
 // @retail 0x9ae30
 void c_game_engine_player_entity_definition::v12(long a, void const *data, long c, s_bitstream *stream)
@@ -1623,7 +1623,7 @@ bool c_breakable_surface_group_entity_definition::v20(s_entity_slot *entity, dwo
 				long local_3 = *local_1;
 				if (local_2 != NONE || local_3 != local_2)
 				{
-					if (!(byte)function_184000(local_3, local_2))
+					if (!(byte)function_184000(local_2, local_3))
 					{
 						dword local_0 = *mask;
 						*mask = local_0 | (1 << i);
@@ -1657,7 +1657,7 @@ bool c_breakable_surface_group_entity_definition::v23(s_entity_slot *entity, lon
 				long bit = g_4eca80[index].b;
 				if (bsp != NONE || bit != bsp)
 				{
-					if ((byte)function_184000(bit, bsp) && *g_4ed280)
+					if ((byte)function_184000(bsp, bit) && *g_4ed280)
 					{
 						dword *bits = (dword *)function_183fc0(bsp);
 						bits[bit >> 5] &= ~(1 << (bit & 31));
