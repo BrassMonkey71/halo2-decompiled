@@ -254,6 +254,32 @@ PRIVATE __forceinline void copy_point_28f8d0(point3f const *source, point3f *des
 	*(words *)destination = *(words const *)source;
 }
 
+/* the perception's centre: the origin plus every creature's position, averaged */
+PRIVATE __forceinline void center_update_28f8d0(s_28f8d0 *arg_0)
+{
+	copy_point_28f8d0(g_468788, &arg_0->field_8);
+	arg_0->field_14 = 0;
+	long local_2 = arg_0->field_18;
+	while (local_2 != NONE)
+	{
+		s_handler_object_view *local_3 = handler_object_get(local_2);
+		s_28e600 *local_4;
+		if (!local_3->flags134)
+			local_4 = (s_28e600 *)((byte *)local_3 + local_3->ai_offset);
+		else
+			local_4 = NULL;
+		swarm_creature_reset_position(local_2, (s_object_ai_data *)local_4);
+		function_28f998(&arg_0->field_8, &local_4->field_14, &arg_0->field_8);
+		arg_0->field_14++;
+		local_2 = local_4->field_c;
+	}
+	if (arg_0->field_14 > 0)
+	{
+		real local_5 = 1.0f / arg_0->field_14;
+		function_28f9e1(&arg_0->field_8, local_5);
+	}
+}
+
 // @retail 0x28f8d0
 void function_28f8d0(long arg_0)
 {
@@ -261,27 +287,7 @@ void function_28f8d0(long arg_0)
 	if (local_0->field_4 != NONE)
 	{
 		byte *local_1 = (byte *)actor_get(local_0->field_4);
-		copy_point_28f8d0(g_468788, &local_0->field_8);
-		local_0->field_14 = 0;
-		long local_2 = local_0->field_18;
-		while (local_2 != NONE)
-		{
-			s_handler_object_view *local_3 = handler_object_get(local_2);
-			s_28e600 *local_4;
-			if (!local_3->flags134)
-				local_4 = (s_28e600 *)((byte *)local_3 + local_3->ai_offset);
-			else
-				local_4 = NULL;
-			swarm_creature_reset_position(local_2, (s_object_ai_data *)local_4);
-			function_28f998(&local_0->field_8, &local_4->field_14, &local_0->field_8);
-			local_0->field_14++;
-			local_2 = local_4->field_c;
-		}
-		if (local_0->field_14 > 0)
-		{
-			real local_5 = 1.0f / local_0->field_14;
-			function_28f9e1(&local_0->field_8, local_5);
-		}
+		center_update_28f8d0(local_0);
 		memset(local_1 + 0x22c, 0, 0xbc);
 		*(long *)(local_1 + 0x26c) = NONE;
 		*(long *)(local_1 + 0x274) = NONE;
