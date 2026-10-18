@@ -109,15 +109,18 @@ bool function_1b60d0(long index, short type, short level);
 void function_25d420(long prop_index, short type, long actor_index);
 short __stdcall function_272af0(s_match_globals *structure, point3f const *point);
 
-PRIVATE __forceinline byte function_1b69e6(long arg_0, long arg_1)
+PRIVATE __forceinline short function_1b69e6(long arg_0, long arg_1)
 {
+    bool unknown;
+    long level;
+    s_261d20_entry entry;
+    s_2605d0_request request;
+    short result = 0;
     s_actor_view *actor = actor_get(arg_1);
     s_prop_node_view *node = prop_node_get(arg_0);
     s_prop_view_fields *view = prop_node_view(node);
-    byte result = 0;
     if (view)
     {
-        s_2605d0_request request;
         memset(&request, 0, sizeof(request));
         s_2605d0_request *local_0 = &request;
         *(short volatile *)&local_0->type = 5;
@@ -146,9 +149,6 @@ PRIVATE __forceinline byte function_1b69e6(long arg_0, long arg_1)
         }
         *(real *)((byte *)&request + 0x1c) = 20.0f;
         byte *scratch = ai_scratch_buffer_get();
-        bool unknown;
-        long level;
-        s_261d20_entry entry;
         s_reference reference = function_2605d0(arg_1, &request, (long)&entry, (long)&level, scratch, &unknown);
         if (!REFERENCE_EQUAL(reference, g_470fa0) && reference.unknown2 >= 0)
         {
