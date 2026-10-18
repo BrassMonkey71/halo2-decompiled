@@ -618,7 +618,7 @@ struct s_sound_environment_bsp_view
    a cluster: 0 at its disk, approaching 1 far away; and a value of the
    source */
 // @retail 0x222150
-void function_222150(long cluster_index, point3f const *point, real const *values, point3f const *listener, long index, real *result)
+void function_222150(long cluster_index, real const *values, point3f const *point, point3f const *listener, long index, real *result)
 {
 	s_sound_environment_bsp_view *bsp = (s_sound_environment_bsp_view *)g_4e0348;
 	real distance;
@@ -670,8 +670,10 @@ extern s_slot_entry_list *g_4e0340;
 extern byte *g_4ed280;
 bool function_1de630(dword arg_0, s_slot_entry_list *arg_1, s_collision_bsp_test_vector_result *arg_2,
 	real arg_3, long arg_4, byte const *arg_5, point3f const *arg_6, vector3f const *arg_7);
-void function_222150(long arg_0, point3f const *arg_1, real const *arg_2,
+void function_222150(long arg_0, real const *arg_2, point3f const *arg_1,
 	point3f const *arg_3, long arg_4, real *arg_5);
+
+void vector3f_negate(vector3f const *vector, vector3f *result); /* forced inline in src/unknown_0b7740.cpp */
 
 PRIVATE inline void point_along_vector_221e30(point3f const *point, vector3f const *vector, real t, point3f *result)
 {
@@ -696,9 +698,7 @@ void function_221e30(s_221e30 *arg_0, real const *arg_1, s_local_camera const *a
 			if (function_1de630(1, g_4e0340, (s_collision_bsp_test_vector_result *)&local_1,
 				1.0f, 0x100, local_5, &arg_2->position, &ray))
 			{
-				reverse_ray.i = 0.0f - ray.i;
-				reverse_ray.j = 0.0f - ray.j;
-				reverse_ray.k = 0.0f - ray.k;
+				vector3f_negate(&ray, &reverse_ray);
 				if (function_1de630(1, g_4e0340, (s_collision_bsp_test_vector_result *)&local_2,
 					1.0f, 0x100, local_5, &arg_0->field_24, &reverse_ray))
 				{
@@ -733,7 +733,7 @@ void function_221e30(s_221e30 *arg_0, real const *arg_1, s_local_camera const *a
 			else
 			{
 				real values[2];
-				function_222150(arg_2->index, &arg_2->position, arg_1,
+				function_222150(arg_2->index, arg_1, &arg_2->position,
 					&arg_0->field_24, arg_0->field_3c, values);
 				s_221e32 const *local_9 = *(s_221e32 const **)((byte *)local_13 + 0xa0);
 				if (local_9[arg_2->index].field_7a != local_9[arg_0->field_3c].field_7a)

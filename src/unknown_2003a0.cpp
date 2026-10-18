@@ -1205,15 +1205,14 @@ void __stdcall function_205320(long group_index)
 // @retail 0x201ad0
 void function_201ad0(long squad_index, long object_index)
 {
-	long const *object_reference = &object_index;
-	s_squad_vehicle_view *object = ((s_squad_vehicle_header *)g_4e0300->data)[*object_reference & 0xffff].object;
+	s_squad_vehicle_view *object = ((s_squad_vehicle_header *)g_4e0300->data)[object_index & 0xffff].object;
 	if (object->squad_index != NONE)
-		function_201a50(object->squad_index, *object_reference);
+		function_201a50(object->squad_index, object_index);
 	if (squad_index != NONE)
 	{
 		s_squad_datum *squad = (s_squad_datum *)(g_51e9d8->data + (squad_index & 0xffff) * sizeof(s_squad_datum));
-		((s_squad_vehicle_header *)g_4e0300->data)[*object_reference & 0xffff].object->next = squad->first_vehicle_index;
-		squad->first_vehicle_index = *object_reference;
+		((s_squad_vehicle_header *)g_4e0300->data)[object_index & 0xffff].object->next = squad->first_vehicle_index;
+		squad->first_vehicle_index = object_index;
 		if (!(squad_index & 0xffff0000))
 			object->squad_index = (*(short *)squad << 16) | squad_index;
 		else

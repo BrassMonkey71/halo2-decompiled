@@ -1512,6 +1512,8 @@ long g_50f50c;
 s_cache_property g_50f510[128];
 byte g_50fd14[2048];
 
+static __forceinline long query_time_now();
+
 static inline long query_time_now()
 {
     return g_510548 ? g_51054c : GetTickCount();
@@ -1817,81 +1819,96 @@ void function_73ca0(byte *results)
 bool online_task_service_unavailable(long task_index);
 long online_round_extend(XNKID const *session_id, ULONGLONG const *round_key, word seconds);
 
-#pragma optimize("s", on)
 // @retail 0x755d0
 void function_755d0(void)
 {
-    if (g_467214 == NONE || online_task_get_logon_status(g_467214) != 1)
+    if (g_467214 == NONE)
         return;
-    if (g_510518 == 2 && g_51051c)
-        function_73ca0(NULL);
-    long state = g_510518;
-    if (state == 3 || state == 1)
+    switch (online_task_get_logon_status(g_467214))
     {
-        long task = g_510530;
-        long status = online_task_poll(task);
-        if (status == 2)
-        {
-            switch (state)
-            {
-            case 1:
-                g_510518 = 2;
-                g_510534 = function_75870();
-                function_6b640(g_510530);
-                g_510530 = NONE;
-                break;
-            case 3:
-                g_510518 = 0;
-                g_510514 = 0;
-                function_6b640(g_510530);
-                g_510530 = NONE;
-                break;
-            }
-        }
-        else if (status < 0 || status > 1)
-        {
-            function_6b640(task);
-            g_510530 = NONE;
-            switch (g_510518)
-            {
-            case 1: function_73dc0(1); break;
-            case 3: function_73dc0(2); break;
-            }
-        }
-    }
-    if (g_510518 == 2)
+    case 1:
     {
-        long task = g_510538;
-        if (task == NONE)
+        if (g_510518 == 2 && g_51051c)
+            function_73ca0(NULL);
+        if (g_510518 == 3 || g_510518 == 1)
         {
-            long interval = g_network_configuration.value374 * 1000 / 3;
-            long last = g_510534;
-            if (query_time_now() - last >= interval)
-            {
-                long created = online_round_extend((const XNKID *)&g_510528,
-                    (const ULONGLONG *)&g_510520, (word)g_network_configuration.value374);
-                if (created != NONE)
-                    g_510538 = created;
-            }
-        }
-        else
-        {
+            long state = g_510518;
+            long task = g_510530;
             long status = online_task_poll(task);
-            if (status >= 0 && status <= 1)
-                return;
-            long time;
-            if (status == 2)
-                time = function_75870();
+            if (status < 0)
+                goto poll_failed;
+            if (status > 1)
+            {
+                if (status == 2)
+                {
+                    switch (state)
+                    {
+                    case 1:
+                        g_510518 = 2;
+                        g_510534 = function_75870();
+                        function_6b640(g_510530);
+                        g_510530 = NONE;
+                        break;
+                    case 3:
+                        g_510518 = 0;
+                        g_510514 = 0;
+                        function_6b640(g_510530);
+                        g_510530 = NONE;
+                        break;
+                    }
+                }
+                else
+                {
+                poll_failed:
+                    function_6b640(task);
+                    g_510530 = NONE;
+                    switch (g_510518)
+                    {
+                    case 1: function_73dc0(1); break;
+                    case 3: function_73dc0(2); break;
+                    }
+                }
+            }
+        }
+        if (g_510518 == 2)
+        {
+            long task = g_510538;
+            if (task == NONE)
+            {
+                long interval = g_network_configuration.value374 * 1000 / 3;
+                long last = g_510534;
+                if (query_time_now() - last >= interval)
+                {
+                    word seconds = (word)g_network_configuration.value374;
+                    long created = online_round_extend((const XNKID *)&g_510528,
+                        (const ULONGLONG *)&g_510520, seconds);
+                    if (created != NONE)
+                        g_510538 = created;
+                }
+            }
             else
             {
-                if (status != 3 || !online_task_service_unavailable(task))
-                    function_73dc0(3);
-                time = function_75870();
+                long status = online_task_poll(task);
+                long time;
+                if (status < 0)
+                    goto extension_failed;
+                if (status <= 1)
+                    return;
+                if (status == 2)
+                    time = function_75870();
+                else
+                {
+                extension_failed:
+                    if (status != 3 || !online_task_service_unavailable(task))
+                        function_73dc0(3);
+                    time = query_time_now();
+                }
+                g_510534 = time;
+                function_6b640(g_510538);
+                g_510538 = NONE;
             }
-            g_510534 = time;
-            function_6b640(g_510538);
-            g_510538 = NONE;
         }
+        break;
+    }
     }
 }
-#pragma optimize("", on)
