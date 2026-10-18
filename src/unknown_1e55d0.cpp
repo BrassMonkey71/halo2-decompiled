@@ -1,4 +1,5 @@
 #include "unknown_11c920.h"
+#include "slot_handler.h"
 #include "globals.h"
 #include "unknown_1cec30.h"
 #include "unknown_0259d0.h"
@@ -56,6 +57,8 @@ void function_1c4a80(long object_index, bool first, bool second);
 void function_b58c0(long object_index, dword mask);
 bool function_1c5210(transform4x3f const *matrix, void *shape, long component, long filter);
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1e55d0
 void __stdcall function_1e55d0(s_biped_physics_move *move, void *physics, s_biped_physics_output *output)
 {
@@ -84,11 +87,7 @@ void __stdcall function_1e55d0(s_biped_physics_move *move, void *physics, s_bipe
 	{
 		real ticks = (real)g_510c54->field_2_3 * 0.3f;
 		long rounded;
-		__asm
-		{
-			fld ticks
-			fistp rounded
-		}
+		rounded = real_to_long(ticks);
 		state[1] = (byte)rounded;
 		function_1eb6f0((s_ease_input *)input, (s_ease_state *)(state + 0x10), (s_ease_output *)out);
 		break;
@@ -104,8 +103,7 @@ void __stdcall function_1e55d0(s_biped_physics_move *move, void *physics, s_bipe
 		c_z_shape_view *current = *(c_z_shape_view **)(body + 0xc);
 		bool compound = current->v5() == 0x17;
 		current = *(c_z_shape_view **)(body + 0xc);
-		bool same = current == shape;
-		if (compound) same = same || *(c_z_shape_view **)((byte *)current + 0x30) == shape;
+		bool same = current == shape || compound && *(c_z_shape_view **)((byte *)current + 0x30) == shape;
 		if (same) *(dword *)out |= 2;
 		else if (shape->v5() == 7)
 		{

@@ -133,6 +133,8 @@ PRIVATE __forceinline void function_1befd1(long arg_0)
     local_0->unknown504 = 0;
 }
 
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1befd0
 bool __stdcall function_1befd0(long actor_index, s_slot *slot)
 {
@@ -147,19 +149,11 @@ bool __stdcall function_1befd0(long actor_index, s_slot *slot)
 	state->reference = g_470fa0;
 
 	ticks = g_510c54->field_2_3 * local_0.field_0;
-	__asm
-	{
-		fld ticks
-		fistp rounded
-	}
+	rounded = real_to_long(ticks);
 	state->unknown10 = (short)rounded;
 
 	ticks = g_510c54->field_2_3 * local_0.field_8;
-	__asm
-	{
-		fld ticks
-		fistp rounded
-	}
+	rounded = real_to_long(ticks);
 	state->unknown12 = (short)rounded;
 	return true;
 }
