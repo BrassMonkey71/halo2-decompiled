@@ -754,8 +754,6 @@ struct c_child_transform : c_havok_reference_counted
 // @retail 0x1ef070
 c_child_transform *function_1ef070(dword key, void *storage)
 {
- (void)&key;
- (void)&storage;
  long position = (key >> 16) & 0x1fff;
  long object_index = g_51e9cc[key & 0xffff];
  byte *object = *(byte **)(g_4e0300->data + (object_index & 0xffff) * 12 + 8);
