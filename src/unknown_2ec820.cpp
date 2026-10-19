@@ -4,6 +4,8 @@
 // not own it.
 #include "reference_counted_2d88a0.h"
 #include <xmmintrin.h>
+#include "keyed_list_2ec680.h"
+#include "agent_table_2e5d50.h"
 
 struct array_2ec820
 {
@@ -180,6 +182,31 @@ void class_2ebc50::function_2ec940(void const *other, body_2ebc80 const *body, v
 	}
 }
 
+// the keyed list of child objects with the two sides the other way round
+class swapped_keyed_list_2ecb80 : public keyed_list_2ec680
+{
+public:
+	__forceinline swapped_keyed_list_2ecb80(typed_2edd00 **other, description_2edd00 const *description, context_2edd00 const *context, long arg_3) :
+		keyed_list_2ec680(description, other, context, arg_3)
+	{
+	}
+
+	void function_2ec9a0(typed_2edd00 **other, description_2edd00 const *description, context_2edd00 const *context);
+};
+
+// brings the list up to date with the two sides swapped back
+// @retail 0x2ec9a0
+void swapped_keyed_list_2ecb80::function_2ec9a0(typed_2edd00 **other, description_2edd00 const *description, context_2edd00 const *context)
+{
+	function_2ec3d0(description, other, context);
+}
+
+// creates the keyed list of child objects for a pair
+// @retail 0x2ec9c0
+keyed_list_2ec680 *__cdecl function_2ec9c0(description_2edd00 const *description, typed_2edd00 **other, context_2edd00 const *context, long arg_3)
+{
+	return new keyed_list_2ec680(description, other, context, arg_3);
+}
 // @retail 0x2eca50
 void class_2ebc50::function_2eca50(void const *other, body_2ebc80 const *body, query_2eca50 const *query, void *collector, void *second_collector)
 {
@@ -198,4 +225,37 @@ void class_2ebc50::function_2eca50(void const *other, body_2ebc80 const *body, q
 	{
 		function_2ebf50(body, other, &flipped, &first, 0);
 	}
+}
+
+// creates the keyed list for a pair with the two sides the other way round
+// @retail 0x2ecb80
+swapped_keyed_list_2ecb80 *__cdecl function_2ecb80(typed_2edd00 **other, description_2edd00 const *description, context_2edd00 const *context, long arg_3)
+{
+	return new swapped_keyed_list_2ecb80(other, description, context, arg_3);
+}
+
+struct input_2ebe40;
+struct query_2ec580;
+void __cdecl function_2ec310(body_2ebc80 const *b, body_2ebc80 const *a, input_2ebe40 const *input, collector_2ebc80 *collector);
+void __cdecl function_2ec370(body_2ebc80 const *b, body_2ebc80 const *a, input_2ebe40 const *input, void *collector);
+void __cdecl function_2ec580(body_2ebc80 const *b, body_2ebc80 const *a, query_2ec580 const *query, void *collector, void *second_collector);
+void __cdecl function_2ec200(body_2ebc80 const *a, body_2ebc80 const *b, input_2ebe40 const *input, collector_2ebc80 *collector);
+void __cdecl function_2ebe40(body_2ebc80 const *a, body_2ebc80 const *b, input_2ebe40 const *input, void *collector);
+void __cdecl function_2ec020(body_2ebc80 const *a, body_2ebc80 const *b, input_2ebe40 const *input, void *arg_3, void *arg_4);
+
+// registers the keyed-list handlers for shape type 2 against any type, both ways round
+// @retail 0x2ecbf0
+void __cdecl function_2ecbf0(s_1c3a40 *table)
+{
+	handlers_2e5d50 handlers;
+	handlers.handler[0] = (handler_2e5d50)function_2ecb80;
+	handlers.handler[1] = (handler_2e5d50)function_2ec310;
+	handlers.handler[2] = (handler_2e5d50)function_2ec370;
+	handlers.handler[3] = (handler_2e5d50)function_2ec580;
+	table->function_2e5d50(&handlers, -1, 2);
+	handlers.handler[0] = (handler_2e5d50)function_2ec9c0;
+	handlers.handler[1] = (handler_2e5d50)function_2ec200;
+	handlers.handler[2] = (handler_2e5d50)function_2ebe40;
+	handlers.handler[3] = (handler_2e5d50)function_2ec020;
+	table->function_2e5d50(&handlers, 2, -1);
 }
