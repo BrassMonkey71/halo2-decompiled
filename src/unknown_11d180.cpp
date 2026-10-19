@@ -84,13 +84,15 @@ bool function_11d3b0(
 	}
 	*out = *b;
 	{
-		real d = (out->k * axis.k + out->j * axis.j + out->i * axis.i) * (1.f - angle.n[1]);
+		real sine = angle.n[0];
+		real cosine = angle.n[1];
+		real d = (out->k * axis.k + out->j * axis.j + out->i * axis.i) * (1.f - cosine);
 		real t0 = out->j * axis.k - out->k * axis.j;
 		real t1 = out->k * axis.i - out->i * axis.k;
 		real t2 = out->i * axis.j - out->j * axis.i;
-		out->i = out->i * angle.n[1] + d * axis.i - t0 * angle.n[0];
-		out->j = out->j * angle.n[1] + d * axis.j - t1 * angle.n[0];
-		out->k = out->k * angle.n[1] + d * axis.k - t2 * angle.n[0];
+		out->i = out->i * cosine + d * axis.i - t0 * sine;
+		out->j = out->j * cosine + d * axis.j - t1 * sine;
+		out->k = out->k * cosine + d * axis.k - t2 * sine;
 	}
 	return true;
 }

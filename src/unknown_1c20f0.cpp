@@ -264,17 +264,18 @@ bool __stdcall function_1c2130(long actor_index, s_slot *slot)
 		ai_scratch_buffer_release(buffer);
 		if (!state->unknown10)
 		{
-			s_path_query query;
+			s_path_settings settings;
+			s_path_source source;
 			bool valid;
 			bool found = false;
 
 			function_26c180(actor_index);
-			function_1f9240(actor_index, &query.settings);
-			function_1f90f0(actor_index, &query.source);
-			query.source.unknown45 = true;
-			query.source.unknown48 = 20.0f;
+			function_1f9240(actor_index, &settings);
+			function_1f90f0(actor_index, &source);
+			source.unknown45 = true;
+			source.unknown48 = 20.0f;
 			buffer = ai_scratch_buffer_get();
-			function_271300((s_type_f17a25 *)buffer, NULL, &query.settings, &query.source, 0);
+			function_271300((s_type_f17a25 *)buffer, NULL, &settings, &source, 0);
 			valid = function_2715a0(buffer);
 			if (!(state->flags & 1))
 			{

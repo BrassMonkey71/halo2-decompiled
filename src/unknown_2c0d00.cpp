@@ -805,7 +805,7 @@ void function_2c2740(point2f const *point, point2f const *center, real radius, b
 {
     point2f direction;
     vector2d_from_points2d(center, point, &direction);
-    real distance_squared = direction.y * direction.y + direction.x * direction.x;
+    real distance_squared = length_sq2f(&direction);
     real factor = distance_squared > 0.0f ? radius / distance_squared : 0.0f;
     point2f candidates[2];
     real tangent_squared = distance_squared - radius * radius;

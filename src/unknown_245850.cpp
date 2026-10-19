@@ -43,18 +43,19 @@ void function_245850(long arg_0, s_source_245400 const *arg_1,
 	{
 		for (short local_4 = 0; local_4 < local_2; ++local_4)
 		{
-			real local_5 = local_1[local_4].x;
-			real local_6 = local_1[local_4].y;
-			real local_7 = local_1[local_4].z;
+			point3f *point = &local_1[local_4];
+			real local_5 = point->x;
+			real local_6 = point->y;
+			real local_7 = point->z;
 			if (arg_2->scale != 1.f)
 			{
 				local_5 = arg_2->scale * local_5;
 				local_6 = arg_2->scale * local_6;
 				local_7 = arg_2->scale * local_7;
 			}
-			local_1[local_4].x = arg_2->up.i * local_7 + arg_2->left.i * local_6 + local_5 * arg_2->forward.i + arg_2->position.x;
-			local_1[local_4].y = arg_2->forward.j * local_5 + arg_2->up.j * local_7 + arg_2->left.j * local_6 + arg_2->position.y;
-			local_1[local_4].z = arg_2->forward.k * local_5 + arg_2->up.k * local_7 + arg_2->left.k * local_6 + arg_2->position.z;
+			point->x = arg_2->up.i * local_7 + arg_2->left.i * local_6 + local_5 * arg_2->forward.i + arg_2->position.x;
+			point->y = arg_2->forward.j * local_5 + arg_2->up.j * local_7 + arg_2->left.j * local_6 + arg_2->position.y;
+			point->z = arg_2->forward.k * local_5 + arg_2->up.k * local_7 + arg_2->left.k * local_6 + arg_2->position.z;
 		}
 		real local_5 = local_3.i;
 		real local_6 = local_3.j;

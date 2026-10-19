@@ -128,8 +128,8 @@ void *c_page_heap::allocate_pages(long alignment_mask, long size, long unused)
 	{
 		for (long p = index; p < index + pages; p++)
 			bits[p >> 5] |= 1 << (p & 0x1f);
-		*used_pages += pages;
 		result = base + (index << 12);
+		*used_pages += pages;
 	}
 local_0:
 	return result;
