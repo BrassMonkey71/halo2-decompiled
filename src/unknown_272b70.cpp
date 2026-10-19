@@ -2973,17 +2973,18 @@ short __stdcall function_274470(long arg_0)
 			}
 			if (!bit_vector_test(local_0, local_16))
 			{
+				s_unit_seat_definition *local_29 = local_17->definition;
 				real local_19 = 0.0f;
-				if (TEST_FIELD_BIT(local_17->definition->flags.bit2))
+				if (TEST_FIELD_BIT(local_29->flags.bit2))
 				{
-					if (TEST_FIELD_BIT(local_17->definition->flags.bit3)) local_19 = 3.0f;
+					if (TEST_FIELD_BIT(local_29->flags.bit3)) local_19 = 3.0f;
 					else if (local_4 > 0) local_19 = 5.0f;
 				}
-				else if (TEST_FIELD_BIT(local_17->definition->flags.bit3))
+				else if (TEST_FIELD_BIT(local_29->flags.bit3))
 				{
-					if (local_15) local_19 = 20.0f;
+					local_19 = local_15 ? 20.0f : 0.0f;
 				}
-				else if (!TEST_FIELD_BIT(local_17->definition->flags.bit11))
+				else if (!TEST_FIELD_BIT(local_29->flags.bit11))
 				{
 					local_19 = local_15 ? 1.0f : 0.0f;
 				}
@@ -3015,14 +3016,14 @@ short __stdcall function_274470(long arg_0)
 		{
 
 			memset(&local_40.field_0, 0, sizeof(local_40.field_0));
-			local_40.field_0.vehicle_index = local_20;
 			local_40.field_0.seat_index = local_21;
+			local_40.field_0.unknown28 = 3.402823466e38f;
+			local_40.field_0.unknown2c = 3.402823466e38f;
+			local_40.field_0.vehicle_index = local_20;
 			local_40.field_0.flag0 = false;
 			local_40.field_0.flag3 = false;
 			local_40.field_0.flag5 = true;
 			local_40.field_0.flag6 = true;
-			local_40.field_0.unknown28 = 3.402823466e38f;
-			local_40.field_0.unknown2c = 3.402823466e38f;
 			if (function_1a80e0(local_23, 0x4c, (s_slot *)&local_40.field_0, 1))
 			{
 				local_3++;
