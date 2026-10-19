@@ -1581,7 +1581,7 @@ void __stdcall function_1479c3(real elapsed)
     }
     function_199b08();
     if (g_54d5a8 == 2 && g_4e0350 && !function_155f60() &&
-        !g_54d598.windows_1[4].current && !g_54d598.windows_1[4].next)
+        !g_54d598.windows_5[4].current && !g_54d598.windows_5[4].next)
     {
         function_1483c3(0);
     }

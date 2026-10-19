@@ -7,27 +7,72 @@
 // of the shape that wraps it.
 #include <xmmintrin.h>
 
+class pair_agent_2ea410;
+
+// a part's key, and the agent that runs queries against that part
+struct agent_entry_2ea410
+{
+	long key;
+	long field_4;
+	pair_agent_2ea410 *agent;
+};
+
+// the agents of the parts of a pair's container side
+class agent_list_2ea410
+{
+public:
+	char unknown0[0xc];
+	agent_entry_2ea410 *entries;
+	long entry_count;
+};
+
+// runs a query between two sides through the dispatcher's function for
+// their kinds
+typedef void (__cdecl *pair_query_2e90f0)(void const *a, void const *b, void const *input, void *collector);
+void __cdecl function_2e90f0(void const *a, void const *b, void const *input, void *collector);
+
+// bring the agent list up to date with the parts the sides overlap
+class class_2e96a0
+{
+public:
+	void function_2e96a0(void const *a, void const *b, void const *input, pair_query_2e90f0 query);
+};
+
+class class_2e9d90
+{
+public:
+	void function_2e9d90(void const *a, void const *b, void const *input, pair_query_2e90f0 query);
+};
+
 class class_2eab70
 {
 public:
 	void function_2eab70(void const *a, void const *b, void const *input, void *collector);
 	void function_2eb170(void const *a, void const *b, void const *input, void *collector);
 	void function_2eb8d0(void const *a, void const *b, void const *input, void *collector);
+	void function_2f9d40(void const *a, void const *b, void const *input, void *collector);
 	void function_2fab30(void const *a, void const *b, void const *input, void *collector);
+	void function_2faff0(void const *a, void const *b, void const *input, void *collector);
 };
 
-class class_2ea530
+class class_2ea530 : public agent_list_2ea410
 {
 public:
 	void function_2ea530(void const *a, void const *b, void const *input, void *collector, void *second_collector);
+	void function_2eb3f0(void const *a, void const *b, void const *input, void *collector, void *second_collector);
+	void function_2eb9f0(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 	void function_2f9740(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 };
 
-class class_2ea830
+class class_2ea830 : public agent_list_2ea410
 {
 public:
 	void function_2ea830(void const *a, void const *b, void const *input, void *collector);
+	void function_2eb230(void const *a, void const *b, void const *input, void *collector);
+	void function_2eb930(void const *a, void const *b, void const *input, void *collector);
+	void function_2f9dc0(void const *a, void const *b, void const *input, void *collector);
 	void function_2fabb0(void const *a, void const *b, void const *input, void *collector);
+	void function_2fb070(void const *a, void const *b, void const *input, void *collector);
 };
 
 class class_2ecf20
@@ -37,9 +82,13 @@ public:
 	void function_2ed3a0(void const *a, void const *b, void const *input, void *collector);
 };
 
+// holds the terms that solve for a point's weights in a triangle's plane
 class class_2f1560
 {
 public:
+	char unknown0[0x10];
+	float terms[4];
+
 	void function_2f1560(void const *a, void const *b, void const *input, void *collector);
 	void function_2f17d0(void const *a, void const *b, void const *input, void *collector);
 };
@@ -109,6 +158,97 @@ class class_2fb150
 public:
 	void function_2fb150(void const *a, void const *b, void const *input, void *collector);
 	void function_2fb910(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
+};
+
+class class_2ece10
+{
+public:
+	void function_2ece10(void const *a, void const *b, void const *input, void *collector);
+	void function_2ed400(void const *a, void const *b, void const *input, void *collector);
+};
+
+class class_2f0450
+{
+public:
+	void function_2f0450(void const *a, void const *b, void const *input, void *collector);
+	void function_2f0be0(void const *a, void const *b, void const *input, void *collector);
+};
+
+class class_2f1270
+{
+public:
+	void function_2f1270(void const *a, void const *b, void const *input, void *collector);
+	void function_2f1890(void const *a, void const *b, void const *input, void *collector);
+};
+
+class class_2f1ea0
+{
+public:
+	void function_2f1ea0(void const *a, void const *b, void const *input, void *collector);
+	void function_2f25e0(void const *a, void const *b, void const *input, void *collector);
+};
+
+class class_2f4f00
+{
+public:
+	void function_2f4f00(void const *a, void const *b, void const *input, void *collector);
+	void function_2f7850(void const *a, void const *b, void const *input, void *collector);
+};
+
+class class_2f7f10
+{
+public:
+	void function_2f7f10(void const *a, void const *b, void const *input, void *collector);
+	void function_2f86e0(void const *a, void const *b, void const *input, void *collector);
+};
+
+class class_2ea410 : public agent_list_2ea410
+{
+public:
+	void function_2ea410(void const *a, void const *b, void const *input, void *collector);
+	void function_2eb990(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
+};
+
+class class_2f0100
+{
+public:
+	void function_2f0100(void const *a, void const *b, void const *input, void *collector);
+	void function_2f0da0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
+};
+
+class class_2f1080
+{
+public:
+	void function_2f1080(void const *a, void const *b, void const *input, void *collector);
+	void function_2f1a50(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
+};
+
+class class_2f1b80
+{
+public:
+	void function_2f1b80(void const *a, void const *b, void const *input, void *collector);
+	void function_2f27a0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
+};
+
+class class_2f4440
+{
+public:
+	void function_2f4440(void const *a, void const *b, void const *input, void *collector);
+	void function_2f7a10(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
+};
+
+class class_2fa2f0
+{
+public:
+	void function_2fa2f0(void const *a, void const *b, void const *input, void *collector);
+	void function_2faa60(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
+};
+
+class class_2fec10
+{
+public:
+	void function_2fec10(void const *a, void const *b, void const *input, void *collector, void *second_collector);
+	void function_2f9530(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 };
 
 #endif
