@@ -1,6 +1,7 @@
 #include "unknown_11c920.h"
 #include "unknown_1d5120.h"
 #include <float.h>
+#include <new>
 // @flags /O2 /arch:SSE /Gr
 
 extern hkWorld *g_51e9a4;
@@ -62,7 +63,7 @@ void function_1d56f0(s_havok_component *component)
                         info.shape = shape;
                         info.filter = ((component->object_index + 1) << 16) | 0xc;
                         function_181f80((s_havok_transform *)&info.transform, &matrix);
-                        component->rigid_body = (hkRigidBody *)new c_contact_query_transform_volume(&info);
+                        component->rigid_body = (hkRigidBody *)::new (contact_query_allocate(sizeof(c_contact_query_transform_volume))) c_contact_query_transform_volume(&info);
                     }
                 }
                 if (*(long *)(physics + 0x4c))
