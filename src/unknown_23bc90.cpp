@@ -426,20 +426,23 @@ void __stdcall function_23c110(void *state, void *input, s_observer_command *com
     long player = user_player_23c110(indices, user);
     s_view_angles *angles = &g_4ed284->entries[user].angles;
     vector3f forward;
-    real horizontal = (real)cos(angles->pitch);
-    forward.i = horizontal * (real)cos(angles->yaw);
-    forward.j = horizontal * (real)sin(angles->yaw);
-    forward.k = (real)sin(angles->pitch);
+    real pitch = angles->pitch;
+    real yaw = angles->yaw;
+    real horizontal = (real)cos(pitch);
+    forward.i = horizontal * (real)cos(yaw);
+    forward.j = horizontal * (real)sin(yaw);
+    forward.k = (real)sin(pitch);
     long current_unit = ((s_camera_player_23c110 *)players->data)[player & 0xffff].unit_index;
     if (current_unit != NONE)
         function_cb810(current_unit, &forward);
     function_23bd70(unit_index, &forward, (s_camera_command_23bd70 *)command);
     byte *settings = *(byte **)((byte *)g_4e034c + 0xf4);
-    volatile real limits[2];
-    limits[0] = *(real *)(settings + 0x18);
-    limits[1] = *(real *)(settings + 0x1c);
-    *(real *)((byte *)command + 0x1c) = limits[0];
-    *(real *)((byte *)command + 0x20) = limits[1];
+    real lower_limit;
+    real upper_limit;
+    lower_limit = *(real *)(settings + 0x18);
+    upper_limit = *(real *)(settings + 0x1c);
+    *(real *)((byte *)command + 0x1c) = lower_limit;
+    *(real *)((byte *)command + 0x20) = upper_limit;
     s_camera_command_23bd70 *camera = (s_camera_command_23bd70 *)command;
     camera->field_of_view = function_187130(*(long *)input) * g_47136c;
     camera->field_of_view = camera->field_of_view < g_55e484 ? g_55e484 :

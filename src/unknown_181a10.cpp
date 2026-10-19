@@ -392,7 +392,7 @@ bool __stdcall function_183670(long component_a, long component_b, point3f *a, p
 				{
 					__declspec(align(16)) c_query_array_collector collector;
 					s_distance_query_contact buffer[8];
-					*(dword volatile *)&collector.entries.capacity_and_flags = 0x80000008;
+					collector.entries.capacity_and_flags = 0x80000008;
 					collector.maximum = FLT_MAX;
 					collector.entries.data = buffer;
 					collector.entries.count = 0;
