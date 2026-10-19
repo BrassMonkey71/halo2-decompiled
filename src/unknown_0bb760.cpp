@@ -305,24 +305,31 @@ real function_0bff60(real a, real b);
 real function_c18e0();
 real function_1588b0(long player_index, long type);
 
+/* the word of flags at 0x10a of an object */
+struct s_object_flags_10a
+{
+    byte unknown000[0x10a];
+    word bit0 : 1;
+    word bit1 : 1;
+    word bit2 : 1;
+    word : 13;
+};
+
 // @retail 0xbcc20
-bool __stdcall function_bcc20(long object_index, long volatile id, real *volatile out, bool *volatile active)
+bool __stdcall function_bcc20(long object_index, long id, real *out, bool *active)
 {
     byte *object = (byte *)((s_object_header *)g_4e0300->data)[object_index & 0xffff].object;
-    long selector = id;
     bool forced_active = false;
-    long saved_object_index = object_index;
-    bool volatile &result = *(bool volatile *)&object_index;
-    result = true;
-    real volatile value = 0.0f;
-    switch (selector)
+    bool result = true;
+    real value = 0.0f;
+    switch (id)
     {
     case 0x030005a6: value = 1.0f; break;
     case 0x040005a7: value = 0.0f; break;
-    case 0x0500055b: value = (bool)((object[0x10a] >> 2) & 1) ? 0.0f : 1.0f; break;
+    case 0x0500055b: value = TEST_FIELD_BIT(((s_object_flags_10a *)object)->bit2) ? 0.0f : 1.0f; break;
     case 0x0700055c:
         {
-            transform4x3f *matrix = function_b8bd0(saved_object_index, 0);
+            transform4x3f *matrix = function_b8bd0(object_index, 0);
             if (fabs(matrix->forward.k) < 0.995f)
             {
                 real angle = (real)atan2(matrix->forward.i, matrix->forward.j);
@@ -336,12 +343,11 @@ bool __stdcall function_bcc20(long object_index, long volatile id, real *volatil
         {
             byte *definition = g_4e3b44[*(long *)object & 0xffff].bytes;
             byte *model = g_4e3b44[*(long *)(definition + 0x38) & 0xffff].bytes;
-            long count = *(long *)(model + 0x50);
-            if (count > 0)
+            if (*(long *)(model + 0x50) > 0)
             {
                 long variant = *(char *)(object + 0xb1) + 1;
-                variant = variant < 0 ? 0 : variant > count ? count : variant;
-                value = (real)variant / count;
+                variant = variant < 0 ? 0 : variant > *(long *)(model + 0x50) ? *(long *)(model + 0x50) : variant;
+                value = (real)variant / *(long *)(model + 0x50);
             }
         }
         break;
@@ -353,15 +359,13 @@ bool __stdcall function_bcc20(long object_index, long volatile id, real *volatil
     case 0x0c0006b8: value = function_bcb60(); break;
     case 0x0d000558: value = *(real *)(object + 0xec); break;
     case 0x0f000559: value = *(real *)(object + 0xf0); break;
-    case 0x0f0005aa: value = (((dword)saved_object_index * 0x19660d + 0x3c6ef35f) >> 16) * 0.000015259021893143654f; break;
+    case 0x0f0005aa: value = (((dword)object_index * 0x19660d + 0x3c6ef35f) >> 16) * 0.000015259021893143654f; break;
     case 0x0f0005ac:
-        if (g_4e6948->state == 2 && ((1 << object[0xaa]) & 3) && *(long *)(object + 0x13c) != NONE)
-        {
-            if (function_1588b0(*(long *)(object + 0x13c), 2) <= 0.0f)
-                break;
-        }
-        if (*(real *)(object + 0xf0) == 0.0f)
+        if ((g_4e6948->state != 2 || !((1 << object[0xaa]) & 3) || *(long *)(object + 0x13c) == NONE ||
+            function_1588b0(*(long *)(object + 0x13c), 2) > 0.0f) && *(real *)(object + 0xf0) == 0.0f)
             value = 1.0f;
+        else
+            value = 0.0f;
         break;
     case 0x100006b4: value = 1.0f; break;
     case 0x13000556: value = *(real *)(object + 0xf8); break;
@@ -374,25 +378,59 @@ bool __stdcall function_bcc20(long object_index, long volatile id, real *volatil
     case 0x1a00071d: value = *(real *)((byte *)g_4de2f4 + 0x7c); break;
     case 0x0d0005ff: case 0x170005fa: case 0x170005fb:
     case 0x180005fc: case 0x1d0005fd: case 0x1d0005fe:
-        forced_active = function_bc970(saved_object_index, selector, (real *)&value); break;
+        forced_active = function_bc970(object_index, id, &value); break;
     default: result = false; break;
     }
-    real output_value = value;
-    output_value = output_value < 0.0f ? 0.0f : output_value > 1.0f ? 1.0f : output_value;
-    *out = output_value;
+    if (value < 0.0f)
+        value = 0.0f;
+    else if (value > 1.0f)
+        value = 1.0f;
+    *out = value;
     if (forced_active)
-    {
         *active = true;
-        return result;
-    }
-    if (output_value > 0.0f)
-    {
-        *active = true;
-        return result;
-    }
-    *active = false;
+    else
+        *active = value > 0.0f;
     return result;
 }
+
+/* the base object type (0x4678e8): its name, group tag, datum size, its
+   callbacks and its type list, which holds only itself */
+struct s_object_type_definition_0bb760
+{
+    char const *name;
+    long group_tag;
+    short datum_size;
+    short unknown0a;
+    long unknown0c;
+    void *functions[29];
+    void *types[2];
+    byte unknown8c[0xc8 - 0x8c];
+};
+
+void __stdcall function_be760(long index);
+void __stdcall function_72c70(dword value);
+
+extern s_object_type_definition_0bb760 g_4678e8;
+
+s_object_type_definition_0bb760 g_4678e8 =
+{
+    "object",
+    'obje',
+    0x12c,
+    NONE,
+    NONE,
+    {
+        NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL,
+        NULL, NULL, (void *)function_be760, NULL,
+        NULL, NULL, NULL, (void *)function_bcc20,
+        NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL,
+        (void *)function_72c70
+    },
+    { &g_4678e8, NULL }
+};
 
 struct s_colour_choice_ab
 {

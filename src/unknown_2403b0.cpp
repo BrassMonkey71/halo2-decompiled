@@ -52,30 +52,28 @@ void __stdcall function_2403b0(long player_index)
 		return;
 	if (!g_55e4d0[g_4e9ae8->engine_index]->p35(player_index, 1) && !function_138880())
 		function_15fe70(player_index);
-	s_slot_table *table = g_51ec80;
-	if (g_4e6948->mode_180 == 9 && !(table->flags[slot] & 8))
+	if (g_4e6948->mode_180 == 9 && !(g_51ec80->flags[slot] & 8))
 	{
 		signed char team = *(signed char *)(player + 0xc0);
 		if (team == NONE)
 			return;
 		if (function_244680(team, *(long *)(player + 0x2c)))
 		{
-			if (table->e[slot] == NONE)
+			if (g_51ec80->e[slot] == NONE)
 			{
 				game_engine_event_initialize_inline(&event, 10, 14);
 				game_engine_event_set_cause_player(&event, player_index);
 				function_19eb90(&event);
-				table = g_51ec80;
 			}
 			long limit = (short)*(short *)((byte *)g_4e6948 + 0x244) * g_510c54->field_2_3;
-			long ticks = table->e[slot] + 1;
+			long ticks = g_51ec80->e[slot] + 1;
 			if (ticks > limit)
 				ticks = limit;
-			table->e[slot] = (short)ticks;
+			g_51ec80->e[slot] = (short)ticks;
 			if ((short)ticks == limit)
 			{
-				table->flags[slot] |= 8;
-				table->flags[slot] |= 1;
+				g_51ec80->flags[slot] |= 8;
+				g_51ec80->flags[slot] |= 1;
 				game_engine_event_initialize_inline(&event, 10, 15);
 				game_engine_event_set_cause_player(&event, player_index);
 				function_19eb90(&event);
@@ -86,10 +84,10 @@ void __stdcall function_2403b0(long player_index)
 		}
 		else
 		{
-			long ticks = table->e[slot] - 3;
+			long ticks = g_51ec80->e[slot] - 3;
 			if (ticks <= NONE)
 				ticks = NONE;
-			table->e[slot] = (short)ticks;
+			g_51ec80->e[slot] = (short)ticks;
 		}
 		function_a7810(0x100);
 		return;
@@ -99,25 +97,30 @@ void __stdcall function_2403b0(long player_index)
 	long marker = function_242ef0(point, *(signed char *)(player + 0xc0));
 	if (marker == NONE)
 		return;
+	bool blocked = false;
 	if ((g_4e6948->flags22c & 8) && *(long *)((byte *)g_4e6948 + 0x240) != 1 && *(long *)((byte *)g_4e6948 + 0x240) != 2 && g_4e6948->mode_180 != 9)
 	{
 		signed char team = *(signed char *)(player + 0xc0);
-		if (!function_15e410(team) || !slot_flag_clear_2403b0(table, team))
+		if (!function_15e410(team) || !slot_flag_clear_2403b0(g_51ec80, team))
+			blocked = true;
+	}
+	if (!blocked)
+	{
+		if (function_138860())
 		{
-			function_2430a0(player_index, true);
-			return;
+			if (g_4e6948->mode_180 == 9)
+				function_242ba0(marker, weapon_index, player_index);
+			else
+			{
+				short team = (short)slot == 8 ? NONE : (short)slot;
+				function_197210(player_index, 1, slot);
+				function_242e00(player_index, team);
+				function_242660(weapon_index, false);
+			}
 		}
 	}
-	if (function_138860())
+	else
 	{
-		if (g_4e6948->mode_180 == 9)
-			function_242ba0(marker, weapon_index, player_index);
-		else
-		{
-			short team = (short)slot == 8 ? NONE : (short)slot;
-			function_197210(player_index, 1, slot);
-			function_242e00(player_index, team);
-			function_242660(weapon_index, false);
-		}
+		function_2430a0(player_index, true);
 	}
 }

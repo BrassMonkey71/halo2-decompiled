@@ -3,7 +3,7 @@
    memory (g_479888) holds the allocators, built in place: a fixed buffer, a
    Havok pool, and two fixed buffers made when the pool runs short, one in
    the ai's scratch buffers (g_47989c) and one in physical memory
-   (g_4798a0). The game's own hkMemory (vtable 0x45378c, 0x147110 and on)
+   (g_4798a0). The game's own c_havok_abstract_allocator (vtable 0x45378c, 0x147110 and on)
    allocates from them. */
 
 #include "unknown_11c920.h"
@@ -51,8 +51,8 @@ bool g_479880;
 long g_479884;
 long g_47988c;
 long g_479890;
-hkMemory *g_479894;
-hkMemory *g_479898;
+c_havok_abstract_allocator *g_479894;
+c_havok_abstract_allocator *g_479898;
 long g_4798b4;
 bool g_47f05a;
 bool g_47f05b;
@@ -70,7 +70,7 @@ void function_146a20(void)
 	g_479890 = 1;
 	g_479880 = true;
 	g_479894 = new (g_479888) c_havok_fixed_memory((byte *)g_479888 + 0x30, 0x15000);
-	g_479898 = new ((byte *)g_479888 + 0x15040) hkPoolMemory;
+	g_479898 = new ((byte *)g_479888 + 0x15040) c_havok_page_pool_allocator;
 	g_4798b4++;
 }
 
@@ -86,17 +86,17 @@ void function_146ac0(void)
 	}
 	if (g_4798a0)
 	{
-		((hkMemory *)g_4798a0)->~hkMemory();
+		((c_havok_abstract_allocator *)g_4798a0)->~c_havok_abstract_allocator();
 		g_4798a0 = NULL;
 		function_12d520(g_47988c);
 		g_47988c = 0;
 	}
-	g_479894->~hkMemory();
-	hkMemory *last = g_479898;
+	g_479894->~c_havok_abstract_allocator();
+	c_havok_abstract_allocator *last = g_479898;
 	_ReadWriteBarrier();
 	g_479894 = NULL;
 	_ReadWriteBarrier();
-	last->~hkMemory();
+	last->~c_havok_abstract_allocator();
 	g_479898 = NULL;
 	g_479890 = 0;
 	g_479880 = false;
@@ -237,13 +237,13 @@ void function_146de0(void)
 {
 	if (g_47989c)
 	{
-		((hkMemory *)g_47989c)->~hkMemory();
+		((c_havok_abstract_allocator *)g_47989c)->~c_havok_abstract_allocator();
 		g_47989c = NULL;
 		g_510c48 = false;
 	}
 	if (g_4798a0)
 	{
-		((hkMemory *)g_4798a0)->~hkMemory();
+		((c_havok_abstract_allocator *)g_4798a0)->~c_havok_abstract_allocator();
 		g_4798a0 = NULL;
 		function_12d520(g_47988c);
 		g_47988c = 0;
@@ -251,7 +251,7 @@ void function_146de0(void)
 }
 
 // @retail 0x146e30
-hkMemory *function_146e30(void)
+c_havok_abstract_allocator *function_146e30(void)
 {
 	if (!g_4798a0)
 	{
@@ -321,7 +321,7 @@ long function_146fd0(void)
 	if (g_479898)
 	{
 		long level;
-		hkPoolMemory *pool = (hkPoolMemory *)g_479898;
+		c_havok_page_pool_allocator *pool = (c_havok_page_pool_allocator *)g_479898;
 
 		level = 3;
 		if ((real)pool->page_count * (1.0f / 118.0f) < 0.8f)

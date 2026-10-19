@@ -37,5 +37,3 @@ public:
 };
 
 #include "contact_volume_30bb50.h"
-// @stub 0x30bb90
-c_contact_query_transform_volume::~c_contact_query_transform_volume() {}

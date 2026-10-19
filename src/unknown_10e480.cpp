@@ -152,7 +152,8 @@ void function_10e530(long object_index, s_animation_state *state, long unused, d
 	(void)&unused_reference;
 	s_vibration_object_view *object = ((s_vibration_object_header *)g_4e0300->data)[object_index & 0xffff].object;
 	s_vibration_sample_view *vibration = (s_vibration_sample_view *)((byte *)object + object->vibration_offset);
-	if (vibration->frame > 0.0001f)
+	real frame = vibration->frame;
+	if (frame > 0.0001f)
 	{
 		c_animation_channel channel;
 		c_type_709360 animation_id = vibration->base_animation;
@@ -186,7 +187,7 @@ void function_10e530(long object_index, s_animation_state *state, long unused, d
 			}
 		}
 	}
-	else if (vibration->frame != 0.0f)
+	else if (frame != 0.0f)
 	{
 		if (vibration->base_animation.index != NONE)
 			state->animation_touch(vibration->base_animation);
