@@ -6,6 +6,7 @@
 // kinds. Each phase is marked in the timing stream.
 #include "reference_counted_2d88a0.h"
 #include "timer_mark_2ebc80.h"
+#include "pair_agents_2eab70.h"
 #include <xmmintrin.h>
 
 __forceinline void timer_add_2ea940(char const *label)
@@ -145,6 +146,66 @@ struct input_2ea940
 	float tolerance;
 };
 
+class tree_part_2ea830
+{
+public:
+	virtual void slot_0() {}
+	virtual void slot_1() {}
+	virtual void slot_2() {}
+	virtual void slot_3() {}
+	virtual void slot_4() {}
+	virtual void slot_5() {}
+	virtual void slot_6() {}
+	virtual void slot_7() {}
+	virtual void slot_8() {}
+	virtual void slot_9() {}
+	virtual void slot_10() {}
+	virtual void slot_11() {}
+	virtual void slot_12() {}
+	// a container's part, built in the buffer given when it must be
+	virtual tree_part_2ea830 const *part(long key, char *buffer) const { return 0; }
+};
+
+// runs the queries of one part of a pair
+class pair_agent_2ea410
+{
+public:
+	virtual void slot_0() {}
+	virtual void slot_1() {}
+	virtual void slot_2(void const *a, void const *b, void const *input, void *collector) {}
+};
+
+struct part_body_2ea830
+{
+	tree_part_2ea830 const *shape;
+	long key;
+	void const *placement;
+	void const *parent;
+};
+
+// the agents of the tree's parts brought up to date, then each runs its
+// query against its part
+// @retail 0x2ea830
+void class_2ea830::function_2ea830(void const *a, void const *b, void const *input, void *collector)
+{
+	timer_add_2ebc80("LtBvTree");
+	((class_2e96a0 *)this)->function_2e96a0(a, b, input, function_2e90f0);
+	timer_add_2ebc80("StNarrowPhase");
+	agent_entry_2ea410 const *const end = entries + entry_count;
+	part_body_2ea830 const *container_body = (part_body_2ea830 const *)b;
+	part_body_2ea830 part;
+	part.placement = container_body->placement;
+	part.parent = container_body;
+	tree_part_2ea830 const *container = (tree_part_2ea830 const *)((tree_shape_2ea940 const *)container_body->shape)->container;
+	__declspec(align(16)) char buffer[0x100];
+	for (agent_entry_2ea410 const *entry = entries; entry != end; entry++)
+	{
+		part.shape = container->part(entry->key, buffer);
+		part.key = entry->key;
+		entry->agent->slot_2(a, &part, input, collector);
+	}
+	timer_add_2ebc80("lt");
+}
 // @retail 0x2ea940
 void __cdecl function_2ea940(body_2ea940 const *a, body_2ea940 const *b, input_2ea940 const *input, void *collector)
 {
