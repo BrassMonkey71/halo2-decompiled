@@ -36,8 +36,8 @@ struct s_havok_array
 class hkEntity
 {
 public:
-	s_havok_property_word removeProperty(dword key);
-	void addProperty(dword key, s_havok_property_word value);
+	s_havok_property_word entity_property_erase(dword key);
+	void entity_property_put(dword key, s_havok_property_word value);
 
 	byte unknown00[0x30];
 	s_havok_entity_property *m_properties;
@@ -97,8 +97,8 @@ struct hkTransform
 	}
 
 	/* this = this * b */
-	void setMulEq(hkTransform const &b);
-	void setInverse(hkTransform const &t);
+	void transform_compose_in_place(hkTransform const &b);
+	void transform_set_to_inverse(hkTransform const &t);
 
 	hkRotation m_rotation;
 	hkVector4 m_translation;
@@ -124,7 +124,7 @@ public:
 	virtual void slot03(void) {}
 	virtual void slot04(void) {}
 	virtual void slot05(void) {}
-	virtual long getType(void) const { return 0; }
+	virtual long kind_code(void) const { return 0; }
 	virtual void slot07(void) {}
 	virtual void slot08(void) {}
 	virtual void getInertiaWorld(hkRotation &inertia) const {}
@@ -137,7 +137,7 @@ public:
 	virtual void slot10(void) {}
 	virtual void slot11(void) {}
 	virtual void slot12(void) {}
-	virtual void setTransform(hkTransform const &transform) {}
+	virtual void pose_write(hkTransform const &transform) {}
 	virtual void setLinearVelocity(hkVector4 const &velocity) {}
 	virtual void setAngularVelocity(hkVector4 const &velocity) {}
 	virtual void getPointVelocity(hkVector4 const &point, hkVector4 &velocity) const {}
@@ -170,8 +170,8 @@ class c_havok_body_group;
 class hkRigidBody
 {
 public:
-	void setTransform(hkTransform const &transform);
-	hkBool isActive(void) const;
+	void pose_write(hkTransform const &transform);
+	hkBool body_is_simulating(void) const;
 	void activate(void);
 	void motion_transform_set(hkTransform const &transform);
 
@@ -191,7 +191,7 @@ class c_havok_entity_observer;
 class c_physics_body_island_view
 {
 public:
-	void removeEntityListener(c_havok_entity_observer *listener);
+	void entity_observer_detach(c_havok_entity_observer *listener);
 	void activate(void);
 
 	byte unknown00[0x44];
@@ -213,9 +213,9 @@ public:
 class hkWorld
 {
 public:
-	hkBool removeEntity(hkEntity *entity);
-	void addEntity(hkEntity *entity);
-	void removeSimulationIsland(c_havok_body_group *island);
+	hkBool entity_world_remove(hkEntity *entity);
+	void entity_world_insert(hkEntity *entity);
+	void world_island_discard(c_havok_body_group *island);
 
 	byte unknown00[8];
 	c_havok_body_group **m_islands;

@@ -705,8 +705,8 @@ void function_1e5bb0(s_biped_physics_output *output, void *physics, void *animat
  s_animation_state *animation = (s_animation_state *)animation_state;
  byte *component = g_51e9b8->data + (component_index & 0xffff) * 0xa0;
  state->mode = *(byte *)physics;
- state->component_index = component_index;
  state->definition = definition;
+ state->component_index = component_index;
  state->physics8 = *(long *)((byte *)physics + 8);
  state->physicsc = *(long *)((byte *)physics + 0xc);
  state->value = value;

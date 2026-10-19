@@ -732,7 +732,7 @@ void c_weapon_type::v11(long a, long b, long c)
 }
 
 
-void simulation_write_position(long bits, s_bitstream *stream, real const *position, bool keep_inside);
+void simulation_write_position(s_bitstream *stream, real const *position, long bits, bool keep_inside);
 void simulation_read_position(s_bitstream *stream, real *position, long bits);
 void scenario_object_name_encode(long object_name, s_bitstream *stream);
 
@@ -747,7 +747,7 @@ void c_weapon_effect_event::v9(long a, void const *data, s_bitstream *stream)
 {
 	s_weapon_effect_payload const *event = (s_weapon_effect_payload const *)data;
 	stream_write_checked(stream, event->kind, 1);
-	simulation_write_position(12, stream, event->position, true);
+	simulation_write_position(stream, event->position, 12, true);
 }
 
 // @retail 0xa3660
@@ -859,7 +859,7 @@ void c_projectile_attached_event::v9(long a, void const *data, s_bitstream *stre
 	stream_write_bit(stream, event->field_0);
 	if (event->field_0)
 		stream_write_checked(stream, event->field_2, 8);
-	simulation_write_position(13, stream, event->position, false);
+	simulation_write_position(stream, event->position, 13, false);
 	function_1955d0(stream, event->payload, 64);
 }
 
@@ -906,7 +906,7 @@ void c_projectile_effect_event::v9(long a, void const *data, s_bitstream *stream
  s_z_projectile_effect_payload const *event = (s_z_projectile_effect_payload const *)data;
  stream_write_checked(stream, event->flags, 4);
  scenario_object_name_encode(event->object_name, stream);
- simulation_write_position(12, stream, event->position, true);
+ simulation_write_position(stream, event->position, 12, true);
  function_194bc0(stream, (vector3f const *)event->direction);
  if (event->flags & 4)
  {

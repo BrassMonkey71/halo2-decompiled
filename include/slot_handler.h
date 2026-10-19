@@ -734,7 +734,8 @@ struct s_actor_view
 	real unknown3d8;
 	byte unknown3dc[0x3e0 - 0x3dc];
 	short unknown3e0;
-	byte unknown3e2[0x3e8 - 0x3e2];
+	short unknown3e2;
+	byte unknown3e4[0x3e8 - 0x3e4];
 	long unknown3e8;
 	byte unknown3ec[0x3f0 - 0x3ec];
 	bool unknown3f0;
@@ -835,17 +836,49 @@ struct s_actor_view
 	short unknown5b6;
 	byte unknown5b8[0x5d0 - 0x5b8];
 	bool unknown5d0;
-	byte unknown5d1[0x5d4 - 0x5d1];
+	byte unknown5d1;
+	bool unknown5d2;
+	bool unknown5d3;
 	bool unknown5d4;
-	byte unknown5d5[0x5e8 - 0x5d5];
+	byte unknown5d5;
+	short unknown5d6;
+	bool unknown5d8;
+	byte unknown5d9;
+	short unknown5da;           /* ticks the actor has stayed near unknown5dc */
+	point3f unknown5dc;
 	short unknown5e8;
 	byte unknown5ea[0x5ec - 0x5ea];
 	vector3f unknown5ec;
-	byte unknown5f8[0x605 - 0x5f8];
+	vector3f unknown5f8;
+	bool unknown604;
 	bool unknown605;
-	byte unknown606[0x656 - 0x606];
+	byte unknown606[0x61e - 0x606];
+	short unknown61e;
+	short unknown620;
+	bool unknown622;
+	byte unknown623;
+	real unknown624;
+	real unknown628;
+	real unknown62c;
+	real unknown630;
+	long unknown634;
+	s_type_c3b527 unknown638;
+	vector3f unknown648;
+	byte unknown654[0x656 - 0x654];
 	short unknown656;
-	byte unknown658[0x6fc - 0x658];
+	byte unknown658[0x684 - 0x658];
+	short unknown684;
+	short unknown686;
+	byte unknown688[0x6c8 - 0x688];
+	long unknown6c8;
+	bool unknown6cc;
+	byte unknown6cd[0x6d1 - 0x6cd];
+	bool unknown6d1;
+	bool unknown6d2;
+	byte unknown6d3;
+	vector3f unknown6d4;
+	byte unknown6e0[0x6fa - 0x6e0];
+	short unknown6fa;
 	dword unknown6fc;
 	byte unknown700[0x70a - 0x700];
 	short unknown70a;
@@ -853,7 +886,10 @@ struct s_actor_view
 	long unknown710;
 	byte unknown714[0x7c0 - 0x714];
 	real unknown7c0;
-	byte unknown7c4[0x810 - 0x7c4];
+	byte unknown7c4[0x7f8 - 0x7c4];
+	long unknown7f8;
+	long unknown7fc;
+	byte unknown800[0x810 - 0x800];
 	union
 	{
 		struct
@@ -864,7 +900,8 @@ struct s_actor_view
 		} unknown810;
 		dword flags810;
 	};
-	byte unknown814[0x858 - 0x814];
+	vector3f unknown814;
+	byte unknown820[0x858 - 0x820];
 	long unknown858;
 	long command_script_index;  /* the command script it runs (actor_behavior_x87.cpp), or NONE */
 	byte unknown860[0x888 - 0x860];

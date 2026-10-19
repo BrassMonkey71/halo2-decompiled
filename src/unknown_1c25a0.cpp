@@ -241,7 +241,7 @@ void function_1c4b00(long object_index, void *linear, void *angular, long force)
 				for (long index = 0; index < component->rigid_bodies.size; index++)
 				{
 					hkRigidBody *body = havok_component_rigid_body_get(index, component);
-					if (!body->m_fixed && body->m_motion->getType() != 6)
+					if (!body->m_fixed && body->m_motion->kind_code() != 6)
 					{
 						if (linear)
 							havok_component_rigid_body_linear_velocity_set(index, component, (vector3f *)linear);
@@ -676,9 +676,9 @@ void function_1c2890(void)
 // @retail 0x1c29d0
 void function_1c29d0(void)
 {
-	((c_physics_body_island_view *)g_47f048)->removeEntityListener((c_havok_entity_observer *)g_51ecac);
+	((c_physics_body_island_view *)g_47f048)->entity_observer_detach((c_havok_entity_observer *)g_51ecac);
 	g_47f050--;
-	g_51e9a4->removeEntity((hkEntity *)g_47f048);
+	g_51e9a4->entity_world_remove((hkEntity *)g_47f048);
 	function_278f00();
 }
 
@@ -853,7 +853,7 @@ void function_1c50c0(void)
 		if (count == entity_count)
 		{
 			removed = true;
-			g_51e9a4->removeSimulationIsland(island);
+			g_51e9a4->world_island_discard(island);
 		}
 		island_index += !removed;
 	}
@@ -1203,8 +1203,8 @@ void function_1c4260()
      s_1c4260 *local_4 = &((s_1c4261 *)local_1)->field_68[local_3];
      hkRigidBody *local_5 = collidable_rigid_body_1c4260(local_4->field_0);
      hkRigidBody *local_6 = collidable_rigid_body_1c4260(local_4->field_4);
-     if (local_5->m_motion->getType() == 7 || local_5->m_motion->getType() == 6 ||
-         local_6->m_motion->getType() == 7 || local_6->m_motion->getType() == 6)
+     if (local_5->m_motion->kind_code() == 7 || local_5->m_motion->kind_code() == 6 ||
+         local_6->m_motion->kind_code() == 7 || local_6->m_motion->kind_code() == 6)
       --local_2;
     }
     if (local_2 > 24)
@@ -1394,7 +1394,7 @@ hkBool c_contact_rule_filter::accepts(void const *query, s_contact_body_view con
      root = a;
      while (root->parent)
       root = root->parent;
-     if (root->type == 1 && root->entity && ((hkRigidBody *)root->entity)->m_motion->getType() == 7)
+     if (root->type == 1 && root->entity && ((hkRigidBody *)root->entity)->m_motion->kind_code() == 7)
      {
       hkBool result;
       result.m_bool = 0;
@@ -1442,15 +1442,6 @@ PRIVATE inline void contact_motion_vector(vector3f *out, hkVector4 const *value)
 bool __stdcall function_1c4c50(long object_index, long node_index, point3f const *point,
  vector3f const *change_a, vector3f const *change_b, long *result_object, vector3f *linear, vector3f *angular)
 {
- // Retail keeps all eight inputs on the stack.
- (void)&object_index;
- (void)&node_index;
- (void)&point;
- (void)&change_a;
- (void)&change_b;
- (void)&result_object;
- (void)&linear;
- (void)&angular;
  s_velocity_object_header *headers = (s_velocity_object_header *)g_4e0300->data;
  s_havok_object *object = headers[object_index & 0xffff].object;
  bool result = false;
@@ -1513,7 +1504,7 @@ selected:
    {
     long index = indices[i];
     hkRigidBody *body = havok_component_rigid_body_get(index, component);
-    if (!body->m_fixed && body->m_motion->getType() != 6)
+    if (!body->m_fixed && body->m_motion->kind_code() != 6)
     {
      if (point && change_a && !TEST_FIELD_BIT(component->flag1))
      {

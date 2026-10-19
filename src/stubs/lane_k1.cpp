@@ -28,11 +28,6 @@ void __cdecl function_2ead90(void const *a, void const *b, void const *input, vo
 {
 }
 
-// @stub 0x2eb670
-void __cdecl function_2eb670(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
-
 // @stub 0x2ece90
 void __cdecl function_2ece90(void const *a, void const *b, void const *input, void *collector)
 {
@@ -80,16 +75,6 @@ void __cdecl function_2ee8b0(void const *a, void const *b, void const *input, vo
 
 
 
-// @stub 0x2f13e0
-void __cdecl function_2f13e0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f1690
-void __cdecl function_2f1690(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
 
 
 // @stub 0x2f3d00
@@ -117,22 +102,7 @@ void __cdecl function_2f8110(void const *a, void const *b, void const *input, vo
 {
 }
 
-// @stub 0x2f84a0
-void __cdecl function_2f84a0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-
-
-// @stub 0x2f99d0
-void __cdecl function_2f99d0(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
-
-// @stub 0x2fad70
-void __cdecl function_2fad70(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
 
 // @stub 0x2fe830
 void __cdecl function_2fe830(void const *a, void const *b, void const *input, void *collector, void *second_collector)
@@ -184,11 +154,6 @@ void class_2ecf20::function_2ecf20(void const *a, void const *b, void const *inp
 
 // @stub 0x2f63d0
 void class_2f63d0::function_2f63d0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f8330
-void class_2f8330::function_2f8330(void const *a, void const *b, void const *input, void *collector)
 {
 }
 
@@ -405,11 +370,6 @@ void class_2ece10::function_2ece10(void const *a, void const *b, void const *inp
 }
 
 
-
-// @stub 0x2f1270
-void class_2f1270::function_2f1270(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
