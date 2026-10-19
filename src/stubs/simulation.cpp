@@ -1,8 +1,6 @@
 // stubs for the simulation, player and HUD callees that are not decompiled yet
 #include "unknown_03d380.h"
 
-// @stub 0x30be40
-void s_47f048_object::function_30be40(long value) { }
 
 // @stub 0x3e2ff0
 void __stdcall function_3e2ff0(void *p) { }
