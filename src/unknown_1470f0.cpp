@@ -1,5 +1,5 @@
 // @flags /O2 /arch:SSE /Gr
-/* UNKNOWN_1470F0.CPP: the game's hkMemory (vtable 0x45378c), which Havok
+/* UNKNOWN_1470F0.CPP: the game's c_havok_abstract_allocator (vtable 0x45378c), which Havok
    allocates through: it takes memory from the fixed buffer while only that
    exists (g_479890 is 1), otherwise from the pool, then the ai's scratch
    buffers, then the buffer in physical memory, and frees an address to the
@@ -9,13 +9,13 @@
 #include "unknown_146a20.h"
 
 extern long g_479890;
-extern hkMemory *g_479894;
-extern hkMemory *g_479898;
+extern c_havok_abstract_allocator *g_479894;
+extern c_havok_abstract_allocator *g_479898;
 extern c_havok_fixed_memory *g_47989c;
 
-hkMemory *function_146e30(void);
+c_havok_abstract_allocator *function_146e30(void);
 
-class c_game_havok_memory : public hkMemory
+class c_game_havok_memory : public c_havok_abstract_allocator
 {
 public:
 	virtual void *allocate(long size, long memory_class);
@@ -180,11 +180,11 @@ void c_game_havok_memory::deallocate16(void *address, long size, long memory_cla
 	}
 }
 
-/* the game's hkMemory, which Havok's code asks for */
+/* the game's c_havok_abstract_allocator, which Havok's code asks for */
 c_game_havok_memory g_4798b0;
 
 // @retail 0x1473b0
-hkMemory *function_1473b0(void)
+c_havok_abstract_allocator *function_1473b0(void)
 {
 	return &g_4798b0;
 }

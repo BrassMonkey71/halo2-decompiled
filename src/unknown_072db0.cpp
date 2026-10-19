@@ -1353,10 +1353,10 @@ void __stdcall function_741f0(s_match_player_rating_collection *collection, s_qu
     long players[3] = { variant->field_8, variant->field_8 + 32, variant->field_8 + 64 };
     if (variant->type != 5)
     {
-        const byte *local_0 = (const byte *)collection + 0x41e;
-        const byte *local_1 = (const byte *)collection + 0xf44;
-        for (long i = 0; i < 16; i++, local_0 += sizeof(s_match_player_rating_entry), local_1 += 0x36a)
+        for (long i = 0; i < 16; ++i)
         {
+            const byte *local_0 = (const byte *)collection + 0x41e + i * sizeof(s_match_player_rating_entry);
+            const byte *local_1 = (const byte *)collection + 0xf44 + i * 0x36a;
             const s_match_player_rating_entry *player = (const s_match_player_rating_entry *)(local_0 - 0x9a);
             if (!player->active || player->team == NONE || (*(const dword *)((const byte *)player + 0xa) & 3)) continue;
             long skill = player->unknown9a;
@@ -1429,10 +1429,10 @@ void __stdcall function_741f0(s_match_player_rating_collection *collection, s_qu
     }
     else
     {
-        const byte *local_2 = (const byte *)collection + 0xdc8;
-        const byte *local_3 = (const byte *)collection + 0x49e4;
-        for (long i = 0; ; i++, local_2 += sizeof(s_match_rating_entry), local_3 += 0x5a)
+        for (long i = 0; ; ++i)
         {
+            const byte *local_2 = (const byte *)collection + 0xdc8 + i * sizeof(s_match_rating_entry);
+            const byte *local_3 = (const byte *)collection + 0x49e4 + i * 0x5a;
             long count = NONE;
             switch (variant->type)
             {

@@ -70,8 +70,6 @@ class c_311100
 public:
  void function_311100(s_311100 const *arg_0);
 };
-// @stub 0x311100
-void c_311100::function_311100(s_311100 const *arg_0) {}
 
 // @stub 0x2d8780
 void __cdecl function_2d8780() {}
@@ -133,10 +131,10 @@ public:
 
 
 // @stub 0x3123a0
-hkPropertyValue hkEntity::removeProperty(dword key) { return hkPropertyValue(0); }
+s_havok_property_word hkEntity::removeProperty(dword key) { return s_havok_property_word(0); }
 
 // @stub 0x312530
-void hkEntity::addProperty(dword key, hkPropertyValue value) { }
+void hkEntity::addProperty(dword key, s_havok_property_word value) { }
 
 /* slot handler callbacks of the region not decompiled yet (their handler
    structs hold their addresses) */
@@ -335,7 +333,7 @@ void *c_contact_query_world::add(void *volume) { return 0; }
 // @stub 0x30e5e0
 void c_contact_query_world::remove(void *volume) {}
 
-class hkMemory;
+class c_havok_abstract_allocator;
 struct s_fixed_memory_statistics_16;
 struct s_physics_pool_statistics;
 
@@ -414,63 +412,6 @@ void __cdecl function_2e7d10(s_1c3a40 *arg_0) {}
 
 // @stub 0x2e9030
 void __cdecl function_2e9030(s_1c3a40 *arg_0) {}
-
-// @stub 0x2eb540
-void __cdecl function_2eb540(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ebbb0
-void __cdecl function_2ebbb0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ecbf0
-void __cdecl function_2ecbf0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ed700
-void __cdecl function_2ed700(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ed9b0
-void __cdecl function_2ed9b0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ee240
-void __cdecl function_2ee240(s_1c3a40 *arg_0) {}
-
-// @stub 0x2eee90
-void __cdecl function_2eee90(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ef900
-void __cdecl function_2ef900(s_1c3a40 *arg_0) {}
-
-// @stub 0x2efe20
-void __cdecl function_2efe20(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f0e00
-void __cdecl function_2f0e00(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f1ab0
-void __cdecl function_2f1ab0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f2800
-void __cdecl function_2f2800(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f42b0
-void __cdecl function_2f42b0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f7a70
-void __cdecl function_2f7a70(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f8900
-void __cdecl function_2f8900(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f96d0
-void __cdecl function_2f96d0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2faac0
-void __cdecl function_2faac0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2fb9d0
-void __cdecl function_2fb9d0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2daf00
-void __cdecl function_2daf00(s_1c3a40 *arg_0) {}
 
 // @stub 0x3144b0
 s_1d1870 c_314710::function_3144b0(void *arg_0) { return s_1d1870(); }

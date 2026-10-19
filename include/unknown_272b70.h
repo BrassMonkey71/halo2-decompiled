@@ -67,9 +67,9 @@ inline void ai_squad_iterator_new_inline(s_ai_squad_iterator *iterator, long ai_
 /* the iterator is read through a reference to its pointer: retail's callers
    treat the iterator as reachable from memory (they reload its fields after
    every store and call) */
-inline s_squad_datum *ai_squad_iterator_next(s_ai_squad_iterator *squad_iterator)
+inline s_squad_datum *ai_squad_iterator_next(s_ai_squad_iterator *squad_cursor)
 {
-	s_ai_squad_iterator *const *iterator_reference = &squad_iterator;
+	s_ai_squad_iterator *const *iterator_reference = &squad_cursor;
 	s_ai_squad_iterator *iterator = *iterator_reference;
 	s_squad_datum *squad = NULL;
 	if (iterator->squad_group_index == NONE)

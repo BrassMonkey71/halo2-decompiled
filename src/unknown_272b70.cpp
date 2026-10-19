@@ -787,12 +787,12 @@ void function_201df0(void);
 void function_274140(long ai_index, long squad_index)
 {
 	short actor_count = 0;
-	s_ai_squad_iterator squad_iterator;
-	s_ai_actor_iterator actor_iterator;
-	ai_actor_iterator_new(ai_index, &actor_iterator);
-	while (ai_actor_iterator_next(&actor_iterator))
+	s_ai_squad_iterator squad_cursor;
+	s_ai_actor_iterator actor_cursor;
+	ai_actor_iterator_new(ai_index, &actor_cursor);
+	while (ai_actor_iterator_next(&actor_cursor))
 	{
-		function_1e3400(actor_iterator.actor_index, squad_index);
+		function_1e3400(actor_cursor.actor_index, squad_index);
 		actor_count++;
 	}
 
@@ -823,8 +823,8 @@ void function_274140(long ai_index, long squad_index)
 	}
 
 	s_squad_datum *squad;
-	ai_squad_iterator_new_inline(&squad_iterator, ai_index);
-	while ((squad = ai_squad_iterator_next(&squad_iterator)) != NULL)
+	ai_squad_iterator_new_inline(&squad_cursor, ai_index);
+	while ((squad = ai_squad_iterator_next(&squad_cursor)) != NULL)
 	{
 		long vehicle_index = squad->first_vehicle_index;
 		while (vehicle_index != NONE)
@@ -2847,20 +2847,20 @@ void __stdcall function_2736c0(long arg_0)
 {
 	if (arg_0 != NONE)
 	{
-		s_ai_squad_iterator squad_iterator;
-		s_ai_actor_iterator actor_iterator;
+		s_ai_squad_iterator squad_cursor;
+		s_ai_actor_iterator actor_cursor;
 		s_actor_datum *local_1;
-		ai_actor_iterator_new(arg_0, &actor_iterator);
-		while ((local_1 = ai_actor_iterator_next(&actor_iterator)) != NULL)
+		ai_actor_iterator_new(arg_0, &actor_cursor);
+		while ((local_1 = ai_actor_iterator_next(&actor_cursor)) != NULL)
 		{
-			if (actor_iterator.actor_index == g_46fc80)
+			if (actor_cursor.actor_index == g_46fc80)
 				*((byte *)local_1 + 0xd) = true;
 			else
 			{
-				s_actor_datum *local_2 = actor_datum_get(actor_iterator.actor_index);
+				s_actor_datum *local_2 = actor_datum_get(actor_cursor.actor_index);
 				long local_3 = local_2->unit_index;
 				long local_4 = local_2->perception_index;
-				function_1e2a90(actor_iterator.actor_index);
+				function_1e2a90(actor_cursor.actor_index);
 				if (local_3 != NONE)
 					function_b8540(local_3);
 				else if (local_4 != NONE)
@@ -2868,8 +2868,8 @@ void __stdcall function_2736c0(long arg_0)
 			}
 		}
 		s_squad_datum *local_6;
-		ai_squad_iterator_new_inline(&squad_iterator, arg_0);
-		while ((local_6 = ai_squad_iterator_next(&squad_iterator)) != NULL)
+		ai_squad_iterator_new_inline(&squad_cursor, arg_0);
+		while ((local_6 = ai_squad_iterator_next(&squad_cursor)) != NULL)
 		{
 			long local_7 = local_6->first_vehicle_index;
 			long local_8 = NONE;
