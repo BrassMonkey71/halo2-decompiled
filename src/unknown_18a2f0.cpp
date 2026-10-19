@@ -362,7 +362,6 @@ long function_18a6c0(long tag_index, long value)
 			sound->value2 = 3;
 			sound->value10 = value;
 			sound->value8 = 0.0f;
-			_ReadWriteBarrier();
 			sound->flags = 0;
 			_ReadWriteBarrier();
 			sound->flag_bits.bit8 = true;

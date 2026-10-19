@@ -655,10 +655,10 @@ bool __stdcall function_1aab50(long arg_0, s_slot *arg_1)
 					{
 						real local_19 = local_3->field_28;
 						real local_20;
-						real local_21;
 						vector3f local_22;
-						if (function_fa1a0(local_19, 1.0f, &local_8->field_4, &local_1->position, &local_15, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_21, &local_20) ||
-							(local_3->field_2c > local_15 && function_fa1a0(local_15 + 0.03f, 1.0f, &local_8->field_4, &local_1->position, NULL, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_21, &local_20)))
+						/* retail reuses the speed variable as the vertical speed output and stores that result below */
+						if (function_fa1a0(local_19, 1.0f, &local_8->field_4, &local_1->position, &local_15, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_19, &local_20) ||
+							(local_3->field_2c > local_15 && function_fa1a0(local_15 + 0.03f, 1.0f, &local_8->field_4, &local_1->position, NULL, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_19, &local_20)))
 						{
 							if (normalize2d((point2f *)&local_22) == 0.0f)
 							{

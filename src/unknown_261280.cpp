@@ -425,7 +425,7 @@ bool function_2601f0(long actor_index, s_type_c3b527 const *point, long sector, 
     long *pathfinding = NULL;
     if (*(long *)((byte *)g_4e0348 + 0xc4) > 0)
         pathfinding = *(long **)((byte *)g_4e0348 + 0xc8);
-    bool volatile result = false;
+    bool result = false;
     if (actor->unknown030 != NONE &&
         ((sector >= 0 && sector < *pathfinding) || *((bool *)actor + 0x229)))
     {

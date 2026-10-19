@@ -200,8 +200,8 @@ void function_1c2d40()
  hkEntity *local_8 = (hkEntity *)function_30c170(g_51e9a4);
  s_havok_property_word local_9(NONE);
  if (function_1c2d43(local_8, 0x2001))
-  local_8->removeProperty(0x2001);
- local_8->addProperty(0x2001, local_9);
+  local_8->entity_property_erase(0x2001);
+ local_8->entity_property_put(0x2001, local_9);
  g_51e9ac = (c_havok_reference_counted *)new (function_1c2d41(0x14, 0x10)) c_2784c0((c_2784c4 *)g_51e9a4);
  if (g_47f06e)
  {
