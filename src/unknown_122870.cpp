@@ -86,7 +86,7 @@ struct s_cache_file
 extern s_cache_file g_557c90[3];
 
 long cache_file_find(char const *map_name);
-bool function_122d60(s_cache_file_location location, long size, void *buffer);
+bool function_122d60(unsigned __int64 location, long size, void *buffer);
 bool __stdcall version_is_compatible(char const *version);
 
 /* set when a map fails to load (the main loop shows the error) */
@@ -145,11 +145,8 @@ bool cache_files_load_map(char const *map_name)
 		result = cache_file_globals.field_4_7 != NULL;
 		if (result)
 		{
-			s_cache_file_location location;
-
-			location.file_index = NONE;
-			location.offset = cache_file_globals.header.tag_data_offset;
-			result = function_122d60(location, cache_file_sector_align(cache_file_globals.header.tag_data_size), cache_file_globals.field_4_7);
+			result = function_122d60(cache_file_location_make(NONE, cache_file_globals.header.tag_data_offset),
+				cache_file_sector_align(cache_file_globals.header.tag_data_size), cache_file_globals.field_4_7);
 			if (!result)
 			{
 				g_510a08 = 0;
@@ -157,9 +154,8 @@ bool cache_files_load_map(char const *map_name)
 			}
 			else
 			{
-				location.file_index = NONE;
-				location.offset = cache_file_globals.header.tag_data_offset + cache_file_globals.header.tag_data_size;
-				result = function_122d60(location, cache_file_sector_align(cache_file_globals.header.unknown18),
+				result = function_122d60(cache_file_location_make(NONE, cache_file_globals.header.tag_data_offset + cache_file_globals.header.tag_data_size),
+					cache_file_sector_align(cache_file_globals.header.unknown18),
 					(byte *)cache_file_globals.field_4_7 - cache_file_globals.header.unknown18 + cache_file_globals.header.unknown1c);
 				if (result)
 				{
@@ -221,7 +217,7 @@ void cache_files_dispose_map(void)
 	cache_file_globals.bsp = NULL;
 }
 
-bool function_122d60(s_cache_file_location location, long size, void *buffer);
+bool function_122d60(unsigned __int64 location, long size, void *buffer);
 
 // @retail 0x122b40
 bool cache_files_load_structure_bsp(s_structure_bsp_reference *bsp)
@@ -231,16 +227,13 @@ bool cache_files_load_structure_bsp(s_structure_bsp_reference *bsp)
 
 	if (size & 0x1ff)
 		size = (size | 0x1ff) + 1;
-	s_cache_file_location location;
-
-	location.file_index = NONE;
-	location.offset = bsp->offset;
-	if (function_122d60(location, size, bsp->address) && bsp->address->signature == 'sbsp')
+	if (function_122d60(cache_file_location_make(NONE, bsp->offset), size, bsp->address) && bsp->address->signature == 'sbsp')
 	{
 		cache_file_globals.bsp = bsp->address;
 		CACHE_TAG_INSTANCES[(short)bsp->bsp_tag_index].address = cache_file_globals.bsp->bsp_address;
-		if (bsp->lightmap_tag_index != NONE)
-			CACHE_TAG_INSTANCES[(short)bsp->lightmap_tag_index].address = cache_file_globals.bsp->lightmap_address;
+		long lightmap_tag_index = bsp->lightmap_tag_index;
+		if (lightmap_tag_index != NONE)
+			CACHE_TAG_INSTANCES[(short)lightmap_tag_index].address = cache_file_globals.bsp->lightmap_address;
 		result = true;
 	}
 	return result;
@@ -352,13 +345,16 @@ s_cache_tag_group *cache_tag_group_get(long group_tag)
 }
 
 // @retail 0x122d60
-bool function_122d60(s_cache_file_location location, long size, void *buffer)
+bool function_122d60(unsigned __int64 location, long size, void *buffer)
 {
-
+	/* the read's completion flag lives in the offset's half once the offset
+	   is read */
+	s_cache_file_location *parts = (s_cache_file_location *)&location;
+	bool *done = (bool *)&parts->offset;
 	bool result = false;
 	dword bytes_read;
-	function_213760(location.offset, size, buffer, &bytes_read, (bool *)&location.offset, 2, 6);
-	function_120d50((bool volatile *)&location.offset, false);
+	function_213760(parts->offset, size, buffer, &bytes_read, done, 2, 6);
+	function_120d50(done, false);
 	if (bytes_read == size)
 		result = true;
 	return result;
