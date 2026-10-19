@@ -2441,10 +2441,10 @@ void __stdcall function_2a8d0(long tag, long bitmap_index, real const *source,
     sampler_state_write(0, D3DTSS_MAGFILTER, 2);
     sampler_state_write(0, D3DTSS_MINFILTER, 2);
     sampler_state_write(0, D3DTSS_MIPFILTER, 2);
-    sampler_state_write(0, D3DTSS_MAXMIPLEVEL, 0);
+    sampler_state_write(0, D3DTSS_MAXANISOTROPY, 0);
 #pragma inline_depth(0)
-    function_0224f0(0, D3DTSS_MAXANISOTROPY, 0);
     function_0224f0(0, D3DTSS_MIPMAPLODBIAS, 0);
+    function_0224f0(0, D3DTSS_MAXMIPLEVEL, 0);
     function_0224f0(0, D3DTSS_COLORSIGN, 0);
     function_0224f0(0, D3DTSS_ALPHAKILL, 0);
 #pragma inline_depth(255)
