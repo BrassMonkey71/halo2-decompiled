@@ -194,8 +194,8 @@ bool function_1c1e70(long actor_index, s_type_f17a25 *path)
 	directions[4].i = perpendicular.i * -1.0f;
 	directions[4].j = perpendicular.j * -1.0f;
 	directions[4].k = perpendicular.k * -1.0f;
-	scripted_vector_scale(&perpendicular, 0.70710677f, &directions[5]);
-	scripted_vector_add_scaled(&directions[5], &facing, -0.70710677f, &directions[5]);
+	scripted_vector_scale(&facing, -0.70710677f, &directions[5]);
+	scripted_vector_add_scaled(&directions[5], &perpendicular, 0.70710677f, &directions[5]);
 	scripted_vector_scale(&facing, -0.70710677f, &directions[6]);
 	directions[6].i = directions[6].i - perpendicular.i * 0.70710677f;
 	directions[6].j = directions[6].j - perpendicular.j * 0.70710677f;

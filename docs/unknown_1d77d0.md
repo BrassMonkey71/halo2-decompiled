@@ -59,7 +59,7 @@ It uses the names of:
 - `src/damage.cpp`: `function_db4c0` and `function_db810`.
 - `src/unknown_1c25a0.cpp`: `g_51e9a4`, the physics world.
 - `include/globals.h`: `g_480118` (`c_allocator`), `g_4e3b44` and `g_45dbd8`.
-- `include/unknown_146a20.h`: `hkMemory` (`allocate16`).
+- `include/unknown_146a20.h`: `c_havok_abstract_allocator` (`allocate16`).
 - `include/havok_reference.h`: `c_havok_reference_counted` (`allocation_size`,
   `reference_count`).
 - For the callers and the owner: `src/unknown_1d5940.cpp` (`s_1d5941`),
@@ -255,7 +255,7 @@ The retail executable's strings include `hkHingeConstraint`,
 
 | Where | Use here |
 | --- | --- |
-| `g_480118` (`c_allocator`, `include/globals.h:504`) | Its fifth virtual slot (`+0x10`) is called with the size and `0x27` pushed, and returns the new block. It pops both (`ret 8`); the stack depth agrees at every join. `c_allocator` calls the slot `slot4`; the repository's `hkMemory` names it `allocate16(long size, long memory_class)` (`include/unknown_146a20.h:39`) |
+| `g_480118` (`c_allocator`, `include/globals.h:504`) | Its fifth virtual slot (`+0x10`) is called with the size and `0x27` pushed, and returns the new block. It pops both (`ret 8`); the stack depth agrees at every join. `c_allocator` calls the slot `slot4`; the repository's `c_havok_abstract_allocator` names it `allocate16(long size, long memory_class)` (`include/unknown_146a20.h:39`) |
 | `g_51e9a4` (`hkWorld *`, `src/unknown_1c25a0.cpp:520`) | The physics world. `function_30c170` (`third:havok`, 4 bytes) returns its `+0x38`: `mov eax, [ecx+0x38]`. `function_1d7ef0` makes that the second body when an element has no second body (`src/unknown_1cec30.cpp:2580`). This document calls it the world's body; that it is Havok's fixed body is inferred |
 | `0x45dc54` | π/180, which converts the angle limits to radians |
 | `g_45dbd8` (`include/globals.h:507`) | 0.0, compared with the override strength |
@@ -591,7 +591,7 @@ void __stdcall function_1d77d0(s_havok_component *component,
 - **A second map.** @mrv777 mapped the function independently from their own
   retail copy, and their map agrees wherever the two overlap. Their review
   added `0x1d6ad0`'s setup, the last-match rule of `function_1d35d0` and the
-  `hkMemory` and reference-count names. Each was checked against retail and
+  `c_havok_abstract_allocator` and reference-count names. Each was checked against retail and
   the repository before it went in.
 - **Prior coverage.** No document covered this range before. Source line
   numbers are at `5d1a893`.

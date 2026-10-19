@@ -6097,7 +6097,11 @@ void c_class_2b0b5e::v4(long frame)
             word label[16];
             unicode_string_snprintf(label, 16, (word const *)L"%d", value0a);
             text.setup(label, 0, g_46871c, 0, NONE, 0, NONE);
-            s_widget_bounds outline = bounds;
+            s_widget_bounds outline;
+            outline.left = bounds.left;
+            outline.right = bounds.right;
+            outline.top = bounds.top;
+            outline.bottom = bounds.bottom;
             function_22cd48(&text, (short_rectangle2d const *)&outline, (short_rectangle2d const *)&outline,
                 depth, alpha, screen);
             outline.left += x;

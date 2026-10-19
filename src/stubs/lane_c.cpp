@@ -70,8 +70,6 @@ class c_311100
 public:
  void function_311100(s_311100 const *arg_0);
 };
-// @stub 0x311100
-void c_311100::function_311100(s_311100 const *arg_0) {}
 
 // @stub 0x2d8780
 void __cdecl function_2d8780() {}
@@ -133,10 +131,10 @@ public:
 
 
 // @stub 0x3123a0
-hkPropertyValue hkEntity::removeProperty(dword key) { return hkPropertyValue(0); }
+s_havok_property_word hkEntity::removeProperty(dword key) { return s_havok_property_word(0); }
 
 // @stub 0x312530
-void hkEntity::addProperty(dword key, hkPropertyValue value) { }
+void hkEntity::addProperty(dword key, s_havok_property_word value) { }
 
 /* slot handler callbacks of the region not decompiled yet (their handler
    structs hold their addresses) */
@@ -335,7 +333,7 @@ void *c_contact_query_world::add(void *volume) { return 0; }
 // @stub 0x30e5e0
 void c_contact_query_world::remove(void *volume) {}
 
-class hkMemory;
+class c_havok_abstract_allocator;
 struct s_fixed_memory_statistics_16;
 struct s_physics_pool_statistics;
 
