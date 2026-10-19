@@ -82,7 +82,7 @@ void function_1d1540(s_havok_component *arg_0)
  {
   __declspec(align(16)) hkRigidBody *local_2 = arg_0->rigid_bodies.data[local_1].rigid_body;
   ((s_1d1540 *)local_2)->function_30be00(g_51eca8);
-  if ((arg_0->unknown04 & 1) && !local_2->m_fixed && local_2->m_motion->getType() != 6)
+  if ((arg_0->unknown04 & 1) && !local_2->m_fixed && local_2->m_motion->kind_code() != 6)
   {
    ((s_47f048_object *)local_2)->function_30be40((long)(g_51eca8 ? g_51eca8 + 4 : NULL));
    *(word *)((byte *)local_2 + 0x5c) = 0;

@@ -8,6 +8,7 @@
 #include "globals.h"
 #include "data_array.h"
 #include "object_list.h"
+#include "effects.h"
 #include "unknown_0b68c0.h"
 #include <string.h>
 
@@ -166,19 +167,11 @@ void function_b69d0(void)
     record_pool_release_all(pool);
     memset(g_4de2d0, 0xff, 0x280 * sizeof(long));
     memset(g_4de2e0, 0xff, 0x200 * sizeof(long));
-    pool = (s_record_pool *)g_4de2e8;
-    pool->valid = true;
-    record_pool_release_all(pool);
-    pool = (s_record_pool *)g_4de2e4;
-    pool->valid = true;
-    record_pool_release_all(pool);
+    data_make_valid_inlined((s_record_pool *)g_4de2e8);
+    data_make_valid_inlined((s_record_pool *)g_4de2e4);
     memset(g_4de2d4, 0xff, 0x200 * sizeof(long));
-    pool = (s_record_pool *)g_4de2dc;
-    pool->valid = true;
-    record_pool_release_all(pool);
-    pool = (s_record_pool *)g_4de2d8;
-    pool->valid = true;
-    record_pool_release_all(pool);
+    data_make_valid_inlined((s_record_pool *)g_4de2dc);
+    data_make_valid_inlined((s_record_pool *)g_4de2d8);
     byte *state = (byte *)g_4de2f4;
     state[3] = 0;
     *(short *)(state + 4) = 0;

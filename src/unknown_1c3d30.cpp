@@ -123,7 +123,7 @@ void function_1c3d30()
    ++local_2->field_14;
    c_havok_reference_counted *local_6 = local_2->field_8[local_2->field_14];
    havok_reference_remove(local_6);
-   if (!((hkRigidBody *)local_6)->isActive().m_bool)
+   if (!((hkRigidBody *)local_6)->body_is_simulating().m_bool)
     function_1c4a20((hkEntity *)local_6);
    local_2 = (s_1c3d30 *)g_51eca8;
   }

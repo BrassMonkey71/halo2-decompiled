@@ -431,7 +431,6 @@ bool __stdcall function_1e9ad0(void *state, long mask, void *data)
 	s_object_values *table = (s_object_values *)state;
 	s_object_values_packet *packet = (s_object_values_packet *)data;
 	short *row = table->values[0];
-	long row_offset = 0;
 	for (long i = 0; i < 16; i++)
 	{
 		if (mask & (1 << i))
@@ -440,7 +439,7 @@ bool __stdcall function_1e9ad0(void *state, long mask, void *data)
 			{
 				if (column == 5 || column == 8)
 				{
-					long count = packet->values[0][row_offset + column] - row[column];
+					long count = packet->values[i][column] - row[column];
 					if (count > 0)
 					{
 						long player_index = NONE;
@@ -473,11 +472,10 @@ bool __stdcall function_1e9ad0(void *state, long mask, void *data)
 						}
 					}
 				}
-				row[column] = packet->values[0][row_offset + column];
+				row[column] = packet->values[i][column];
 			}
 		}
 		row += sizeof(table->values[0]) / sizeof(short);
-		row_offset += 9;
 	}
 	for (long team = 0; team < 8; team++)
 	{

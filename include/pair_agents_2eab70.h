@@ -62,6 +62,8 @@ public:
 	void function_2eb3f0(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 	void function_2eb9f0(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 	void function_2f9740(void const *a, void const *b, void const *input, void *collector, void *second_collector);
+	void function_2f9f20(void const *a, void const *b, void const *input, void *collector, void *second_collector);
+	void function_2fb790(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 };
 
 class class_2ea830 : public agent_list_2ea410
@@ -100,9 +102,13 @@ public:
 	void function_2f7790(void const *a, void const *b, void const *input, void *collector);
 };
 
+// holds the terms that solve for a point's weights in a triangle's plane
 class class_2f8330
 {
 public:
+	char unknown0[0xc];
+	float terms[4];
+
 	void function_2f8330(void const *a, void const *b, void const *input, void *collector);
 	void function_2f8620(void const *a, void const *b, void const *input, void *collector);
 };
@@ -146,9 +152,23 @@ public:
 	void function_2f88a0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
 
+class contact_manager_2f90a0;
+
+// whether a ray of the pair has a contact point, and its id
+struct contact_entry_2f90a0
+{
+	bool valid;
+	char unknown1;
+	unsigned short id;
+};
+
 class class_2f90a0
 {
 public:
+	char unknown0[8];
+	contact_manager_2f90a0 *manager;
+	contact_entry_2f90a0 *entries;
+
 	void function_2f90a0(void const *a, void const *b, void const *input, void *collector);
 	void function_2f94a0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
@@ -174,9 +194,13 @@ public:
 	void function_2f0be0(void const *a, void const *b, void const *input, void *collector);
 };
 
+// holds the terms that solve for a point's weights in a triangle's plane
 class class_2f1270
 {
 public:
+	char unknown0[0x10];
+	float terms[4];
+
 	void function_2f1270(void const *a, void const *b, void const *input, void *collector);
 	void function_2f1890(void const *a, void const *b, void const *input, void *collector);
 };
@@ -223,9 +247,15 @@ public:
 	void function_2f1a50(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
 
+class contact_owner_2f1b80;
+
 class class_2f1b80
 {
 public:
+	char unknown0[8];
+	contact_owner_2f1b80 *owner;
+	unsigned short id;
+
 	void function_2f1b80(void const *a, void const *b, void const *input, void *collector);
 	void function_2f27a0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };

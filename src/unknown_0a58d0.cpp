@@ -970,7 +970,7 @@ void __stdcall function_a7870(long index)
 
 
 #include "flags_writer.h"
-void simulation_write_position(long bits, s_bitstream *stream, real const *position, bool keep_inside);
+void simulation_write_position(s_bitstream *stream, real const *position, long bits, bool keep_inside);
 void function_194830(s_bitstream *stream, bool value);
 void function_194d30(s_bitstream *stream, vector3f const *up, vector3f const *forward);
 void function_194c10(s_bitstream *stream, vector3f const *vector, real lo, real hi, long bits);
@@ -1005,7 +1005,7 @@ bool function_a69a0(long a, long b, long c, long d, long e, bool f, long g)
  if (flags_writer_begin(&writer, 1, "position-exists"))
  {
   bool absolute = (byte)a != 0 || f;
-  simulation_write_position(16, stream, (real const *)state, absolute);
+  simulation_write_position(stream, (real const *)state, 16, absolute);
  }
  flags_writer_end(&writer);
  if (flags_writer_begin(&writer, 2, "forward-and-up-exists"))

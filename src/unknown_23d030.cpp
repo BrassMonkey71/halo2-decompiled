@@ -169,23 +169,20 @@ side_ready:
 	command->up.i = command->forward.k * side.j - command->forward.j * side.k;
 	real sine = (real)sin(camera->roll);
 	real cosine = (real)cos(camera->roll);
-	vector3f up;
-	up.i = command->up.i;
-	up.j = command->up.j;
-	up.k = command->up.k;
-	vector3f volatile forward;
-	forward.i = command->forward.i;
-	forward.j = command->forward.j;
-	forward.k = command->forward.k;
-	real projection = (forward.i * up.i + forward.j * up.j + forward.k * up.k) * (1.f - cosine);
-	command->up.i = forward.i * projection + cosine * up.i - (forward.k * up.j - forward.j * up.k) * sine;
-	command->up.j = forward.j * projection + cosine * up.j - (forward.i * up.k - forward.k * up.i) * sine;
-	command->up.k = forward.k * projection + cosine * up.k - (forward.j * up.i - forward.i * up.j) * sine;
-	double yaw_cosine = cos(camera->yaw);
-	double yaw_sine = sin(camera->yaw);
+	{
+		vector3f *v = &command->up;
+		vector3f const *axis = &command->forward;
+		real projection = (axis->i * v->i + axis->j * v->j + axis->k * v->k) * (1.f - cosine);
+		real cross_i = axis->k * v->j - v->k * axis->j;
+		real cross_j = axis->i * v->k - axis->k * v->i;
+		real cross_k = axis->j * v->i - axis->i * v->j;
+		v->i = axis->i * projection + cosine * v->i - cross_i * sine;
+		v->j = axis->j * projection + cosine * v->j - cross_j * sine;
+		v->k = axis->k * projection + cosine * v->k - cross_k * sine;
+	}
 	vector3f movement;
-	movement.i = (real)(yaw_cosine * *(real *)((byte *)input + 0x18) - yaw_sine * *(real *)((byte *)input + 0x1c));
-	movement.j = (real)(yaw_sine * *(real *)((byte *)input + 0x18) + yaw_cosine * *(real *)((byte *)input + 0x1c));
+	movement.i = (real)(cos(camera->yaw) * *(real *)((byte *)input + 0x18) - sin(camera->yaw) * *(real *)((byte *)input + 0x1c));
+	movement.j = (real)(sin(camera->yaw) * *(real *)((byte *)input + 0x18) + cos(camera->yaw) * *(real *)((byte *)input + 0x1c));
 	movement.k = *(real *)((byte *)input + 0x20);
 	point3f position;
 	if (g_470a28 != NONE)
@@ -223,12 +220,8 @@ side_ready:
 		position.y = g_470a24 * movement.j + camera->position.y;
 		position.z = g_470a24 * movement.k + camera->position.z;
 	}
-	camera->position.x = position.x;
-	camera->position.y = position.y;
-	camera->position.z = position.z;
-	command->position.x = position.x;
-	command->position.y = position.y;
-	command->position.z = position.z;
+	camera->position = position;
+	command->position = position;
 	command->offset = *g_4687a4;
 	command->distance = 0.f;
 	command->field_of_view = g_54e854;

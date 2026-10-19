@@ -14,10 +14,14 @@ public:
 	char unknown4[0x80 - 4];
 };
 
+struct s_311340;
+
 class class_30bf50
 {
 public:
 	REFERENCED_NEW_2D88A0(0x28)
+	// built from a body's description (0x30beb0)
+	class_30bf50(s_311340 const *description);
 	virtual ~class_30bf50();
 };
 
