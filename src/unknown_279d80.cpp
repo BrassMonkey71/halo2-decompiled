@@ -101,13 +101,11 @@ PRIVATE inline long animation_data_size(s_animation_data_sizes const *sizes)
 
 PRIVATE inline void node_mask_clear(dword *mask)
 {
-	long i;
-
-	for (i = 0; i < 8; i++)
-	{
-		mask[i] = 0;
-	}
+	memset(mask, 0, 8 * sizeof(dword));
 }
+
+/* whether a bit is set in a bit vector */
+#define BIT_VECTOR_TEST(vector, bit) ((((dword const *)(vector))[(bit) >> 5] & (1 << ((bit) & 31))) != 0)
 
 #define PIN(value, minimum, maximum) ((value) < (minimum) ? (minimum) : ((value) > (maximum) ? (maximum) : (value)))
 
@@ -129,13 +127,11 @@ void function_2798a0(s_animation_data *data, real frame, real weight, s_graph_ta
 		frame_index = PIN(frame_index, 0, last_frame);
 		g_sampling_settings.inheritance = inheritance;
 		g_sampling_settings.destination_node_mask = node_mask;
-		g_sampling_settings.decompressors.rotation = NULL;
-		g_sampling_settings.decompressors.translation = NULL;
-		g_sampling_settings.decompressors.scale = NULL;
-		g_sampling_settings.blend_weight = 1.0f;
+		memset(&g_sampling_settings.decompressors, 0, sizeof(g_sampling_settings.decompressors));
 		g_sampling_settings.frame_index = frame_index;
 		g_sampling_settings.next_frame_index = frame_index;
 		g_sampling_settings.frame_fraction = 0.0f;
+		g_sampling_settings.blend_weight = 1.0f;
 		g_sampling_settings.animation = animation;
 		g_sampling_settings.field_30 = NULL;
 		g_sampling_settings.rotation_bit_flags = NULL;
@@ -148,8 +144,8 @@ void function_2798a0(s_animation_data *data, real frame, real weight, s_graph_ta
 			long blend_frame_index = real_truncate(blend_frame);
 
 			g_sampling_settings.blend_frame_index = PIN(blend_frame_index, 0, last_frame);
-			g_sampling_settings.blend_frame_fraction = blend_frame - (real)g_sampling_settings.blend_frame_index;
 			g_sampling_settings.blend_next_frame_index = PIN(blend_frame_index + 1, 0, last_frame);
+			g_sampling_settings.blend_frame_fraction = blend_frame - (real)g_sampling_settings.blend_frame_index;
 			g_sampling_settings.next_frame_index = PIN(g_sampling_settings.frame_index + 1, 0, last_frame);
 			g_sampling_settings.frame_fraction = frame - (real)g_sampling_settings.frame_index;
 			g_sampling_settings.blend_fraction = blend_weight;
@@ -188,18 +184,19 @@ void function_2798a0(s_animation_data *data, real frame, real weight, s_graph_ta
 		else
 		{
 			g_sampling_settings.node_count = g_sampling_settings.animation->node_count;
-			if (g_sampling_settings.destination_node_count <= g_sampling_settings.animation->node_count)
+			if (g_sampling_settings.destination_node_count <= g_sampling_settings.node_count)
 			{
 				g_sampling_settings.node_count = g_sampling_settings.destination_node_count;
 			}
 		}
 		g_sampling_settings.blend_method = 0;
+		bool full_weight = weight > 0.9999f;
 		if (animation->type == 1)
 		{
-			g_sampling_settings.blend_method = weight > 0.9999f ? 2 : 3;
+			g_sampling_settings.blend_method = full_weight ? 2 : 3;
 			g_sampling_settings.blend_weight = weight;
 		}
-		else if (!(weight > 0.9999f))
+		else if (!full_weight)
 		{
 			g_sampling_settings.blend_method = 1;
 			g_sampling_settings.blend_weight = weight;
@@ -208,8 +205,10 @@ void function_2798a0(s_animation_data *data, real frame, real weight, s_graph_ta
 		{
 			long flags_size;
 
-			g_sampling_settings.field_30 = (struct s_animation_data *)data->data;
-			g_sampling_settings.decompressors = g_47fb18[*data->data].samplers[0];
+			byte *static_data = data->data;
+
+			g_sampling_settings.field_30 = (struct s_animation_data *)static_data;
+			g_sampling_settings.decompressors = g_47fb18[*static_data].samplers[0];
 			g_sampling_settings.rotation_bit_flags = data->data + data->sizes->static_data_size + data->sizes->animated_data_size;
 			flags_size = ((data->node_count + 31) >> 3) & ~3;
 			g_sampling_settings.translation_bit_flags = data->data + data->sizes->static_data_size + data->sizes->animated_data_size + flags_size;
@@ -1920,6 +1919,8 @@ __forceinline void compute_orientations_split_bit_flags(long blend_method, long 
 	compute_component_orientations_shared(blend_method, node_kind, destination_mask, interpolate, 2, node_count, node_index, scale_bit_flags, destination_index, scale_flags, last);
 }
 
+__forceinline void compute_orientations_inheritance_mapping(long blend_method, long node_kind, bool destination_mask, bool interpolate);
+
 // @retail 0x27a6e0
 void function_27a6e0(void)
 {
@@ -1947,7 +1948,7 @@ void function_27b020(void)
 // @retail 0x27b1d0
 void function_27b1d0(void)
 {
-	compute_orientations(0, 1, true, true);
+	compute_orientations_inheritance_mapping(0, 1, true, true);
 }
 
 // @retail 0x27b660
@@ -1955,8 +1956,6 @@ void function_27b660(void)
 {
 	compute_orientations(0, 1, true, false);
 }
-
-__forceinline void compute_orientations_inheritance_mapping(long blend_method, long node_kind, bool destination_mask, bool interpolate);
 
 // @retail 0x27b920
 void function_27b920(void)
@@ -2140,24 +2139,32 @@ void function_283600(void)
 	compute_orientations_split_index_last(2, 2, true, false);
 }
 
+/* compute_orientations(2, 2, false, true) with the flags and the last node of
+   each group of eight kept per component pass */
 // @retail 0x2839d0
 void function_2839d0(void)
 {
-	struct
-	{
-		long field_0;
-		long field_4;
-		byte const *field_8;
-	} local_0;
-	local_0.field_4 = g_sampling_settings.node_count;
+	long node_index;
+	byte const *bit_flags;
+	long destination_index;
+	long rotation_flags;
+	long translation_flags;
+	long scale_flags;
+	long rotation_last;
+	long translation_last;
+	long scale_last;
+	long node_count = g_sampling_settings.node_count;
+
 	g_5044b4 = 0;
 	g_5044b8 = 0;
 	g_5044bc = 0;
-	compute_component_orientations(2, 2, false, true, 0, local_0.field_8, local_0.field_0, local_0.field_4, g_sampling_settings.inheritance);
-	if (local_0.field_4 > 1)
-		local_0.field_4 = 1;
-	compute_component_orientations(2, 2, false, true, 1, local_0.field_8, local_0.field_0, local_0.field_4, g_sampling_settings.inheritance);
-	compute_component_orientations(2, 2, false, true, 2, local_0.field_8, local_0.field_0, local_0.field_4, g_sampling_settings.inheritance);
+	compute_component_orientations_shared(2, 2, false, true, 0, node_count, node_index, bit_flags, destination_index, rotation_flags, rotation_last);
+	if (node_count > 1)
+	{
+		node_count = 1;
+	}
+	compute_component_orientations_shared(2, 2, false, true, 1, node_count, node_index, bit_flags, destination_index, translation_flags, translation_last);
+	compute_component_orientations_shared(2, 2, false, true, 2, node_count, node_index, bit_flags, destination_index, scale_flags, scale_last);
 }
 
 // @retail 0x284010
@@ -2369,8 +2376,10 @@ __forceinline void compute_component_orientations_mapping(long blend_method, lon
 				{
 					long destination_index;
 
+					/* the destination mask tested in place: through node_flags_test, VC keeps
+					   the test's result in a register when the sampler ends in __assume */
 					if (node_destination_mapping_get(inheritance, node_kind, node_index, &destination_index) &&
-						(!destination_mask || node_flags_test(g_sampling_settings.destination_node_mask, destination_index)))
+						(!destination_mask || BIT_VECTOR_TEST(g_sampling_settings.destination_node_mask, destination_index)))
 					{
 						if (node_kind != 0)
 						{
