@@ -240,7 +240,7 @@ bool __stdcall function_206090(s_vehicle_physics_state *arg_0, vector3f *arg_1, 
                     s_havok_component *local_49 = havok_component_get(*(long *)(local_45 + 0x24));
                     long local_50 = *(long *)(local_45 + 0x28);
                     hkRigidBody *local_51 = local_49->rigid_bodies.data[local_50].rigid_body;
-                    if (!local_51->m_fixed && local_51->m_motion->getType() != 6)
+                    if (!local_51->m_fixed && local_51->m_motion->kind_code() != 6)
                     {
                         real local_52 = MAX(1.0f, havok_component_rigid_body_get(local_50, local_49)->m_motion->getMass());
                         real local_53 = PIN(local_52, local_0->field_6c * 0.0625f, local_0->field_6c * 16.0f);

@@ -113,7 +113,7 @@ bool function_1d5120(s_havok_component *arg_0, long arg_1, long arg_2, long arg_
  while (local_4 ? local_5 >= 0 : local_5 <= 0)
  {
   local_6.found = false;
-  ((hkRigidBody *)local_2)->setTransform(local_1);
+  ((hkRigidBody *)local_2)->pose_write(local_1);
   ((c_contact_query_dispatch *)local_2)->query(&local_6);
   if (!local_6.found)
   {

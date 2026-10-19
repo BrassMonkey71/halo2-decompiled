@@ -42,7 +42,7 @@ bool __cdecl function_279410(s_component_contact_pair const *pair, hkEntity *mov
     accumulated = _mm_sqrt_ss(accumulated);
     _mm_store_ss(&absolute_speed, accumulated);
     real speed = absolute_speed;
-    if (((hkRigidBody *)opposing)->m_motion->getType() != 7)
+    if (((hkRigidBody *)opposing)->m_motion->kind_code() != 7)
     {
         __m128 difference = _mm_sub_ps(((hkRigidBody *)moving)->m_motion->m_linear_velocity.m_quad,
             ((hkRigidBody *)opposing)->m_motion->m_linear_velocity.m_quad);

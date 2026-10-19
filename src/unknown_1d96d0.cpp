@@ -113,7 +113,7 @@ void function_1d96d0(long arg_0)
   if (local_19)
   {
    hkRigidBody *local_22 = local_19->rigid_bodies.data[local_17->rigid_body_index_b].rigid_body;
-   if (local_22->m_fixed || local_22->m_motion->getType() == 6)
+   if (local_22->m_fixed || local_22->m_motion->kind_code() == 6)
     local_21 = true;
   }
   if (local_21 && !(local_13 > local_20))
