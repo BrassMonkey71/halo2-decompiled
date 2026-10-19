@@ -2185,11 +2185,11 @@ done:
 	return result;
 }
 
-static __forceinline bool voice_test_unknown110(long player, long other)
+static __forceinline bool voice_test_unknownF0_inlined(long player, long other)
 {
 	bool result = false;
 	if (voice_available())
-		result = (g_4c9878.unknown110[player] & (1 << other)) != 0;
+		result = (g_4c9878.unknownF0[player] & (1 << other)) != 0;
 	return result;
 }
 
@@ -2197,7 +2197,7 @@ static __forceinline bool function_57d63(long arg_0, long arg_1)
 {
     bool local_0 = false;
     if (g_4c9878.initialized && g_476fc8.initialized)
-        local_0 = (g_4c9878.unknown110[arg_0] & (1 << arg_1)) != 0;
+        local_0 = (g_4c9878.unknownF0[arg_0] & (1 << arg_1)) != 0;
     return local_0;
 }
 
@@ -2207,7 +2207,7 @@ static __forceinline long function_57d64(long other, long result)
     {
         dword local_mask = voice_get_local_player_mask();
         for (long local = 0; local < 16; local++)
-            if ((local_mask & (1 << local)) && voice_test_unknown110(local, other))
+            if ((local_mask & (1 << local)) && voice_test_unknownF0_inlined(local, other))
             {
                 result = 0;
                 return result;

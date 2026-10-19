@@ -110,8 +110,8 @@ void function_0494b0(real const *bounds, real const *window)
 	g_4c9798[9] = 512.0f;
 	g_4c9798[32] = scale_x;
 	g_4c9798[33] = scale_y;
-	g_4b50c4 = g_4b50d8 = g_4b5144 ? 0x1f1ff1ff : 0;
-	g_4b5130 = g_4b5134 = 0x200;
+	g_4b50d8 = g_4b50c4 = g_4b5144 ? 0x1f1ff1ff : 0;
+	g_4b5134 = g_4b5130 = 0x200;
 	g_4c9798[10] = 16777215.0f;
 	g_4c9798[11] = 1.0f;
 	g_4c9798[34] = scale_x * left * -512.0f;

@@ -128,7 +128,7 @@ void function_254200(void)
         memset((D3DPIXELSHADERDEF *)program_words_254200, 0, sizeof(g_484f68));
         g_484f68.PSTextureModes = 1;
         g_484f68.PSCombinerCount = 1;
-        g_484f68.PSRGBInputs[0] = 0x8040000;
+        g_484f68.PSFinalCombinerInputsABCD = 0x8040000;
         function_15180((D3DPIXELSHADERDEF *)program_words_254200);
     }
 }
