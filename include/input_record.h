@@ -132,9 +132,9 @@ struct s_flagged_value
 	dword value;
 };
 
-/* 0x511020 and 0x511028 lie inside g_511000's first entry */
-#define g_511020 (*(s_flagged_value *)((byte *)g_511000 + 0x20))
-#define g_511028 (*(s_flagged_value *)((byte *)g_511000 + 0x28))
+/* 0x511020 and 0x511028 lie inside g_511000, before its entries */
+#define g_511020 (*(s_flagged_value *)(g_511000.unknown00 + 0x20))
+#define g_511028 (*(s_flagged_value *)(g_511000.unknown00 + 0x28))
 
 extern byte g_510ca1;
 extern s_input_entry g_511a74[16];
