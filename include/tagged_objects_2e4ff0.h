@@ -8,7 +8,10 @@ class class_2e4ff0
 {
 public:
 	REFERENCED_NEW_2D88A0(0x1c)
+	class_2e4ff0(long arg_0, long arg_1, int bits);
 	virtual ~class_2e4ff0();
+
+	char unknown4[0x80 - 4];
 };
 
 class class_30bf50
@@ -25,11 +28,17 @@ public:
 	virtual ~class_310a70();
 };
 
-class class_311410
+class typed_311410;
+
+// an object of the same tag holding a typed object it owns (destructor 0x311410)
+class class_311410 : public class_30bf50
 {
 public:
 	REFERENCED_NEW_2D88A0(0x28)
 	virtual ~class_311410();
+
+	char unknown4[0x3c - 4];
+	typed_311410 *field_3c;
 };
 
 // an object of 0xe0 bytes made from a source (0x2fdcf0 builds it)
