@@ -278,7 +278,7 @@ struct s_candidate_block
 };
 
 struct s_29db90;
-void function_29db90(short range_index, short block_index, s_29db90 *list);
+void function_29db90(s_29db90 *list, short block_index, short range_index);
 
 // @retail 0x262180
 short __stdcall function_262180(long actor_index, long block_index, long range_index,
@@ -336,7 +336,7 @@ short __stdcall function_262180(long actor_index, long block_index, long range_i
                             }
                         }
                         if (context && context->unknown56)
-                            function_29db90((short)range_index, (short)block_index, (s_29db90 *)((byte *)context + 0x6a0));
+                            function_29db90((s_29db90 *)((byte *)context + 0x6a0), (short)block_index, (short)range_index);
                     }
                 }
             }

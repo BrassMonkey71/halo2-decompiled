@@ -67,8 +67,6 @@ public:
 c_3101c0::c_3101c0(s_3111d0 const &arg_0, long arg_1) {}
 // @stub 0x30cb70
 void c_3101c0::function_30cb70(s_30cb70 arg_0) {}
-// @stub 0x30c500
-void c_3101c0::function_30c500() {}
 // @stub 0x310900
 void c_3101c0::function_310900(c_2dfbf0 *arg_0, s_30cb70 arg_1) {}
 // @stub 0x30cab0
@@ -180,9 +178,6 @@ void hkRigidBody::setTransform(hkTransform const &transform) { }
 
 
 /* callees of the physics code (unknown_1c25a0.cpp, unknown_1cec30.cpp) */
-
-// @stub 0x30bd50
-void hkEntityApi::removeEntityListener(hkEntityListener *listener) { }
 
 // @stub 0x30f800
 hkBool hkWorld::removeEntity(hkEntity *entity) { return hkBool(); }
@@ -421,12 +416,6 @@ public:
     c_2dbfc0(long arg_0, void *arg_1, real arg_2);
     void function_2dbcf0(s_2dc030 const *arg_0);
 };
-
-// @stub 0x2dbfc0
-c_2dbfc0::c_2dbfc0(long arg_0, void *arg_1, real arg_2) {}
-
-// @stub 0x2dc030
-s_2dc030::s_2dc030() {}
 
 struct s_1d1870
 {

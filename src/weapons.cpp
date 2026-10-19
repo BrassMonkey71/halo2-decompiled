@@ -2180,6 +2180,9 @@ void function_1055b0(vector3f *direction, vector3f const *axis, short index, sho
 	}
 }
 
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
+
 // @retail 0x1027b0
 void function_1027b0(long weapon_index, long trigger_index, bool *pressed, bool *held, bool *released)
 {
@@ -2187,12 +2190,7 @@ void function_1027b0(long weapon_index, long trigger_index, bool *pressed, bool 
 	s_weapon_trigger *trigger = &weapon->triggers[trigger_index];
 	s_weapon_trigger_definition *definition = &WEAPON_DEFINITION(weapon)->triggers[trigger_index];
 	real duration = g_510c54->field_2_3 * definition->value_10;
-	long ticks;
-	__asm
-	{
-		fld duration
-		fistp ticks
-	}
+	long ticks = real_to_long(duration);
 	long threshold = (byte)(long)(definition->value_14 * 255.0f);
 	*pressed = false;
 	*held = false;
@@ -2445,12 +2443,7 @@ void function_100520(long weapon_index, s_weapon_status *status)
 			if (weapon->triggers[0].state == 5)
 			{
 				real duration = g_510c54->field_2_3 * 0.5f;
-				long ticks;
-				__asm
-				{
-					fld duration
-					fistp ticks
-				}
+				long ticks = real_to_long(duration);
 				status->target_charging = true;
 				status->target_fraction = 1.0f - (real)weapon->triggers[0].timer / ticks;
 			}
@@ -2590,25 +2583,39 @@ bool __stdcall function_fdc70(long weapon_index, short magazine_index)
     return result;
 }
 
+/* the weapon's flag word at 0x16e, as bits */
+struct s_weapon_flags_view_1023d0
+{
+    word flag0 : 1;
+    word flag1 : 1;
+    word flag2 : 1;
+    word flag3 : 1;
+    word flag4 : 1;
+    word flag5 : 1;
+    word : 10;
+};
+
 // @retail 0xfdd50
 bool __stdcall function_fdd50(long weapon_index, long magazine_index)
 {
     s_weapon *weapon = WEAPON_GET(weapon_index);
     s_weapon_magazine *magazine = &weapon->magazines[magazine_index];
     s_weapon_magazine_definition *definition = &WEAPON_DEFINITION(weapon)->magazines[magazine_index];
-    volatile bool result = false;
-    short const volatile *recharge_reference = (short *)((byte *)definition + 4);
-    short recharge = *(short *)((byte *)definition + 4);
-    if (recharge > 0 && magazine->rounds_loaded < definition->rounds_loaded_maximum)
+    bool result = false;
+    if (*(short *)((byte *)definition + 4) > 0 && magazine->rounds_loaded < definition->rounds_loaded_maximum)
     {
-        short recharge_divisor = g_510c54->field_2_3;
+        short loaded = magazine->rounds_loaded;
+        long recharge_divisor = g_510c54->field_2_3;
         short *fraction = (short *)((byte *)magazine + 0xa);
-        *fraction += *recharge_reference % recharge_divisor;
-        magazine->rounds_loaded += *recharge_reference / recharge_divisor;
-        if (*fraction >= recharge_divisor)
+        long rounds = *(short *)((byte *)definition + 4) / recharge_divisor;
+        long remainder = *(short *)((byte *)definition + 4) % recharge_divisor;
+        *fraction += (short)remainder;
+        loaded += rounds;
+        magazine->rounds_loaded = loaded;
+        if (*fraction >= g_510c54->field_2_3)
         {
+            *fraction -= g_510c54->field_2_3;
             magazine->rounds_loaded++;
-            *fraction -= recharge_divisor;
         }
         if (magazine->rounds_loaded > definition->rounds_loaded_maximum)
             magazine->rounds_loaded = definition->rounds_loaded_maximum;
@@ -2643,8 +2650,8 @@ bool __stdcall function_fdd50(long weapon_index, long magazine_index)
                 function_105a80(0, weapon_index, (short)magazine_index);
             else
                 function_105a80(4, weapon_index, (short)magazine_index);
-            bool first = (weapon->value_16e & 2) && function_102540(weapon_index, 0, true);
-            bool second = (weapon->value_16e & 4) && function_102540(weapon_index, 1, true);
+            bool first = TEST_FIELD_BIT(((s_weapon_flags_view_1023d0 const *)&weapon->value_16e)->flag1) && function_102540(weapon_index, 0, true);
+            bool second = TEST_FIELD_BIT(((s_weapon_flags_view_1023d0 const *)&weapon->value_16e)->flag2) && function_102540(weapon_index, 1, true);
             if (!(reserve > 0 && magazine->rounds_loaded < definition->rounds_loaded_maximum &&
                 !(definition->flags & 1) && !first && !second && function_fdc70(weapon_index, (short)magazine_index)))
                 function_102c60(weapon_index, (short)magazine_index, first | second);
@@ -2831,17 +2838,6 @@ s_weapon_type_definition_view g_467cd0 =
 
 
 bool function_1023d0(long weapon_index, long barrel_index);
-
-struct s_weapon_flags_view_1023d0
-{
-    word flag0 : 1;
-    word flag1 : 1;
-    word flag2 : 1;
-    word flag3 : 1;
-    word flag4 : 1;
-    word flag5 : 1;
-    word : 10;
-};
 
 static __forceinline bool weapon_barrel_ammunition_check(long weapon_index, long barrel_index)
 {

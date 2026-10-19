@@ -764,7 +764,7 @@ void function_a91c0(long unit_index, long projectile_index, point3f const *origi
 void __stdcall function_b8540(long object_index);
 void function_d0e60(long unit_index, real amount, real limit);
 point3f *function_b9dd0(long object_index, point3f *result);
-void function_1ff360(long actor_index, point3f const *target, vector3f *velocity);
+long function_1ff360(long actor_index, point3f const *target, vector3f *velocity);
 void function_b75a0(long object_index, point3f const *point, vector3f const *forward, vector3f const *up,
 	struct s_location const *location, bool unknown);
 bool function_109e00(long object_index, vector3f *velocity, bool definition_flag_required);
