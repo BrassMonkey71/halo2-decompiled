@@ -1,4 +1,4 @@
-"""decomp.dev export from the function inventory. No retail XBE and no XDK."""
+"""ByteMatch export from the function inventory. No retail XBE and no XDK."""
 import json
 
 import pytest
@@ -42,7 +42,7 @@ def test_game_scope_counts_matched_bytes_and_leaves_near_unmatched():
     assert measures['complete_code'] == '0'
     assert measures['total_data'] == '0'
     assert measures['matched_data'] == '0'
-    # data is not compared, so it must not read as 100% matched on decomp.dev
+    # data is not compared, so it must not read as 100% matched on ByteMatch
     assert measures['matched_data_percent'] == 0.0
     assert measures['complete_data_percent'] == 0.0
     assert isinstance(measures['total_code'], str)
