@@ -309,6 +309,9 @@ void c_widget::v21()
 	function_24c610(child, this);
 }
 
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
+
 // @retail 0x24bda2
 void c_widget::v12(long a)
 {
@@ -346,27 +349,23 @@ void c_widget::v12(long a)
 		{
 			s_float_rect from;
 			s_float_rect to;
-			real width = (real)element->width;
-			real height = (real)element->height;
-			real px = (real)(placement->main_x + bounds.b);
-			real py = (real)(placement->main_y + bounds.c);
-
-			from.x0 = 0.0f;
-			from.x1 = width;
 			from.y0 = 0.0f;
-			from.y1 = height;
-			to.x0 = (real)y + px;
-			to.x1 = (real)y + (width + px);
-			to.y0 = (real)x + py;
-			to.y1 = (real)x + (py - height);
+			from.x0 = 0.0f;
+			from.x1 = (real)element->width;
+			from.y1 = (real)element->height;
+			to.x0 = (real)(placement->main_x + bounds.b);
+			to.y0 = (real)(placement->main_y + bounds.c);
+			to.y1 = to.y0 - from.y1;
+			to.x1 = to.x0 + from.x1;
+			real offset_x = (real)y;
+			real offset_y = (real)x;
+			to.x0 += offset_x;
+			to.y0 += offset_y;
+			to.x1 += offset_x;
+			to.y1 += offset_y;
 			function_23618e(&to, scale, (short_rectangle2d const *)a);
 			opacity *= 255.0f;
-			long alpha;
-			__asm
-			{
-				fld opacity
-				fistp alpha
-			}
+			long alpha = real_to_long(opacity);
 			function_235e5e(element, &from, &to, (alpha << 24) | 0xffffff, 0, 0);
 		}
 	}
@@ -382,27 +381,23 @@ void c_widget::v12(long a)
 		{
 			s_float_rect from;
 			s_float_rect to;
-			real width = (real)element->width;
-			real height = (real)element->height;
-			real px = (real)(placement->second_x + bounds.b);
-			real py = (real)(placement->second_y + bounds.c);
-
-			from.x0 = 0.0f;
-			from.x1 = width;
 			from.y0 = 0.0f;
-			from.y1 = height;
-			to.x0 = (real)y + px;
-			to.x1 = (real)y + (width + px);
-			to.y0 = (real)x + py;
-			to.y1 = (real)x + (py - height);
+			from.x0 = 0.0f;
+			from.x1 = (real)element->width;
+			from.y1 = (real)element->height;
+			to.x0 = (real)(placement->second_x + bounds.b);
+			to.y0 = (real)(placement->second_y + bounds.c);
+			to.y1 = to.y0 - from.y1;
+			to.x1 = to.x0 + from.x1;
+			real offset_x = (real)y;
+			real offset_y = (real)x;
+			to.x0 += offset_x;
+			to.y0 += offset_y;
+			to.x1 += offset_x;
+			to.y1 += offset_y;
 			function_23618e(&to, scale, (short_rectangle2d const *)a);
 			opacity *= 255.0f;
-			long alpha;
-			__asm
-			{
-				fld opacity
-				fistp alpha
-			}
+			long alpha = real_to_long(opacity);
 			function_235e5e(element, &from, &to, (alpha << 24) | 0xffffff, 0, 0);
 		}
 	}

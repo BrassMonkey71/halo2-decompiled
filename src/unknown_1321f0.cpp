@@ -745,12 +745,9 @@ void function_133390(s_bit_vector_pool const *arg_1)
 		local_6.y = (local_5->bounds[1][0] + local_5->bounds[1][1]) * 0.5f;
 		local_6.z = (local_5->bounds[2][0] + local_5->bounds[2][1]) * 0.5f;
 		volatile real local_7 = local_5->bounds[0][1] - local_6.x;
-		real local_14 = (real)((double)local_7 * local_7);
 		volatile real local_8 = local_5->bounds[1][1] - local_6.y;
-		local_14 += (double)local_8 * local_8;
 		volatile real local_9 = local_5->bounds[2][1] - local_6.z;
-		local_14 += (double)local_9 * local_9;
-		real local_10 = (real)sqrt(local_14);
+		real local_10 = (real)sqrt((double)local_7 * local_7 + (double)local_8 * local_8 + (double)local_9 * local_9);
 		real local_11 = local_6.z * g_4b9e38 + local_6.x * g_4b9e20 + local_6.y * g_4b9e2c + g_4b9e44;
 		if (!(local_11 >= 0.0f))
 			local_11 = 0.0f - local_11;

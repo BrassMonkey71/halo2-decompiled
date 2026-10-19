@@ -2,6 +2,66 @@
 
 The newest entry comes first.
 
+## 2026-10-19: 9175 functions match
+
+```
+matched 9175 of 11321 game functions (1325653 of 2784283 bytes, 47.61%)
+matched 490 of 1041 Havok functions (41489 of 234536 bytes, 17.69%)
+```
+
+1 new matches, none lost:
+- @andrewnakas's 0xdc370 from #573: the base reference object's destructor matches.
+
+## 2026-10-18: 9174 functions match
+
+```
+matched 9174 of 11321 game functions (1325610 of 2784283 bytes, 47.61%)
+matched 421 of 1041 Havok functions (26508 of 234536 bytes, 11.30%)
+```
+
+0 new matches, none lost:
+- @andrewnakas's #571:  match.
+
+## 2026-10-18: 9174 functions match
+
+```
+matched 9174 of 11321 game functions (1325610 of 2784283 bytes, 47.61%)
+matched 421 of 1041 Havok functions (26508 of 234536 bytes, 11.30%)
+```
+
+1 new matches, none lost:
+- @RWayne93's 0x2116c0 from #567: the creature's parent-unit conversion check matches.
+
+## 2026-10-18: 9173 functions match
+
+```
+matched 9173 of 11321 game functions (1325568 of 2784283 bytes, 47.61%)
+matched 421 of 1041 Havok functions (26508 of 234536 bytes, 11.30%)
+```
+
+10 new matches, none lost:
+- Machine 3's batch 76 (#572): `0x22c30`, `0x70280`, `0x70d60`, `0x10a390`, `0x10a520`, `0x1140b0`, `0x125690`, `0x202570`, `0x2b233d` and `0x2b6db1` match.
+
+## 2026-10-18: 9163 functions match
+
+```
+matched 9163 of 11321 game functions (1322388 of 2784283 bytes, 47.49%)
+matched 363 of 1041 Havok functions (19117 of 234536 bytes, 8.15%)
+```
+
+0 new matches, none lost:
+- @andrewnakas's #571 (five commits): behaviour fixes for machine 3's unmatched 0x1d96d0, 0x4ff50, 0x497a0, 0x133390 and 0x112e20.
+
+## 2026-10-18: 9163 functions match
+
+```
+matched 9163 of 11321 game functions (1322388 of 2784283 bytes, 47.49%)
+matched 318 of 1041 Havok functions (14861 of 234536 bytes, 6.34%)
+```
+
+14 new matches, none lost:
+- Machine 3's batch 75 (#570): `0x209b0`, `0x95410`, `0x122bc0`, `0x1870a0`, `0x1a2965`, `0x1caa40`, `0x20f6a0`, `0x221e30`, `0x226190`, `0x23482c`, `0x234a97`, `0x262180`, `0x29db90` and `0x29ffb0` match.
+
 ## 2026-10-18: 9149 functions match
 
 ```

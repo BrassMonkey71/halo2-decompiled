@@ -230,19 +230,15 @@ extern byte *g_485a80;
 bool function_14560(long tag, short stage, long fallback, short fallback_index, short index);
 bool function_14480(long tag, short stage, short index);
 
+/* sets a texture stage's bitmap from the tag (or the default one), then its
+   sampler states unless the bitmap call reports a skip */
 // @retail 0x47fd0
-bool function_47fd0(long tag, short stage, short fallback, byte flags)
+bool function_47fd0(long tag, short stage, short index, byte flags)
 {
-    bool result;
-    if (tag != NONE)
-        result = function_14560(tag, stage, fallback, 0, 1);
-    else
-        result = function_14480(*(long *)(g_485a80 + 0x34), stage, fallback);
+    bool result = tag != NONE ? function_14560(tag, stage, 0, 1, index) :
+        function_14480(*(long *)(g_485a80 + 0x34), stage, index);
     if (!result)
-        goto failure;
-    return result;
-failure:
-    function_47ea0(stage, flags);
+        function_47ea0(stage, flags);
     return result;
 }
 

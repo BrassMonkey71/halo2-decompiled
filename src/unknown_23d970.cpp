@@ -31,9 +31,9 @@ D3DTexture *function_23e340(short width, short height, short format,
 {
 	long w = width;
 	long bytes = function_1366d0((short)w, height, 1, format, 0x40, 0);
-	D3DTexture *result = 0;
 	long aligned = (-bytes & 0x7f) + bytes;
 	void *buffer = allocate(aligned, 0x80);
+	D3DTexture *result = 0;
 	if (header && buffer)
 	{
 		header->Lock = 0;

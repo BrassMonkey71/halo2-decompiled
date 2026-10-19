@@ -38,15 +38,11 @@ public:
  void function_2df950(long arg_0, long arg_1);
  void function_2df990(long arg_0, long arg_1);
 };
-// @stub 0x2dfbf0
-c_2dfbf0::c_2dfbf0() {}
 
 struct s_3111d0
 {
  s_3111d0();
 };
-// @stub 0x3111d0
-s_3111d0::s_3111d0() {}
 
 struct s_30cb70
 {
@@ -67,8 +63,6 @@ public:
 c_3101c0::c_3101c0(s_3111d0 const &arg_0, long arg_1) {}
 // @stub 0x30cb70
 void c_3101c0::function_30cb70(s_30cb70 arg_0) {}
-// @stub 0x30c500
-void c_3101c0::function_30c500() {}
 // @stub 0x310900
 void c_3101c0::function_310900(c_2dfbf0 *arg_0, s_30cb70 arg_1) {}
 // @stub 0x30cab0
@@ -236,9 +230,6 @@ public:
 	void set(hkRotation const &rotation);
 };
 
-// @stub 0x2da2d0
-void c_component_rotation::set(hkRotation const &rotation) { }
-
 // @stub 0x2db880
 void __cdecl function_2db880(hkVector4 const *position, c_component_rotation const *rotation, real frequency, hkRigidBody *body) { }
 
@@ -357,9 +348,6 @@ c_contact_query_bounds_info::c_contact_query_bounds_info() {}
 // @stub 0x30b6a0
 c_contact_query_transform_info::c_contact_query_transform_info() {}
 
-// @stub 0x30b480
-c_contact_query_bounds_volume::c_contact_query_bounds_volume(c_contact_query_bounds_info const *info) {}
-
 // @stub 0x30bb50
 c_contact_query_transform_volume::c_contact_query_transform_volume(c_contact_query_transform_info const *info) {}
 
@@ -378,8 +366,6 @@ struct s_physics_pool_statistics;
 
 struct s_physics_mass_array;
 struct s_physics_mass;
-// @stub 0x2dba80
-void __cdecl function_2dba80(s_physics_mass_array const *array, s_physics_mass *result) {}
 
 class c_havok_reference_counted;
 class c_physics_shape_list
@@ -418,9 +404,6 @@ public:
     c_2dbfc0(long arg_0, void *arg_1, real arg_2);
     void function_2dbcf0(s_2dc030 const *arg_0);
 };
-
-// @stub 0x2dc030
-s_2dc030::s_2dc030() {}
 
 struct s_1d1870
 {

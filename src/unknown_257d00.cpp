@@ -2241,14 +2241,7 @@ short __stdcall function_259430(long arg_0, long arg_1, s_cs_state *arg_2, long 
 					local_2->field_3 |= 8;
 					if (!(local_2->field_3 & 0x10))
 					{
-						real local_23 = g_510c54->field_2_3 * 0.5f;
-						long local_24;
-						__asm
-						{
-							fld local_23
-							fistp local_24
-						}
-						local_2->field_8 = (short)local_24;
+						local_2->field_8 = (short)real_to_long(g_510c54->field_2_3 * 0.5f);
 					}
 				}
 			}

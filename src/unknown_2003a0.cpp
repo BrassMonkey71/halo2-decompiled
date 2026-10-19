@@ -250,14 +250,7 @@ void __stdcall function_202570(long group_index)
 		s_squad_datum *squad = squad_get(squad_index);
 		count += squad->count_a;
 		remaining_count += squad->value16;
-		union s_202575
-        {
-            dword field_0;
-            byte field_4[4];
-        } local_0;
-        local_0.field_0 = 0;
-        local_0.field_4[0] = *((byte const *)squad + 2);
-        active |= (byte)((local_0.field_0 >> 4) & 1);
+		active |= (*(signed char const *)((byte const *)squad + 2) & 0x10) != 0;
 		group->actor_count += squad->actor_count;
 		if (squad->actor_count > 0)
 			weighted_sum += squad->actor_count * squad->value10;
@@ -1205,15 +1198,14 @@ void __stdcall function_205320(long group_index)
 // @retail 0x201ad0
 void function_201ad0(long squad_index, long object_index)
 {
-	long const *object_reference = &object_index;
-	s_squad_vehicle_view *object = ((s_squad_vehicle_header *)g_4e0300->data)[*object_reference & 0xffff].object;
+	s_squad_vehicle_view *object = ((s_squad_vehicle_header *)g_4e0300->data)[object_index & 0xffff].object;
 	if (object->squad_index != NONE)
-		function_201a50(object->squad_index, *object_reference);
+		function_201a50(object->squad_index, object_index);
 	if (squad_index != NONE)
 	{
 		s_squad_datum *squad = (s_squad_datum *)(g_51e9d8->data + (squad_index & 0xffff) * sizeof(s_squad_datum));
-		((s_squad_vehicle_header *)g_4e0300->data)[*object_reference & 0xffff].object->next = squad->first_vehicle_index;
-		squad->first_vehicle_index = *object_reference;
+		((s_squad_vehicle_header *)g_4e0300->data)[object_index & 0xffff].object->next = squad->first_vehicle_index;
+		squad->first_vehicle_index = object_index;
 		if (!(squad_index & 0xffff0000))
 			object->squad_index = (*(short *)squad << 16) | squad_index;
 		else

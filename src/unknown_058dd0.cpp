@@ -1244,19 +1244,6 @@ long function_193340(s_surface_description *variant);
 long function_193370(s_surface_description *variant);
 long function_193440(s_surface_description *variant);
 
-static inline long matchmaking_variant_width(s_surface_description *variant)
-{
-	switch (*(long *)variant)
-	{
-	case 1: return NONE;
-	case 2: return NONE;
-	case 3: return *(long *)((byte *)variant + 0x5ec);
-	case 4: return *(long *)((byte *)variant + 0x5ec);
-	case 5: return *(long *)((byte *)variant + 0x5ec);
-	default: __assume(0);
-	}
-}
-
 #pragma inline_depth(0)
 static __forceinline void function_72349(c_class_58d20 *arg_0)
 {
@@ -1318,7 +1305,7 @@ void function_72330(c_session_state_matchmaking *state)
 	local_special:
 		{
 			_ReadWriteBarrier();
-			if (matchmaking_variant_width(variant) > 0 && function_72458(variant) > 0)
+			if (function_193440(variant) > 0 && function_72458(variant) > 0)
 			{
 				long count = level / function_193440(variant);
 				if (count >= function_72458(variant))
@@ -1595,8 +1582,7 @@ bool function_71480(c_session_state_matchmaking *state)
 	if (session->type == 10)
 	{
 		function_70b70(state);
-		long current = session->state;
-		if (current == 5 || current == 6 || current == 7 || current == 8)
+		if (session->function_058d20())
 		{
 			if (other->state == 0)
 			{
@@ -1663,10 +1649,6 @@ bool function_71480(c_session_state_matchmaking *state)
 				}
 			}
 		}
-		else
-		{
-			volatile long unused = current;
-		}
 	}
 	return result;
 }
@@ -1725,18 +1707,15 @@ void function_70280(c_session_state_matchmaking *state)
 	summary.machine_ids[0] = *id;
 	function_7ed20((const s_message_identities *)&session->value4c,
 		(s_message_identity *)&summary.machine_users[0], NULL, NULL);
-	c_session_state_matchmaking *initial_state = state;
-	initial_state->mode = 1;
-	long current = session->state;
-	if (current == 5 || current == 6 || current == 7 || current == 8)
+	state->mode = 1;
+	if (session->function_058d20())
 	{
 		network_session_host_set_summary(session, (const s_session_summary *)&summary);
 		network_session_set_mode(session, 6);
-		initial_state->mode = 3;
+		state->mode = 3;
 	}
 	else
 	{
-		volatile long unused = current;
 		if (network_session_parameters_set_summary(session, (const s_session_summary *)&summary) &&
 			network_session_parameters_set_mode(session, 6))
 			state->mode = 3;
@@ -1747,66 +1726,53 @@ long g_55e6fc;
 long online_get_nat_type(void);
 long function_75890(long time);
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
-
+/* once the live session's search is done, picks hosting or joining and
+   starts it: true when it made the choice */
 // @retail 0x70d60
 bool function_70d60(c_session_state_matchmaking *state)
 {
 	c_class_58d20 *session = state->owner->session_a;
 	bool result = false;
 	function_70b70(state);
-	long current = session->state;
-	if (current == 5 || current == 6 || current == 7 || current == 8)
+	if (session->function_058d20() && state->mode == 3)
 	{
-		if (state->mode == 3)
+		if (!*(bool *)((byte *)state + 0x954))
 		{
-			if (!*(bool *)((byte *)state + 0x954))
-			{
-				long started = state->time;
-				if (session_time_get() - started >= 5000)
-					state->mode = 18;
-			}
-			if (state->mode == 3 && *(bool *)((byte *)state + 0x954))
-			{
-				bool host = false;
-				if (!state->unknowna7c || function_75890(state->unknowna7c) >= function_75890(state->unknowna68))
-				{
-					host = true;
-					_ReadWriteBarrier();
-				}
-				else
-				{
-					bool restricted = g_network_configuration.flag1ac;
-					if (*(long *)((byte *)state + 0x938) == NONE)
-						host = true;
-					else if (restricted && online_get_nat_type() == 3)
-					{
-						if (g_55e6fc++ < g_network_configuration.value1b0)
-							host = true;
-						else
-							g_55e6fc = 0;
-					}
-				}
-				if (state->flaga78)
-					state->flaga78 = false;
-				if (state->flaga64)
-					state->flaga64 = false;
-				if (host)
-					function_70c00(state);
-				else
-					function_70c90(state);
-				result = true;
-			}
+			long started = state->time;
+			if (session_time_get() - started >= 5000)
+				state->mode = 18;
 		}
-	}
-	else
-	{
-		volatile long unused = current;
+		if (state->mode == 3 && *(bool *)((byte *)state + 0x954))
+		{
+			bool host = false;
+			if (!state->unknowna7c || function_75890(state->unknowna7c) >= function_75890(state->unknowna68))
+				host = true;
+			if (!host)
+			{
+				bool restricted = g_network_configuration.flag1ac;
+				if (*(long *)((byte *)state + 0x938) == NONE)
+					host = true;
+				if (!host && restricted && online_get_nat_type() == 3)
+				{
+					if (g_55e6fc++ < g_network_configuration.value1b0)
+						host = true;
+					else
+						g_55e6fc = 0;
+				}
+			}
+			if (state->flaga78)
+				state->flaga78 = false;
+			if (state->flaga64)
+				state->flaga64 = false;
+			if (host)
+				function_70c00(state);
+			else
+				function_70c90(state);
+			result = true;
+		}
 	}
 	return result;
 }
-#pragma function(_ReadWriteBarrier)
 
 struct s_match_player_list
 {
@@ -1931,13 +1897,8 @@ bool c_session_state_start_match::update()
             mode = 1;
         }
     }
-    long state = a->state;
-    if (state == 5 || state == 6 || state == 7 || state == 8)
+    if (a->function_058d20())
         network_session_host_set_value49f8(a, mode);
-    else
-    {
-        volatile long unused = state;
-    }
     return result;
 }
 #pragma inline_depth(255)

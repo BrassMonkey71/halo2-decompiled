@@ -83,7 +83,6 @@ static __forceinline bool shape_is_list_1d7400(long kind)
 // @retail 0x1d7400
 c_extent_shape *s_1d7400::function_1d7400(c_extent_shape *arg_0, void *arg_1, real arg_2)
 {
- (void)&arg_0; (void)&arg_1; (void)&arg_2;
  real local_1, local_0;
  function_182aa0(arg_0, &local_1, &local_0);
  real local_2 = (local_0 * arg_2 * 0.5f + g_47f05c) * g_510c54->field_2_3;
@@ -99,14 +98,13 @@ c_extent_shape *s_1d7400::function_1d7400(c_extent_shape *arg_0, void *arg_1, re
     local_4[local_5++] = local_8;
    else if (local_8->shape_kind() == 0x15)
    {
-    c_extent_shape *local_9 = ((s_1d7401 *)local_8)->field_c;
     /* retail calls the shape test here */
 #pragma inline_depth(0)
-    bool local_25 = function_182180((hkShape *)local_9);
+    bool local_25 = function_182180((hkShape *)((s_1d7401 *)local_8)->field_c);
 #pragma inline_depth()
     if (local_25)
     {
-     c_havok_reference_counted *local_10 = (c_havok_reference_counted *)function_1d7390((long)local_9, arg_1, local_2);
+     c_havok_reference_counted *local_10 = (c_havok_reference_counted *)function_1d7390((long)((s_1d7401 *)local_8)->field_c, arg_1, local_2);
      void *local_17 = ((c_1d7390 *)g_480118)->function_1d7390(0x50, 0x22);
      c_child_transform *local_18 = NULL;
      if (local_17)
@@ -117,7 +115,7 @@ c_extent_shape *s_1d7400::function_1d7400(c_extent_shape *arg_0, void *arg_1, re
     }
     else
     {
-     c_havok_reference_counted *local_11 = (c_havok_reference_counted *)function_1d7400(local_9, arg_1, arg_2);
+     c_havok_reference_counted *local_11 = (c_havok_reference_counted *)function_1d7400(((s_1d7401 *)local_8)->field_c, arg_1, arg_2);
      void *local_19 = ((c_1d7390 *)g_480118)->function_1d7390(0x50, 0x22);
      c_child_transform *local_20 = local_19 ? new (local_19) c_child_transform(local_11) : NULL;
      local_20->transform = ((s_1d7401 *)local_8)->field_10;

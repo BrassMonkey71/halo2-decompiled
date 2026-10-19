@@ -795,8 +795,13 @@ void __stdcall function_c3340(long light_index, long unused)
                     count = 1;
                 }
                 s_object_marker *marker = markers;
-                for (long i = 0; i < count; i++, marker++)
+                long i = 0;
+                while (i < count)
+                {
                     function_2dba0(*(long *)(definition + 0x94), &marker->matrix.forward, 2, absolute_index, i, &marker->matrix.position, (color3f *)(light + 0xd4), 1.0f - *(real *)(light + 0xc8), *(real *)(light + 0xd0), 1.0f, function_3e9c0(*(long *)(light + 0x4c)));
+                    ++i;
+                    ++marker;
+                }
             }
             else
                 function_2dba0(*(long *)(definition + 0x94), (vector3f *)(light + 0xac), 2, absolute_index, 0, (point3f *)(light + 0x84), (color3f *)(light + 0xd4), 1.0f - *(real *)(light + 0xc8), *(real *)(light + 0xd0), 1.0f, function_3e9c0(*(long *)(light + 0x4c)));
@@ -850,9 +855,9 @@ void function_c28b0(long light_index)
         real height = shape.cone_render.aspect * width;
         vector3f *direction = &shape.cone_render.direction;
         real side = dot3f(direction, &shape.left);
-        real side_sign = side < 0.0f ? -1.0f : 1.0f;
+        real side_sign = side >= 0.0f ? 1.0f : -1.0f;
         real up = dot3f(direction, &frame->up);
-        real up_sign = up < 0.0f ? -1.0f : 1.0f;
+        real up_sign = up >= 0.0f ? 1.0f : -1.0f;
         vector3f unit = *direction;
         function_30bf0(&unit);
         point3f corner;
@@ -1581,11 +1586,11 @@ long __stdcall function_c0230(long tag_index, long object_index, short node_inde
     if (result != NONE)
     {
         byte *light = g_4e030c->data + (result & 0xffff) * 0x110;
-        *(long volatile *)(light + 4) = tag_index;
+        *(long *)(light + 4) = tag_index;
         *(long *)(light + 0x4c) = object_index;
-        *(word volatile *)(light + 2) = 0;
+        *(word *)(light + 2) = 0;
         *(short *)(light + 0x54) = node_index;
-        *(long volatile *)(light + 0x50) = name;
+        *(long *)(light + 0x50) = name;
         *(long *)(light + 0x14) = NONE;
         *(long *)(light + 8) = NONE;
         *(short *)(light + 0x56) = value;
@@ -1594,8 +1599,8 @@ long __stdcall function_c0230(long tag_index, long object_index, short node_inde
         *(real *)(light + 0xd0) = 1.0f;
         *(real *)(light + 0xcc) = 1.0f;
         byte flag = (byte)((~definition[0]) & 1);
-        *(word volatile *)(light + 2) = (word)flag;
-        light[2] &= ~0x10;
+        *(word *)(light + 2) = (word)flag;
+        *(word *)(light + 2) &= ~0x10;
         *(long *)(light + 0x10) = NONE;
         function_c0c80(result);
         *(long *)(light + 0xc) = g_4e0308 - 1;
@@ -1610,13 +1615,13 @@ done:
 // @retail 0xc1400
 void function_c1400()
 {
-    volatile long time = g_510c54->game_time;
+    long time = g_510c54->game_time;
     s_record_pool *pool = g_4e030c;
     long absolute = function_16bc00(pool, 0);
     long index = data_datum_index(pool, absolute);
     while (index != NONE)
     {
-        volatile long current_absolute = index & 0xffff;
+        long current_absolute = index & 0xffff;
         byte *light = g_4e030c->data + current_absolute * 0x110;
         byte *definition = g_4e3b44[*(long *)(light + 4) & 0xffff].bytes;
         function_c0c80(index);
@@ -1670,7 +1675,10 @@ long function_c0350(long tag_index, long object_index, long node_index, vector3f
         *(real *)(light + 0xd0) = scale;
         *(real *)(light + 0xcc) = scale;
         *(word *)(light + 2) = 1;
-        *(word *)(light + 2) = *(real *)(definition + 0xb0) > 0.0f ? 0x11 : 1;
+        if (*(real *)(definition + 0xb0) > 0.0f)
+            *(word *)(light + 2) = 0x11;
+        else
+            *(word *)(light + 2) = 1;
         *(long *)(light + 0x10) = NONE;
         if (object_index == NONE)
         {

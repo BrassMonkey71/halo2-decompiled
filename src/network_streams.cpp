@@ -971,7 +971,11 @@ void c_network_unreliable_stream::v7(long identifier, bool delivered)
 		if (!(message->flags & 1))
 			break;
 		m_message_bytes -= message->size;
-		free_block(message->data);
+		void *data = message->data;
+		long info;
+		if (!g_4d87f8->allocator->get_info(data, &info))
+			info = NONE;
+		function_94bf3(g_4d87f8, data);
 		message->data = 0;
 		sequence_window_advance(&m_message_window, sequence);
 	}

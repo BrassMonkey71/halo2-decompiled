@@ -286,7 +286,7 @@ bool function_121b00(void)
 	char text[0x800];
 	FILETIME time;
 	FILETIME saved_time;
-	bool volatile done;
+	bool done;
 	s_file_handle input;
 	dword bytes_written;
 	bool result;
@@ -333,7 +333,8 @@ bool function_121b00(void)
 			function_x454397(&output);
 			function_x73bce5(&output, path);
 			async_create_file_blocking((file_reference_data *)&output, 2, 2, 4, 7, &input);
-			function_1a1050(input, text, strlen(text) + 1, 0, 0, 7, 6, &bytes_written, &done);
+			dword text_size = strlen(text) + 1;
+			function_1a1050(input, text, text_size, 0, 0, 7, 6, &bytes_written, &done);
 			font_copy_wait(&done);
 			async_flush_file_blocking(input, 7);
 			function_1a1550(input, 7, 6, &done);
