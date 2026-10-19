@@ -92,108 +92,105 @@ bool function_12de70(s_geometry_block_info *block, dword flags)
 	if (block->runtime_linked)
 	{
 		physical_block_get(block->cache_block_index)->time = physical_object_get()->time;
-		return true;
+		result = true;
 	}
-
-	if (block->section_data_size <= 0 || block->resource_data_size < 0)
+	else if (block->section_data_size > 0 && block->resource_data_size >= 0)
 	{
-		return result;
-	}
+		bool wait = flags & 1;
+		bool optional = (flags >> 2) & 1;
+		bool load = (flags >> 1) & 1;
+		bool background = (flags >> 3) & 1;
+		bool urgent = false;
+		bool structure = false;
+		dword group_tag = *(dword *)&g_4e3b44[block->owner_tag_index];
+		long priority;
 
-	bool wait = flags & 1;
-	bool load = (flags >> 1) & 1;
-	bool optional = (flags >> 2) & 1;
-	bool background = (flags >> 3) & 1;
-	bool urgent = false;
-	bool structure = false;
-	dword group_tag = *(dword *)&g_4e3b44[block->owner_tag_index];
-	long priority;
-
-	if (group_tag == 'ltmp' || group_tag == 'sbsp')
-	{
-		structure = true;
-	}
-	if (g_468c4c)
-	{
-		wait = false;
-	}
-
-	if (g_4e64a0 > 0 && load && !optional && !wait)
-	{
-		if (g_4e64a4 == 0 || g_4e64a4 == 1 && structure)
+		if (group_tag == 'ltmp' || group_tag == 'sbsp')
 		{
-			urgent = true;
+			structure = true;
 		}
-		if (g_4e64a0 == 1 && urgent)
+		if (g_468c4c)
 		{
-			wait = true;
+			wait = false;
 		}
-	}
 
-	if (urgent)
-	{
-		priority = 2;
-	}
-	else if (wait)
-	{
-		priority = 7;
-	}
-	else if (background)
-	{
-		priority = 5;
-	}
-	else
-	{
-		priority = !optional + 1;
-	}
-
-	if (block->cache_block_index == NONE && load)
-	{
-		function_12e3a0(wait, block, urgent, priority);
-	}
-
-	long physical_index = block->cache_block_index;
-	if (physical_index != NONE)
-	{
-		s_cache_block *cache_block = &((s_cache_block *)g_4e648c->data)[physical_index & 0xffff];
-
-		physical_block_get(physical_index)->time = physical_object_get()->time;
-		if (!cache_block->done)
+		if (g_4e64a0 > 0 && load && !optional && !wait)
 		{
-			if (priority > cache_block->priority)
+			if (g_4e64a4 == 0 || g_4e64a4 == 1 && structure)
 			{
-				function_120ce0(cache_block->job, 7);
-				cache_block->priority = (byte)priority;
+				urgent = true;
 			}
-			if (wait && !cache_block->done)
+			if (g_4e64a0 == 1 && urgent)
 			{
-				while (!cache_block->done)
+				wait = true;
+			}
+		}
+
+		if (urgent)
+		{
+			priority = 2;
+		}
+		else if (wait)
+		{
+			priority = 7;
+		}
+		else if (background)
+		{
+			priority = 5;
+		}
+		else
+		{
+			priority = !optional + 1;
+		}
+
+		if (block->cache_block_index == NONE && load)
+		{
+			function_12e3a0(wait, block, urgent, priority);
+		}
+
+		long physical_index = block->cache_block_index;
+		if (physical_index != NONE)
+		{
+			s_cache_block *cache_block = &((s_cache_block *)g_4e648c->data)[physical_index & 0xffff];
+
+			bool done = cache_block->done;
+			physical_block_get(physical_index)->time = physical_object_get()->time;
+			if (!done)
+			{
+				if (priority > cache_block->priority)
 				{
-					SwitchToThread();
-					function_125d60();
+					function_120ce0(cache_block->job, 7);
+					cache_block->priority = (byte)priority;
+				}
+				if (wait && !cache_block->done)
+				{
+					while (!cache_block->done)
+					{
+						SwitchToThread();
+						function_125d60();
+					}
+				}
+			}
+			if (cache_block->done)
+			{
+				result = true;
+				if (!block->runtime_linked)
+				{
+					fixup_group_apply((s_fixup_group *)block, (byte *)(physical_block_get(block->cache_block_index)->offset << physical_object_get()->page_shift) + g_4e6494);
+					block->runtime_linked = true;
 				}
 			}
 		}
-		if (cache_block->done)
+		else if (!optional && load)
 		{
-			if (!block->runtime_linked)
-			{
-				fixup_group_apply((s_fixup_group *)block, (byte *)(physical_block_get(block->cache_block_index)->offset << physical_object_get()->page_shift) + g_4e6494);
-				block->runtime_linked = true;
-			}
-			return true;
+			g_4e64b0 = true;
+		}
+		if (!result && structure)
+		{
+			g_4e64a8++;
 		}
 	}
-	else if (!optional && load)
-	{
-		g_4e64b0 = true;
-	}
-
-	if (structure)
-	{
-		g_4e64a8++;
-	}
-	return false;
+	return result;
 }
 
 /* blocks waiting to be requested (8 bytes each) */

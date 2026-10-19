@@ -207,7 +207,6 @@ bool function_133790(s_bit_vector_pool *arg_1, short arg_2, bool arg_3, long *ar
 // @retail 0x133ab0
 void s_bit_vector_pool::function_133ab0(s_133f70 *arg_2, bool arg_3, bool arg_4, bool arg_5)
 {
-    s_133f70 *const *local_0 = &arg_2;
     if (arg_2->field_166 > 0)
     {
         bool local_1 = false;
@@ -215,18 +214,19 @@ void s_bit_vector_pool::function_133ab0(s_133f70 *arg_2, bool arg_3, bool arg_4,
         {
             if (arg_2->field_170 & 0x80)
             {
-                arg_2->field_1e0 = (arg_2->field_194.z - this->center.z) * g_4b9dac.k
-                    + (arg_2->field_194.y - this->center.y) * g_4b9dac.j
-                    + (arg_2->field_194.x - this->center.x) * g_4b9dac.i;
+                vector3f delta;
+                vector3d_from_points3d(&this->center, &arg_2->field_194, &delta);
+                arg_2->field_1e0 = dot3f(&delta, &g_4b9dac);
+                local_1 = false;
                 if (!arg_2->field_1cc)
                 {
+                    long *counter = *(long **)arg_2->field_1c8;
                     arg_2->field_1cc = true;
-                    arg_2->field_1c0 = **(long **)arg_2->field_1c8;
-                    ++**(long **)arg_2->field_1c8;
+                    arg_2->field_1c0 = (*counter)++;
                     arg_2->field_1c4 = 3;
                 }
                 s_133f70 local_2 = *arg_2;
-                local_2.field_1ac = arg_2->field_1b0;
+                local_2.field_1ac = local_2.field_1b0;
                 local_2.field_1b0 = 0;
                 local_2.field_1d0 = *(long *)((byte *)&local_2 + 0x180);
                 local_2.field_1dc = *(real *)((byte *)&local_2 + 0x190);
@@ -234,15 +234,15 @@ void s_bit_vector_pool::function_133ab0(s_133f70 *arg_2, bool arg_3, bool arg_4,
             }
             if (arg_2->field_170 & 2)
             {
-                real local_3 = (arg_2->field_194.z - this->center.z) * g_4b9dac.k
-                    + (arg_2->field_194.y - this->center.y) * g_4b9dac.j
-                    + (arg_2->field_194.x - this->center.x) * g_4b9dac.i;
+                vector3f delta;
+                vector3d_from_points3d(&this->center, &arg_2->field_194, &delta);
+                real local_3 = dot3f(&delta, &g_4b9dac);
                 local_1 = true;
                 if (!arg_2->field_1cc)
                 {
+                    long *counter = *(long **)arg_2->field_1c8;
                     arg_2->field_1cc = true;
-                    arg_2->field_1c0 = **(long **)arg_2->field_1c8;
-                    ++**(long **)arg_2->field_1c8;
+                    arg_2->field_1c0 = (*counter)++;
                     arg_2->field_1c4 = 1;
                 }
                 s_133f70 local_4 = *arg_2;
@@ -305,7 +305,7 @@ void s_bit_vector_pool::function_133ab0(s_133f70 *arg_2, bool arg_3, bool arg_4,
             local_8.field_1be = NONE;
             local_8.field_1b0 = (local_8.field_1b0 & ~0x40) | 1;
             ((t_function_4b5d0_133790)function_4b5d0)(local_7, this->mode, arg_5, *(real *)local_8.field_1b8,
-                local_8.field_1b4, &local_8, &local_8.field_194, (bool)local_8.field_1a4[4]);
+                local_8.field_1b4, (s_133f70 *)((byte *)&local_8 + 4), &local_8.field_194, *(bool *)(local_8.field_1a4 + 4));
             function_133ab0(&local_8, true, arg_4, arg_5);
             local_7 = ((s_133792 *)g_4e0300->data)[local_7 & 0xffff].field_8->field_c;
         }

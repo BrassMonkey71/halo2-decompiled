@@ -1004,12 +1004,12 @@ bool function_a69a0(long a, long b, long c, long d, long e, bool f, long g)
  flags_writer_end(&writer);
  if (flags_writer_begin(&writer, 1, "position-exists"))
  {
-  long absolute = (byte)a != 0 || f;
-  simulation_write_position(16, stream, (real const *)state, absolute != 0);
+  bool absolute = (byte)a != 0 || f;
+  simulation_write_position(16, stream, (real const *)state, absolute);
  }
  flags_writer_end(&writer);
  if (flags_writer_begin(&writer, 2, "forward-and-up-exists"))
-  function_194d30(stream, (vector3f const *)(state + 0x18), (vector3f const *)(state + 0xc));
+  function_194d30(stream, (vector3f const *)(state + 0xc), (vector3f const *)(state + 0x18));
  flags_writer_end(&writer);
  if (flags_writer_begin(&writer, 3, "scale-exists"))
   z_encode_state_scalar(stream, *(real const *)(state + 0x24), 0.0f, 12.699999809265137f, 7);
@@ -1035,7 +1035,7 @@ bool function_a69a0(long a, long b, long c, long d, long e, bool f, long g)
  if (flags_writer_begin(&writer, 8, "region-state-exists"))
  {
   stream_write_checked(stream, state[0x50], 4);
-  for (long volatile i = 0; i < 16; ++i) stream_write_checked(stream, state[0x51 + i], 3);
+  for (long i = 0; i < 16; ++i) stream_write_checked(stream, state[0x51 + i], 3);
  }
  flags_writer_end(&writer);
  if (flags_writer_begin(&writer, 9, "constraint-state-exists"))
