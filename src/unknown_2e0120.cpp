@@ -45,3 +45,127 @@ void solver_2e0120::function_2e0120(__m128 const *direction, __m128 *out, void *
 	offset = _mm_add_ps(accumulated, reciprocal);
 	*out = _mm_xor_ps(response, *(__m128 const *)g_4124a0);
 }
+
+// an entry sorted by its 16-bit key
+struct entry_2e0250
+{
+	unsigned short key;
+	unsigned short value;
+};
+
+// sorts the 16-bit values from low to high (both included)
+// @retail 0x2e01c0
+void __cdecl function_2e01c0(unsigned short *entries, int low, int high, long context)
+{
+	int j = high;
+	int i = low;
+	unsigned short pivot = entries[(low + high) >> 1];
+	do
+	{
+		while (entries[i] < pivot)
+		{
+			i++;
+		}
+		while (pivot < entries[j])
+		{
+			j--;
+		}
+		if (j >= i)
+		{
+			if (j != i)
+			{
+				__declspec(align(16)) unsigned short swap = entries[j];
+				entries[j] = entries[i];
+				entries[i] = swap;
+			}
+			j--;
+			i++;
+		}
+	} while (i <= j);
+	if (low < j)
+	{
+		function_2e01c0(entries, low, j, context);
+	}
+	if (i < high)
+	{
+		function_2e01c0(entries, i, high, context);
+	}
+}
+
+// sorts the entries from low to high (both included) by key
+// @retail 0x2e0250
+void __cdecl function_2e0250(entry_2e0250 *entries, int low, int high, long context)
+{
+	int j = high;
+	int i = low;
+	entry_2e0250 pivot = entries[(low + high) >> 1];
+	do
+	{
+		while (entries[i].key < pivot.key)
+		{
+			i++;
+		}
+		while (pivot.key < entries[j].key)
+		{
+			j--;
+		}
+		if (j >= i)
+		{
+			if (j != i)
+			{
+				__declspec(align(16)) entry_2e0250 swap = entries[j];
+				entries[j] = entries[i];
+				entries[i] = swap;
+			}
+			j--;
+			i++;
+		}
+	} while (i <= j);
+	if (low < j)
+	{
+		function_2e0250(entries, low, j, context);
+	}
+	if (i < high)
+	{
+		function_2e0250(entries, i, high, context);
+	}
+}
+
+// sorts the entries from low to high (both included) by key
+// @retail 0x2e02d0
+void __cdecl function_2e02d0(entry_2e0250 *entries, int low, int high, long context)
+{
+	int j = high;
+	int i = low;
+	entry_2e0250 pivot = entries[(low + high) >> 1];
+	do
+	{
+		while (entries[i].key < pivot.key)
+		{
+			i++;
+		}
+		while (pivot.key < entries[j].key)
+		{
+			j--;
+		}
+		if (j >= i)
+		{
+			if (j != i)
+			{
+				__declspec(align(16)) entry_2e0250 swap = entries[j];
+				entries[j] = entries[i];
+				entries[i] = swap;
+			}
+			j--;
+			i++;
+		}
+	} while (i <= j);
+	if (low < j)
+	{
+		function_2e02d0(entries, low, j, context);
+	}
+	if (i < high)
+	{
+		function_2e02d0(entries, i, high, context);
+	}
+}

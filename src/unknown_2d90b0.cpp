@@ -20,7 +20,7 @@ public:
 // @retail 0x2d90b0 deleting stream_holder_2d8e70
 
 // @retail 0x2d90e0
-stream_holder_2d8e70::stream_holder_2d8e70(char *buffer, long size, bool zero)
+stream_holder_2d8e70::stream_holder_2d8e70(char *buffer, long size, flag_2d8e70 zero)
 {
-	stream = new memory_stream_2d9f00(buffer, size, zero);
+	stream = new memory_stream_2d9f00(buffer, size, zero.value);
 }
