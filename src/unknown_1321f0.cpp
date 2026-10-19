@@ -244,10 +244,10 @@ long function_132b80(s_bit_vector_pool *data, long mode, s_132b80_frustum const 
 	long cluster, void *filter, point3f const *center, real radius, bool use_plane,
 	real plane_offset, long count, dword flags)
 {
-	long const *local_0 = &cluster;
-	data->location.cluster_index = cluster;
-	data->location.bsp_index = g_4686c4;
-	data->location.leaf_index = NONE;
+	s_location *location = &data->location;
+	location->cluster_index = cluster;
+	location->bsp_index = g_4686c4;
+	location->leaf_index = NONE;
 	data->mode = mode;
 	data->flags2a60 = flags;
 	data->frustum_count = (short)count;
@@ -267,7 +267,7 @@ long function_132b80(s_bit_vector_pool *data, long mode, s_132b80_frustum const 
 		memcpy(destination, frusta, count * sizeof(s_132b80_frustum));
 	*(short *)data->context = (short)count;
 	if (cluster == NONE)
-		function_11bed0(&data->location, center);
+		function_11bed0(location, center);
 	data->filter = filter;
 	if (filter)
 	{
