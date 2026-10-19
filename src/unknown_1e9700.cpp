@@ -428,16 +428,13 @@ void function_225910(long player_index);
 // @retail 0x1e9ad0
 bool __stdcall function_1e9ad0(void *state, long mask, void *data)
 {
-	void *const *state_reference = &state;
-	const long *mask_reference = &mask;
-	void *const *data_reference = &data;
-	s_object_values *table = (s_object_values *)*state_reference;
-	s_object_values_packet *packet = (s_object_values_packet *)*data_reference;
+	s_object_values *table = (s_object_values *)state;
+	s_object_values_packet *packet = (s_object_values_packet *)data;
 	short *row = table->values[0];
- long row_offset = 0;
- for (long i = 0; i < 16; i++, row += sizeof(table->values[0]) / sizeof(short), row_offset += 9)
+	long row_offset = 0;
+	for (long i = 0; i < 16; i++)
 	{
-		if (*mask_reference & (1 << i))
+		if (mask & (1 << i))
 		{
 			for (long column = 0; column < 9; column++)
 			{
@@ -479,10 +476,12 @@ bool __stdcall function_1e9ad0(void *state, long mask, void *data)
 				row[column] = packet->values[0][row_offset + column];
 			}
 		}
+		row += sizeof(table->values[0]) / sizeof(short);
+		row_offset += 9;
 	}
 	for (long team = 0; team < 8; team++)
 	{
-		if (*mask_reference & (1 << (team + 16)))
+		if (mask & (1 << (team + 16)))
 		{
 			short *destination = &table->team_values[team][0];
 			short const *source = &packet->team_values[team][0];

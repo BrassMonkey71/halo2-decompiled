@@ -265,17 +265,21 @@ evaluate:
 // @retail 0x1b6740
 short __stdcall function_1b6740(long actor_index, long leader_index, long a, long b)
 {
-	s_actor_view *actor = actor_get(actor_index);
 	long count = 0;
+	s_actor_view *actor = actor_get(actor_index);
 
 	if (actor->unknown07c != NONE && actor->prop_index != NONE)
 	{
 		long index = element_502420_get(actor->unknown07c)->first_actor_index;
 		s_prop_node_view *node = prop_node_get(actor->prop_index);
 
-		while (index != NONE)
+		for (;;)
 		{
-			s_actor_view *other = actor_get(index);
+			s_actor_view *other = NULL;
+			if (index != NONE)
+				other = actor_get(index);
+			if (!other)
+				break;
 			long other_index = index;
 
 			index = other->next_index;

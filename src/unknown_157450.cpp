@@ -2173,7 +2173,7 @@ bool function_15b7c0(long delta, long player_index)
 		{
 			function_b58c0(globals->index28, 1 << index);
 		}
-		volatile bool changed = true;
+		result = true;
 		if (score_teams_enabled() && player->team != NONE)
 		{
 			function_15b650(player->team, delta);
@@ -2184,7 +2184,6 @@ bool function_15b7c0(long delta, long player_index)
 			function_15b3a0(player_index, 0);
 		}
 		function_xaee93d()->flags |= 0x20;
-		result = changed;
 	}
 	return result;
 }

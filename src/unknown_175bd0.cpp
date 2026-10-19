@@ -1210,9 +1210,9 @@ void function_17aec0(s_effect_datum *effect, transform4x3f *matrix, short node_i
         function_1664da(effect->unknown58, effect->object_index, node_index & 0x7fff, matrix);
         return;
     }
-    long index = NONE;
-    if (node_index != NONE)
-        index = node_index & 0x7fff;
+    long index = node_index;
+    if (index != NONE)
+        index &= 0x7fff;
     s_effect_object *object = OBJECT_GET(effect->object_index);
     transform4x3f const *nodes = (transform4x3f const *)((byte *)object + object->nodes_offset);
     *matrix = nodes[(short)index];

@@ -69,16 +69,17 @@ long __stdcall function_1c8560(long arg_0, void *arg_1, long arg_2, bool *arg_3,
 	{
 		local_2 = (s_1c8560 *)local_1.datum;
 		long local_7 = local_2->field_4;
+		s_actor_view *actor = NULL;
 		if (local_7 != NONE)
 		{
-			s_actor_view *local_3 = actor_get(local_7);
-			if (local_3->unknown009 || *(long *)((byte *)local_3 + 0x10) == NONE)
+			actor = actor_get(local_7);
+			if (actor->unknown009 || *(long *)((byte *)actor + 0x10) == NONE)
 				continue;
 		}
 		local_0 += local_2->field_14;
 		if (local_7 != NONE)
 		{
-			s_actor_view *local_4 = actor_get(local_7);
+			s_actor_view *local_4 = actor;
 			long local_5 = local_4->unknown018;
 			long local_6 = *(long *)((byte *)local_4 + 0x1c);
 			function_1e2a90(local_7);

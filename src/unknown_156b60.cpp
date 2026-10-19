@@ -105,7 +105,7 @@ long __stdcall function_156ed0(long tag, long unused1, long row, long column,
 	material->state = &g_4e9268;
 	material->value6 = NONE;
 	material->valuec = NONE;
-	long dependency = *(long *)(definition + 0x100);
+	long dependency = *(long *)(material->definition + 0x100);
 	if (dependency != NONE)
 	{
 		byte *dependency_definition = *(byte **)((byte *)g_4e3b44 + (dependency & 0xffff) * 16 + 8);

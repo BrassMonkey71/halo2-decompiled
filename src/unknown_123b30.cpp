@@ -286,7 +286,8 @@ void function_123f60(dword arg_0)
 					function_11c1b0((short)*(long *)((byte *)&local_0 + 0x1248), true) &&
 					game_state_headers_match(&local_0, game_state_globals.arena))
 				{
-					dword local_2 = ((byte)arg_0 & 1) << 5;
+					dword local_2 = 0;
+					if ((byte)arg_0 & 1) local_2 |= 0x20;
 					if ((bool)((arg_0 >> 1) & 1)) local_2 |= 0x40;
 					else local_2 &= ~0x40;
 					game_state_modules_call_before_load(local_2);
