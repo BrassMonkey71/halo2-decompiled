@@ -4502,49 +4502,57 @@ long function_15b330(bool teams);
 void function_15be20()
 {
 	s_game_engine_globals *globals = function_xaee93d();
-	if (game_engine_get() && globals->value6c == 1 &&
-		(g_4e6948->mode == 4 || globals->value_c04 == 1) && g_4e6948->mode != 4)
+	if (game_engine_get() && globals->value6c == 1)
 	{
-		if (engine_options()->value190)
+		/* the mode is read as a long for each test, as the matched 0x240d70 does */
+		long const &first_mode = (long)g_4e6948->mode;
+		if (first_mode == 4 || globals->value_c04 == 1)
 		{
-			long ticks = function_162470(true);
-			long seconds = real_truncate((real)ticks * g_510c54->rate);
-			if (seconds != function_xaee93d()->value_e0)
+			long const &mode = (long)g_4e6948->mode;
+			if (mode != 4)
 			{
-				function_xaee93d()->value_e0 = (short)seconds;
-				function_a7810(0x10);
-				long subtype = NONE;
-				if (seconds == 1800) subtype = 0xe;
-				else if (seconds == 900) subtype = 0xf;
-				else if (seconds == 300) subtype = 0x10;
-				else if (seconds == 60) subtype = 0x11;
-				else if (seconds == 30) subtype = 0x20;
-				else if (seconds == 10) subtype = 0x21;
-				if (subtype != NONE)
+				if (engine_options()->value190)
 				{
-					s_event event;
-					game_engine_event_initialize_inline(&event, 0, subtype);
-					function_19eb90(&event);
+					long ticks = function_162470(true);
+					long seconds = real_truncate((real)ticks * g_510c54->rate);
+					if (seconds != function_xaee93d()->value_e0)
+					{
+						function_xaee93d()->value_e0 = (short)seconds;
+						function_a7810(0x10);
+						long subtype = NONE;
+						if (seconds == 1800) subtype = 0xe;
+						else if (seconds == 900) subtype = 0xf;
+						else if (seconds == 300) subtype = 0x10;
+						else if (seconds == 60) subtype = 0x11;
+						else if (seconds == 30) subtype = 0x20;
+						else if (seconds == 10) subtype = 0x21;
+						if (subtype != NONE)
+						{
+							s_event event;
+							game_engine_event_initialize_inline(&event, 0, subtype);
+							function_19eb90(&event);
+						}
+					}
+					if (ticks <= 0)
+					{
+						s_event event;
+						game_engine_event_initialize_inline(&event, 0, 0x12);
+						function_19eb90(&event);
+						function_15b3a0(function_15b330(false), 0);
+					}
 				}
-			}
-			if (ticks <= 0)
-			{
-				s_event event;
-				game_engine_event_initialize_inline(&event, 0, 0x12);
-				function_19eb90(&event);
-				function_15b3a0(function_15b330(false), 0);
-			}
-		}
-		else
-		{
-			long ticks = 0 > g_510c54->game_time - ((s_engine_round_clock *)globals)->start_time ? 0 :
-				g_510c54->game_time - ((s_engine_round_clock *)globals)->start_time;
-			long seconds = real_truncate((real)ticks * g_510c54->rate);
-			if (seconds > 0x7fff) seconds = 0x7fff;
-			if (seconds != globals->value_e0)
-			{
-				globals->value_e0 = (short)seconds;
-				function_a7810(0x10);
+				else
+				{
+					long ticks = 0 > g_510c54->game_time - ((s_engine_round_clock *)globals)->start_time ? 0 :
+						g_510c54->game_time - ((s_engine_round_clock *)globals)->start_time;
+					long seconds = real_truncate((real)ticks * g_510c54->rate);
+					if (seconds > 0x7fff) seconds = 0x7fff;
+					if (seconds != globals->value_e0)
+					{
+						globals->value_e0 = (short)seconds;
+						function_a7810(0x10);
+					}
+				}
 			}
 		}
 	}
