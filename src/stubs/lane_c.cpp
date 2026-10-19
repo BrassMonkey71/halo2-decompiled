@@ -421,8 +421,6 @@ struct s_311340 { s_311340(); };
 class c_311ba0 { public: c_311ba0(const s_311340 *arg_0); };
 // @stub 0x311340
 s_311340::s_311340() {}
-// @stub 0x311ba0
-c_311ba0::c_311ba0(const s_311340 *arg_0) {}
 
 struct s_2da8c0
 {
