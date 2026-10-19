@@ -2429,14 +2429,15 @@ void function_125690(void)
 	SOUND_SYSTEM->time = 0;
 	SOUND_SYSTEM->ambience_index = NONE;
 	SOUND_SYSTEM->previous_ambience_index = NONE;
-	SOUND_SYSTEM->environments[0].fade = 0.0f;
-	SOUND_SYSTEM->environments[0].index = NONE;
-	SOUND_SYSTEM->environments[0].unknown0c = 0.0f;
-	SOUND_SYSTEM->environments[0].unknown10 = 2.0f * k_pi;
-	SOUND_SYSTEM->environments[1].fade = 0.0f;
-	SOUND_SYSTEM->environments[1].index = NONE;
-	SOUND_SYSTEM->environments[1].unknown0c = 0.0f;
-	SOUND_SYSTEM->environments[1].unknown10 = 0.0f;
+	s_sound_environment *environments = SOUND_SYSTEM->environments;
+	environments[0].fade = 0.0f;
+	environments[0].index = NONE;
+	environments[0].unknown0c = 0.0f;
+	environments[0].unknown10 = 2.0f * k_pi;
+	environments[1].fade = 0.0f;
+	environments[1].index = NONE;
+	environments[1].unknown0c = 0.0f;
+	environments[1].unknown10 = 0.0f;
 	for (i = 0; i < 4; i++)
 		SOUND_SYSTEM->listeners[i].active = false;
 	sound_mix_apply();

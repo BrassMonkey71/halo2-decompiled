@@ -250,14 +250,7 @@ void __stdcall function_202570(long group_index)
 		s_squad_datum *squad = squad_get(squad_index);
 		count += squad->count_a;
 		remaining_count += squad->value16;
-		union s_202575
-        {
-            dword field_0;
-            byte field_4[4];
-        } local_0;
-        local_0.field_0 = 0;
-        local_0.field_4[0] = *((byte const *)squad + 2);
-        active |= (byte)((local_0.field_0 >> 4) & 1);
+		active |= (*(signed char const *)((byte const *)squad + 2) & 0x10) != 0;
 		group->actor_count += squad->actor_count;
 		if (squad->actor_count > 0)
 			weighted_sum += squad->actor_count * squad->value10;
