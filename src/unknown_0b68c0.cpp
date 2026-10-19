@@ -151,8 +151,6 @@ extern s_record_pool *g_4e030c;
 struct s_object_list;
 extern s_object_list *g_4de2f4;
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
 // @retail 0xb69d0
 void function_b69d0(void)
 {
@@ -168,20 +166,16 @@ void function_b69d0(void)
     record_pool_release_all(pool);
     memset(g_4de2d0, 0xff, 0x280 * sizeof(long));
     memset(g_4de2e0, 0xff, 0x200 * sizeof(long));
-    _ReadWriteBarrier();
     pool = (s_record_pool *)g_4de2e8;
     pool->valid = true;
     record_pool_release_all(pool);
-    _ReadWriteBarrier();
     pool = (s_record_pool *)g_4de2e4;
     pool->valid = true;
     record_pool_release_all(pool);
     memset(g_4de2d4, 0xff, 0x200 * sizeof(long));
-    _ReadWriteBarrier();
     pool = (s_record_pool *)g_4de2dc;
     pool->valid = true;
     record_pool_release_all(pool);
-    _ReadWriteBarrier();
     pool = (s_record_pool *)g_4de2d8;
     pool->valid = true;
     record_pool_release_all(pool);
@@ -195,7 +189,6 @@ void function_b69d0(void)
     state[0x80] = 0;
     *(long *)(state + 8) = NONE;
 }
-#pragma function(_ReadWriteBarrier)
 
 static inline void pool_invalidate_ab(void *data)
 {

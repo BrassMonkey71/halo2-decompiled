@@ -103,7 +103,6 @@ PRIVATE __forceinline void function_244de2(real thickness, short count, point3f 
 	real height, long field_00, long field_04, long field_08, byte field_0c,
 	byte field_0d, short field_0e, s_collection_245270 *collection)
 {
-	point3f const *const *local_points = &points;
 	if (collection->field_04 < 256)
 	{
 		s_prism_245270 *prism = &collection->field_4c08[collection->field_04++];
@@ -124,7 +123,7 @@ PRIVATE __forceinline void function_244de2(real thickness, short count, point3f 
 		prism->field_28 = count;
 		for (short i = 0; i < prism->field_28; ++i)
 		{
-			function_245270_project(&(*local_points)[i], prism->field_24, prism->field_26, &prism->field_2c[i]);
+			function_245270_project(&points[i], prism->field_24, prism->field_26, &prism->field_2c[i]);
 		}
 		if (height > 0.f && arg_2 < 0.f)
 		{
@@ -137,16 +136,6 @@ PRIVATE __forceinline void function_244de2(real thickness, short count, point3f 
 			}
 		}
 	}
-}
-
-PRIVATE __forceinline void function_244de4(point3f const *arg_0, real arg_1, point3f *arg_2)
-{
-    real local_0 = arg_0->z;
-    real local_1 = arg_0->y;
-    long local_2 = *(long const *)&arg_0->x;
-    *(long *)&arg_2->x = local_2;
-    arg_2->y = local_1;
-    arg_2->z = local_0 - arg_1;
 }
 
 // @retail 0x244de0
@@ -178,7 +167,7 @@ void function_244de0(point3f const *arg_0, vector3f const *arg_1, real arg_2,
 			local_0->field_0c = arg_7;
 			local_0->field_0d = arg_8;
 			local_0->field_0e = arg_9;
-			function_244de4(arg_0, arg_2, &local_0->field_10);
+			real_point3d_set(&local_0->field_10, arg_0->x, arg_0->y, arg_0->z - arg_2);
 			local_0->field_1c = *arg_1;
 			local_0->field_28 = arg_3;
 		}

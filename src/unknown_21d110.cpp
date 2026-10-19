@@ -656,12 +656,13 @@ void __stdcall function_21d630(long effect_index, long mode)
 	s_type_99c531 location;
 	location.flags = 0;
 	sound_effect_update_location(effect_index, &location);
-	struct { long state; bool alternate; } loop_snapshot;
+	long repeat_state;
+	bool loop_alternate;
 	if (effect->type == 2)
 	{
 		s_effect_looping_view *looping = &((s_effect_looping_view *)g_4ed28c->data)[effect->sound_index & 0xffff];
-		loop_snapshot.alternate = (bool)((looping->flags >> 4) & 1);
-		loop_snapshot.state = looping->state;
+		loop_alternate = (bool)((looping->flags >> 4) & 1);
+		repeat_state = looping->state;
 	}
 	s_sound_effect_definition *definition = effect->definition;
 	for (long i = 0; i < definition->count; i++)
@@ -692,7 +693,7 @@ void __stdcall function_21d630(long effect_index, long mode)
 				s_sound_system_effect_view *local_1 = (s_sound_system_effect_view *)g_4e6380;
 				bool local_2 = local_1->initialized;
 				*(long *)&state.gain = local_0;
-				state.flags = *(dword const volatile *)&state.flags | 0x80;
+				state.flags |= 0x80;
 				if (local_2 && local_1->hardware_available && local_1->enabled)
 				{
 					long listener_index;
@@ -711,8 +712,8 @@ void __stdcall function_21d630(long effect_index, long mode)
 				bool alternate;
 				if ((entry_flags & 0x20) && effect->type == 2)
 				{
-					alternate = loop_snapshot.alternate;
-					state = g_44a20c[loop_snapshot.state];
+					alternate = loop_alternate;
+					state = g_44a20c[repeat_state];
 				}
 				else
 				{
