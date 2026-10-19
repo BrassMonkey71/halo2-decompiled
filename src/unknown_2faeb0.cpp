@@ -3,6 +3,9 @@
 // storage comes from the allocator's stack area: its constructor and
 // destructor (the same shape as the arrays in unknown_2e18e0.cpp).
 #include "reference_counted_2d88a0.h"
+#include "pair_agents_2eab70.h"
+#include "side_swap_collectors_2eb1d0.h"
+#include "child_query_2f9950.h"
 
 // a block from the top of the allocator's stack area, or from its slot 9 when
 // the area is too small
@@ -64,4 +67,39 @@ stack_array_2faeb0::stack_array_2faeb0(long capacity)
 stack_array_2faeb0::~stack_array_2faeb0()
 {
 	g_memory_2d88a0->release_stack(stack_block, (stack_capacity * sizeof(element_2faeb0) + 15) & ~15);
+}
+
+// the query with the first side replaced by the child of the shape that wraps
+// it, and the two sides the other way round, its pairs passed on swapped back
+// @retail 0x2faff0
+void class_2eab70::function_2faff0(void const *a, void const *b, void const *input, void *collector)
+{
+	swapped_collector_2eb1d0 swapped(collector);
+	body_2ea940 const *side = (body_2ea940 const *)a;
+	wrapper_2f9950 const *wrapper = (wrapper_2f9950 const *)side->shape;
+	void const *placement = side->placement;
+	body_2ea940 child;
+	child.placement = placement;
+	child.parent = side;
+	child.shape = wrapper->child;
+	child.key = side->key;
+	function_2eab70(b, &child, input, &swapped);
+}
+
+// the query with the first side replaced by the child of the shape that wraps
+// it, and the two sides the other way round, its hits passed on as seen from
+// the other side
+// @retail 0x2fb070
+void class_2ea830::function_2fb070(void const *a, void const *b, void const *input, void *collector)
+{
+	flipped_collector_2ed110 swapped(collector);
+	body_2ea940 const *side = (body_2ea940 const *)a;
+	wrapper_2f9950 const *wrapper = (wrapper_2f9950 const *)side->shape;
+	void const *placement = side->placement;
+	body_2ea940 child;
+	child.placement = placement;
+	child.parent = side;
+	child.shape = wrapper->child;
+	child.key = side->key;
+	function_2ea830(b, &child, input, &swapped);
 }

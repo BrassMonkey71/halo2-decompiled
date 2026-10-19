@@ -653,10 +653,11 @@ struct s_player_4e9bd4
 
 extern s_player_4e9bd4 g_4e9bd4[4];
 
-/* input-device state, shared by 196d20 (the whole array) and 1969d0.
-   g_511000 holds 4 entries of 0xa4 bytes. 1969d0 reads the array from
-   0x511034 (g_511000 + 0x34) with its own layout (s_input_device_view,
-   which runs past the entry into the next one), through input_device(). */
+/* input-device state, shared by 196d20 (the entries) and 1969d0.
+   g_511000 (0xa74 bytes) holds 16 entries of 0xa4 bytes from +0x30.
+   1969d0 reads them from 0x511034 (g_511000 + 0x34) with its own layout
+   (s_input_device_view, which runs past the entry into the next one),
+   through input_device(). */
 struct s_input_vector
 {
 	dword v[4];
@@ -721,11 +722,19 @@ extern s_input_counters g_511bf4;
 #define g_511c4e (&g_511bf4.groups[0][0x2d])
 #define g_511c90 (&g_511bf4.groups[0][0x4e])
 #define g_515294 (&g_511bf4.pairs[0][0][0])
-extern s_input_entry_state g_511000[4];
+struct s_input_device_globals
+{
+	byte unknown00[0x30];
+	s_input_entry_state entries[16];
+	byte unknowna70[4];
+};
+typedef char assert_input_device_globals_size[(sizeof(s_input_device_globals) == 0xa74) ? 1 : -1];
+
+extern s_input_device_globals g_511000;
 
 inline s_input_device_view *input_device(long index)
 {
-	return (s_input_device_view *)((byte *)g_511000 + 0x34) + index;
+	return (s_input_device_view *)((byte *)g_511000.entries + 4) + index;
 }
 
 /* g_4cef68: the creation weights of the object types, 0x4c bytes per entry (turret and vehicle entity definitions) */

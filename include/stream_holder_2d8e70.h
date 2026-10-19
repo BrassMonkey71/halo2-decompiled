@@ -14,6 +14,23 @@ public:
 	virtual ~stream_base_2d8e70() {}
 };
 
+// a yes-or-no argument passed as an object
+struct flag_2d8e70
+{
+	bool value;
+
+	flag_2d8e70(bool value_)
+	{
+		value = value_;
+	}
+
+	flag_2d8e70(flag_2d8e70 const &other)
+	{
+		value = other.value;
+	}
+
+};
+
 class stream_holder_2d8e70 : public stream_base_2d8e70
 {
 public:
@@ -21,7 +38,9 @@ public:
 
 	referenced_2d88a0 *stream;
 
-	stream_holder_2d8e70(char *buffer, long size, bool zero);
+	stream_holder_2d8e70(char *buffer, long size, flag_2d8e70 zero);
+	// writes a string, or "(null)" for none
+	stream_holder_2d8e70 &function_2d8f10(char const *text);
 	~stream_holder_2d8e70();
 };
 

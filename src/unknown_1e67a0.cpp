@@ -740,27 +740,29 @@ void function_1e5bb0(s_biped_physics_output *output, void *physics, void *animat
   vector3f movement;
   real angle;
   animation->movement_rate_get(object_index, &movement, &angle);
-  state->velocity.i = movement.i * state->scale;
-  state->velocity.j = movement.j * state->scale;
-  state->velocity.k = movement.k * state->scale;
+  real scale = state->scale;
+  state->velocity.i = movement.i * scale;
+  state->velocity.j = movement.j * scale;
+  state->velocity.k = movement.k * scale;
   if (fabs(angle) >= 0.0001f)
   {
    vector3f original = state->forward;
+   vector3f const *axis = &state->up;
    real rotation = angle * g_510c54->rate;
    real sine = (real)sin(rotation);
    real cosine = (real)cos(rotation);
-   real projection = (original.j * state->up.j + original.k * state->up.k + original.i * state->up.i) * (1.0f - cosine);
+   real projection = (original.j * axis->j + original.k * axis->k + original.i * axis->i) * (1.0f - cosine);
    vector3f cross;
-   cross.i = original.j * state->up.k - original.k * state->up.j;
-   cross.j = original.k * state->up.i - original.i * state->up.k;
-   cross.k = original.i * state->up.j - original.j * state->up.i;
+   cross.i = original.j * axis->k - original.k * axis->j;
+   cross.j = original.k * axis->i - original.i * axis->k;
+   cross.k = original.i * axis->j - original.j * axis->i;
    vector3f rotated;
-   rotated.i = original.i * cosine + projection * state->up.i - cross.i * sine;
-   rotated.j = projection * state->up.j + original.j * cosine - cross.j * sine;
-   rotated.k = projection * state->up.k + original.k * cosine - cross.k * sine;
+   rotated.i = original.i * cosine + projection * axis->i - cross.i * sine;
+   rotated.j = projection * axis->j + original.j * cosine - cross.j * sine;
+   rotated.k = projection * axis->k + original.k * cosine - cross.k * sine;
    if (c && turning)
    {
-    real alignment = state->forward.j * facing_goal->j + state->forward.k * facing_goal->k + state->forward.i * facing_goal->i;
+    real alignment = initial_dot(&state->forward, facing_goal);
     if (alignment > 0.5f)
     {
      vector3f old_cross, new_cross;

@@ -80,8 +80,7 @@ void function_18e960(void)
                     local_1.field_0.field_1c[sizeof(local_1.field_0.field_1c) - 1] = 0;
                     local_1.field_0.field_12d = false;
                     long local_5 = time(NULL);
-                    long local_6 = rand();
-                    local_6 ^= GetTickCount();
+                    long local_6 = rand() ^ GetTickCount();
                     local_6 ^= local_5;
                     local_1.field_0.field_10 = local_6;
                     function_152450((s_player_settings_snapshot *)&local_1.field_0);

@@ -75,9 +75,9 @@ short __stdcall function_2551c0(long actor_index)
 // @retail 0x2551f0
 bool __stdcall function_2551f0(long actor_index, s_slot *slot)
 {
-	bool result = false;
 	s_actor_view *actor = actor_get(actor_index);
 	s_slot_0c_state *state = (s_slot_0c_state *)slot;
+	bool result = false;
 
 	if (actor->unknown018 == NONE)
 	{

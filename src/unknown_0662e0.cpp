@@ -343,8 +343,8 @@ void function_67200()
 void network_configuration_set_simulation_defaults()
 {
 	g_network_configuration.realca8 = 0.994f;
-	g_network_configuration.realcac = 0.999f;
 	g_network_configuration.realcb0 = 0.95f;
+	g_network_configuration.realcac = 0.999f;
 	g_network_configuration.realcb4 = 1.0f;
 	g_network_configuration.realcb8 = 100.0f;
 	g_network_configuration.realcbc = 1.0f;
