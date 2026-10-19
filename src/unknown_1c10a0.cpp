@@ -299,14 +299,15 @@ short __stdcall function_1c1160(long actor_index, s_slot *slot, bool active)
 bool __stdcall function_1c1320(long actor_index, s_slot *slot)
 {
 	s_slot_82 *state = (s_slot_82 *)slot;
-	s_actor_view *actor = actor_get(actor_index);
 	bool result = true;
 
-	if (actor->unknown040 && !(actor->unknown50c && actor->unknown504 == 1) && actor->unknown504 != 2)
+	if (actor_get(actor_index)->unknown040 &&
+		!(actor_get(actor_index)->unknown50c && actor_get(actor_index)->unknown504 == 1) &&
+		actor_get(actor_index)->unknown504 != 2)
 	{
 		s_actor_point_target target;
-		long unknown = NONE;
 		long reference = NONE;
+		long unknown = NONE;
 
 		if (state->unknown21)
 		{
