@@ -20,7 +20,7 @@ struct s_havok_component_impacts
 extern s_record_pool *g_51ec00;
 
 // @retail 0x2055f0
-void impact_data_set(
+inline void impact_data_set(
 	s_impact_data *data,
 	bool unknown00,
 	long component_a,
