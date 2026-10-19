@@ -404,7 +404,6 @@ void __stdcall function_25dd50(
 	}
 }
 
-#pragma inline_depth(0)
 // @retail 0x25e430
 void __stdcall function_25e430(
 	long actor_index,
@@ -420,12 +419,11 @@ void __stdcall function_25e430(
 	for (short i = 0; i < count; i++)
 	{
 		s_type_b36ac5 *position = &positions[i];
-		s_type_d4fbfa *definition = position->definition;
 		point3f point;
 		vector3f normal;
 		char side;
 
-		if (!position->unknown4c || !(definition->flags & 0x10))
+		if (!position->unknown4c || !(position->definition->flags & 0x10))
 		{
 			continue;
 		}
@@ -445,12 +443,11 @@ void __stdcall function_25e430(
 			direction.i = position->unknown40.i * -1.f;
 			direction.j = position->unknown40.j * -1.f;
 			direction.k = position->unknown40.k * -1.f;
-			if (!function_26c590(definition->unknown14, (point3f *)definition, &trace, pathfinding,
-					(point3f *)definition, NONE, &direction, 0.35f, 0) ||
+			if (!function_26c590(position->definition->unknown14, (point3f *)position->definition, &trace, pathfinding,
+					(point3f *)position->definition, NONE, &direction, 0.35f, 0) ||
 				!*(bool *)&trace.unknown00 || *(long *)&trace.unknown10[4] == 0xffff ||
 				!(((s_pathfinding_faces_view *)pathfinding)->faces[*(long *)&trace.unknown10[4]].flags & 8) ||
-				!function_29d7b0(*(long *)&trace.unknown10[4], pathfinding, definition, &direction, &point, &normal, &side) ||
-				!side)
+				!function_29d7b0(*(long *)&trace.unknown10[4], pathfinding, position->definition, &direction, &point, &normal, &side))
 			{
 				continue;
 			}
@@ -469,22 +466,23 @@ void __stdcall function_25e430(
 			normal = cover->normal;
 			if (dot3f(&position->unknown40, &normal) > 0.70710677f)
 			{
-				if (!function_210690(definition->unknown0c, &cover->point, &point) ||
-					!function_210770(definition->unknown0c, &normal, &normal))
+				if (!function_210690(position->definition->unknown0c, &cover->point, &point) ||
+					!function_210770(position->definition->unknown0c, &normal, &normal))
 				{
 					continue;
 				}
 				side = (char)position->unknown5c;
-				if (!side)
-				{
-					continue;
-				}
 			}
 			else
 			{
 				position->unknown5c = 0;
 				continue;
 			}
+		}
+
+		if (!side)
+		{
+			continue;
 		}
 
 		position->unknown5c = side;
@@ -495,26 +493,31 @@ void __stdcall function_25e430(
 			(*(short *)context == 0 || *(short *)context == 3) && (side == 1 || side == 2))
 		{
 			point3f target;
+			vector3f perpendicular;
 
+			perpendicular.i = 0.f - normal.j;
+			perpendicular.j = normal.i;
+			perpendicular.k = 0.f;
 			target.x = point.x - normal.i * 0.15f;
 			target.y = point.y - normal.j * 0.15f;
 			target.z = point.z - normal.k * 0.15f;
 			switch (side)
 			{
 			case 1:
-				target.x -= (0.f - normal.j) * 0.25f;
-				target.y -= normal.i * 0.25f;
+				target.x -= perpendicular.i * 0.25f;
+				target.y -= perpendicular.j * 0.25f;
+				target.z -= perpendicular.k * 0.25f;
 				break;
 			case 2:
-				target.x += (0.f - normal.j) * 0.25f;
-				target.y += normal.i * 0.25f;
+				target.x += perpendicular.i * 0.25f;
+				target.y += perpendicular.j * 0.25f;
+				target.z += perpendicular.k * 0.25f;
 				break;
 			}
-			function_2104b0(definition->unknown0c, &target, &position->position);
+			function_2104b0(position->definition->unknown0c, &target, &position->position);
 		}
 	}
 }
-#pragma inline_depth(255)
 
 // @retail 0x25e780
 void __stdcall function_25e780(
