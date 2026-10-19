@@ -2286,8 +2286,6 @@ long function_20ec80(long target_index, s_audio_priority_table *table, byte cons
     long source_index, long previous_index, bool require_related, long *tag_index,
     short *type, real *weight, real *distance_weight)
 {
-    (void)&table; (void)&request; (void)&source_index; (void)&previous_index; (void)&require_related;
-    (void)&tag_index; (void)&type; (void)&weight; (void)&distance_weight;
     long chosen = NONE;
     real best = 0.0f;
     real chosen_weight = 0.0f;
