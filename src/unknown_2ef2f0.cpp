@@ -25,6 +25,24 @@ public:
 	class_308180();
 };
 
+// a contact found between two sides, and the sides
+struct contact_307f90
+{
+	__m128 point;
+	__m128 normal;
+	description_2ed170 const *a;
+	description_2ed170 const *b;
+	char unknown28[0x30 - 0x28];
+};
+
+// told of each contact found
+class collector_2ef4b0
+{
+public:
+	virtual void slot_0() {}
+	virtual void slot_1(contact_307f90 const *contact) {}
+};
+
 // a query's input (constructor 0x2ef260)
 class query_2ef260
 {
@@ -46,6 +64,7 @@ public:
 
 	query_2ef260(long a, long b, long c, long d, long e, long f, __m128 const &from_, long g, __m128 const &to_, float radius_);
 	void function_3080a0(class_308180 *manifold);
+	void function_307f90(bool *found, contact_307f90 *contact);
 };
 
 // a box: a radius it is grown by, and its half extents
@@ -109,5 +128,138 @@ void manifold_pair_2ef2f0::function_2ef3b0(description_2ed170 const *a, descript
 	query_2ef260 query((long)a, (long)b, (long)input, field_8, arg_3, (long)a->placement + 0x20, from,
 		(long)b->placement + 0x20, to, input->tolerance);
 	query.function_3080a0(&manifold);
+	timer_add_2ebc80("Et");
+}
+
+class box_pair_2ef4b0
+{
+public:
+	void function_2ef4b0(description_2ed170 const *a, description_2ed170 const *b, input_2ef2f0 const *input, collector_2ef4b0 *collector);
+};
+
+// the two boxes grown by their radii, and the contact found between them
+// passed on
+// @retail 0x2ef4b0
+void box_pair_2ef4b0::function_2ef4b0(description_2ed170 const *a, description_2ed170 const *b, input_2ef2f0 const *input, collector_2ef4b0 *collector)
+{
+	bool found;
+	contact_307f90 contact;
+	timer_add_2ebc80("TtBoxBox");
+	box_2ef3b0 const *first_box = (box_2ef3b0 const *)a->shape;
+	box_2ef3b0 const *second_box = (box_2ef3b0 const *)b->shape;
+	__m128 from = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
+	__m128 to = _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius));
+	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, from,
+		(long)b->placement + 0x20, to, input->tolerance);
+	contact.a = a;
+	contact.b = b;
+	query.function_307f90(&found, &contact);
+	if (found)
+	{
+		collector->slot_1(&contact);
+	}
+	timer_add_2ebc80("Et");
+}
+
+// the same as a function
+// @retail 0x2ef5d0
+void __cdecl function_2ef5d0(void const *a_, void const *b_, void const *input_, void *collector_)
+{
+	description_2ed170 const *a = (description_2ed170 const *)a_;
+	description_2ed170 const *b = (description_2ed170 const *)b_;
+	input_2ef2f0 const *input = (input_2ef2f0 const *)input_;
+	timer_add_2ebc80("TtBoxBox");
+	box_2ef3b0 const *first_box = (box_2ef3b0 const *)a->shape;
+	box_2ef3b0 const *second_box = (box_2ef3b0 const *)b->shape;
+	__m128 from = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
+	__m128 to = _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius));
+	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, from,
+		(long)b->placement + 0x20, to, input->tolerance);
+	contact_307f90 contact;
+	contact.a = a;
+	contact.b = b;
+	bool found;
+	query.function_307f90(&found, &contact);
+	if (found)
+	{
+		((collector_2ef4b0 *)collector_)->slot_1(&contact);
+	}
+	timer_add_2ebc80("Et");
+}
+// whether two boxes overlap, returned through a hidden pointer
+class answer_306580
+{
+public:
+	answer_306580() {}
+
+	char value;
+};
+
+class box_pair_306400
+{
+public:
+	void function_306400();
+};
+
+class class_306580
+{
+public:
+	answer_306580 function_306580();
+};
+
+// told of each pair found overlapping
+class pair_collector_2ef6e0
+{
+public:
+	virtual void slot_0() {}
+	virtual void slot_1(description_2ed170 const *a, description_2ed170 const *b) {}
+};
+
+
+class box_pair_2ef6e0
+{
+public:
+	void function_2ef6e0(description_2ed170 const *a, description_2ed170 const *b, input_2ef2f0 const *input, pair_collector_2ef6e0 *collector);
+};
+
+// the two boxes grown by their radii, and the pair passed on when they
+// overlap
+// @retail 0x2ef6e0
+void box_pair_2ef6e0::function_2ef6e0(description_2ed170 const *a, description_2ed170 const *b, input_2ef2f0 const *input, pair_collector_2ef6e0 *collector)
+{
+	timer_add_2ebc80("TtBoxBox");
+	box_2ef3b0 const *first_box = (box_2ef3b0 const *)a->shape;
+	box_2ef3b0 const *second_box = (box_2ef3b0 const *)b->shape;
+	__m128 from = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
+	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, from,
+		(long)b->placement + 0x20, _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius)), input->tolerance);
+	((box_pair_306400 *)&query)->function_306400();
+	answer_306580 overlap = ((class_306580 *)&query)->function_306580();
+	if (overlap.value)
+	{
+		collector->slot_1(a, b);
+	}
+	timer_add_2ebc80("Et");
+}
+
+// the same as a function
+// @retail 0x2ef7f0
+void __cdecl function_2ef7f0(void const *a_, void const *b_, void const *input_, void *collector_)
+{
+	description_2ed170 const *a = (description_2ed170 const *)a_;
+	description_2ed170 const *b = (description_2ed170 const *)b_;
+	input_2ef2f0 const *input = (input_2ef2f0 const *)input_;
+	timer_add_2ebc80("TtBoxBox");
+	box_2ef3b0 const *first_box = (box_2ef3b0 const *)a->shape;
+	box_2ef3b0 const *second_box = (box_2ef3b0 const *)b->shape;
+	__m128 from = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
+	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, from,
+		(long)b->placement + 0x20, _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius)), input->tolerance);
+	((box_pair_306400 *)&query)->function_306400();
+	answer_306580 overlap = ((class_306580 *)&query)->function_306580();
+	if (overlap.value)
+	{
+		((pair_collector_2ef6e0 *)collector_)->slot_1(a, b);
+	}
 	timer_add_2ebc80("Et");
 }
