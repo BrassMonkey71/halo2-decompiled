@@ -222,41 +222,38 @@ struct s_reference_filter_view
 // @retail 0x2623a0
 bool function_2623a0(s_reference_filter_view const *filter, long actor_index, s_actor_view *actor, s_reference reference)
 {
- if (!filter) return true;
- bool result;
-	if (filter)
+	if (!filter)
+		return true;
+	bool result;
+	s_262b40_result *entry = function_262b40(reference);
+	if (!entry || (!filter->allow_a && !filter->allow_b &&
+		(*(long *)((byte *)entry + 0x14) == NONE || !(entry->flags & 0x60))))
+		return false;
+	bool flag = (bool)(((dword)entry->flags >> 5) & 1);
+	if (filter->require_flag)
+		result = flag;
+	else
+    {
+        result = flag == 0;
+        if (filter->allow_any)
+            result = true;
+    }
+	if (result)
 	{
-		s_262b40_result *entry = function_262b40(reference);
-		if (!entry || (!filter->allow_a && !filter->allow_b &&
-			(*(long *)((byte *)entry + 0x14) == NONE || !(entry->flags & 0x60))))
-			return false;
-		bool flag = (bool)(((dword)entry->flags >> 5) & 1);
-		if (filter->require_flag)
-			result = flag;
-		else
-        {
-            result = flag == 0;
-            if (filter->allow_any)
-                result = true;
-        }
-		if (result)
+		long other_index = function_262a30(reference);
+		if (other_index != actor_index && other_index != NONE)
 		{
-			long other_index = function_262a30(reference);
-			if (other_index != actor_index && other_index != NONE)
-			{
-				s_actor_view *other = actor_get(other_index);
-				if (other->unknown024 != actor->unknown024)
-					return false;
-				point3f point;
-				function_210850((s_type_c3b527 *)entry, &point);
-				real distance = distance3d((point3f *)((byte *)other + 0x238), &point);
-				if (distance < 1.0f || distance3d((point3f *)((byte *)actor + 0x238), &point) * 2.0f > distance)
-					return false;
-			}
+			s_actor_view *other = actor_get(other_index);
+			if (other->unknown024 != actor->unknown024)
+				return false;
+			point3f point;
+			function_210850((s_type_c3b527 *)entry, &point);
+			real distance = distance3d((point3f *)((byte *)other + 0x238), &point);
+			if (distance < 1.0f || distance3d((point3f *)((byte *)actor + 0x238), &point) * 2.0f > distance)
+				return false;
 		}
-		return result;
 	}
- return true;
+	return result;
 }
 
 struct s_candidate_range
@@ -629,7 +626,7 @@ short __stdcall function_261d20(long actor_index, s_261d20_entry *entries, long 
                 dword flags = *(dword *)(definition + 0x24);
                 if (((flags & 0x10) || ((flags & 0x20) && *(short *)(definition + 0x4e) != NONE)) &&
                     *(long *)(squad + 0x80) != NONE)
-                    return count;
+                    goto done;
             }
         }
         byte *list = g_51eca4->data + (list_index & 0xffff) * 0x484;
@@ -645,6 +642,7 @@ short __stdcall function_261d20(long actor_index, s_261d20_entry *entries, long 
             }
         }
     }
+done:
     return count;
 }
 

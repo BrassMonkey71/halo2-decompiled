@@ -1605,7 +1605,7 @@ static inline bool weapon_state_replaceable(long current, long state)
 bool function_1058b0(long weapon_index, long state, bool force)
 {
 	s_weapon *weapon = WEAPON_GET(weapon_index);
-	bool result = false;
+	long result = false;
 
 	function_b7360(weapon_index);
 	if (force || weapon_state_replaceable(weapon->state, state))

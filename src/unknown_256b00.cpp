@@ -37,7 +37,7 @@ short __stdcall function_256b00(long actor_index)
 	if (actor->unknown018 != NONE)
 	{
 		s_object_header_view *header = object_header_get(actor->unknown018);
-		s_handler_object_view *object = (s_handler_object_view *)header->object;
+		s_handler_object_view *object = handler_object_get(actor->unknown018);
 
 		if (!header->type && (object->flags19 & 1) && (object->flags19 & 2))
 		{

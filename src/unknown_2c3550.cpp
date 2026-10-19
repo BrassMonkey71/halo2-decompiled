@@ -456,9 +456,10 @@ bool avoidance_search_step(s_avoidance_search *search, s_pathfinding_data const 
 					if (trace.sector == search->value18 || node->distance < 0.2f)
 					{
 						point2f point;
+						point2f movement;
 
-						point.x = node->position.x + direction->x * trace.distance;
-						point.y = node->position.y + direction->y * trace.distance;
+						avoidance_scale2d(direction, trace.distance, &movement);
+						avoidance_add2d(&node->position, &movement, &point);
 						search->value1e = avoidance_add_node(search, &point, false, search->value18, NONE, NONE,
 							node->cost - node->distance + trace.distance, (short)index);
 						added = 1;

@@ -4,6 +4,8 @@
 #include "unknown_0259a0.h"
 #include <math.h>
 
+__forceinline s_firing_position *firing_position_get(long reference);
+
 /* slot handler 0x82 (g_47ef58), and the firing position search it uses */
 
 struct s_slot_82
@@ -297,14 +299,15 @@ short __stdcall function_1c1160(long actor_index, s_slot *slot, bool active)
 bool __stdcall function_1c1320(long actor_index, s_slot *slot)
 {
 	s_slot_82 *state = (s_slot_82 *)slot;
-	s_actor_view *actor = actor_get(actor_index);
 	bool result = true;
 
-	if (actor->unknown040 && !(actor->unknown50c && actor->unknown504 == 1) && actor->unknown504 != 2)
+	if (actor_get(actor_index)->unknown040 &&
+		!(actor_get(actor_index)->unknown50c && actor_get(actor_index)->unknown504 == 1) &&
+		actor_get(actor_index)->unknown504 != 2)
 	{
 		s_actor_point_target target;
-		long unknown = NONE;
 		long reference = NONE;
+		long unknown = NONE;
 
 		if (state->unknown21)
 		{
@@ -321,7 +324,8 @@ bool __stdcall function_1c1320(long actor_index, s_slot *slot)
 		}
 		if (reference == NONE)
 		{
-			return false;
+			result = false;
+			goto done;
 		}
 		if (function_1f4460(actor_index, &target, unknown, NONE, false))
 		{
@@ -331,14 +335,19 @@ bool __stdcall function_1c1320(long actor_index, s_slot *slot)
 			state->unknown14.y = (real)sin(position->facing);
 			state->unknown14.z = 0.0f;
 			state->unknown20 = true;
-			return true;
+			result = true;
+			goto done;
 		}
-		if (state->unknown38 >= 4)
+		if (state->unknown38 < 4)
 		{
-			return false;
+			state->unknown28[state->unknown38++] = reference;
 		}
-		state->unknown28[state->unknown38++] = reference;
+		else
+		{
+			result = false;
+		}
 	}
+done:
 	return result;
 }
 

@@ -105,7 +105,7 @@ PRIVATE __forceinline vector3f *function_11c471(real arg_0, vector3f const *arg_
 bool function_11c470(long trigger_volume_index, point3f const *point)
 {
 	transform4x3f matrix;
-	volatile bool result = false;
+	bool result = false;
 
 	if (function_11c380(trigger_volume_index, &matrix))
 	{
@@ -125,7 +125,7 @@ bool function_11c470(long trigger_volume_index, point3f const *point)
 			if (x > 0.0f && y > 0.0f && z > 0.0f &&
 				trigger_volume->extents.i > x && trigger_volume->extents.j > y && trigger_volume->extents.k > z)
 			{
-				return true;
+				result = true;
 			}
 		}
 	}

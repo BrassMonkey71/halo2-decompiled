@@ -136,14 +136,25 @@ bool function_1bd3b0(long object_index)
 
 struct s_1bd610
 {
-    byte field_0;
-    byte field_1[3];
+    union
+    {
+        byte field_0;
+        struct
+        {
+            word : 4;
+            word flag4 : 1;
+            word : 11;
+        };
+    };
+    byte field_2[2];
     long field_4;
     word field_8;
     byte field_a[2];
     s_type_c3b527 field_c;
     long field_1c;
 };
+
+typedef char assert_1bd610_size[(sizeof(s_1bd610) == 0x20) ? 1 : -1];
 
 struct s_1bd611
 {
@@ -155,8 +166,6 @@ struct s_1bd611
 long function_25d810(long object_index, long actor_index, bool create);
 void __stdcall function_26c2d0(long arg_0);
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
 // @retail 0x1bd610
 bool function_1bd610(s_1bd610 *arg_0, long arg_1, s_1bd611 *arg_2)
 {
@@ -174,8 +183,8 @@ bool function_1bd610(s_1bd610 *arg_0, long arg_1, s_1bd611 *arg_2)
             local_5.k = 0.0f;
             if (function_30bf0(&local_5) == 0.0f)
             {
-                real const *forward_j = &local_1->forward.j;
-                local_5.i = local_4->j * local_1->forward.k - *forward_j * local_4->k;
+                real forward_j = local_1->forward.j;
+                local_5.i = local_4->j * local_1->forward.k - forward_j * local_4->k;
                 local_5.j = local_1->forward.i * local_4->k - local_1->forward.k * local_4->i;
                 local_5.k = local_1->forward.j * local_4->i - local_1->forward.i * local_4->j;
             }
@@ -205,13 +214,11 @@ bool function_1bd610(s_1bd610 *arg_0, long arg_1, s_1bd611 *arg_2)
         }
     }
     if (local_0)
-        arg_0->field_0 |= 0x10;
+        arg_0->flag4 = true;
     else
-        arg_0->field_0 &= ~0x10;
-    _ReadWriteBarrier();
+        arg_0->flag4 = false;
     return local_0;
 }
-#pragma function(_ReadWriteBarrier)
 
 // @retail 0x1bd850
 short __stdcall function_1bd850(long actor_index)

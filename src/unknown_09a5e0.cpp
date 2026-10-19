@@ -716,10 +716,9 @@ bool function_e68c0(long type, long unit_index);
 // @retail 0x9ee20
 bool c_unit_exit_vehicle_event_definition::v11(long a, long const *entities, long c, void const *data)
 {
-	bool result = false;
-	volatile bool local_0 = result;
 	long unit_index = function_a58d0(entities[0]);
 	long vehicle_index = function_a58d0(entities[1]);
+	bool result = false;
 	if (unit_index == NONE || vehicle_index == NONE)
 		return result;
 	s_record_pool *local_1 = g_4e0300;
@@ -734,7 +733,7 @@ bool c_unit_exit_vehicle_event_definition::v11(long a, long const *entities, lon
 			return true;
 		}
 	}
-	return local_0;
+	return result;
 }
 
 static inline long pin(long value, long lo, long hi)

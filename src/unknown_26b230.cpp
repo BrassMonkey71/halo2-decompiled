@@ -1798,8 +1798,6 @@ void function_2689d0(void)
 // @retail 0x269250
 void function_269250(long clump_index, long actor_index)
 {
-	long const *clump_reference = &clump_index;
-	long const *actor_reference = &actor_index;
 	s_actor_view *actor = actor_get(actor_index);
 	s_clump_activity_view *clump = (s_clump_activity_view *)(g_502420->data + (clump_index & 0xffff) * sizeof(s_clump_activity_view));
 	clump->count++;
@@ -1825,7 +1823,7 @@ void function_269250(long clump_index, long actor_index)
 		long object_slot = node->object_index & 0xffff;
 		if (g_4de300[object_slot] != g_4de2fc)
 			g_4de300[object_slot] = g_4de2fc;
-		long prop_index = function_26b120(node->object_index, *clump_reference);
+		long prop_index = function_26b120(node->object_index, clump_index);
 		if (prop_index != NONE)
 		{
 			s_clump_prop *prop = (s_clump_prop *)(g_50241c->data + (prop_index & 0xffff) * sizeof(s_clump_prop));
@@ -1864,7 +1862,7 @@ void function_269250(long clump_index, long actor_index)
 				link->next = first;
 				current->first_node = index;
 				link->prop_index = props.index;
-				function_26aa40(*actor_reference, index);
+				function_26aa40(actor_index, index);
 			}
 		}
 	}
@@ -1986,11 +1984,11 @@ bool function_25ccd0(s_type_5cfb45 *state, long object_index, short value, s_264
 // @retail 0x26a210
 void function_26a210(long clump_index)
 {
-    long index = clump_get(clump_index)->first_prop;
-    while (index != NONE)
+    s_iterator iterator;
+    iterator.next = clump_get(clump_index)->first_prop;
+    s_type_76cf92 *prop;
+    while ((prop = clump_next_prop(&iterator)) != NULL)
     {
-        s_type_76cf92 *prop = prop_get(index);
-        index = *(long *)((byte *)prop + 0x14);
         long object_index = *(long *)((byte *)prop + 8);
         s_object_header_view *header = (s_object_header_view *)datum_get_inlined(g_4e0300, object_index);
         if (header && ((1 << header->type) & 3) && header->object)

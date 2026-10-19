@@ -1077,6 +1077,7 @@ void function_2118c0(void)
 		if (source->tag_index != NONE)
 		{
 			s_cell_tag *tag = (s_cell_tag *)g_4e3b44[source->tag_index & 0xffff].bytes;
+			vector3f const &direction = source->direction;
 			double azimuth;
 			double elevation;
 			real scale;
@@ -1093,8 +1094,8 @@ void function_2118c0(void)
 
 			cell->interpolation = (tag->value4 - tag->value0) * cell->value4 + tag->value0;
 
-			azimuth = atan2(source->direction.j, source->direction.i);
-			elevation = atan2(source->direction.k, sqrt(source->direction.j * source->direction.j + source->direction.i * source->direction.i));
+			azimuth = atan2(direction.j, direction.i);
+			elevation = atan2(direction.k, sqrt(direction.j * direction.j + direction.i * direction.i));
 			elevation += tag->valuec * cell->valuec * 0.5f;
 			azimuth += cell->value8 * tag->value8 * 0.5f;
 
@@ -1199,8 +1200,7 @@ void function_211fd0(vector3f *out, real const *position, real scale, real time)
 
 	*out = *g_4687a4;
 	scale *= 1.0f / 3.0f;
-    real const volatile *local_0 = &time;
-    real local_1 = *local_0;
+    real local_1 = time;
 
 	do
 	{
@@ -2287,8 +2287,6 @@ long function_20ec80(long target_index, s_audio_priority_table *table, byte cons
     long source_index, long previous_index, bool require_related, long *tag_index,
     short *type, real *weight, real *distance_weight)
 {
-    (void)&table; (void)&request; (void)&source_index; (void)&previous_index; (void)&require_related;
-    (void)&tag_index; (void)&type; (void)&weight; (void)&distance_weight;
     long chosen = NONE;
     real best = 0.0f;
     real chosen_weight = 0.0f;

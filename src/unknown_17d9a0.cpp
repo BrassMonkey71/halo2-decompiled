@@ -127,14 +127,11 @@ PRIVATE inline void decal_project_corner_17d9a0(transform4x3f const *matrix, rea
 // @retail 0x17d9a0
 void function_17d9a0(transform4x3f const *matrix, real const *bounds, s_decal_quad_17d9a0 *quad)
 {
-	s_decal_quad_17d9a0 *const *quad_reference = &quad;
-	quad = *quad_reference;
 	quad->matrix = *matrix;
 	quad->bounds = *(box2f const *)bounds;
-	plane3f *plane = &quad->plane;
-	plane->n = matrix->up;
-	plane->d = dot3f(&plane->n, (vector3f const *)&matrix->position);
-	quad->axis = function_120850(&plane->n);
+	quad->plane.n = matrix->up;
+	quad->plane.d = dot3f(&quad->plane.n, (vector3f const *)&matrix->position);
+	quad->axis = function_120850(&quad->plane.n);
 	quad->positive = ((real const *)&quad->plane.n)[quad->axis] > 0.0f;
 	decal_project_corner_17d9a0(matrix, bounds[0], bounds[2], quad, &quad->corners[0]);
 	decal_project_corner_17d9a0(matrix, bounds[1], bounds[2], quad, &quad->corners[1]);

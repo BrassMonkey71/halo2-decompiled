@@ -249,7 +249,6 @@ color3f *function_131a00(hsv3f const *hsv, color3f *rgb);
 // @retail 0x2afeae
 void function_2afeae(s_widget_item *item, c_class_1a2c81 *widget)
 {
-	c_class_1a2c81 **widget_reference = &widget;
 	long tag_index = ((c_widget_45ad18 *)widget)->definition->tag_index;
 	if (tag_index != NONE)
 	{
@@ -284,7 +283,7 @@ void function_2afeae(s_widget_item *item, c_class_1a2c81 *widget)
 			}
 		}
 
-		for (widget = widget->child; widget; widget = (*widget_reference)->next)
+		for (widget = widget->child; widget; widget = widget->next)
 		{
 			switch (widget->type)
 			{
