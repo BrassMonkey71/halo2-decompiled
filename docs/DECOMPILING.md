@@ -365,15 +365,17 @@ a function retail reaches at an address some marker claims must reach that
 marker's function, unless ours is the compiler's own copy of the helper
 that marker recreates (`??_H` for `vector_constructor_iterator`); otherwise
 both sides' names (the map symbol, the `name` column) must agree when both
-are known. Globals are not part of a match yet. The check reports where each
-address field that leaves a function leads (the `targets` of its entry in
-`build/report.json`, and a summary line): a field that points at a marked
-function, a global named for its retail address (`g_<address>`) or a string
-or floating-point constant is verified against retail or found to differ;
-anything else, and a call between functions neither side names, is
-unverified. The linker map gives no sizes, so a field far into a global is
-only judged when its size is known or another field verifies an offset as
-large. No status depends on it yet.
+are known. The check also follows each address field that leaves a function
+(the `targets` of its entry in `build/report.json`, and a summary line): a
+field that points at a marked function, a global named for its retail
+address (`g_<address>`) or a string or floating-point constant is verified
+against retail or found to differ; anything else, and a call between
+functions neither side names, is unverified. The linker map gives no sizes,
+so a field far into a global is only judged when its size is known or another
+field verifies an offset as large. A field that differs counts against a
+match: the function is `near` when one or two fields differ, otherwise
+`todo`, and the `DIFF` names each field, our target and retail's. An
+unverified field does not count.
 
 ## Naming and readability
 

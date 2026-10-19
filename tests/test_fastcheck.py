@@ -156,6 +156,36 @@ def test_fast_without_a_full_build_says_so(fake_tree, capsys):
     assert report['00001000']['caveats'] == [check.NO_FULL_BUILD]
 
 
+FIELD_MAP = REDUCED_MAP.replace('CODE\n', 'CODE\n 0002:00000000 00000100H .data                   DATA\n') + (
+    ' 0002:00000000       ?g_4e0300@@3JA             00402000     a.obj\n')
+
+
+class FieldRetail(Retail):
+    """f1000 reads 4 bytes past retail's g_4e0300."""
+    sections = [Section('.text', 0x1000, 0x500000, 0, 0x500000, 0)]
+
+    def read(self, va, size):
+        return bytes.fromhex('a1' '04034e00' 'c3') if va == 0x1000 else b'\xc3'
+
+
+def test_fast_applies_the_address_field_rule(fake_tree, monkeypatch, capsys):
+    """mov eax, [g_4e0300]; ret matches retail's bytes, but retail reads
+    another address: the function is near, as in the full check."""
+    root, _ = fake_tree
+    monkeypatch.setattr(check, 'read_rows', lambda path: {va: dict(row, size='6' if va == 0x1000 else '1')
+                                                          for va, row in ROWS.items()})
+    monkeypatch.setattr(check.reduced.Image, 'read', staticmethod(lambda map_path, image_path: image(
+        FIELD_MAP, {0x401000: bytes.fromhex('a1' '00204000' 'c3')}, fixups={0x401001})))
+    assert check.fast_check({0x1000}, FieldRetail(), 2, root=str(root)) == 1
+    out = capsys.readouterr().out
+    assert 'MATCH' not in out and 'fast check: 0 of 1 match' in out
+    assert ('DIFF   00001000 f1000 at +0x1 (6 bytes, retail 6)\n'
+            "  !! address field at +0x1: ours leads to g_4e0300 (0x4e0300 in retail), retail's to 0x4e0304\n") in out
+    assert out.rstrip().splitlines()[-2].endswith('; 1 demoted from matched for a differing field')
+    report = json.loads((root / 'build' / 'report-fast.json').read_text())
+    assert report['00001000']['status'] == 'near' and report['00001000']['first_difference'] == 1
+
+
 def test_fast_reports_an_unmarked_address(fake_tree, capsys):
     root, _ = fake_tree
     assert check.fast_check({0x1000, 0x9000}, Retail(), 2, root=str(root)) == 1
