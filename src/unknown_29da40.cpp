@@ -13,7 +13,6 @@ bool __stdcall function_29da40(long arg_0, s_type_c3b527 const *arg_1, long arg_
 	short arg_3, bool arg_4, point3f const *arg_5, vector3f const *arg_6,
 	s_type_c3b527 *arg_7, long *arg_8)
 {
-	vector3f const *const volatile *local_6 = &arg_6;
 	bool local_0 = false;
 	long local_1;
 	switch (arg_3)
@@ -27,26 +26,32 @@ bool __stdcall function_29da40(long arg_0, s_type_c3b527 const *arg_1, long arg_
 	{
 		point3f local_2;
 		transform4x3f local_3;
+		bool local_8 = true;
 		if (arg_0 != NONE)
 		{
-			if (!function_270240(actor_get(arg_0)->unknown018, local_1, 0x5000049, arg_5, *local_6, &local_3))
-				goto local_5;
-			local_2 = local_3.position;
+			s_actor_view *local_7 = actor_get(arg_0);
+			if (function_270240(local_7->unknown018, local_1, 0x5000049, arg_5, arg_6, &local_3))
+				local_2 = local_3.position;
+			else
+				local_8 = false;
 		}
 		else
 			local_2 = *arg_5;
-		local_2.z = arg_5->z;
-		long local_4;
-		if (function_26d290(&arg_1->point, &local_2, arg_2, &local_4))
+		if (local_8)
 		{
-			if (arg_7)
+			local_2.z = arg_5->z;
+			long local_4;
+			if (function_26d290(&arg_1->point, &local_2, arg_2, &local_4))
 			{
-				arg_7->point = local_2;
-				arg_7->output_index = arg_1->output_index;
+				if (arg_7)
+				{
+					arg_7->point = local_2;
+					arg_7->output_index = arg_1->output_index;
+				}
+				if (arg_8)
+					*arg_8 = local_4;
+				local_0 = true;
 			}
-			if (arg_8)
-				*arg_8 = local_4;
-			local_0 = true;
 		}
 	}
 local_5:

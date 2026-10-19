@@ -120,7 +120,7 @@ bool function_1a62e0(long object_index, point3f const *origin, vector3f const *d
 	bool result = false;
 	if (local_0.field_0 > 0.0001f)
 	{
-		function_1a6340(&local_0.field_10, direction, out, &local_0.field_4, origin, local_0.field_0);
+		function_1a6340(direction, &local_0.field_10, out, origin, &local_0.field_4, local_0.field_0);
 		result = true;
 	}
 	return result;
@@ -1645,7 +1645,7 @@ bool function_1a5e40(long object_index, bool alternate, long marker_index, s_tar
 		{
 			vector3f axis;
 			vector3d_from_points3d(&first->position, &second->position, &axis);
-			function_1a6340(&axis, direction, &candidate->point, &first->position, origin, marker->radius);
+			function_1a6340(direction, &axis, &candidate->point, origin, &first->position, marker->radius);
 		}
 		else
 			function_1a65b0(direction, &candidate->point, &first->position, origin, marker->radius);
