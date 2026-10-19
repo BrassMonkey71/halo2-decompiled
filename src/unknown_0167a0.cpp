@@ -1255,41 +1255,49 @@ long function_34060(long mode, dword flags);
 void function_1ae70(byte *state)
 {
     *(dword *)(state + 0x58) = 0;
-    dword pending[5];
-    for (long mask = 0; mask < 5; ++mask)
-        pending[mask] = ((dword *)(state + 0x30))[mask] & ((dword *)(state + 0x44))[mask];
-    dword *scalar_masks = pending;
-    for (long base = 0; base < 64; base += 32)
+    dword scalar_pending[2];
+    dword vector_pending[2];
+    dword last_pending;
+    for (long mask = 0; mask < 2; ++mask)
+        scalar_pending[mask] = ((dword *)(state + 0x30))[mask] & ((dword *)(state + 0x44))[mask];
+    for (long mask = 0; mask < 2; ++mask)
+        vector_pending[mask] = ((dword *)(state + 0x38))[mask] & ((dword *)(state + 0x4c))[mask];
+    last_pending = *(dword *)(state + 0x40) & *(dword *)(state + 0x54);
+    long scalar_base = 0;
+    dword *scalar_masks = scalar_pending;
+    for (; scalar_base < 64; scalar_base += 32)
     {
-        dword remaining = *scalar_masks++;
+        dword remaining = *scalar_masks;
         while (remaining)
         {
             long bit;
             __asm { bsf ecx, remaining }
             __asm { mov bit, ecx }
-            long index = base + bit;
-            real value = function_336f0(index);
+            long index = scalar_base + bit;
+            ((real *)(state + 0x5c))[index] = function_336f0(index);
             remaining &= ~(1 << bit);
-            ((real *)(state + 0x5c))[index] = value;
             ((dword *)(state + 0x30))[index >> 5] &= ~(1 << (index & 31));
         }
+        scalar_masks++;
     }
-    dword *vector_masks = pending + 2;
-    for (long base = 0; base < 64; base += 32)
+    long vector_base = 0;
+    dword *vector_masks = vector_pending;
+    for (; vector_base < 64; vector_base += 32)
     {
-        dword remaining = *vector_masks++;
+        dword remaining = *vector_masks;
         while (remaining)
         {
             long bit;
             __asm { bsf ecx, remaining }
             __asm { mov bit, ecx }
-            long index = base + bit;
+            long index = vector_base + bit;
             function_33980(index, (vector3f *)(state + 0x108 + index * 12));
             remaining &= ~(1 << bit);
             ((dword *)(state + 0x38))[index >> 5] &= ~(1 << (index & 31));
         }
+        vector_masks++;
     }
-    dword remaining = pending[4];
+    dword remaining = last_pending;
     while (remaining)
     {
         long bit;

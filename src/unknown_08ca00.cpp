@@ -167,12 +167,6 @@ double timing_ticks_to_seconds(__int64 ticks);
 dword function_199560(void *data, dword size);
 bool __stdcall function_199740(byte *buffer, long size, byte *destination, long *decompressed_size);
 
-static inline __int64 message_read_ticks(void)
-{
- volatile __int64 value = 0;
- __asm rdtsc
-}
-
 struct s_4672bc
 {
  long unknown00;

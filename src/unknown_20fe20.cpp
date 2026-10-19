@@ -1199,8 +1199,7 @@ void function_211fd0(vector3f *out, real const *position, real scale, real time)
 
 	*out = *g_4687a4;
 	scale *= 1.0f / 3.0f;
-    real const volatile *local_0 = &time;
-    real local_1 = *local_0;
+    real local_1 = time;
 
 	do
 	{
