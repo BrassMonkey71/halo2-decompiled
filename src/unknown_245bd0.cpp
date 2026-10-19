@@ -303,17 +303,19 @@ bool function_2461a0(
 	}
 	else
 	{
-		real b = dot3f(direction, &d);
+		/* retail sums these in this order */
+		real b = direction->i * d.i + d.k * direction->k + d.j * direction->j;
 		if (b > 0.f)
 		{
-			real a = length_sq3f(direction);
+			real a = direction->j * direction->j + direction->k * direction->k + direction->i * direction->i;
 			real discriminant = b * b - a * c;
 			if (discriminant >= g_45dbd8)
 			{
-				real root = b - (real)sqrt(discriminant);
+				/* retail compares the unrounded root and divides the rounded one */
+				double root = b - sqrt(discriminant);
 				if (a >= root)
 				{
-					*t = root / a;
+					*t = (real)root / a;
 					result = true;
 				}
 			}
