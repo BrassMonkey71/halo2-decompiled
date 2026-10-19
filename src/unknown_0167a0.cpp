@@ -1015,7 +1015,7 @@ void __stdcall function_1ab50(byte *state, s_packed_shader_range const *range)
     if (range->count() <= 0)
         return;
     byte *entry = *(byte **)(*(byte **)(state + 0x20) + 0x3c) + range->index() * 4;
-    for (long i = 0; i < (long)range->count(); entry += 4, ++i)
+    for (long i = 0; i < (long)range->count(); ++i)
     {
         s_texture_stage_parameter const *parameter = &g_46703c[entry[1]];
         if (entry[2] == 1)
@@ -1049,6 +1049,7 @@ void __stdcall function_1ab50(byte *state, s_packed_shader_range const *range)
             D3DDevice_GetTextureStageState(entry[0], (D3DTEXTURESTAGESTATETYPE)parameter->state, &old);
             sampler_state_write(entry[0], (D3DTEXTURESTAGESTATETYPE)parameter->state, (old & 0xff000000) | (color & 0xffffff));
         }
+        entry += 4;
     }
 }
 

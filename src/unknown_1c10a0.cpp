@@ -337,12 +337,14 @@ bool __stdcall function_1c1320(long actor_index, s_slot *slot)
 			result = true;
 			goto done;
 		}
-		if (state->unknown38 >= 4)
+		if (state->unknown38 < 4)
+		{
+			state->unknown28[state->unknown38++] = reference;
+		}
+		else
 		{
 			result = false;
-			goto done;
 		}
-		state->unknown28[state->unknown38++] = reference;
 	}
 done:
 	return result;

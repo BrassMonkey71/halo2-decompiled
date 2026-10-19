@@ -120,15 +120,8 @@ bool havok_component_impact_make_room(long rigid_body_index, s_havok_component *
 				}
 			}
 		}
-		if (g_51ebfc->actual_count >= MAXIMUM_IMPACTS)
-		{
-			return false;
-		}
-		if (havok_component_impact_count(component) >= MAXIMUM_IMPACTS_PER_COMPONENT)
-		{
-			return false;
-		}
-		result = true;
+		result = g_51ebfc->actual_count < MAXIMUM_IMPACTS &&
+			havok_component_impact_count(component) < MAXIMUM_IMPACTS_PER_COMPONENT;
 	}
 done:
 	return result;

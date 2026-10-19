@@ -92,7 +92,7 @@ static __forceinline bool carried_object_motion_apply(long object_index, vector3
 {
 	s_carried_object_header *headers = (s_carried_object_header *)g_4e0300->data;
 	s_carried_object *object = headers[object_index & 0xffff].object;
-	volatile bool result = false;
+	bool result = false;
 
 	if (TEST_FIELD_BIT(object->flag2))
 	{
