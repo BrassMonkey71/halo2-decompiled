@@ -34,12 +34,6 @@ void __cdecl function_2dd930(void *data, s_visibility_plane_query const *query,
 
 
 struct s_visibility_sphere_query;
-// @stub 0x2ddbd0
-void __cdecl function_2ddbd0(void *data, s_visibility_sphere_query const *query,
-    s_visibility_query_list *second, s_visibility_query_list *first)
-{
-}
-
 
 struct transform4x3f;
 

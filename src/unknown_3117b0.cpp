@@ -3,6 +3,7 @@
 // take in a shape's box: half the box's diagonal plus the distance from the
 // sphere's centre to the box's centre.
 #include <xmmintrin.h>
+#include "derived_311920.h"
 
 // the identity transform: three unit axes and a zero position
 static __declspec(align(16)) const float g_identity_461ea0[16] = {
@@ -78,4 +79,11 @@ void bounded_shape_3117b0::function_3117b0()
 	float const diagonal = length3_3117b0(_mm_sub_ps(box.maximum, box.minimum));
 	__m128 const box_centre = _mm_mul_ps(splat_3117b0(0.5f), _mm_add_ps(box.minimum, box.maximum));
 	sphere->radius = diagonal * 0.5f + length3_3117b0(_mm_sub_ps(box_centre, sphere->centre));
+}
+
+// builds the object on the one 0x3114d0 builds, with its own sixteen words
+// cleared by their constructors
+// @retail 0x311890
+class_311890::class_311890(void const *a, void const *b) : class_3114d0(a, b)
+{
 }
