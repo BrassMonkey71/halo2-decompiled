@@ -138,10 +138,10 @@ matrix3x3 *function_142da0(
 	out->forward.i = cos_yaw * cos_pitch;
 	out->forward.j = sin_yaw * cos_pitch;
 	real cc = cos_yaw * cos_roll;
-	real cs = cos_yaw * sin_roll;
 	real sc = sin_yaw * cos_roll;
+	real cs = cos_yaw * sin_roll;
 	real ss = sin_yaw * sin_roll;
-	out->left.i = 0.f - cs * sin_pitch - sc;
+	out->left.i = 0.f - sc - cs * sin_pitch;
 	out->left.j = cc - ss * sin_pitch;
 	out->forward.k = sin_pitch;
 	out->left.k = cos_pitch * sin_roll;
