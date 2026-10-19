@@ -34,14 +34,8 @@ void function_13d170(s_physical_object *manager, const char *name, long page_cou
 	manager->allocator = allocator;
 	manager->first = NONE;
 	manager->last = NONE;
-	manager->limits[0] = 0x7fffffff;
-	manager->limits[1] = 0x7fffffff;
-	manager->limits[2] = 0x7fffffff;
-	manager->limits[3] = 0x7fffffff;
-	manager->limits[4] = 0x7fffffff;
-	manager->limits[5] = 0x7fffffff;
-	manager->limits[6] = 0x7fffffff;
-	manager->limits[7] = 0x7fffffff;
+	for (long i = 0; i < 8; i++)
+		manager->limits[i] = 0x7fffffff;
 }
 
 // @retail 0x13d230
