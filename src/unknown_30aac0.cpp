@@ -24,11 +24,23 @@ struct face_30aac0
 	void function_30a9d0();
 };
 
+// a face seen as the plane that narrows an interval
+class slab_30a770
+{
+public:
+	int function_30a770(__m128 const *point, float *low, float *high) const;
+};
+
 class class_30a810
 {
 public:
+	float low;
+	float high;
+
 	void clear_marks();
+	int function_30a880(int *count, edge_30aac0 const **found, face_30aac0 *face, __m128 const *point);
 	face_30aac0 *function_30aac0(face_30aac0 *start);
+	int function_30abe0(int *count, edge_30aac0 const **found, face_30aac0 *face, __m128 const *point);
 };
 
 // the face's plane from its three vertices: the unit normal of the edges'
@@ -100,4 +112,22 @@ face_30aac0 *class_30a810::function_30aac0(face_30aac0 *start)
 		}
 	}
 	return face;
+}
+
+// starts the walk from a face with the whole interval ahead of the point;
+// 2 when the face itself rules the interval out
+// @retail 0x30abe0
+int class_30a810::function_30abe0(int *count, edge_30aac0 const **found, face_30aac0 *face, __m128 const *point)
+{
+	*found = 0;
+	*count = 0;
+	high = 3.40282347e+38f;
+	low = 1e-05f;
+	char const mark = (char)((slab_30a770 const *)face)->function_30a770(point, &low, &high);
+	face->mark = mark;
+	if (mark == 1)
+	{
+		return function_30a880(count, found, face, point);
+	}
+	return 2;
 }

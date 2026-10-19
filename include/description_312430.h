@@ -46,6 +46,11 @@ public:
 	void function_3124c0(description_312430 const *description);
 };
 
+// the object's motion (0x3115a0 reads it) and something it asks a yes-or-no
+// question of
+class motion_3115a0;
+class query_3115a0;
+
 // an object that adds a byte and a word to the description
 struct description_30bd90 : description_312430
 {
@@ -56,9 +61,14 @@ struct description_30bd90 : description_312430
 class class_30bd90 : public class_312430
 {
 public:
-	char unknown3c[0x48 - 0x3c];
+	motion_3115a0 *motion;
+	char unknown40[0x48 - 0x40];
 	unsigned char field_48;
-	char unknown49[0x5c - 0x49];
+	char unknown49[0x4c - 0x49];
+	long field_4c;
+	long field_50;
+	query_3115a0 *query;
+	char unknown58[0x5c - 0x58];
 	short field_5c;
 
 	void function_30bd90(description_30bd90 *description) const;

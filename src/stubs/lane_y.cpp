@@ -17,5 +17,3 @@ struct c_shape_library_base_a
 {
     void function_2df720(s_244980_ray const *ray, s_244980_output *output, c_244c10 *callback);
 };
-// @stub 0x2df720
-void c_shape_library_base_a::function_2df720(s_244980_ray const *ray, s_244980_output *output, c_244c10 *callback) {}

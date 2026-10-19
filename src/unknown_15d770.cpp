@@ -75,6 +75,8 @@ bool function_15d770(long player_index)
 		s_respawn_player_iterator iterator;
 		long living_count = 0;
 
+		result = true;
+
 		iterator.data = players;
 		iterator.index = NONE;
 		iterator.datum_index = NONE;
@@ -112,11 +114,9 @@ bool function_15d770(long player_index)
 			}
 
 			if (waiting_count < needed_count)
-				goto done;
+				result = false;
 		}
-		result = true;
 	}
-done:
 	return result;
 }
 
