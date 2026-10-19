@@ -44,18 +44,6 @@ void __cdecl function_2ddbd0(void *data, s_visibility_sphere_query const *query,
 struct transform4x3f;
 
 
-class __declspec(align(16)) c_z_capsule_temp
-{
-public:
-    c_z_capsule_temp(void const *first, void const *second, real radius);
-    ~c_z_capsule_temp();
-    byte unknown00[0x30];
-};
-
-// @stub 0xdc370
-c_z_capsule_temp::~c_z_capsule_temp() {}
-
-
 // @stub 0x14b60
 void __stdcall function_14b60(dword, dword, real, byte) {}
 

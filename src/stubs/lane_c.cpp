@@ -366,8 +366,6 @@ struct s_physics_pool_statistics;
 
 struct s_physics_mass_array;
 struct s_physics_mass;
-// @stub 0x2dba80
-void __cdecl function_2dba80(s_physics_mass_array const *array, s_physics_mass *result) {}
 
 class c_havok_reference_counted;
 class c_physics_shape_list
