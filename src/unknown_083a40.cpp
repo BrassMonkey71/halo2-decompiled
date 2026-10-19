@@ -475,8 +475,7 @@ bool function_84630(long channel_index, s_simulation_world_owner *watcher, long 
  if (world->unknown2f && channel_index != NONE &&
   network_session_channel_has_member(watcher->session, channel_index))
  {
-  s_network_observer *observer = *(s_network_observer **)watcher->unknown08;
-  s_network_observer_channel *channel = &observer->channels[channel_index];
+  s_network_observer_channel *channel = &(*(s_network_observer **)watcher->unknown08)->channels[channel_index];
   if (channel->state == 7)
   {
    s_link_connection *connection = &((s_link_connection *)g_4d87d4)[channel->connection_index];
@@ -491,7 +490,7 @@ bool function_84630(long channel_index, s_simulation_world_owner *watcher, long 
     case 5: type = 3; break;
     default: __assume(0);
     }
-    s_machine_address machine = *(const s_machine_address *)((const byte *)address + 0xa);
+    s_machine_address machine = *(const s_machine_address *)((const byte *)*(const XNADDR *const volatile *)&address + 0xa);
     function_68580(type, &machine, value, 0);
     world = watcher->world;
     c_simulation_view *view;

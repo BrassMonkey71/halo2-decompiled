@@ -600,7 +600,7 @@ PRIVATE void machine_keyframe_rigid_bodies(long machine_index, bool keyframed)
 
 	for (long i = 0; i < component->rigid_bodies.size; i++)
 	{
-		if (havok_component_rigid_body_get(i, component)->m_motion->getType() == 6 &&
+		if (havok_component_rigid_body_get(i, component)->m_motion->kind_code() == 6 &&
 			component->rigid_bodies[i].node_count > 0)
 		{
 			short const *node_index = &matrices.node_indices[component->rigid_bodies[i].nodes[0] * 0x48];
@@ -637,7 +637,7 @@ PRIVATE void machine_release_rigid_bodies(long machine_index)
 
 		for (long i = 0; i < component->rigid_bodies.size; i++)
 		{
-			if (havok_component_rigid_body_get(i, component)->m_motion->getType() == 6)
+			if (havok_component_rigid_body_get(i, component)->m_motion->kind_code() == 6)
 			{
 				havok_component_rigid_body_linear_velocity_set(i, component, g_4687a4);
 				havok_component_rigid_body_angular_velocity_set(i, component, g_4687a4);

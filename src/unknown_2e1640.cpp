@@ -63,9 +63,9 @@ void class_2e1640::function_2e1640(__m128 const *offset, __m128 *applied, pointe
 	for (k = 0; k < 3; k++)
 	{
 		float const *axis_scale = &scale[k];
-		long step = round_2e1640(shifted[k] * *axis_scale) & ~1;
-		shifted[k] = (float)step / *axis_scale;
+		long const step = round_2e1640(shifted[k] * *axis_scale) & ~1;
 		steps[k] = step;
+		shifted[k] = (float)steps[k] / *axis_scale;
 	}
 	*applied = *(__m128 *)shifted;
 	for (k = 0; k < 3; k++)

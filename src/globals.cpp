@@ -42,7 +42,7 @@ byte g_510cb1;
 dword g_510e2c;
 dword g_510e30;
 s_input_counters g_511bf4;
-s_input_entry_state g_511000[4];
+s_input_device_globals g_511000;
 s_creation_weight g_4cef68[1];
 s_sound_globals *g_51ebd4;
 short g_4686c4;

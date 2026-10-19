@@ -1063,7 +1063,8 @@ bool function_1101e0(long animation_graph_index, long unit_index, long animation
 			function_10f260(unit_index);
 
 			dword channel_flags = flag ? 0x4003 : 0x4001;
-			if (function_1daea0(GRAPH_GET(state->graph_tag_index), animation_id)->type)
+			s_graph_tag *state_graph = GRAPH_GET(state->graph_tag_index);
+			if (function_1daea0(state_graph, animation_id)->type)
 			{
 				control->channel_9c.clear();
 				result = state->channel_play(&control->channel_9c, animation_id, channel_flags);

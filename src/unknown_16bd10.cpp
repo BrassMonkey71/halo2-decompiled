@@ -292,13 +292,13 @@ void function_16bf70(long animation_graph_index, long animation_name, long unit_
 {
 	if (animation_graph_index != NONE)
 	{
-		struct { c_type_709360 id; s_animation_state state; } work;
+		s_animation_state state;
 
-		work.state.initialize(animation_graph_index, NONE, true);
-		work.id = graph_tag_get(work.state.graph_tag_index)->animation_by_name(animation_name);
-		if (work.id.index != NONE)
+		state.initialize(animation_graph_index, NONE, true);
+		c_type_709360 id = graph_tag_get(state.graph_tag_index)->animation_by_name(animation_name);
+		if (id.index != NONE)
 		{
-			s_animation *animation = function_1daea0(graph_tag_get(work.state.graph_tag_index), work.id);
+			s_animation *animation = function_1daea0(graph_tag_get(state.graph_tag_index), id);
 
 			if (animation)
 			{
@@ -306,11 +306,12 @@ void function_16bf70(long animation_graph_index, long animation_name, long unit_
 
 				camera->mode = _camera_scripting_mode_animation;
 				camera->active = true;
+				short frame_count = animation->frame_count;
 				camera->animation.cutscene_flag_index = cutscene_flag_index;
 				camera->animation.graph_tag_index = animation_graph_index;
 				camera->animation.animation_name = animation_name;
 				camera->animation.start_time = g_510c54->game_time;
-				camera->ticks = camera_seconds_to_ticks_round(((real)animation->frame_count - 1.0f) * (1.0f / 30.0f));
+				camera->ticks = camera_seconds_to_ticks_round(((real)frame_count - 1.0f) * (1.0f / 30.0f));
 				if (unit_index != NONE && function_badc0(unit_index, 3) && function_11b930(unit_index))
 				{
 					camera->object_index = unit_index;
@@ -321,7 +322,7 @@ void function_16bf70(long animation_graph_index, long animation_name, long unit_
 				}
 			}
 		}
-		work.state.channels_clear_partial();
+		state.channels_clear_partial();
 	}
 }
 

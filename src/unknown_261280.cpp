@@ -421,20 +421,16 @@ struct s_candidate_positions_block
 // @retail 0x2601f0
 bool function_2601f0(long actor_index, s_type_c3b527 const *point, long sector, real radius, real path_distance)
 {
-    s_type_c3b527 const *const *point_reference = &point;
-    long const *sector_reference = &sector;
-    real const *radius_reference = &radius;
-    real const *path_distance_reference = &path_distance;
     s_actor_view *actor = actor_get(actor_index);
     long *pathfinding = NULL;
     if (*(long *)((byte *)g_4e0348 + 0xc4) > 0)
         pathfinding = *(long **)((byte *)g_4e0348 + 0xc8);
-    bool volatile result = false;
+    bool result = false;
     if (actor->unknown030 != NONE &&
-        ((*sector_reference >= 0 && *sector_reference < *pathfinding) || *((bool *)actor + 0x229)))
+        ((sector >= 0 && sector < *pathfinding) || *((bool *)actor + 0x229)))
     {
         byte *buffer = ai_scratch_buffer_get();
-        if (!*((bool *)actor + 0x229) && *path_distance_reference > 0.0f)
+        if (!*((bool *)actor + 0x229) && path_distance > 0.0f)
         {
             s_path_source source;
             memset(&source, 0, sizeof(source));
@@ -442,12 +438,12 @@ bool function_2601f0(long actor_index, s_type_c3b527 const *point, long sector, 
             source.radius = *(real *)((byte *)function_1e4a50(actor->unknown054) + 4);
             source.object_index = NONE;
             source.unknown0c = NONE;
-            memcpy(&source.point, *point_reference, sizeof(source.point));
+            memcpy(&source.point, point, sizeof(source.point));
             source.unknown04 = true;
             source.has_point = true;
-            source.unknown24 = *sector_reference;
+            source.unknown24 = sector;
             source.unknown45 = true;
-            source.unknown48 = *path_distance_reference;
+            source.unknown48 = path_distance;
             s_path_settings settings;
             function_1f9240(actor_index, &settings);
             function_271300((s_type_f17a25 *)buffer, NULL, &settings, &source, 0);
@@ -465,21 +461,21 @@ bool function_2601f0(long actor_index, s_type_c3b527 const *point, long sector, 
                 {
                     s_candidate_position *candidate = &block->positions[index];
                     vector3f delta;
-                    if ((*point_reference)->output_index == candidate->point.output_index)
-                        vector3d_from_points3d(&(*point_reference)->point, &candidate->point.point, &delta);
+                    if (point->output_index == candidate->point.output_index)
+                        vector3d_from_points3d(&point->point, &candidate->point.point, &delta);
                     else
                     {
                         point3f start, end;
-                        function_210850(*point_reference, &start);
+                        function_210850(point, &start);
                         function_210850(&candidate->point, &end);
                         vector3d_from_points3d(&start, &end, &delta);
                     }
-                    if (*radius_reference * *radius_reference > delta.k * delta.k + delta.j * delta.j + delta.i * delta.i)
+                    if (radius * radius > delta.k * delta.k + delta.j * delta.j + delta.i * delta.i)
                     {
                         if (*((bool *)actor + 0x229))
                         {
                             point3f raised;
-                            function_210850(*point_reference, &raised);
+                            function_210850(point, &raised);
                             raised.z += 0.10000000149011612f;
                             if (function_29e050((byte *)&raised, actor->unknown018, (s_type_d4fbfa *)candidate, g_470fa0, NULL))
                             {
@@ -487,7 +483,7 @@ bool function_2601f0(long actor_index, s_type_c3b527 const *point, long sector, 
                                 goto done;
                             }
                         }
-                        else if (*path_distance_reference <= 0.0f)
+                        else if (path_distance <= 0.0f)
                         {
                             result = true;
                             goto done;
@@ -496,7 +492,7 @@ bool function_2601f0(long actor_index, s_type_c3b527 const *point, long sector, 
                         {
                             real distance;
                             function_270750(buffer, candidate->sector, (s_actor_point_target *)candidate, &distance, 0, 0);
-                            if (*path_distance_reference > distance)
+                            if (path_distance > distance)
                             {
                                 result = true;
                                 goto done;

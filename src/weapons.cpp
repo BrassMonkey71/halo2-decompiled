@@ -244,7 +244,7 @@ struct s_weapon
 	char value_173;
 	char value_174;
 	byte unknown175[2];
-	byte entry_177;
+	char entry_177;
 	long state;
 	short state_ticks;
 	byte unknown17e[0x184 - 0x17e];
@@ -1914,8 +1914,9 @@ bool __stdcall function_100130(long weapon_index, bool immediate)
 		if (TEST_FIELD_BIT(put_away->in_inventory) && put_away->unit_index != NONE)
 		{
 			s_weapon_unit *unit = WEAPON_UNIT_GET(put_away->unit_index);
+			short slot = unit->current_weapon_slot;
 			volatile bool is_current = weapon_index ==
-				(unit->current_weapon_slot != NONE ? unit->weapon_indices[unit->current_weapon_slot] : NONE);
+				(slot != NONE ? unit->weapon_indices[slot] : NONE);
 		}
 		weapon->state_ticks = first_person_weapon_animation_ticks(weapon_index, 0x8000025, 1);
 		result = true;
@@ -2424,7 +2425,7 @@ void function_100520(long weapon_index, s_weapon_status *status)
 			if (index != NONE)
 			{
 				s_weapon *object = (s_weapon *)function_badc0(index, NONE);
-				if (object && weapon->entry_177 != 0xff)
+				if (object && weapon->entry_177 != NONE)
 				{
 					long model_index = WEAPON_DEFINITION(object)->model_index;
 					if (model_index != NONE)
@@ -2518,7 +2519,7 @@ bool __stdcall function_fdad0(long weapon_index, void *placement, bool *flag)
     *(real *)((byte *)weapon + 0x18c) = 0.0f;
     function_1058b0(weapon_index, 0, true);
     weapon->object_index_194 = NONE;
-    *(char volatile *)&weapon->entry_177 = -1;
+    weapon->entry_177 = NONE;
     weapon->time_24c = 0;
     weapon->value_173 = 0;
     weapon->value_174 = 0;

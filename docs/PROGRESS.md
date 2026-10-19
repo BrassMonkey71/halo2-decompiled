@@ -2,6 +2,56 @@
 
 The newest entry comes first.
 
+## 2026-10-19: 9231 functions match
+
+```
+matched 9231 of 11321 game functions (1353371 of 2784283 bytes, 48.61%)
+matched 745 of 1041 Havok functions (71560 of 234536 bytes, 30.51%)
+```
+
+0 new matches, none lost:
+- @andrewnakas's #603:  match.
+
+## 2026-10-19: 9231 functions match
+
+```
+matched 9231 of 11321 game functions (1353371 of 2784283 bytes, 48.61%)
+matched 745 of 1041 Havok functions (71560 of 234536 bytes, 30.51%)
+```
+
+8 new matches, none lost:
+- Machine 3's batch 81 (#602): `0xa69a0`, `0xb69d0`, `0x15be20`, `0x16bf70`, `0x1bd610`, `0x24a190`, `0x278da0` and `0x2ae9d0` match.
+
+## 2026-10-19: 9223 functions match
+
+```
+matched 9223 of 11321 game functions (1350211 of 2784283 bytes, 48.49%)
+matched 745 of 1041 Havok functions (71560 of 234536 bytes, 30.51%)
+```
+
+0 new matches, none lost:
+- @andrewnakas's #595, #596, #598, #599, #600, #601:  match.
+
+## 2026-10-19: 9223 functions match
+
+```
+matched 9223 of 11321 game functions (1350211 of 2784283 bytes, 48.49%)
+matched 725 of 1041 Havok functions (66335 of 234536 bytes, 28.28%)
+```
+
+0 new matches, none lost:
+- @andrewnakas's #591, #594:  match.
+
+## 2026-10-19: 9223 functions match
+
+```
+matched 9223 of 11321 game functions (1350211 of 2784283 bytes, 48.49%)
+matched 725 of 1041 Havok functions (66335 of 234536 bytes, 28.28%)
+```
+
+9 new matches, none lost:
+- Machine 3's batch 80 (#597): `0x84630`, `0x9bd40`, `0x1101e0`, `0x15d770`, `0x18e960`, `0x274470`, `0x2798a0`, `0x27b1d0` and `0x27bfe0` match.
+
 ## 2026-10-19: 9214 functions match
 
 ```

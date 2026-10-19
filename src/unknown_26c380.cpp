@@ -561,14 +561,14 @@ bool function_210690(short output_index, point3f const *point, point3f *out);
 long function_26d100(vector3f const *up, long *unknown, s_collision_result_1697c0 *collision, point3f const *point)
 {
     point3f const *const *point_reference = &point;
-    point3f start;
-    start.x = up->i * 0.5f + (*point_reference)->x;
-    start.y = up->j * 0.5f + (*point_reference)->y;
-    start.z = up->k * 0.5f + (*point_reference)->z;
     vector3f direction;
     direction.i = up->i * -4.0f;
     direction.j = up->j * -4.0f;
     direction.k = up->k * -4.0f;
+    point3f start;
+    start.x = up->i * 0.5f + (*point_reference)->x;
+    start.y = up->j * 0.5f + (*point_reference)->y;
+    start.z = up->k * 0.5f + (*point_reference)->z;
     s_path_collision *hit = (s_path_collision *)collision;
     s_path_node_point *output = (s_path_node_point *)unknown;
     long result = NONE;

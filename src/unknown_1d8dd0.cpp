@@ -43,7 +43,7 @@ struct s_1d8e40 : hkRigidBody
 // @retail 0x1d8e40
 void s_1d8e40::function_1d8e40(hkVector4 const &arg_0)
 {
-	if (!isActive().m_bool && m_simulation_island)
+	if (!body_is_simulating().m_bool && m_simulation_island)
 		activate();
 	m_motion->setLinearVelocity(arg_0);
 }
@@ -51,7 +51,7 @@ void s_1d8e40::function_1d8e40(hkVector4 const &arg_0)
 // @retail 0x1d8ec0
 void s_1d8e40::function_1d8ec0(hkVector4 const &arg_0, hkVector4 const &arg_1)
 {
-	if (!isActive().m_bool && m_simulation_island)
+	if (!body_is_simulating().m_bool && m_simulation_island)
 		activate();
 	m_motion->applyPointImpulse(arg_0, arg_1);
 }

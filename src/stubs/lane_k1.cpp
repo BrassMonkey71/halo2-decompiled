@@ -7,6 +7,8 @@
 #include "pair_agents_2eab70.h"
 #include "derived_311920.h"
 #include "stream_holder_2d8e70.h"
+#include "convex_search_3048a0.h"
+#include "point_triangle_308d90.h"
 
 // @stub 0x2e5a90
 void s_1c3a40::function_2e5a90(handlers_2e5d50 const *handlers, long first_type, long second_type,
@@ -26,11 +28,6 @@ void __cdecl function_2ead90(void const *a, void const *b, void const *input, vo
 {
 }
 
-// @stub 0x2eb670
-void __cdecl function_2eb670(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
-
 // @stub 0x2ece90
 void __cdecl function_2ece90(void const *a, void const *b, void const *input, void *collector)
 {
@@ -41,9 +38,30 @@ void __cdecl function_2ecfa0(void const *a, void const *b, void const *input, vo
 {
 }
 
-// @stub 0x2ee500
-void __cdecl function_2ee500(void const *a, void const *b, void const *input, void *collector)
+struct walk_3028c0;
+struct segment_3028c0;
+
+class class_301a60
 {
+public:
+	void function_301a60(walk_3028c0 *walk, char const *cells, segment_3028c0 const *segment);
+};
+
+// @stub 0x301a60
+void class_301a60::function_301a60(walk_3028c0 *walk, char const *cells, segment_3028c0 const *segment)
+{
+}
+
+// @stub 0x308d90
+int __cdecl function_308d90(__m128 const *point, __m128 const *corners, float const *terms, closest_308d90 *out)
+{
+	return 0;
+}
+
+// @stub 0x3048a0
+int class_3048a0::function_3048a0(convex_2fefd0 const *first, convex_2fefd0 const *second, c_query_transform const *transform, pair_state_2fefd0 *state, closest_3048a0 *closest)
+{
+	return 0;
 }
 
 // @stub 0x2ee8b0
@@ -51,35 +69,13 @@ void __cdecl function_2ee8b0(void const *a, void const *b, void const *input, vo
 {
 }
 
-// @stub 0x2ef5d0
-void __cdecl function_2ef5d0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-// @stub 0x2ef7f0
-void __cdecl function_2ef7f0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-// @stub 0x2f0700
-void __cdecl function_2f0700(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-// @stub 0x2f13e0
-void __cdecl function_2f13e0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-// @stub 0x2f1690
-void __cdecl function_2f1690(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-// @stub 0x2f2130
-void __cdecl function_2f2130(void const *a, void const *b, void const *input, void *collector)
-{
-}
+
+
 
 // @stub 0x2f3d00
 void __cdecl function_2f3d00(void const *a, void const *b, void const *input, void *collector)
@@ -106,25 +102,7 @@ void __cdecl function_2f8110(void const *a, void const *b, void const *input, vo
 {
 }
 
-// @stub 0x2f84a0
-void __cdecl function_2f84a0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-// @stub 0x2f8c20
-void __cdecl function_2f8c20(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f99d0
-void __cdecl function_2f99d0(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
-
-// @stub 0x2fad70
-void __cdecl function_2fad70(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
 
 // @stub 0x2fe830
 void __cdecl function_2fe830(void const *a, void const *b, void const *input, void *collector, void *second_collector)
@@ -165,33 +143,32 @@ void class_2eab70::function_2eab70(void const *a, void const *b, void const *inp
 {
 }
 
-// @stub 0x2ea830
-void class_2ea830::function_2ea830(void const *a, void const *b, void const *input, void *collector)
-{
-}
+
 
 // @stub 0x2ecf20
 void class_2ecf20::function_2ecf20(void const *a, void const *b, void const *input, void *collector)
 {
 }
 
-// @stub 0x2f1560
-void class_2f1560::function_2f1560(void const *a, void const *b, void const *input, void *collector)
-{
-}
+
 
 // @stub 0x2f63d0
 void class_2f63d0::function_2f63d0(void const *a, void const *b, void const *input, void *collector)
 {
 }
 
-// @stub 0x2f8330
-void class_2f8330::function_2f8330(void const *a, void const *b, void const *input, void *collector)
+// @stub 0x2e9d90
+void class_2e9d90::function_2e9d90(void const *a, void const *b, void const *input, pair_query_2e90f0 query)
 {
 }
 
-// @stub 0x2ea530
-void class_2ea530::function_2ea530(void const *a, void const *b, void const *input, void *collector, void *second_collector)
+// @stub 0x2e96a0
+void class_2e96a0::function_2e96a0(void const *a, void const *b, void const *input, pair_query_2e90f0 query)
+{
+}
+
+// @stub 0x2e90f0
+void __cdecl function_2e90f0(void const *a, void const *b, void const *input, void *collector)
 {
 }
 
@@ -210,23 +187,22 @@ class_310a70::~class_310a70()
 {
 }
 
-// @stub 0x2fdcf0
-class_2fdcf0::class_2fdcf0(void const *source)
-{
-}
+
 
 struct s_surface_key_array;
 struct c_query_transform;
 struct s_query_bounds;
 
+struct cell_box_300290;
+
 class class_3008d0
 {
 public:
-	class_3008d0(void const *tree, const __m128 *sphere, s_surface_key_array *keys);
+	void function_300290(cell_box_300290 const *box, unsigned char const *node);
 };
 
-// @stub 0x3008d0
-class_3008d0::class_3008d0(void const *tree, const __m128 *sphere, s_surface_key_array *keys)
+// @stub 0x300290
+void class_3008d0::function_300290(cell_box_300290 const *box, unsigned char const *node)
 {
 }
 
@@ -258,9 +234,9 @@ class c_244c10;
 
 struct result_2df6e0
 {
-	long field_0;
-	long field_4;
-	long field_8;
+	result_2df6e0() {}
+
+	bool hit;
 };
 
 struct pending_301800;
@@ -273,12 +249,7 @@ struct class_2df670
 	void function_3009e0(pending_301800 *pending, void const *root, fixed_ray_301800 const *ray);
 };
 
-// @stub 0x301720
-result_2df6e0 class_2df670::function_301720(void const *shape, void const *tree, void const *ray, void *output)
-{
-	result_2df6e0 result = {0, 0, 0};
-	return result;
-}
+
 
 class class_2d99d0
 {
@@ -293,15 +264,16 @@ int class_2d99d0::function_2d9850()
 }
 
 struct element_2e1090;
+struct bounds_2e0020;
 
 class class_2e1090
 {
 public:
-	void function_2e0020(element_2e1090 const *element);
+	void function_2e0020(element_2e1090 const *element, bounds_2e0020 *bounds);
 };
 
 // @stub 0x2e0020
-void class_2e1090::function_2e0020(element_2e1090 const *element)
+void class_2e1090::function_2e0020(element_2e1090 const *element, bounds_2e0020 *bounds)
 {
 }
 
@@ -397,20 +369,9 @@ void class_2ece10::function_2ece10(void const *a, void const *b, void const *inp
 {
 }
 
-// @stub 0x2f0450
-void class_2f0450::function_2f0450(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-// @stub 0x2f1270
-void class_2f1270::function_2f1270(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-// @stub 0x2f1ea0
-void class_2f1ea0::function_2f1ea0(void const *a, void const *b, void const *input, void *collector)
-{
-}
+
 
 // @stub 0x2f4f00
 void class_2f4f00::function_2f4f00(void const *a, void const *b, void const *input, void *collector)
@@ -422,10 +383,7 @@ void class_2f7f10::function_2f7f10(void const *a, void const *b, void const *inp
 {
 }
 
-// @stub 0x2ea410
-void class_2ea410::function_2ea410(void const *a, void const *b, void const *input, void *collector)
-{
-}
+
 
 // @stub 0x2f0100
 void class_2f0100::function_2f0100(void const *a, void const *b, void const *input, void *collector)
@@ -459,11 +417,40 @@ void class_2fec10::function_2fec10(void const *a, void const *b, void const *inp
 
 class class_308180;
 
+struct contact_307f90;
+
 class query_2ef260
 {
 public:
 	void function_3080a0(class_308180 *manifold);
+	void function_307f90(bool *found, contact_307f90 *contact);
 };
+
+// whether two boxes overlap, returned through a hidden pointer
+class answer_306580
+{
+public:
+	answer_306580() {}
+
+	char value;
+};
+
+class class_306580
+{
+public:
+	answer_306580 function_306580();
+};
+
+// @stub 0x306580
+answer_306580 class_306580::function_306580()
+{
+	return answer_306580();
+}
+
+// @stub 0x307f90
+void query_2ef260::function_307f90(bool *found, contact_307f90 *contact)
+{
+}
 
 // @stub 0x3080a0
 void query_2ef260::function_3080a0(class_308180 *manifold)

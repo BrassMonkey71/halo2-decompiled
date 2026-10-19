@@ -227,7 +227,7 @@ void __stdcall function_56f60(c_voice_observer *observer)
 	{
 		if ((mask & (1 << player)) && !(local_mask & (1 << player)) &&
 			function_54df0(player) && !function_589e0(player) &&
-			1.0f > (g_510c54->game_time - observer->recent_times[player]) * g_510c54->rate)
+			0.3f > (g_510c54->game_time - observer->recent_times[player]) * g_510c54->rate)
 		{
 			for (long local = 0; local < 16; local++)
 			{

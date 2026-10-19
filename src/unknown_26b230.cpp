@@ -360,7 +360,7 @@ short __stdcall function_26b6b0(long clump_index, real *b, real *a)
 // @retail 0x26b6e0
 bool __stdcall function_26b6e0(long clump_index, real *b, real *a)
 {
-	return a[3] > 0.5;
+	return a[3] > 0.0;
 }
 
 /* ---- whether a clump may use a prop ---- */
@@ -1027,7 +1027,7 @@ done:
 short __stdcall function_26b700(long clump_index, real *b, real *a)
 {
 	short result = NONE;
-	if (a[2] == 0.5)
+	if (a[2] == 0.0)
 		result = 1;
 	else if (a[5] == 0.0f)
 		result = 2;
@@ -1037,7 +1037,7 @@ short __stdcall function_26b700(long clump_index, real *b, real *a)
 // @retail 0x26b750
 bool __stdcall function_26b750(long clump_index, real *b, real *a)
 {
-	return a[5] > 0.5;
+	return a[5] > 0.0;
 }
 
 // @retail 0x26b770

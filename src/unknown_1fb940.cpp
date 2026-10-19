@@ -297,3 +297,141 @@ void __stdcall function_1fbe00(long clump_index, long source_index, long object_
 		}
 	}
 }
+
+// BLOCKED-BY the full check (#578, batch r294): enabling 0x1fbac0 loses 25 matched functions under
+// whole-program optimisation (0x1acfd0..0x1b6930, 0x1bf4e0, 0x1c9500, 0x1fb7e0, 0x20ba60, 0x25ac00..0x25d420,
+// 0x266540); it does not byte-match yet. fecheck: behaves like retail on its in-game snapshots with every
+// argument on the stack (retail's callers push all five; ret 0x14). Enabling it also needs the signature
+// retail reads: (long actor_index, long unit_index, short mode, bool filter, event), in the declarations in
+// unknown_1c95d0.cpp, 1ca130, 1ca690, 1fb7e0 and 20d570. The lane_b stub stays.
+#if 0
+#include "player_queries.h"
+#include <math.h>
+
+s_ai_player *ai_player_get(long player_index);
+void function_295320(point3f const *point);
+
+/* the clumps an event reaches: a data iteration over g_502420 that runs only
+   while the ai is active */
+struct s_clump_walk
+{
+	s_data_datum_iterator iterator;
+	long clump_index;
+};
+
+static inline void clump_walk_begin(s_clump_walk *iterator)
+{
+	if (g_4f55d0->active)
+	{
+		iterator->iterator.data = g_502420;
+		iterator->iterator.index = NONE;
+		iterator->iterator.datum_index = NONE;
+	}
+}
+
+static inline s_502420_element *clump_walk_step(s_clump_walk *iterator)
+{
+	s_502420_element *clump = NULL;
+
+	if (g_4f55d0->active)
+	{
+		if (data_datum_iterator_next(&iterator->iterator))
+			clump = (s_502420_element *)iterator->iterator.datum;
+		iterator->clump_index = iterator->iterator.datum_index;
+	}
+	return clump;
+}
+
+/* a unit (and its actor, when it has one) makes an event: mode 0 tells the
+   members of the event's joint, mode 1 the actor's own clump, mode 2 and up
+   every clump within reach (30 units, 40 for events other than type 0, plus
+   6), skipping clumps of other teams below mode 3 */
+// Retail 0x1fbac0, disabled with its blocker above.
+void __stdcall function_1fbac0(long actor_index, long unit_index, short mode, bool filter,
+	s_1fbac0_event *event)
+{
+	/* retail keeps every argument on the stack (ret 0x14); its callers push them */
+	long const *actor_on_stack = &actor_index;
+	long const *unit_index_reference = &unit_index;
+	short const *mode_reference = &mode;
+	bool const *filter_reference = &filter;
+	s_1fbac0_event *const *event_reference = &event;
+	s_object_header_view *headers = (s_object_header_view *)g_4e0300->data;
+	s_slot_object_view *unit = (s_slot_object_view *)headers[*unit_index_reference & 0xffff].object;
+	s_actor_view *actor = NULL;
+	short team = NONE;
+	point3f position;
+
+	function_b9dd0(unit_index, &position);
+	s_location const *location = (s_location const *)((byte *)unit + 0x28);
+	if (unit->parent_index != NONE)
+		location = (s_location const *)((byte *)(s_slot_object_view *)headers[function_baf80(unit_index) & 0xffff].object + 0x28);
+
+	if (*actor_on_stack != NONE)
+	{
+		actor = actor_get(actor_index);
+		team = actor->unknown024;
+	}
+	else if (unit->type == 0 && unit->player_index != NONE)
+	{
+		s_player_datum *player = (s_player_datum *)(g_4e8c24->data + (unit->player_index & 0xffff) * sizeof(s_player_datum));
+		team = player->team;
+	}
+
+	if ((*event_reference)->unknown00 == 1 && unit->type == 0 && unit->player_index != NONE)
+	{
+		s_ai_player *ai_player = ai_player_get(unit->player_index);
+		if (ai_player)
+			ai_player->unknown0c = g_510c54->game_time;
+	}
+
+	dword const *clusters = NULL;
+	if (*filter_reference && location->cluster_index != NONE)
+		clusters = function_1fb940(location->cluster_index);
+
+	real radius = event->unknown00 != 0 ? 40.0f : 30.0f;
+
+	if (*mode_reference == 0)
+	{
+		s_slot_target_list *joint = (s_slot_target_list *)element_502424_get(event->data.unknown0c);
+		for (long i = 0; i < 10; i++)
+		{
+			s_slot_target_entry *entry = &joint->entries[i];
+			long member_index = entry->actor_index;
+			if (member_index != NONE && entry->type == 0 &&
+				(!filter || function_1fba10(member_index, actor_index, location, event, clusters, &position)))
+				function_1fbff0(member_index, actor_index, unit_index, NONE, event);
+		}
+	}
+	else if (mode == 1)
+	{
+		if (actor && actor->unknown07c != NONE)
+			function_1fbe00(actor->unknown07c, actor_index, unit_index, filter, clusters, event);
+	}
+	else if (mode >= 2)
+	{
+		s_clump_walk iterator;
+		s_502420_element *clump;
+
+		clump_walk_begin(&iterator);
+		while ((clump = clump_walk_step(&iterator)) != NULL)
+		{
+			short clump_team = *(short *)((byte *)clump + 0x12);
+			if (actor_index != NONE && mode < 3 && team != clump_team && function_1df560(team, clump_team))
+				continue;
+
+			point3f const *center = (point3f const *)((byte *)clump + 4);
+			real dx = position.x - center->x;
+			real dy = position.y - center->y;
+			real dz = position.z - center->z;
+			if (sqrt(dx * dx + dy * dy + dz * dz) < radius + 6.0)
+				function_1fbe00(iterator.clump_index, actor_index, unit_index, filter, clusters, event);
+		}
+	}
+
+	if (event->unknown00 == 3)
+		function_295320(&position);
+	else if (event->unknown00 == 1 && ((1 << unit->type) & 3) && unit->player_index != NONE)
+		g_4f55d0->unknown36c = g_510c54->game_time;
+}
+#endif

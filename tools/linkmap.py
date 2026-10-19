@@ -138,6 +138,14 @@ class LinkMap:
         lo = bisect.bisect_left(self._addresses, symbol.va)
         return self._by_address[lo:bisect.bisect_right(self._addresses, symbol.va)]
 
+    def around(self, symbol, count):
+        """Up to count symbols before symbol's address, then up to count after it, each nearest first, in
+        its section."""
+        lo = bisect.bisect_left(self._addresses, symbol.va)
+        hi = bisect.bisect_right(self._addresses, symbol.va)
+        nearby = self._by_address[max(lo - count, 0):lo][::-1] + self._by_address[hi:hi + count]
+        return [s for s in nearby if s.section == symbol.section]
+
     def find(self, plain):
         """The symbols with this plain name, one per address (the compiler
         aliases ??_G and ??_E, for instance)."""
