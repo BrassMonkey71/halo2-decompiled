@@ -3372,10 +3372,9 @@ void function_4ff50(byte const *definition, byte const *state, bool facing, real
         byte const *curve = *(byte **)(definition + 0x3c);
         if (facing)
         {
-            real angle;
-            if (function_50650(cosine) * 0.6366197466850281f < 0.0f) angle = 0.0f;
-            else if (function_50650(cosine) * 0.6366197466850281f > 1.0f) angle = 1.0f;
-            else angle = function_50650(cosine) * 0.6366197466850281f;
+            real angle = function_50650(cosine) * 0.6366197466850281f;
+            if (angle < 0.0f) angle = 0.0f;
+            else if (angle > 1.0f) angle = 1.0f;
             real lower = curve ? *(real const *)(curve + 0x14) * 0.6366197466850281f : 0.0f;
             if (0.0f > lower) lower = 0.0f;
             else if (lower > 0.9998999834060669f) lower = 0.9998999834060669f;
