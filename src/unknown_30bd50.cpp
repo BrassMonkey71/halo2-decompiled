@@ -35,11 +35,11 @@ struct entity_30bd50
 class c_physics_body_island_view
 {
 public:
-	void removeEntityListener(c_havok_entity_observer *listener);
+	void entity_observer_detach(c_havok_entity_observer *listener);
 };
 
 // @retail 0x30bd50
-void c_physics_body_island_view::removeEntityListener(c_havok_entity_observer *listener)
+void c_physics_body_island_view::entity_observer_detach(c_havok_entity_observer *listener)
 {
 	listener_array_30bd50 &listeners = ((entity_30bd50 *)this)->listeners;
 	int index = listeners.index_of(listener);

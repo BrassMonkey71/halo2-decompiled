@@ -130,7 +130,7 @@ c_311ba0 *function_1d70d0(s_havok_component *arg_0, s_1d70d0 *arg_1, bool arg_2,
   local_1.field_30.set(*(hkRotation *)&local_5);
   ((s_1d8d60 *)&local_1.field_30)->function_1d8d60();
   arg_0->unknown04 |= 0x40;
-  arg_0->transform.setInverse(local_4->field_10);
+  arg_0->transform.transform_set_to_inverse(local_4->field_10);
   c_transformed_point local_6;
   local_6.transform(&arg_0->transform, &local_1.field_90.m_quad);
   local_1.field_90.m_quad = local_6.value;
