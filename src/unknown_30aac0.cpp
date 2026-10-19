@@ -20,6 +20,8 @@ struct face_30aac0
 	float distance;
 	edge_30aac0 edges[3];
 	char mark;
+
+	void function_30a9d0();
 };
 
 class class_30a810
@@ -28,6 +30,30 @@ public:
 	void clear_marks();
 	face_30aac0 *function_30aac0(face_30aac0 *start);
 };
+
+// the face's plane from its three vertices: the unit normal of the edges'
+// cross product, and the distance along it of the first vertex
+// @retail 0x30a9d0
+void face_30aac0::function_30a9d0()
+{
+	__m128 const v1 = *edges[1].vertex;
+	__m128 const a = _mm_sub_ps(*edges[0].vertex, v1);
+	__m128 const b = _mm_sub_ps(v1, *edges[2].vertex);
+	normal = _mm_sub_ps(
+		_mm_mul_ps(_mm_shuffle_ps(a, a, 0xc9), _mm_shuffle_ps(b, b, 0xd2)),
+		_mm_mul_ps(_mm_shuffle_ps(a, a, 0xd2), _mm_shuffle_ps(b, b, 0xc9)));
+	__m128 const value = normal;
+	__m128 const squares = _mm_mul_ps(value, value);
+	__m128 const sum = _mm_add_ss(_mm_shuffle_ps(squares, squares, 0xaa), _mm_add_ss(_mm_shuffle_ps(squares, squares, 0x55), squares));
+	__m128 const inverse = _mm_rsqrt_ss(sum);
+	__m128 const correction = _mm_sub_ss(_mm_set_ss(3.0f), _mm_mul_ss(_mm_mul_ss(sum, inverse), inverse));
+	__m128 const scale = _mm_mul_ss(_mm_mul_ss(_mm_set_ss(0.5f), inverse), correction);
+	normal = _mm_mul_ps(_mm_shuffle_ps(scale, scale, 0), normal);
+	__m128 const product = _mm_mul_ps(normal, *edges[0].vertex);
+	float d;
+	_mm_store_ss(&d, _mm_add_ss(_mm_shuffle_ps(product, product, 0xaa), _mm_add_ss(_mm_shuffle_ps(product, product, 0x55), product)));
+	distance = d;
+}
 
 // @retail 0x30aac0
 face_30aac0 *class_30a810::function_30aac0(face_30aac0 *start)

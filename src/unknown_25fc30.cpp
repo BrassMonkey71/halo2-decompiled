@@ -796,11 +796,9 @@ void __stdcall function_25ec90(
 	short count,
 	s_type_b36ac5 *positions)
 {
-	short i;
-
 	if (context->unknown18 > 0.f)
 	{
-		for (i = 0; i < count; i++)
+		for (short i = 0; i < count; i++)
 		{
 			s_type_b36ac5 *position = &positions[i];
 
@@ -818,13 +816,13 @@ void __stdcall function_25ec90(
 
 	if (context->unknown68c)
 	{
-		for (i = 0; i < count; i++)
+		for (short j = 0; j < count; j++)
 		{
-			s_type_b36ac5 *position = &positions[i];
+			s_type_b36ac5 *position = &positions[j];
 
 			if (position->unknown4c)
 			{
-				short local_0 = ((s_type_b36ac5 volatile *)position)->reference.unknown2;
+				short local_0 = position->reference.unknown2;
 				if ((local_0 & 0x8000) ||
 					local_0 != context->unknown68e ||
 					position->definition->unknown10 != context->unknown690)

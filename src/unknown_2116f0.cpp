@@ -235,3 +235,20 @@ bool function_211680(long object_index, point3f *position)
         result = swarm_creature_get_pending_velocity(object_index, *position_reference);
     return result;
 }
+
+void __stdcall swarm_creature_convert_parent_unit(long object_index);
+
+/* the animation state's note that a creature's parent unit became an actor:
+   hands the unit to the creature's swarm code (its two extra arguments are
+   the animation state's fields, which the conversion ignores) */
+// @retail 0x2116c0
+void function_2116c0(long object_index, long arg_1, long arg_2)
+{
+    /* taking the address of the two unused arguments keeps retail's
+       code; without them the callee cleans no stack */
+    long const *arg_1_reference = &arg_1;
+    long const *arg_2_reference = &arg_2;
+    byte *object = *(byte **)(g_4e0300->data + (object_index & 0xffff) * 12 + 8);
+    if (!*(long *)(object + 0x134))
+        swarm_creature_convert_parent_unit(object_index);
+}

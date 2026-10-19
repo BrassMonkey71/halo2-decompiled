@@ -59,6 +59,36 @@ public:
 	virtual bool slot_15() const { return false; }
 };
 
+// a triangle: three corners after a 16-byte header
+struct triangle_2ff0c0
+{
+	char unknown0[0x10];
+	__m128 corners[3];
+};
+
+// a point placed by a transform
+struct placed_point_2ff0c0
+{
+	__m128 value;
+
+	void set_transformed(c_query_transform const *transform, __m128 const *point)
+	{
+		__m128 p = *point;
+		__m128 z = _mm_add_ps(_mm_mul_ps(transform->axes[2], _mm_shuffle_ps(p, p, 0xaa)), transform->position);
+		__m128 y = _mm_mul_ps(transform->axes[1], _mm_shuffle_ps(p, p, 0x55));
+		__m128 x = _mm_mul_ps(transform->axes[0], _mm_shuffle_ps(p, p, 0x00));
+		value = _mm_add_ps(_mm_add_ps(x, y), z);
+	}
+};
+
+// the cross product of two vectors' first three terms
+inline __m128 cross_2ff0c0(__m128 const &a, __m128 const &b)
+{
+	return _mm_sub_ps(
+		_mm_mul_ps(_mm_shuffle_ps(a, a, 0xc9), _mm_shuffle_ps(b, b, 0xd2)),
+		_mm_mul_ps(_mm_shuffle_ps(a, a, 0xd2), _mm_shuffle_ps(b, b, 0xc9)));
+}
+
 struct pair_state_2fefd0
 {
 	unsigned short first_id;
@@ -66,11 +96,12 @@ struct pair_state_2fefd0
 	unsigned short field_4;
 	unsigned short field_6;
 	bool field_8;
-	bool field_9;
+	unsigned char field_9;
 	bool first_flag;
-	bool second_flag;
+	unsigned char second_flag;
 
 	void start(convex_2fefd0 const *first, convex_2fefd0 const *second, c_query_transform const *transform);
+	void function_2ff0c0(convex_2fefd0 const *first, triangle_2ff0c0 const *triangle, c_query_transform const *transform);
 };
 
 // @retail 0x2fefd0
@@ -99,4 +130,40 @@ void pair_state_2fefd0::start(convex_2fefd0 const *first, convex_2fefd0 const *s
 	field_9 = true;
 	first_flag = first->slot_15();
 	second_flag = second->slot_15();
+}
+
+// starting the search state of an object and a triangle: the triangle's
+// corners placed by the transform, its normal turned to face away from the
+// object's centre, and the object's support vertex against that normal
+// @retail 0x2ff0c0
+void pair_state_2fefd0::function_2ff0c0(convex_2fefd0 const *first, triangle_2ff0c0 const *triangle, c_query_transform const *transform)
+{
+	second_id = 0;
+	field_4 = 0x10;
+	field_6 = 0x20;
+	placed_point_2ff0c0 corners[3];
+	__m128 const *corner = triangle->corners;
+	placed_point_2ff0c0 *placed = corners;
+	for (int count = 3; count != 0; count--)
+	{
+		placed->set_transformed(transform, corner);
+		placed++;
+		corner++;
+	}
+	__m128 normal = cross_2ff0c0(_mm_sub_ps(corners[1].value, corners[0].value), _mm_sub_ps(corners[2].value, corners[1].value));
+
+	__m128 centre;
+	first->centre(&centre);
+	__m128 const product = _mm_mul_ps(_mm_sub_ps(centre, corners[0].value), normal);
+	if (_mm_movemask_ps(_mm_add_ss(_mm_shuffle_ps(product, product, 0xaa), _mm_add_ss(_mm_shuffle_ps(product, product, 0x55), product))) & 1)
+	{
+		normal = _mm_xor_ps(normal, *(__m128 const *)sign_mask_4124a0);
+	}
+	support_2fefd0 vertex;
+	first->support(&normal, &vertex);
+	first_id = vertex.vertex.id;
+	field_8 = true;
+	field_9 = 3;
+	first_flag = first->slot_15();
+	second_flag = 3;
 }
