@@ -1,7 +1,7 @@
 // @flags /O2 /GL- /GX
 // Havok (third-party physics library): an array of 48-byte elements whose
-// storage comes from the allocator's stack area: its constructor (the same
-// shape as the arrays in unknown_2e18e0.cpp).
+// storage comes from the allocator's stack area: its constructor and
+// destructor (the same shape as the arrays in unknown_2e18e0.cpp).
 #include "reference_counted_2d88a0.h"
 
 // a block from the top of the allocator's stack area, or from its slot 9 when
@@ -47,6 +47,7 @@ struct stack_array_317060 : array_317060
 	long stack_capacity;
 
 	stack_array_317060(long capacity);
+	~stack_array_317060();
 };
 
 // @retail 0x317060
@@ -57,4 +58,12 @@ stack_array_317060::stack_array_317060(long capacity)
 	stack_capacity = capacity;
 	data = (element_317060 *)block;
 	stack_block = (element_317060 *)block;
+}
+
+// the block goes back to the allocator's stack area, then the array's own
+// storage is given back
+// @retail 0x317100
+stack_array_317060::~stack_array_317060()
+{
+	g_memory_2d88a0->release_stack(stack_block, (stack_capacity * sizeof(element_317060) + 15) & ~15);
 }

@@ -34,3 +34,10 @@ public:
 two_arrays_2fdf00::~two_arrays_2fdf00()
 {
 }
+
+// destroys one object in place, as a callback
+// @retail 0x2fdf90
+void __cdecl function_2fdf90(two_arrays_2fdf00 *object)
+{
+	object->~two_arrays_2fdf00();
+}
