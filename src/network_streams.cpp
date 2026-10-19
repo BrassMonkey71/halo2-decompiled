@@ -835,20 +835,21 @@ long c_network_reliable_stream::function_965e0(long *sequence, long *size, long 
 	long type = 0;
 	if (!get_next_send(&type, sequence, size, time) && sequence_window_count(&m_message_window))
 	{
-		long newest = m_message_window.newest;
+		s_sequence_window *window = &m_message_window;
+		long newest = window->newest;
 		for (long next = m_next_sequence + 1; next < newest; next++)
 		{
 			s_reliable_message *message;
-			long index = sequence_window_index(&m_message_window, next);
+			long index = sequence_window_index(window, next);
 			message = 0;
 			if (index != NONE)
 				message = &m_messages[index];
 			word flags = message->flags;
 			if ((flags & 1) && !(flags & 2))
 			{
-				**(long *volatile *)&sequence = next;
-				**(long *volatile *)&size = message->size;
-				**(long *volatile *)&time = message->unknown08;
+				*sequence = next;
+				*size = message->size;
+				*time = message->unknown08;
 				message->flags |= 2;
 				type = 4;
 				break;
