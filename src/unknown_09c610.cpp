@@ -91,7 +91,6 @@ struct s_9cca0
     byte field_7e[10];
 };
 
-#pragma inline_depth(0)
 // @retail 0x9cca0
 bool c_breakable_surface_damage_event_definition::v11(long arg_0, long const *arg_1, long arg_2, void const *arg_3)
 {
@@ -112,7 +111,6 @@ bool c_breakable_surface_damage_event_definition::v11(long arg_0, long const *ar
     }
     return false;
 }
-#pragma inline_depth(255)
 
 struct s_9f880
 {
