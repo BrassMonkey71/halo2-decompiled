@@ -303,9 +303,7 @@ void c_juggernaut_engine::v18()
 				bool remove = flags & 2 || flags & 1 && (function_15d770(player_index) || function_15db30(player_index));
 				if (remove)
 				{
-					g_510c9c->players &= ~(1 << absolute_index);
-					juggernaut_globals_changed();
-					juggernaut_update_teams();
+					juggernaut_set(player_index, false);
 				}
 				else
 				{
