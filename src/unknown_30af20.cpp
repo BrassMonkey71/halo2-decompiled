@@ -2,12 +2,7 @@
 // Havok (third-party physics library): asking every listener, from the last,
 // about an event; each may change the answer, which starts as the flag.
 
-class class_30af20;
-
-struct flag_30af20
-{
-	char value;
-};
+#include "listeners_30af20.h"
 
 struct event_30af20
 {
@@ -21,16 +16,6 @@ class listener_30af20
 {
 public:
 	virtual void ask(event_30af20 *event) = 0;
-};
-
-class class_30af20
-{
-public:
-	char unknown0[0x3c];
-	listener_30af20 **listeners;
-	int listener_count;
-
-	int function_30af20(long value, flag_30af20 flag);
 };
 
 // @retail 0x30af20

@@ -110,7 +110,6 @@ static inline byte *attachment_object(long index)
 // @retail 0x14ee20
 void function_14ee20(long player_index, long target_index)
 {
-    long const *target_reference = &target_index;
     byte *player = g_4e8c24->data + (player_index & 0xffff) * 0x21c;
     long unit_index = *(long *)(player + 0x2c);
     if (unit_index != NONE)
@@ -128,8 +127,8 @@ void function_14ee20(long player_index, long target_index)
             *(dword *)(current + 4) |= 1;
             function_b8b70(unit_index);
         }
-        if (*target_reference != NONE)
-            *(long *)(player + 0x30) = *target_reference;
+        if (target_index != NONE)
+            *(long *)(player + 0x30) = target_index;
         byte *state = (byte *)g_4e8c20;
         state[4] = false;
         state[5] = false;

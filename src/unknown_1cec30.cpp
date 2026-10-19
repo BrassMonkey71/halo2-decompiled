@@ -1,5 +1,7 @@
 // @flags /O2 /Ob1 /arch:SSE /Gr
 #include "orientations_storage.h"
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
 /* UNKNOWN_1CEC30.CPP: the havok components (0x1cec30..0x1cffxx): a data
    array of 0x200 components of 0xa0 bytes, one per object with a Havok
    rigid body, and the properties the game keeps on the rigid bodies */
@@ -321,19 +323,11 @@ void havok_entity_property_2003_set(hkEntity *entity, long value)
 void s_havok_component::initialize(long object_index)
 {
 	s_havok_component *component = this;
-	real seconds;
-	long ticks;
 
 	component->unknown04 = 0;
 	component->object_index = object_index;
 	component->unknown0c = NONE;
-	seconds = g_510c54->field_2_3 * 0.35f;
-	__asm
-	{
-		fld seconds
-		fistp ticks
-	}
-	component->unknown10 = -ticks;
+	component->unknown10 = -real_to_long(g_510c54->field_2_3 * 0.35f);
 	component->unknown18 = NONE;
 	component->unknown19 = NONE;
 	component->unknown20 = NONE;
@@ -341,15 +335,18 @@ void s_havok_component::initialize(long object_index)
 	component->unknown1a = false;
 	component->unknown1b = false;
 	component->unknown1c = false;
-	component->rigid_bodies.data = NULL;
-	component->rigid_bodies.size = 0;
-	component->rigid_bodies.capacity_and_flags = 0x80000000;
-	component->unknown7c.data = NULL;
-	component->unknown7c.size = 0;
-	component->unknown7c.capacity_and_flags = 0x80000000;
-	component->unknown88.data = NULL;
-	component->unknown88.size = 0;
-	component->unknown88.capacity_and_flags = 0x80000000;
+	s_havok_array60 *bodies = &component->rigid_bodies;
+	bodies->data = NULL;
+	bodies->size = 0;
+	bodies->capacity_and_flags = 0x80000000;
+	s_havok_array0c *contacts = &component->unknown7c;
+	contacts->data = NULL;
+	contacts->size = 0;
+	contacts->capacity_and_flags = 0x80000000;
+	s_havok_array48 *constraints = &component->unknown88;
+	constraints->data = NULL;
+	constraints->size = 0;
+	constraints->capacity_and_flags = 0x80000000;
 	component->unknown94 = NULL;
 	component->rigid_body = NULL;
 	component->unknown9c = 0;
@@ -1375,16 +1372,6 @@ PRIVATE __forceinline real const &component_time_step()
 real function_1d2280(bool allow_reverse, bool scale_by_mass, real mass, real target, real acceleration,
 	real velocity, real limit, real position, real exponent, bool force_acceleration, real *ratio)
 {
-	(void)&scale_by_mass;
-	(void)&mass;
-	(void)&target;
-	(void)&acceleration;
-	(void)&velocity;
-	(void)&limit;
-	(void)&position;
-	(void)&exponent;
-	(void)&force_acceleration;
-	(void)&ratio;
 	real scaled_acceleration = component_acceleration_scale(scale_by_mass, mass, target, acceleration, exponent);
 	real const &delta_time = component_time_step();
 	real step = delta_time * scaled_acceleration;
@@ -1807,7 +1794,6 @@ public:
 // @retail 0x1d35d0
 void function_1d35d0(long constraint_index, s_havok_component *component, real scale)
 {
-    real const *scale_reference = &scale;
     s_havok_component_element0c *constraint = &component->unknown7c.data[constraint_index];
     s_component_object_transform_view *object = (s_component_object_transform_view *)havok_object_get(component->object_index);
     s_component_transform_definition *definition = (s_component_transform_definition *)g_4e3b44[object->definition_index & 0xffff].bytes;
@@ -1833,12 +1819,12 @@ void function_1d35d0(long constraint_index, s_havok_component *component, real s
         {
             s_component_joint_angles *angles = &physics->angles[constraint->unknown02];
             real *joint = (real *)constraint->contact;
-            joint[0x8c / 4] = (angles->twist_minimum > angles->twist_maximum ? angles->twist_maximum : angles->twist_minimum) * *scale_reference * 0.01745329238474369f;
-            joint[0x90 / 4] = (angles->twist_minimum > angles->twist_maximum ? angles->twist_minimum : angles->twist_maximum) * *scale_reference * 0.01745329238474369f;
-            joint[0x84 / 4] = (real)sin((angles->plane_minimum > angles->plane_maximum ? angles->plane_maximum : angles->plane_minimum) * *scale_reference * 0.01745329238474369f);
-            joint[0x88 / 4] = (real)sin((angles->plane_minimum > angles->plane_maximum ? angles->plane_minimum : angles->plane_maximum) * *scale_reference * 0.01745329238474369f);
-            joint[0x80 / 4] = (real)cos((angles->cone_minimum > angles->cone_maximum ? angles->cone_minimum : angles->cone_maximum) * *scale_reference * 0.01745329238474369f);
-            ((c_component_joint_strength *)joint)->set_strength((strength != 0.0f ? strength : angles->strength) * *scale_reference);
+            joint[0x8c / 4] = (angles->twist_minimum > angles->twist_maximum ? angles->twist_maximum : angles->twist_minimum) * scale * 0.01745329238474369f;
+            joint[0x90 / 4] = (angles->twist_minimum > angles->twist_maximum ? angles->twist_minimum : angles->twist_maximum) * scale * 0.01745329238474369f;
+            joint[0x84 / 4] = (real)sin((angles->plane_minimum > angles->plane_maximum ? angles->plane_maximum : angles->plane_minimum) * scale * 0.01745329238474369f);
+            joint[0x88 / 4] = (real)sin((angles->plane_minimum > angles->plane_maximum ? angles->plane_minimum : angles->plane_maximum) * scale * 0.01745329238474369f);
+            joint[0x80 / 4] = (real)cos((angles->cone_minimum > angles->cone_maximum ? angles->cone_minimum : angles->cone_maximum) * scale * 0.01745329238474369f);
+            ((c_component_joint_strength *)joint)->set_strength((strength != 0.0f ? strength : angles->strength) * scale);
         }
         break;
     case 1:
@@ -1847,13 +1833,13 @@ void function_1d35d0(long constraint_index, s_havok_component *component, real s
             real *joint = (real *)constraint->contact;
             if (strength == 0.0f)
                 strength = hinge->strength;
-            joint[0xd0 / 4] = strength * *scale_reference;
+            joint[0xd0 / 4] = strength * scale;
             real lower = 0.0f - hinge->minimum;
             real upper = 0.0f - hinge->maximum;
-            joint[0xc8 / 4] = (lower > upper ? upper : lower) * *scale_reference * 0.01745329238474369f;
+            joint[0xc8 / 4] = (lower > upper ? upper : lower) * scale * 0.01745329238474369f;
             lower = 0.0f - hinge->minimum;
             upper = 0.0f - hinge->maximum;
-            joint[0xcc / 4] = (lower > upper ? lower : upper) * *scale_reference * 0.01745329238474369f;
+            joint[0xcc / 4] = (lower > upper ? lower : upper) * scale * 0.01745329238474369f;
         }
         break;
     }
