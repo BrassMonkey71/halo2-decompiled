@@ -596,8 +596,8 @@ void c_interface_278b40::slot1(s_278da0_group *group)
 			{
 				hkRigidBody *active_first = first->type == 1 ? (hkRigidBody *)first->entity : NULL;
 				hkRigidBody *active_second = second->type == 1 ? (hkRigidBody *)second->entity : NULL;
-				if ((active_first->m_motion->getType() != 6 && !active_first->m_fixed) ||
-					(active_second->m_motion->getType() != 6 && !active_second->m_fixed))
+				if ((active_first->m_motion->kind_code() != 6 && !active_first->m_fixed) ||
+					(active_second->m_motion->kind_code() != 6 && !active_second->m_fixed))
 				{
 					if (group->context->filter()->test1(first, second).m_bool)
 						group->entries[i].unknown0c = 0;
@@ -856,10 +856,10 @@ void c_interface_277890::event0(void *arg_0)
 			real local_3 = 1.0f;
 			real local_4 = 1.0f;
 			if (*((byte *)local_1 + 0x48) == 1 && *((byte *)local_2 + 0x48) == 1 &&
-				((hkRigidBody *)local_1)->m_motion->getType() != 6 &&
-				((hkRigidBody *)local_1)->m_motion->getType() != 7 &&
-				((hkRigidBody *)local_2)->m_motion->getType() != 6 &&
-				((hkRigidBody *)local_2)->m_motion->getType() != 7 &&
+				((hkRigidBody *)local_1)->m_motion->kind_code() != 6 &&
+				((hkRigidBody *)local_1)->m_motion->kind_code() != 7 &&
+				((hkRigidBody *)local_2)->m_motion->kind_code() != 6 &&
+				((hkRigidBody *)local_2)->m_motion->kind_code() != 7 &&
 				function_181e90(((s_scale_owner *)local_1)->get_inverse_scale(),
 					((s_scale_owner *)local_2)->get_inverse_scale()))
 			{
