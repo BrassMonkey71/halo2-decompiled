@@ -4,6 +4,7 @@
 // free function, each bracketed by two marks in the timing stream.
 #include "timer_mark_2ebc80.h"
 #include <xmmintrin.h>
+#include "agent_table_2e5d50.h"
 
 struct sphere_2efc80
 {
@@ -69,4 +70,28 @@ void __cdecl function_2efd50(body_2efc80 const *a, body_2efc80 const *b, void co
 		collector->add_pair(a, b);
 	}
 	timer_add_2ebc80("Et");
+}
+
+struct body_2ef9a0;
+struct body_2efc80;
+class collector_2ef9a0;
+class collector_2efc80;
+class indexed_2ef970;
+struct input_2ef9a0;
+indexed_2ef970 *__cdecl function_2ef970(long arg_0, long arg_1, long arg_2, long value);
+void __cdecl function_2efd50(body_2efc80 const *a, body_2efc80 const *b, void const *input, collector_2efc80 *collector);
+void __cdecl function_2efb10(body_2ef9a0 const *a, body_2ef9a0 const *b, input_2ef9a0 const *input, collector_2ef9a0 *collector);
+void __cdecl function_2fe830(void const *a, void const *b, void const *input, void *collector, void *second_collector);
+
+// registers handlers for pairs of shape types, each pair both ways round
+// where the pair differs
+// @retail 0x2efe20
+void __cdecl function_2efe20(s_1c3a40 *table)
+{
+	handlers_2e5d50 handlers;
+	handlers.handler[0] = (handler_2e5d50)function_2ef970;
+	handlers.handler[1] = (handler_2e5d50)function_2efd50;
+	handlers.handler[2] = (handler_2e5d50)function_2efb10;
+	handlers.handler[3] = (handler_2e5d50)function_2fe830;
+	table->function_2e5d50(&handlers, 4, 4);
 }

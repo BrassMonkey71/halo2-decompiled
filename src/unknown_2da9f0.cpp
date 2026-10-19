@@ -7,6 +7,7 @@
 bool __cdecl function_279740(long value);
 
 class listener_30c420;
+class hkWorld;
 
 class class_30caf0
 {
@@ -96,6 +97,13 @@ class_2da9f0::class_2da9f0(void *world_)
 }
 
 // @retail 0x2dad80 deleting class_2da9f0
+
+// makes a new listener on the world
+// @retail 0x2dadb0
+void __cdecl function_2dadb0(hkWorld *arg_0)
+{
+	new class_2da9f0(arg_0);
+}
 
 // @retail 0x2dace0 adjustor class_2da9f0 0xc
 

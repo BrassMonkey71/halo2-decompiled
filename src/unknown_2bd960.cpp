@@ -1911,18 +1911,18 @@ void function_2beee0()
         return;
     if (game_is_team_game_2be())
     {
-        long *times = (long *)((byte *)g_51ecc8 + 0x180);
         for (long i = 0; i < 8; ++i)
         {
             if (teams & (1 << i))
-                ++times[i];
+                ++((long *)((byte *)g_51ecc8 + 0x180))[i];
             else
-                times[i] = 0;
+                ((long *)((byte *)g_51ecc8 + 0x180))[i] = 0;
         }
         for (long team = 0; team < 8; ++team)
         {
             long last = NONE;
-            if ((teams & (1 << team)) && times[team] % g_510c54->field_2_3 == 0)
+            if ((teams & (1 << team)) &&
+                ((long *)((byte *)g_51ecc8 + 0x180))[team] % g_510c54->field_2_3 == 0)
             {
                 s_player_iterator_2be members;
                 members.data = g_4e8c24;

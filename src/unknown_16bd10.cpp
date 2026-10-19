@@ -167,8 +167,11 @@ bool camera_velocity_profile_new(s_camera_velocity_profile *profile, real total_
 	profile->valid = false;
 	if (total_ticks > 0)
 	{
-		real distance = (start_rate - 1.0f) * (real)acceleration_ticks + (real)(total_ticks * 2) +
-			(real)deceleration_ticks * (end_rate - 1.0f);
+		real ramp_down_span = (real)deceleration_ticks;
+		real ramp_up_span = (real)acceleration_ticks;
+
+		end_rate -= 1.0f;
+		real distance = (start_rate - 1.0f) * ramp_up_span + (real)(total_ticks * 2) + ramp_down_span * end_rate;
 
 		if (distance > 0.001f)
 		{
@@ -178,7 +181,7 @@ bool camera_velocity_profile_new(s_camera_velocity_profile *profile, real total_
 			profile->start_rate = peak_rate * start_rate;
 			if (acceleration_ticks > 0)
 			{
-				profile->acceleration = (peak_rate - profile->start_rate) / ((real)acceleration_ticks * 2.0f);
+				profile->acceleration = (peak_rate - profile->start_rate) / (ramp_up_span * 2.0f);
 			}
 			else
 			{
@@ -186,7 +189,7 @@ bool camera_velocity_profile_new(s_camera_velocity_profile *profile, real total_
 			}
 			if (deceleration_ticks > 0)
 			{
-				profile->deceleration = peak_rate * (end_rate - 1.0f) / ((real)deceleration_ticks * 2.0f);
+				profile->deceleration = peak_rate * end_rate / (ramp_down_span * 2.0f);
 			}
 			else
 			{
@@ -529,7 +532,8 @@ void function_16c110(long animation_graph_index, long animation_name, long objec
 				forward.i = (real)cos(flag->facing[0]) * (real)cos(flag->facing[1]);
 				forward.j = (real)sin(flag->facing[0]) * (real)cos(flag->facing[1]);
 				forward.k = (real)sin(flag->facing[1]);
-				function_1420f0(&transform, &flag->position, &forward, function_11d090(&forward, &up));
+				function_11d090(&forward, &up);
+				function_1420f0(&transform, &flag->position, &forward, &up);
 				function_142a60(&transform, &matrix, &matrix);
 			}
 			function_3f660(&matrix);
@@ -562,6 +566,18 @@ struct s_camera_unit_header
 
 bool function_172350(point3f const *point);
 
+/* the seconds a unit is into its animation, 0 when it has none */
+static inline real camera_unit_animation_seconds(s_camera_unit_animation const *unit_animation)
+{
+	real result = 0.0f;
+
+	if (unit_animation->graph_tag_index != NONE && unit_animation->animation_index != NONE)
+	{
+		result = unit_animation->frame * (1.0f / 30.0f);
+	}
+	return result;
+}
+
 /* the animated camera's matrix and the seconds it is into its animation */
 // @retail 0x16cfa0
 bool camera_scripting_animation_matrix_get(transform4x3f *matrix, real *seconds_out)
@@ -585,14 +601,7 @@ bool camera_scripting_animation_matrix_get(transform4x3f *matrix, real *seconds_
 			s_camera_unit *unit = ((s_camera_unit_header *)g_4e0300->data)[unit_index & 0xffff].unit;
 			s_camera_unit_animation *unit_animation = (s_camera_unit_animation *)((byte *)unit + unit->animation_offset);
 
-			if (unit_animation->graph_tag_index != NONE && unit_animation->animation_index != NONE)
-			{
-				seconds = unit_animation->frame * (1.0f / 30.0f);
-			}
-			else
-			{
-				seconds = 0.0f;
-			}
+			seconds = camera_unit_animation_seconds(unit_animation);
 		}
 		else
 		{
@@ -614,7 +623,8 @@ bool camera_scripting_animation_matrix_get(transform4x3f *matrix, real *seconds_
 			forward.i = (real)cos(flag->facing[0]) * (real)cos(flag->facing[1]);
 			forward.j = (real)sin(flag->facing[0]) * (real)cos(flag->facing[1]);
 			forward.k = (real)sin(flag->facing[1]);
-			function_1420f0(&flag_matrix, &flag->position, &forward, function_11d090(&forward, &up));
+			function_11d090(&forward, &up);
+			function_1420f0(&flag_matrix, &flag->position, &forward, &up);
 			function_142a60(&flag_matrix, &animation_matrix, &animation_matrix);
 		}
 		*matrix = animation_matrix;

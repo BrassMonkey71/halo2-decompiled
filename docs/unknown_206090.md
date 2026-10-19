@@ -436,7 +436,7 @@ Otherwise it returns false, and `function_2056e0` then clears its braking
 
 None. Every function it calls has source with an `@retail` marker (see
 [Existing declarations](#existing-declarations)), and its one virtual call is
-`hkMotion::getType`, the seventh slot of `hkMotion`
+`c_havok_body_motion_state::getType`, the seventh slot of `c_havok_body_motion_state`
 (`include/unknown_1cec30.h:127`).
 
 ## Existing declarations

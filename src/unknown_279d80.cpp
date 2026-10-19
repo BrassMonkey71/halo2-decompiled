@@ -275,7 +275,7 @@ dword const *node_masks_combine(dword const *mask, dword const *other)
 void function_279d80(s_graph_tag *graph, c_type_709360 animation_id, long node_count, real frame, real weight,
 	s_graph_inheritance *inheritance, dword const *node_mask, real_quaternion_transform *transforms, bool interpolate)
 {
-	s_animation *volatile animation = function_1daea0(graph, animation_id);
+	s_animation *animation = function_1daea0(graph, animation_id);
 	s_animation_data data;
 	long size;
 	byte *address;
@@ -1376,12 +1376,15 @@ __forceinline void compute_component_orientations(long blend_method, long node_k
 						{
 							root_offset_scale(node_kind, component, node_index);
 						}
+						long frame_index;
+						long frame_index2;
+						real frame_fraction;
+
 						if (interpolate)
 						{
-							long frame_index = g_sampling_settings.frame_index;
-							long frame_index2 = g_sampling_settings.next_frame_index;
-							real frame_fraction = g_sampling_settings.frame_fraction;
-
+							frame_index = g_sampling_settings.frame_index;
+							frame_index2 = g_sampling_settings.next_frame_index;
+							frame_fraction = g_sampling_settings.frame_fraction;
 							g_sampling_settings.frame_index = g_sampling_settings.blend_frame_index;
 							g_sampling_settings.next_frame_index = g_sampling_settings.blend_next_frame_index;
 							g_sampling_settings.frame_fraction = g_sampling_settings.blend_frame_fraction;
@@ -1396,15 +1399,14 @@ __forceinline void compute_component_orientations(long blend_method, long node_k
 							{
 								__assume(0);
 							}
-							component_apply(blend_method, component, destination, node_kind == 0 ? node_index : destination_index);
+						}
+						component_apply(blend_method, component, destination, node_kind == 0 ? node_index : destination_index);
+						if (interpolate)
+						{
 							g_sampling_settings.frame_index = frame_index;
 							g_sampling_settings.next_frame_index = frame_index2;
 							g_sampling_settings.frame_fraction = frame_fraction;
 							g_5044c0 = &g_504430;
-						}
-						else
-						{
-							component_apply(blend_method, component, destination, node_kind == 0 ? node_index : destination_index);
 						}
 					}
 					if (component == 0)
@@ -1667,6 +1669,9 @@ __forceinline void function_288572(long arg_0, long arg_1, bool arg_2,
 	}
 }
 
+/* compute_orientations with the decoded orientation applied in each arm of
+   the interpolation test (compute_component_orientations applies it once,
+   after the test) */
 __forceinline void function_288571(long arg_0, long arg_1, bool arg_2, bool arg_3)
 {
 	long local_0;
@@ -2016,7 +2021,7 @@ void function_27dd10(void)
 // @retail 0x27dff0
 void function_27dff0(void)
 {
-	compute_orientations(1, 1, true, true);
+	function_288571(1, 1, true, true);
 }
 
 // @retail 0x27e6b0
@@ -2102,7 +2107,7 @@ void function_2818e0(void)
 // @retail 0x281b60
 void function_281b60(void)
 {
-	compute_orientations(2, 1, true, true);
+	function_288571(2, 1, true, true);
 }
 
 // @retail 0x2821f0
@@ -2188,7 +2193,7 @@ void function_285400(void)
 // @retail 0x285750
 void function_285750(void)
 {
-	compute_orientations(3, 1, true, true);
+	function_288571(3, 1, true, true);
 }
 
 // @retail 0x285e90
@@ -2254,7 +2259,7 @@ void function_288f80(void)
 // @retail 0x289580
 void function_289580(void)
 {
-	compute_orientations_split(4, 0, false, false);
+	function_288571(4, 0, false, false);
 }
 
 // @retail 0x2898b0
@@ -2278,7 +2283,7 @@ void function_28a3e0(void)
 // @retail 0x28aaa0
 void function_28aaa0(void)
 {
-	compute_orientations(4, 1, false, false);
+	function_288571(4, 1, false, false);
 }
 
 // @retail 0x28ae70

@@ -278,7 +278,7 @@ long havok_entity_component_index_get(hkEntity const *entity)
 }
 
 // @retail 0x1cf2b0
-void havok_entity_component_index_set(hkEntity *entity, hkPropertyValue component_index)
+void havok_entity_component_index_set(hkEntity *entity, s_havok_property_word component_index)
 {
 	if (havok_entity_property_exists(entity, HAVOK_PROPERTY_COMPONENT_INDEX))
 	{
@@ -294,7 +294,7 @@ long havok_entity_property_2002_get(hkEntity const *entity)
 }
 
 // @retail 0x1cf330
-void havok_entity_property_2002_set(hkEntity *entity, hkPropertyValue value)
+void havok_entity_property_2002_set(hkEntity *entity, s_havok_property_word value)
 {
 	if (havok_entity_property_exists(entity, HAVOK_PROPERTY_2002))
 	{
@@ -316,7 +316,7 @@ void havok_entity_property_2003_set(hkEntity *entity, long value)
 	{
 		entity->removeProperty(HAVOK_PROPERTY_2003);
 	}
-	entity->addProperty(HAVOK_PROPERTY_2003, *(hkPropertyValue const *)&value);
+	entity->addProperty(HAVOK_PROPERTY_2003, *(s_havok_property_word const *)&value);
 }
 
 // @retail 0x1cf950
@@ -1306,8 +1306,8 @@ void function_1d0080(hkRigidBody *body, s_havok_component *component, byte const
 		function_2d91d0(array, sizeof(s_havok_component_rigid_body));
 	new (&array->data[array->size++]) c_component_body_state((hkEntity *)body, values, count, enabled);
 	havok_component_rigid_body_state_update(body_index, component);
-	havok_entity_component_index_set((hkEntity *)body, *(hkPropertyValue const *)&object->havok_component_index);
-	havok_entity_property_2002_set((hkEntity *)body, *(hkPropertyValue const *)&body_index);
+	havok_entity_component_index_set((hkEntity *)body, *(s_havok_property_word const *)&object->havok_component_index);
+	havok_entity_property_2002_set((hkEntity *)body, *(s_havok_property_word const *)&body_index);
 	if (body->m_motion->getType() != 7 && body->m_motion->getType() != 6)
 		component->unknown04 |= 0x8000;
 }
@@ -1548,7 +1548,7 @@ found:
 }
 
 
-PRIVATE inline void component_property_replace(hkEntity *entity, dword key, hkPropertyValue value)
+PRIVATE inline void component_property_replace(hkEntity *entity, dword key, s_havok_property_word value)
 {
  if (havok_entity_property_exists(entity, key))
   entity->removeProperty(key);
@@ -2098,7 +2098,7 @@ PRIVATE __forceinline void component_surface_property_set(hkEntity *entity, long
 {
     if (havok_entity_property_exists(entity, HAVOK_PROPERTY_2003))
         entity->removeProperty(HAVOK_PROPERTY_2003);
-    entity->addProperty(HAVOK_PROPERTY_2003, hkPropertyValue(value));
+    entity->addProperty(HAVOK_PROPERTY_2003, s_havok_property_word(value));
 }
 
 // @retail 0x1d87b0

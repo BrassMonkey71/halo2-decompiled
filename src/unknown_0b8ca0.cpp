@@ -61,11 +61,11 @@ struct s_object_view
 	byte unknown0ab[0xb4 - 0xab];
 	long havok_component_index;
 	byte unknown0b8[0xc0 - 0xb8];
-	byte unknown0c0 : 6;
-	byte physics_active : 1;
-	byte flag7c0 : 1;
-	byte physics_disabled : 1;
-	byte : 7;
+	word unknown0c0 : 6;
+	word physics_active : 1;
+	word flag7c0 : 1;
+	word physics_disabled : 1;
+	word : 7;
 	byte unknown0c2[0xd4 - 0xc2];
 	long field_x10a40f;
 	byte unknown0d8[0x10e - 0xd8];
