@@ -2441,10 +2441,10 @@ void __stdcall function_2a8d0(long tag, long bitmap_index, real const *source,
     sampler_state_write(0, D3DTSS_MAGFILTER, 2);
     sampler_state_write(0, D3DTSS_MINFILTER, 2);
     sampler_state_write(0, D3DTSS_MIPFILTER, 2);
-    sampler_state_write(0, D3DTSS_MAXMIPLEVEL, 0);
+    sampler_state_write(0, D3DTSS_MAXANISOTROPY, 0);
 #pragma inline_depth(0)
-    function_0224f0(0, D3DTSS_MAXANISOTROPY, 0);
     function_0224f0(0, D3DTSS_MIPMAPLODBIAS, 0);
+    function_0224f0(0, D3DTSS_MAXMIPLEVEL, 0);
     function_0224f0(0, D3DTSS_COLORSIGN, 0);
     function_0224f0(0, D3DTSS_ALPHAKILL, 0);
 #pragma inline_depth(255)
@@ -2905,6 +2905,12 @@ PRIVATE __forceinline dword filter_output_shift(long exponent, long threshold)
     return ((exponent > threshold + 1 ? 0x20 : exponent > threshold ? 0x10 : 0) << 12) | 0xd00;
 }
 
+PRIVATE __forceinline dword filter_output_first_shift(long exponent)
+{
+    // retail only ever halves here; no 0x20 step for large exponents
+    return ((exponent > 0 ? 0x10 : 0) << 12) | 0xd00;
+}
+
 PRIVATE __forceinline long filter_quantized_byte(real value, bool direct)
 {
     if ((long)(direct ? floor((double)value) : function_2b480(value)) < 0) return 0;
@@ -3067,7 +3073,7 @@ bool __stdcall function_3a5c0(byte const *configuration, real low, real high, lo
         g_484f68.PSRGBInputs[7] = 0x20 | (small ? 0x2000 : 0);
         g_484f68.PSRGBOutputs[7] = 0x4500;
         g_484f68.PSAlphaInputs[7] = 0xd120c02;
-        g_484f68.PSAlphaOutputs[7] = filter_output_shift(exponent, 0);
+        g_484f68.PSAlphaOutputs[7] = filter_output_first_shift(exponent);
         g_484f68.PSFinalCombinerConstant1 = function_131fc0(offset);
         g_484f68.PSFinalCombinerInputsABCD = 0x41d1105;
         g_484f68.PSFinalCombinerInputsEFG = (extra_texture ? 25 : 32) << 8;
@@ -3101,7 +3107,7 @@ bool __stdcall function_3a5c0(byte const *configuration, real low, real high, lo
         g_484f68.PSRGBInputs[6] = 0x1341134;
         g_484f68.PSRGBOutputs[6] = 0x45;
         g_484f68.PSAlphaInputs[6] = 0x1d120c02;
-        g_484f68.PSAlphaOutputs[6] = filter_output_shift(exponent, 0);
+        g_484f68.PSAlphaOutputs[6] = filter_output_first_shift(exponent);
         g_484f68.PSConstant0[7] = pack_color4f(&second);
         g_484f68.PSAlphaInputs[7] = 0x11141d05;
         g_484f68.PSAlphaOutputs[7] = 0xc00;
@@ -3128,7 +3134,7 @@ bool __stdcall function_3a5c0(byte const *configuration, real low, real high, lo
         long lower = filter_quantized_byte(inverse_span * 0.5f, false);
         g_484f68.PSConstant1[6] = ((dword)upper << 24) | lower;
         g_484f68.PSAlphaInputs[6] = 0x1d120c02;
-        g_484f68.PSAlphaOutputs[6] = filter_output_shift(exponent, 0);
+        g_484f68.PSAlphaOutputs[6] = filter_output_first_shift(exponent);
         g_484f68.PSAlphaInputs[7] = 0x1d0d0d20;
         g_484f68.PSAlphaOutputs[7] = 0x4d00;
         if (configuration[0x14])
@@ -3170,7 +3176,7 @@ bool __stdcall function_3a5c0(byte const *configuration, real low, real high, lo
         g_484f68.PSRGBInputs[6] = 0x4250000;
         g_484f68.PSRGBOutputs[6] = 0xd0;
         g_484f68.PSAlphaInputs[6] = 0x1d120c02;
-        g_484f68.PSAlphaOutputs[6] = filter_output_shift(exponent, 0);
+        g_484f68.PSAlphaOutputs[6] = filter_output_first_shift(exponent);
         g_484f68.PSAlphaInputs[7] = 0x1d2d0000;
         g_484f68.PSAlphaOutputs[7] = 0xd0;
         g_484f68.PSFinalCombinerConstant1 = pack_color3f((color3f const *)(configuration + 0x28));

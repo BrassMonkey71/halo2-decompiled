@@ -58,19 +58,18 @@ long __stdcall function_277b80(void *arg_0, bool arg_1, real arg_2,
     function_277b87(arg_7, &local_0, &local_1);
     function_277b87(arg_8, &local_2, &local_3);
     s_havok_component *local_4 = havok_component_get(local_0);
-    long local_5;
-    if (TEST_FIELD_BIT(local_4->flags12 & 1))
-        local_5 = NONE;
-    else
+    long result = NONE;
+    if (!TEST_FIELD_BIT(local_4->flags12 & 1))
     {
+        long local_5;
         s_havok_component *local_6 = local_2 == NONE ? NULL : havok_component_get(local_2);
         long local_7 = local_6 ? local_6->object_index : NONE;
-        c_type_47f957 local_8(g_54e898);
-        c_type_47f957 local_9(g_54e898);
-        real local_11 = 1.0f;
-        real local_10 = 0.0f;
         char local_12 = 0;
         long local_13 = NONE;
+        c_type_47f957 local_9(g_54e898);
+        c_type_47f957 local_8(g_54e898);
+        real local_11 = 1.0f;
+        real local_10 = 0.0f;
         function_277ec0(&local_11, &local_10, &local_9.m_index, &local_8.m_index,
             arg_5, arg_6, local_0, local_2);
         if ((*arg_9)->function_277b86() == 0x18)
@@ -83,9 +82,10 @@ long __stdcall function_277b80(void *arg_0, bool arg_1, real arg_2,
         if (local_4->unknown04 & 1)
             local_5 = function_1d0400(local_4, arg_4, *(void const **)&arg_2, local_14, local_13,
                 local_7, local_12, arg_7, arg_8, local_11, local_10, local_9.m_index, local_8.m_index);
-        if (local_5 != NONE)
+        result = local_5;
+        if (result != NONE)
         {
-            s_havok_component_element48 *local_15 = &local_4->unknown88.data[local_5];
+            s_havok_component_element48 *local_15 = &local_4->unknown88.data[result];
             function_1cf520((s_1cf520 *)local_15, arg_3, true, arg_1, local_0,
                 havok_entity_property_2002_get(arg_7));
             s_impact_data local_16;
@@ -115,7 +115,8 @@ long __stdcall function_277b80(void *arg_0, bool arg_1, real arg_2,
             }
         }
     }
-    void **local_20 = &arg_0;
-    (void)*(void *volatile *)local_20;
-    return local_5;
+    /* the first parameter is unused, but every caller passes it on the stack */
+    void *const *local_20 = &arg_0;
+    void *local_21 = *local_20;
+    return result;
 }
