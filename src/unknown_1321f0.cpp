@@ -558,9 +558,8 @@ void function_132fd0(s_bit_vector_pool const *data, point3f const *center, bool 
 // @retail 0x1332f0
 dword function_1332f0(s_bit_vector_pool const *data, word flags)
 {
-	union { dword field_0; byte field_1[4]; } local_1;
-	local_1.field_0 = flags;
-	dword result = ((((local_1.field_0 >> 2) & 0x2c00) | (local_1.field_0 & 0x4000)) >> 9) | ((local_1.field_0 & 0x200) << 5);
+	dword packed_flags = flags;
+	dword result = ((((packed_flags >> 2) & 0x2c00) | (packed_flags & 0x4000)) >> 9) | ((packed_flags & 0x200) << 5);
 
 	if (((char)data->flags2a60 >> 7) != 0)
 	{
@@ -570,11 +569,11 @@ dword function_1332f0(s_bit_vector_pool const *data, word flags)
 	{
 		long tag_index = g_4b9f8c;
 
-		if (tag_index != NONE && g_4b9ffc == 0.0f && !(local_1.field_1[1] & 4) && !(*g_4e3b44[tag_index & 0xffff].bytes & 2))
+		if (tag_index != NONE && g_4b9ffc == 0.0f && !(packed_flags & 0x400) && !(*g_4e3b44[tag_index & 0xffff].bytes & 2))
 		{
 			result |= 0x100;
 		}
-		if (!g_4ba004 || (local_1.field_1[1] & 4))
+		if (!g_4ba004 || (packed_flags & 0x400))
 		{
 			result |= 0x80;
 		}
