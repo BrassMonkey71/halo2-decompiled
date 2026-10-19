@@ -42,7 +42,7 @@ short __stdcall function_1c8df0(long arg_0, point3f const *arg_4, short arg_3, s
  {
   s_collision_result_1697c0 local_6;
   local_6.field_24 = NONE;
-  long local_4 = *(volatile bool *)&arg_7 ? 0x15808c2f : 0x5808c2f;
+  long local_4 = *(volatile bool *)&arg_8 ? 0x15808c2f : 0x5808c2f;
   if (arg_6)
    local_4 |= 0x8000000;
   if (*(volatile bool *)&arg_7)

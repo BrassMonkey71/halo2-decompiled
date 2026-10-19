@@ -262,7 +262,8 @@ def test_mutate_is_deterministic_and_valid_looking():
 @pytest.mark.retail
 def test_permute_runs_on_game_state_malloc_aligned(retail_xbe, xdk_dir):
     result = permute.run(0x123d80, tries=3, seed=1, log=lambda *_: None)
-    assert result.tries >= 1
+    # once the function matches (baseline 0) there is nothing to try
+    assert result.tries >= 1 or result.baseline == 0
     assert 0 <= result.best <= result.baseline
 
 
