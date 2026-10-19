@@ -97,14 +97,27 @@ struct pair_317c00
 	long field_c;
 };
 
+// the world the narrow phase belongs to, with a flag at +0x23e that picks
+// which of two ways it runs
+struct world_317d30
+{
+	char unknown0[0x23e];
+	bool flag_23e;
+};
+
 class narrow_phase_317c00
 {
 public:
-	char unknown0[0x68];
+	char unknown0[0x20];
+	world_317d30 *world;
+	char unknown24[0x68 - 0x24];
 	pair_317c00 *pairs;
 	long pair_count;
 
+	void function_3175e0(void const *step, void const *input);
+	void function_317950(void const *input);
 	void function_317c00(void const *input);
+	void function_317d30(void const *step, void const *input);
 };
 
 // @retail 0x317c00
@@ -133,4 +146,26 @@ void narrow_phase_317c00::function_317c00(void const *input)
 		}
 	}
 	timer_add_317c00("Et");
+}
+
+struct s_278e80_state;
+void __cdecl function_278e60(void *context);
+void __cdecl function_278e80(s_278e80_state *state);
+
+// runs a step: the step's setup, then the narrow phase one of two ways as
+// the world's flag says, all inside the object's guard
+// @retail 0x317d30
+void narrow_phase_317c00::function_317d30(void const *step, void const *input)
+{
+	function_278e60(this);
+	function_3175e0(step, input);
+	if (world->flag_23e)
+	{
+		function_317950(input);
+	}
+	else
+	{
+		function_317c00(input);
+	}
+	function_278e80((s_278e80_state *)this);
 }

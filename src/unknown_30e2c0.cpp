@@ -10,7 +10,7 @@ bool __cdecl function_279740(long value);
 class entity_316000;
 struct member_316d60;
 struct listener_world_315d20;
-class hkSimulationIsland;
+class c_havok_body_group;
 
 void __cdecl function_318010(listener_world_315d20 *world, void *event);
 
@@ -42,7 +42,7 @@ public:
 class hkWorld
 {
 public:
-	void function_30ccd0(hkSimulationIsland *island);
+	void function_30ccd0(c_havok_body_group *island);
 };
 
 class class_30d160
@@ -192,7 +192,7 @@ joint_30e3b0 *world_30e2c0::function_30e3b0(joint_30e3b0 *joint)
 				((class_316c50 *)island)->function_316d60((member_316d60 *)joint);
 				if (!island->active)
 				{
-					((hkWorld *)this)->function_30ccd0((hkSimulationIsland *)island);
+					((hkWorld *)this)->function_30ccd0((c_havok_body_group *)island);
 				}
 			}
 			else if (first->island != island)

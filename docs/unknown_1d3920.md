@@ -37,7 +37,7 @@ It uses the names of:
   - `s_havok_component` (`flag9`, `transformed`, `object_index`, `transform`,
     `rigid_bodies`);
   - `s_havok_component_rigid_body` (`rigid_body`, `nodes`, `node_count`);
-  - `hkRigidBody` (`m_motion`), `hkMotion` (`getType`), `hkTransform` and
+  - `hkRigidBody` (`m_motion`), `c_havok_body_motion_state` (`getType`), `hkTransform` and
     `hkVector4`.
 - `src/unknown_1cec30.cpp`:
   - `s_component_transform_definition` (`model_index`),
@@ -339,7 +339,7 @@ the recursive calls.
 | `0x142a60` | `int __fastcall function_142a60(transform4x3f const *a, transform4x3f const *b, transform4x3f *result)` | `src/unknown_1428b0.cpp:233` | `matched` | `a` in `ecx`, `b` in `edx`, `result` pushed |
 | `0x1d3d20` | `void function_1d3d20(s_havok_component *component, long node_index, dword *updated, dword const *restore, rigid_transform_scaled *orientations, long unknown)` | `src/unknown_1cec30.cpp:1665` | `todo` | The component in `ecx`, the other five pushed; it ends with `ret 0x14` |
 | `0x1d0c00`, inlined or written out | `bool havok_component_rigid_body_keyframed(long rigid_body_index, s_havok_component *component)` | `src/unknown_1cec30.cpp:752` | `matched` | Its body, at `0x1d3a7d`–`0x1d3a8c` |
-| `hkMotion` slot 6 | `virtual long getType(void) const { return 0; }` | `include/unknown_1cec30.h:127` | | `this` in `ecx`, nothing pushed |
+| `c_havok_body_motion_state` slot 6 | `virtual long getType(void) const { return 0; }` | `include/unknown_1cec30.h:127` | | `this` in `ecx`, nothing pushed |
 | shape slot 13 | `virtual s_component_child_frame *get_frame(long index, void *buffer) { return NULL; }`, in `c_component_child_frames` | `src/unknown_1cec30.cpp:2377` | | `this` in `ecx`, `index` and `buffer` pushed |
 
 `c_extent_shape` (`src/unknown_182d90.cpp:26`) names the same slot
