@@ -656,13 +656,13 @@ void __stdcall function_21d630(long effect_index, long mode)
 	s_type_99c531 location;
 	location.flags = 0;
 	sound_effect_update_location(effect_index, &location);
-	long loop_state;
+	long repeat_state;
 	bool loop_alternate;
 	if (effect->type == 2)
 	{
 		s_effect_looping_view *looping = &((s_effect_looping_view *)g_4ed28c->data)[effect->sound_index & 0xffff];
 		loop_alternate = (bool)((looping->flags >> 4) & 1);
-		loop_state = looping->state;
+		repeat_state = looping->state;
 	}
 	s_sound_effect_definition *definition = effect->definition;
 	for (long i = 0; i < definition->count; i++)
@@ -713,7 +713,7 @@ void __stdcall function_21d630(long effect_index, long mode)
 				if ((entry_flags & 0x20) && effect->type == 2)
 				{
 					alternate = loop_alternate;
-					state = g_44a20c[loop_state];
+					state = g_44a20c[repeat_state];
 				}
 				else
 				{
