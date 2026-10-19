@@ -10,9 +10,9 @@
 #include "unknown_11c920.h"
 
 /* the reference count Havok's objects start with */
-struct hkMemoryBase
+struct s_havok_refcount_header
 {
-	hkMemoryBase()
+	s_havok_refcount_header()
 	{
 		m_unknown04 = 1;
 	}
@@ -21,12 +21,12 @@ struct hkMemoryBase
 };
 
 /* Havok's memory interface (vtable 0x453760; its functions are pure) */
-class hkMemory : public hkMemoryBase
+class c_havok_abstract_allocator : public s_havok_refcount_header
 {
 public:
 	/* three zeros, then NONE; as loops, the stores stay in a block of
 	   their own ahead of the derived constructors' (0x146b80) */
-	hkMemory()
+	c_havok_abstract_allocator()
 	{
 		long i;
 		for (i = 0; i < 3; i++)
@@ -47,7 +47,7 @@ public:
 	virtual void deallocate16(void *address, long size, long memory_class) = 0;
 	virtual void method6(long unknown) = 0;
 	virtual void method7(long unknown) = 0;
-	virtual ~hkMemory() {}
+	virtual ~c_havok_abstract_allocator() {}
 	/* library functions (0x2d7020, 0x2d7090) */
 	virtual void method9(void) {}
 	virtual void method10(void) {}
@@ -56,10 +56,10 @@ public:
 };
 
 /* Havok's pool memory (vtable 0x457620; constructor 0x22c3e0) */
-class hkPoolMemory : public hkMemory
+class c_havok_page_pool_allocator : public c_havok_abstract_allocator
 {
 public:
-	hkPoolMemory();
+	c_havok_page_pool_allocator();
 
 	virtual void *allocate(long size, long memory_class) { return 0; }
 	virtual void deallocate(void *address) {}
@@ -81,7 +81,7 @@ public:
 /* a fixed buffer: allocations grow up from its start, and the table of
    them (8 bytes each) down from its end (vtable 0x4576a4; its functions
    are at 0x22c0a0..0x22c330) */
-class c_havok_fixed_memory_base : public hkMemory
+class c_havok_fixed_memory_base : public c_havok_abstract_allocator
 {
 public:
 	c_havok_fixed_memory_base(void *buffer, long size)
