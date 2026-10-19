@@ -1061,8 +1061,10 @@ bool function_173910(s_polygon_context_173910 const *context, s_polygon_173910 c
 	point.y = ((real const *)&projected)[axes[1]];
 	for (long i = 0; i < polygon->count; ++i)
 	{
-		points[i].x = ((real const *)&polygon->points[i])[axes[0]];
-		points[i].y = ((real const *)&polygon->points[i])[axes[1]];
+		point2f *destination = &points[i];
+		point3f const *vertex = &polygon->points[i];
+		destination->x = vertex->n[axes[0]];
+		destination->y = vertex->n[axes[1]];
 	}
 	return function_23a220(&point, (short)polygon->count, points, 0.0001f) != false;
 }
