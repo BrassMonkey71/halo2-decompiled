@@ -167,11 +167,11 @@ bool camera_velocity_profile_new(s_camera_velocity_profile *profile, real total_
 	profile->valid = false;
 	if (total_ticks > 0)
 	{
-		real deceleration_time = (real)deceleration_ticks;
-		real acceleration_time = (real)acceleration_ticks;
+		real ramp_down_span = (real)deceleration_ticks;
+		real ramp_up_span = (real)acceleration_ticks;
 
 		end_rate -= 1.0f;
-		real distance = (start_rate - 1.0f) * acceleration_time + (real)(total_ticks * 2) + deceleration_time * end_rate;
+		real distance = (start_rate - 1.0f) * ramp_up_span + (real)(total_ticks * 2) + ramp_down_span * end_rate;
 
 		if (distance > 0.001f)
 		{
@@ -181,7 +181,7 @@ bool camera_velocity_profile_new(s_camera_velocity_profile *profile, real total_
 			profile->start_rate = peak_rate * start_rate;
 			if (acceleration_ticks > 0)
 			{
-				profile->acceleration = (peak_rate - profile->start_rate) / (acceleration_time * 2.0f);
+				profile->acceleration = (peak_rate - profile->start_rate) / (ramp_up_span * 2.0f);
 			}
 			else
 			{
@@ -189,7 +189,7 @@ bool camera_velocity_profile_new(s_camera_velocity_profile *profile, real total_
 			}
 			if (deceleration_ticks > 0)
 			{
-				profile->deceleration = peak_rate * end_rate / (deceleration_time * 2.0f);
+				profile->deceleration = peak_rate * end_rate / (ramp_down_span * 2.0f);
 			}
 			else
 			{

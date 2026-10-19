@@ -1,6 +1,7 @@
-"""Writes an objdiff progress report for decomp.dev from config/functions.csv.
+"""Writes an objdiff progress report for ByteMatch from config/functions.csv.
 
-decomp.dev charts a project from an objdiff report (report.proto version 2)
+ByteMatch (bytematch.dev, formerly decomp.dev) charts a project from an objdiff
+report (report.proto version 2)
 uploaded as a GitHub Actions artifact named ``<version>_report``. This repo's
 checker does not emit that file: tools/check.py writes build/report.json as a
 map of retail addresses, and it needs orig/default.xbe. The committed inventory

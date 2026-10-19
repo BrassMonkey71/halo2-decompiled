@@ -2,6 +2,7 @@
 // Havok (third-party physics library): three objects that each add a word to
 // one of their lists.
 #include "growable_array_2d91d0.h"
+#include "description_312430.h"
 
 ELEMENTS_2D91D0(words_30bdc0, long);
 ELEMENTS_2D91D0(pointers_30be00, void *);
@@ -47,4 +48,13 @@ struct s_47f048_object
 void s_47f048_object::function_30be40(long value)
 {
 	words.append(value);
+}
+
+// sets the object from the description, with the byte and the word it adds
+// @retail 0x30be80
+void class_30bd90::function_30be80(description_30bd90 const *description)
+{
+	function_3124c0(description);
+	field_48 = description->field_18;
+	field_5c = description->field_1a;
 }

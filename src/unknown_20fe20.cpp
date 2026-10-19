@@ -1077,6 +1077,7 @@ void function_2118c0(void)
 		if (source->tag_index != NONE)
 		{
 			s_cell_tag *tag = (s_cell_tag *)g_4e3b44[source->tag_index & 0xffff].bytes;
+			vector3f const &direction = source->direction;
 			double azimuth;
 			double elevation;
 			real scale;
@@ -1093,8 +1094,8 @@ void function_2118c0(void)
 
 			cell->interpolation = (tag->value4 - tag->value0) * cell->value4 + tag->value0;
 
-			azimuth = atan2(source->direction.j, source->direction.i);
-			elevation = atan2(source->direction.k, sqrt(source->direction.j * source->direction.j + source->direction.i * source->direction.i));
+			azimuth = atan2(direction.j, direction.i);
+			elevation = atan2(direction.k, sqrt(direction.j * direction.j + direction.i * direction.i));
 			elevation += tag->valuec * cell->valuec * 0.5f;
 			azimuth += cell->value8 * tag->value8 * 0.5f;
 
