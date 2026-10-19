@@ -44,7 +44,7 @@ for whoever decompiles it.
 - **The callees** are `function_2792c0` (`0x279629`; `matched`,
   `src/unknown_2777d0.cpp:531`), `function_1cfd10` (`0x279651`; `matched`,
   `src/unknown_1cec30.cpp:1083`) and one virtual call, `other`'s
-  `c_havok_body_motion_state::getType` (`0x27954e`, vtable `+0x18`,
+  `c_havok_body_motion_state::kind_code` (`0x27954e`, vtable `+0x18`,
   `include/unknown_1cec30.h:127`).
 
 ## Conventions
@@ -124,8 +124,8 @@ at `0x45dbc0`.
   absent. The keys are `HAVOK_PROPERTY_COMPONENT_INDEX` (`0x2001`, `:456`) and
   `HAVOK_PROPERTY_2002` (`:457`).
 - `hkRigidBody::m_motion` at `+0x3c` (`:181`). `c_havok_body_motion_state::m_linear_velocity`
-  is at `+0x40` (`:162`) and `getType` is slot 6, vtable `+0x18` (`:127`). The
-  repo compares `getType()` with 7 by number, e.g.
+  is at `+0x40` (`:162`) and `kind_code` is slot 6, vtable `+0x18` (`:127`). The
+  repo compares `kind_code()` with 7 by number, e.g.
   `src/unknown_1c25a0.cpp:1200`.
 
 **The havok component** (`s_havok_component`, `include/unknown_1cec30.h:381`;
@@ -183,7 +183,7 @@ time of the last contact, and the strongest recent impact scale
 7. `0x2794f5`–`0x279548`: the length of `body->m_motion->m_linear_velocity`
    (x, y and z; the w lane is squared but not added), stored to `[esp +
    0x18]` and copied to `speed` (`[esp + 0x14]`, `0x279548`).
-8. `0x27953d`–`0x279554`: `other->m_motion->getType()`. When it returns 7,
+8. `0x27953d`–`0x279554`: `other->m_motion->kind_code()`. When it returns 7,
    the relative speed is skipped (`0x279554` to `0x2795be`).
 9. `0x279556`–`0x2795a7`: the length of `body`'s linear velocity minus
    `other`'s, stored to `[esp + 0x1c]`.
@@ -254,7 +254,7 @@ bool function_279410(s_component_contact_pair const *contact, hkEntity *body, hk
 		/* the object at component->object_index, as retail reads it */ : NULL;
 	real speed = /* |((hkRigidBody *)body)->m_motion->m_linear_velocity| */;
 
-	if (((hkRigidBody *)other)->m_motion->getType() != 7)
+	if (((hkRigidBody *)other)->m_motion->kind_code() != 7)
 	{
 		real relative = /* |v_body - v_other| */;
 		if (speed > relative)
@@ -375,7 +375,7 @@ None: both callees are `matched`.
 
 - `tools/fncfg.py 0x279410`: 41 blocks, two `ret`s, every join at a
   consistent depth. Its one problem line is the virtual call at `0x27954e`
-  (unknown stack effect, assumed 0; `getType` takes no stack arguments).
+  (unknown stack effect, assumed 0; `kind_code` takes no stack arguments).
 - `tools/xrefs.py 279410`: two calls, at `0x2dabbe` and `0x2dac78`, both in
   `0x2daae0`.
 - `0x1cfd10` ends with `ret 8` (`0x1cfdd0`, `0x1cfdde`); `0x2792c0` with `ret`

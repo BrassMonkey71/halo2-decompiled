@@ -55,8 +55,8 @@ bool function_1f4a20(s_1f4a20_entry const *entries, long actor_index, s_referenc
     bool alternate, s_type_c3b527 *arg_26ef00, vector3f *direction_out,
     signed char *type_out, bool *available_out)
 {
-    bool result = false;
     s_actor_view *actor = actor_get(actor_index);
+    bool result = false;
     function_26c180(actor_index);
     s_262b40_result *target = function_262b40(reference);
     s_type_c3b527 origin;
@@ -64,7 +64,7 @@ bool function_1f4a20(s_1f4a20_entry const *entries, long actor_index, s_referenc
     vector3f direction;
     long sector;
     signed char type;
-    if (reference.unknown2 >= 0)
+    if (!(reference.unknown2 & 0x8000))
     {
         if (!entries->type)
             goto done;
@@ -74,7 +74,7 @@ bool function_1f4a20(s_1f4a20_entry const *entries, long actor_index, s_referenc
         origin.point = entries->point;
         origin.output_index = ((s_type_c3b527 *)target)->output_index;
         type = (signed char)entries->type;
-        if (!function_2105b0(origin.output_index, &entries->direction, &direction))
+        if (!function_2105b0(((s_type_c3b527 *)target)->output_index, &entries->direction, &direction))
             goto done;
     }
     else
@@ -84,16 +84,15 @@ bool function_1f4a20(s_1f4a20_entry const *entries, long actor_index, s_referenc
         s_1f4a20_record *record = (s_1f4a20_record *)(g_51eca4->data + (reference.unknown2 & 0x7fff) * sizeof(s_1f4a20_record));
         if (record->type != 1)
             goto done;
-        s_1f4a20_source const *entry = source + reference.unknown0;
-        point3f const *point = &entry->point;
+        point3f const *point = &source[reference.unknown0].point;
         function_210690(record->point.output_index, point, &origin.point);
         origin.output_index = record->point.output_index;
         if (entries->type != 1 && entries->type != 2 && entries->type != 3)
             goto done;
-        direction.i = -1.0f * entry->direction.x;
-        direction.j = -1.0f * entry->direction.y;
-        direction.k = 0.0f;
         type = (signed char)entries->type;
+        direction.i = -1.0f * source[reference.unknown0].direction.x;
+        direction.j = -1.0f * source[reference.unknown0].direction.y;
+        direction.k = 0.0f;
         if (!(function_30bf0(&direction) > 0.0f))
             goto done;
         long mode = NONE;
@@ -107,7 +106,8 @@ bool function_1f4a20(s_1f4a20_entry const *entries, long actor_index, s_referenc
         if (actor_index != NONE)
         {
             transform4x3f matrix;
-            if (!function_270240(actor_get(actor_index)->unknown018, mode, 0x5000049, point, &direction, &matrix))
+            s_actor_view *path_actor = actor_get(actor_index);
+            if (!function_270240(path_actor->unknown018, mode, 0x5000049, point, &direction, &matrix))
                 goto done;
             adjusted = matrix.position;
         }
@@ -130,14 +130,19 @@ bool function_1f4a20(s_1f4a20_entry const *entries, long actor_index, s_referenc
             function_210850(&origin, &world);
             function_b9dd0(actor->unknown018, &position);
             unit = object_get(actor->unknown018);
-            vector3f forward = *(vector3f *)((byte *)unit + 0x70);
+            vector3f forward;
             long parent_index = *(long *)((byte *)unit + 0x14);
-            if (parent_index != NONE)
+            if (parent_index == NONE)
+                forward = *(vector3f *)((byte *)unit + 0x70);
+            else
             {
                 signed char node = *(signed char *)((byte *)unit + 0x18);
                 s_slot_object_view *parent = object_get(parent_index);
                 transform4x3f const *matrix = (transform4x3f const *)((byte *)parent + *(short *)((byte *)parent + 0x116)) + node;
-                real x = forward.i, y = forward.j, z = forward.k;
+                vector3f const *vector = (vector3f const *)((byte *)unit + 0x70);
+                real x = vector->i;
+                real y = vector->j;
+                real z = vector->k;
                 forward.i = matrix->up.i * z + matrix->left.i * y + matrix->forward.i * x;
                 forward.j = matrix->up.j * z + matrix->left.j * y + matrix->forward.j * x;
                 forward.k = matrix->up.k * z + matrix->left.k * y + matrix->forward.k * x;
@@ -146,7 +151,7 @@ bool function_1f4a20(s_1f4a20_entry const *entries, long actor_index, s_referenc
             real y = world.y - position.y;
             real z = world.z - position.z;
             if (0.1f * 0.1f > z * z + y * y + x * x &&
-                forward.j * direction.j + forward.i * direction.i + forward.k * direction.k > 0.99f)
+                (forward.j * direction.j + forward.i * direction.i) + forward.k * direction.k > 0.99f)
                 destination = actor->unknown27c.point;
         }
     }

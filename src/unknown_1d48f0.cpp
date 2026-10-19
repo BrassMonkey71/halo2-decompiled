@@ -115,7 +115,7 @@ bool function_1d48f0(point3f *arg_11, s_havok_component *arg_0, long arg_1, long
   arg_11->z = local_14.k * arg_7 + arg_3->z;
   local_7.m_translation.set(arg_11->x, arg_11->y, arg_11->z);
   local_12.found = false;
-  ((hkRigidBody *)local_8)->setTransform(local_7);
+  ((hkRigidBody *)local_8)->pose_write(local_7);
   ((c_contact_query_dispatch *)local_8)->query(&local_12);
   if (local_12.found) continue;
   point3f local_19 = *arg_11;

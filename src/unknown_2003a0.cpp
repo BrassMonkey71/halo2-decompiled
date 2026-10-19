@@ -2571,9 +2571,10 @@ PRIVATE __forceinline s_squad_datum *function_201c83(s_squad_record_iterator *ar
         }
         else
         {
-            local_0 = (s_squad_datum *)(local_1->data + local_1->size * local_2);
+            byte *local_3 = local_1->data + local_1->size * local_2;
             arg_0->records.index = local_2;
-            arg_0->records.datum_index = (*(short *)local_0 << 16) | local_2;
+            arg_0->records.datum_index = (*(short *)local_3 << 16) | local_2;
+            local_0 = (s_squad_datum *)local_3;
         }
         arg_0->squad_index = arg_0->records.datum_index & 0xffff;
         arg_0->squad = local_0;
@@ -2627,7 +2628,7 @@ void function_201c80(void)
     while (function_201c83(&local_4))
     {
         long local_5 = local_4.squad_index;
-        if (((word)local_5 + time_copy) % period_half == 0 && *(signed char *)((byte *)local_4.squad + 2) < 0)
+        if (((word)local_5 + time_copy) % period_half == 0 && (*((byte *)local_4.squad + 2) & 0x80))
             function_203360(local_5);
     }
     function_201df0();
