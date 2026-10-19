@@ -9,19 +9,19 @@
 #include "globals.h"
 #include <xmmintrin.h>
 
-class hkPropertyValue
+class s_havok_property_word
 {
 public:
-	hkPropertyValue() {}
-	hkPropertyValue(long value) : m_data(value) {}
+	s_havok_property_word() {}
+	s_havok_property_word(long value) : m_data(value) {}
 
 	long m_data;
 };
 
-struct hkProperty
+struct s_havok_entity_property
 {
 	dword m_key;
-	hkPropertyValue m_value;
+	s_havok_property_word m_value;
 };
 
 /* an hkArray: data, size, capacity (the top bit set when the array does
@@ -36,11 +36,11 @@ struct s_havok_array
 class hkEntity
 {
 public:
-	hkPropertyValue removeProperty(dword key);
-	void addProperty(dword key, hkPropertyValue value);
+	s_havok_property_word removeProperty(dword key);
+	void addProperty(dword key, s_havok_property_word value);
 
 	byte unknown00[0x30];
-	hkProperty *m_properties;
+	s_havok_entity_property *m_properties;
 	long m_property_count;
 	dword m_property_capacity;
 };
@@ -115,7 +115,7 @@ public:
 
 /* Havok's motion of a rigid body: the virtual slots the game calls (the
    others are placeholders), its inverse mass, velocities and transform */
-class hkMotion
+class c_havok_body_motion_state
 {
 public:
 	virtual void slot00(void) {}
@@ -165,7 +165,7 @@ public:
 	hkTransform m_transform;
 };
 
-class hkSimulationIsland;
+class c_havok_body_group;
 
 class hkRigidBody
 {
@@ -178,31 +178,31 @@ public:
 	byte unknown00[0x8];
 	void *m_world;
 	byte unknown0c[0x3c - 0xc];
-	hkMotion *m_motion;
+	c_havok_body_motion_state *m_motion;
 	bool m_fixed;
 	byte unknown41[3];
-	hkSimulationIsland *m_simulation_island;
+	c_havok_body_group *m_simulation_island;
 };
 
-class hkEntityListener;
+class c_havok_entity_observer;
 
 /* the parts of Havok's entity, simulation island and world the game's
    physics code calls */
-class hkEntityApi
+class c_physics_body_island_view
 {
 public:
-	void removeEntityListener(hkEntityListener *listener);
+	void removeEntityListener(c_havok_entity_observer *listener);
 	void activate(void);
 
 	byte unknown00[0x44];
-	struct hkMotionView
+	struct s_havok_motion_type_view
 	{
 		byte unknown00[0x40];
 		long m_type;
 	} *m_motion;
 };
 
-class hkSimulationIsland
+class c_havok_body_group
 {
 public:
 	byte unknown00[0x3c];
@@ -215,10 +215,10 @@ class hkWorld
 public:
 	hkBool removeEntity(hkEntity *entity);
 	void addEntity(hkEntity *entity);
-	void removeSimulationIsland(hkSimulationIsland *island);
+	void removeSimulationIsland(c_havok_body_group *island);
 
 	byte unknown00[8];
-	hkSimulationIsland **m_islands;
+	c_havok_body_group **m_islands;
 	long m_island_count;
 };
 
@@ -249,7 +249,7 @@ void havok_object_count(long object_index);
 
 /* the havok components (src/unknown_1cec30.cpp): a data array of 0x200
    components of 0xa0 bytes, one per object with Havok rigid bodies.
-   Their hkArrays: data, size, capacity (the top bit set when the array does
+   Their arrays: data, size, capacity (the top bit set when the array does
    not own its storage); Havok's thread memory (g_480118) frees the storage */
 struct s_havok_component_rigid_body
 {

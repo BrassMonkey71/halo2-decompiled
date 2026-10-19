@@ -26,14 +26,14 @@ struct s_294051
 point3f *function_b9dd0(long arg_0, point3f *arg_1);
 real function_30bf0(vector3f *arg_0);
 
-__forceinline real function_2941a7(real arg_0, real arg_1, real arg_2)
+__forceinline real function_2941a7(vector3f const *vector)
 {
-	return (real)sqrt(arg_2 * arg_2 + arg_1 * arg_1 + arg_0 * arg_0);
+	return (real)sqrt(vector->k * vector->k + vector->j * vector->j + vector->i * vector->i);
 }
 
 __forceinline real function_29419d(vector3f *arg_0)
 {
-	real local_0 = function_2941a7(arg_0->i, arg_0->j, arg_0->k);
+	real local_0 = function_2941a7(arg_0);
 	if (!(fabs(local_0) < 0.0001f))
 	{
 		real local_1 = 1.0f / local_0;

@@ -328,7 +328,9 @@ void function_15c6f0()
 					long index = (salt << 16) | i;
 					byte *statistics = transition_statistics(globals);
 					short score = *(short *)(statistics + (index & 0xffff) * 0x1c + 6);
-					bool mode = g_4e6948->flag1128 != 0;
+					long mode = 0;
+					if (g_4e6948->flag1128)
+						mode = 1;
 					long value = function_23f260(mode, index, NONE) / 2;
 					game_results_set_player_score(i, score, (short)value);
 					if (!(player[2] & 2))
@@ -346,7 +348,10 @@ void function_15c6f0()
 						globals = g_4e9ae8;
 						statistics = transition_statistics(globals);
 						score = *(short *)(statistics + 0x1c6 + *(char *)(player + 0xc0) * 0x12);
-						value = function_23f360(g_4e6948->flag1128 != 0, *(char *)(player + 0xc0)) / 2;
+						long mode = 0;
+						if (g_4e6948->flag1128)
+							mode = 1;
+						value = function_23f360(mode, *(char *)(player + 0xc0)) / 2;
 						game_results_set_team_score(*(char *)(player + 0xc0), score, (char)value);
 						teams |= 1 << *(char *)(player + 0xc0);
 					}
@@ -369,7 +374,10 @@ void function_15c6f0()
 					long index = (salt << 16) | i;
 					byte *statistics = transition_statistics(globals);
 					short score = *(short *)(statistics + (index & 0xffff) * 0x1c + 6);
-					long value = function_23f260(g_4e6948->flag1128 != 0, index, NONE) / 2;
+					long mode = 0;
+					if (g_4e6948->flag1128)
+						mode = 1;
+					long value = function_23f260(mode, index, NONE) / 2;
 					game_results_set_player_score(i, score, (short)value);
 					if (!(player[2] & 2))
 					{

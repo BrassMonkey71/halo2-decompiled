@@ -478,10 +478,10 @@ long function_26d570(long object_index)
 			real phase = (real)ring * 0.39269909262657166f;
 			for (short spoke = 0; spoke < 8; spoke++)
 			{
-				vector3f direction = *g_4687a8;
 				real angle = (real)spoke * 0.7853981852531433f + phase;
 				real sine = (real)sin(angle);
 				real cosine = (real)cos(angle);
+				vector3f direction = *g_4687a8;
 				record_rotate_vector(&direction, up, sine, cosine);
 				s_record_pathfinding_view *structure = (s_record_pathfinding_view *)g_4e0348;
 				s_pathfinding_data *pathfinding = NULL;

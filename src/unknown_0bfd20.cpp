@@ -136,7 +136,7 @@ bool s_bit_vector::is_empty() const
 }
 
 // @retail 0xbff60
-real function_0bff60(real a, real b)
+inline real function_0bff60(real a, real b)
 {
 	real d = a - b;
 	if (d >= g_547638)
