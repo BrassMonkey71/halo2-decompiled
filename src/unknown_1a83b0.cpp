@@ -384,7 +384,8 @@ local_12:
         s_path_trace_result local_8;
         if (function_1f5390(&local_5, arg_0, local_2->field_120, (short *)&local_6, 0.0f, &local_7, &local_8))
         {
-            long local_9 = (short)local_6 == 1 ? 0x0b00002e : 0x0a00002d;
+            long local_9 = 0x0a00002d;
+            if ((short)local_6 == 1) local_9 = 0x0b00002e;
             if (function_1f57a0(arg_0, local_9))
                 local_0 = function_1f57f0(arg_0, local_9, (long const *)&local_5);
         }

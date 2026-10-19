@@ -629,7 +629,7 @@ short __stdcall function_261d20(long actor_index, s_261d20_entry *entries, long 
                 dword flags = *(dword *)(definition + 0x24);
                 if (((flags & 0x10) || ((flags & 0x20) && *(short *)(definition + 0x4e) != NONE)) &&
                     *(long *)(squad + 0x80) != NONE)
-                    return count;
+                    goto done;
             }
         }
         byte *list = g_51eca4->data + (list_index & 0xffff) * 0x484;
@@ -645,6 +645,7 @@ short __stdcall function_261d20(long actor_index, s_261d20_entry *entries, long 
             }
         }
     }
+done:
     return count;
 }
 
