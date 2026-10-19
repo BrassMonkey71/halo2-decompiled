@@ -420,10 +420,9 @@ void c_interface_278b40::slot2(s_278da0_group *group)
 {
 	for (long i = 0; i < group->count; i++)
 	{
-		s_278da0_entry *entry = &group->entries[i];
-		if (body_278da0(entry->first)->m_fixed || body_278da0(entry->second)->m_fixed)
+		if (body_278da0(group->entries[i].first)->m_fixed || body_278da0(group->entries[i].second)->m_fixed)
 		{
-			c_278da0_resource *resource = entry->resource;
+			c_278da0_resource *resource = group->entries[i].resource;
 			if (resource)
 			{
 				c_278da0_resource *owner = resource->owner;
