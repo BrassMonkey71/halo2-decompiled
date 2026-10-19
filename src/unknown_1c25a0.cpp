@@ -1442,15 +1442,6 @@ PRIVATE inline void contact_motion_vector(vector3f *out, hkVector4 const *value)
 bool __stdcall function_1c4c50(long object_index, long node_index, point3f const *point,
  vector3f const *change_a, vector3f const *change_b, long *result_object, vector3f *linear, vector3f *angular)
 {
- // Retail keeps all eight inputs on the stack.
- (void)&object_index;
- (void)&node_index;
- (void)&point;
- (void)&change_a;
- (void)&change_b;
- (void)&result_object;
- (void)&linear;
- (void)&angular;
  s_velocity_object_header *headers = (s_velocity_object_header *)g_4e0300->data;
  s_havok_object *object = headers[object_index & 0xffff].object;
  bool result = false;

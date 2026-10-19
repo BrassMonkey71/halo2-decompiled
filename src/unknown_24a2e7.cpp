@@ -290,8 +290,8 @@ void function_24a190(void *arg_0)
 	bool local_1 = !local_0->field_89;
 	word local_2 = 0x1000;
 	long local_3[0x1000];
-	long local_5 = 0;
 	long local_4 = 0;
+	long local_5 = 0;
 	c_class_14750b *local_6 = (c_class_14750b *)local_0->get_item_data();
 	long local_7 = local_0->get_item_count();
 	function_215900(local_0->get_controller_index(), 0, &local_2, local_3, local_1);
@@ -314,11 +314,14 @@ void function_24a190(void *arg_0)
 			++local_4;
 		}
 	}
-	s_entry_24a64d *local_9 = (s_entry_24a64d *)local_0->get_items(&local_7);
-	for (long local_10 = 0; local_10 < local_7; ++local_10)
 	{
-		local_9[local_10].index = NONE;
-		memset((byte *)&local_9[local_10] + 4, 0, 0x1e0);
+		long local_11;
+		s_entry_24a64d *local_9 = (s_entry_24a64d *)local_0->get_items(&local_11);
+		for (long local_10 = 0; local_10 < local_11; ++local_10)
+		{
+			local_9[local_10].index = NONE;
+			memset((byte *)&local_9[local_10] + 4, 0, 0x1e0);
+		}
 	}
 	function_24c0c4((c_widget *)local_0);
 }
