@@ -696,14 +696,6 @@ static inline s_actor_datum *squad_actor_iterator_next_inlined(s_squad_actor_ite
 
 /* sets the state of the props of an object the actors of a squad know (each
    clump once) */
-PRIVATE __forceinline void function_273d37(dword *arg_0, long arg_1)
-{
-    dword *local_0 = &arg_0[(dword)arg_1 >> 5];
-    dword local_1 = *local_0;
-    local_1 |= 1u << (arg_1 & 31);
-    *local_0 = local_1;
-}
-
 // @retail 0x273d30
 void function_273d30(long ai_index, long object_index)
 {
@@ -721,12 +713,11 @@ void function_273d30(long ai_index, long object_index)
 			long clump_index = actor->clump_object_index;
 			if (clump_index == NONE)
 				continue;
-			clump_index &= 0xffff;
-			if (bit_vector_test(clump_bits, clump_index))
+			if (bit_vector_test(clump_bits, clump_index & 0xffff))
 				continue;
-			function_273d37(clump_bits, clump_index);
+			bit_vector_set(clump_bits, clump_index & 0xffff, true);
 
-			long prop_index = ((s_ai_clump_273d30 *)g_502420->data)[clump_index].first_prop_index;
+			long prop_index = ((s_ai_clump_273d30 *)g_502420->data)[clump_index & 0xffff].first_prop_index;
 			while (prop_index != NONE)
 			{
 				s_ai_prop_273d30 *prop = &((s_ai_prop_273d30 *)g_50241c->data)[prop_index & 0xffff];
@@ -1046,30 +1037,6 @@ inline void actor_274e70_erase(long actor_index)
 	actor->flag008 = true;
 }
 
-// @retail 0x274e70
-void function_274e70(long ai_index, bool flag)
-{
-	if (ai_index != NONE)
-	{
-		s_ai_actor_iterator iterator;
-		ai_actor_iterator_new(ai_index, &iterator);
-		while (ai_actor_iterator_next(&iterator))
-		{
-			volatile long actor_index = iterator.actor_index;
-			s_actor_274e70 *actor = (s_actor_274e70 *)actor_datum_get(actor_index);
-			if (flag)
-			{
-				actor->value084 = 0;
-				actor_274e70_erase(actor_index);
-			}
-			else if (actor->value084 == 0)
-			{
-				actor->value084 = 3;
-			}
-		}
-	}
-}
-
 inline void actor_274f30_update(long actor_index, bool flag)
 {
 	s_actor_274e70 *actor = (s_actor_274e70 *)actor_datum_get(actor_index);
@@ -1081,6 +1048,18 @@ inline void actor_274f30_update(long actor_index, bool flag)
 	else if (actor->value084 == 0)
 	{
 		actor->value084 = 3;
+	}
+}
+
+// @retail 0x274e70
+void function_274e70(long ai_index, bool flag)
+{
+	if (ai_index != NONE)
+	{
+		s_ai_actor_iterator iterator;
+		ai_actor_iterator_new(ai_index, &iterator);
+		while (ai_actor_iterator_next(&iterator))
+			actor_274f30_update(iterator.actor_index, flag);
 	}
 }
 
@@ -1768,7 +1747,7 @@ void function_275a50(long ai_index, bool flag)
 		s_ai_squad_iterator iterator;
 		ai_squad_iterator_new(&iterator, ai_index);
 		s_squad_datum *squad;
-		while ((squad = function_273481(&iterator)) != NULL)
+		while ((squad = ai_squad_iterator_next(&iterator)) != NULL)
 		{
 			if (flag)
 				squad->flag9 = true;
