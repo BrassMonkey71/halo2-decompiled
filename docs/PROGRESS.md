@@ -2,6 +2,36 @@
 
 The newest entry comes first.
 
+## 2026-10-18: 9174 functions match
+
+```
+matched 9174 of 11321 game functions (1325610 of 2784283 bytes, 47.61%)
+matched 421 of 1041 Havok functions (26508 of 234536 bytes, 11.30%)
+```
+
+0 new matches, none lost:
+- @andrewnakas's #571:  match.
+
+## 2026-10-18: 9174 functions match
+
+```
+matched 9174 of 11321 game functions (1325610 of 2784283 bytes, 47.61%)
+matched 421 of 1041 Havok functions (26508 of 234536 bytes, 11.30%)
+```
+
+1 new matches, none lost:
+- @RWayne93's 0x2116c0 from #567: the creature's parent-unit conversion check matches.
+
+## 2026-10-18: 9173 functions match
+
+```
+matched 9173 of 11321 game functions (1325568 of 2784283 bytes, 47.61%)
+matched 421 of 1041 Havok functions (26508 of 234536 bytes, 11.30%)
+```
+
+10 new matches, none lost:
+- Machine 3's batch 76 (#572): `0x22c30`, `0x70280`, `0x70d60`, `0x10a390`, `0x10a520`, `0x1140b0`, `0x125690`, `0x202570`, `0x2b233d` and `0x2b6db1` match.
+
 ## 2026-10-18: 9163 functions match
 
 ```
