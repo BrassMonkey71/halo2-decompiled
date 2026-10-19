@@ -33,13 +33,7 @@ struct s_state_c570;
 // @stub 0x1ec690
 void function_1ec690(byte const *input, s_state_c570 *state, byte *output) {}
 
-class __declspec(align(16)) c_z_capsule_temp
-{
-public:
- c_z_capsule_temp(void const *first, void const *second, real radius);
- ~c_z_capsule_temp();
- byte unknown00[0x30];
-};
+#include "unknown_0a9f20.h"
 // @stub 0x2de0a0
 c_z_capsule_temp::c_z_capsule_temp(void const *first, void const *second, real radius) {}
 
