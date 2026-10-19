@@ -707,11 +707,13 @@ void function_175270(s_particle_system_datum *particle_system, s_particle_system
 	query.particle_system = 0;
 	query.particle_location = 0;
 	query.unknown0c = 0;
-	if (spawn->location_index == NONE)
-	{
+	bool created = spawn->location_index == NONE;
+	if (created)
 		spawn->location_index = function_248620();
-		if (spawn->location_index == NONE)
-			return;
+	if (spawn->location_index == NONE)
+		return;
+	if (created)
+	{
 		particle_location = DATUM(g_51ec8c, s_particle_location_datum, spawn->location_index);
 		function_248d90(particle_location, &particle_system->location_index, &particle_system->unknown34);
 		particle_location->position = matrix->position;

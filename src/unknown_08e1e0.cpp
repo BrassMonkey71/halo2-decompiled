@@ -268,9 +268,8 @@ void function_8e240(void)
      {
      case 0:
       {
-      // Reload the request's definition before testing its transfer kind.
       s_pending_transfer_definition *current_definition =
-       (s_pending_transfer_definition *)*(volatile dword *)&header->unknown00;
+       (s_pending_transfer_definition *)header->unknown00;
       if (header->kind == 3)
        status = function_b4670(kind, controller, owner, filename, current_definition->directory, &task);
       else
@@ -280,7 +279,7 @@ void function_8e240(void)
      case 1:
       {
       s_pending_transfer_definition *current_definition =
-       (s_pending_transfer_definition *)*(volatile dword *)&header->unknown00;
+       (s_pending_transfer_definition *)header->unknown00;
       if (header->kind == 3)
        status = function_b4810(kind, controller, owner, filename, current_definition->directory, &task);
       else

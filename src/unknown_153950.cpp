@@ -346,16 +346,19 @@ void function_1544e0(transform4x3f *matrix, real distance, real angle)
 		real c = (real)cos(angle);
 		real t = 1.0f - c;
 
+		real ii = axis.i * axis.i;
+		real jj = axis.j * axis.j;
+		real kk = axis.k * axis.k;
 		matrix->scale = 1.0f;
-		matrix->forward.i = (1.0f - axis.i * axis.i) * c + axis.i * axis.i;
+		matrix->forward.i = (1.0f - ii) * c + ii;
 		matrix->forward.j = t * axis.i * axis.j + axis.k * s;
 		matrix->forward.k = t * axis.k * axis.i - axis.j * s;
 		matrix->left.i = t * axis.i * axis.j - axis.k * s;
-		matrix->left.j = (1.0f - axis.j * axis.j) * c + axis.j * axis.j;
+		matrix->left.j = (1.0f - jj) * c + jj;
 		matrix->left.k = t * axis.k * axis.j + axis.i * s;
 		matrix->up.i = t * axis.k * axis.i + axis.j * s;
 		matrix->up.j = t * axis.k * axis.j - axis.i * s;
-		matrix->up.k = (1.0f - axis.k * axis.k) * c + axis.k * axis.k;
+		matrix->up.k = (1.0f - kk) * c + kk;
 		matrix->position.z = 0.0f;
 		matrix->position.y = 0.0f;
 		matrix->position.x = 0.0f;

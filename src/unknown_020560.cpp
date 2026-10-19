@@ -193,7 +193,6 @@ extern byte *g_485a80;
 // @retail 0x16f60
 void function_16f60(byte *state, word const *range)
 {
-    (void)&range;
     long i = 0;
     byte *values = *(byte **)(*(byte **)(state + 0xc) + 8);
     byte *entry = *(byte **)(*(byte **)(state + 0x10) + 0x24) + (*range & 0x1ff) * 4;
@@ -1429,8 +1428,10 @@ long function_211a0(long source, real passes, real distortion, real falloff,
             if (fraction > 0.0f)
             {
                 configure_filter_textures(source);
+                /* callers pass full_surface as a bool in its dword slot;
+                   0x34a90 gets that bool as it is */
                 function_34a90(target, 10, 0x1010101, false, false,
-                    1.0f, fraction * distortion, 1.0f, 4, (bool)(byte)full_surface, false);
+                    1.0f, fraction * distortion, 1.0f, 4, *(bool const *)&full_surface, false);
                 source = target;
                 target = alternate;
                 alternate = source;

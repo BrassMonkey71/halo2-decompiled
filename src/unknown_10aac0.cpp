@@ -95,7 +95,6 @@ void function_10ab80(long object_index, long name, real value, real frames)
 
 		if (index == NONE)
 		{
-			long free_index = NONE;
 			long oldest_index = NONE;
 			long oldest_time = 0x7fffffff;
 
@@ -103,7 +102,7 @@ void function_10ab80(long object_index, long name, real value, real frames)
 			{
 				if (values->object_indices[i] == NONE)
 				{
-					free_index = i;
+					index = i;
 					break;
 				}
 				if (values->entries[i].start_time < oldest_time)
@@ -112,7 +111,8 @@ void function_10ab80(long object_index, long name, real value, real frames)
 					oldest_index = i;
 				}
 			}
-			index = free_index != NONE ? free_index : oldest_index;
+			if (index == NONE)
+				index = oldest_index;
 		}
 
 		s_object_10ab80 *object = ((s_object_header_10ab80 *)g_4e0300->data)[object_index & 0xffff].object;
