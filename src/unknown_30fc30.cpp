@@ -37,7 +37,7 @@ public:
 	char unknown0[0xf0];
 	entities_30fc30 pending_removals;
 
-	hkBool removeEntity(hkEntity *entity);
+	hkBool entity_world_remove(hkEntity *entity);
 	void function_30fc30();
 };
 
@@ -49,7 +49,7 @@ void hkWorld::function_30fc30()
 		hkEntity *entity = pending_removals.data[i];
 		if (entity->island != 0)
 		{
-			removeEntity(entity);
+			entity_world_remove(entity);
 		}
 		entity = pending_removals.data[i];
 		entity->reference_count--;
