@@ -6,6 +6,16 @@ The newest entry comes first.
 
 ```
 matched 9175 of 11321 game functions (1325653 of 2784283 bytes, 47.61%)
+matched 497 of 1041 Havok functions (42834 of 234536 bytes, 18.26%)
+```
+
+0 new matches, none lost:
+- @andrewnakas's #582, #583:  match.
+
+## 2026-10-19: 9175 functions match
+
+```
+matched 9175 of 11321 game functions (1325653 of 2784283 bytes, 47.61%)
 matched 490 of 1041 Havok functions (41489 of 234536 bytes, 17.69%)
 ```
 

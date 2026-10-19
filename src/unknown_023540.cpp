@@ -1959,7 +1959,7 @@ bool __stdcall function_26880(void *context)
         g_484f68.PSConstant1[2] = 0xff00;
         g_484f68.PSRGBInputs[2] = 0x9010a02;
         g_484f68.PSRGBOutputs[2] = 0xc00;
-        g_484f68.PSConstant1[3] = 0xff;
+        g_484f68.PSFinalCombinerConstant0 = 0xff;
         g_484f68.PSFinalCombinerInputsABCD = 0xb01000c;
         g_484f68.PSFinalCombinerInputsEFG = 0x800;
     }
