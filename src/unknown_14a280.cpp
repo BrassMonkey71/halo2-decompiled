@@ -242,15 +242,13 @@ short function_14a6d0(short cluster_index, real cosine, point3f const *point, ve
 		s_structure_bsp_portals_view *bsp = (s_structure_bsp_portals_view *)g_4e0348;
 		short current = stack[--stack_count];
 		s_structure_cluster_portals *cluster = &bsp->clusters[current];
-		long portal_count;
 
 		if (cluster_count < maximum_count)
 		{
 			clusters[cluster_count] = current;
 		}
 		cluster_count++;
-		portal_count = cluster->portal_count;
-		for (short i = 0; i < portal_count; i++)
+		for (short i = 0; i < cluster->portal_count; i++)
 		{
 			short *portal_indices = cluster->portal_indices;
 			s_structure_portal *portals = bsp->portals;
