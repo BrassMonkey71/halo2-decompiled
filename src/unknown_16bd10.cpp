@@ -136,16 +136,12 @@ void function_3f660(transform4x3f const *matrix);
 void function_1554b0(real elapsed);
 void __stdcall function_16f280(real dt);
 
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
+
 static inline long camera_seconds_to_ticks_round(real seconds)
 {
-	real ticks_real = (real)g_510c54->field_2_3 * seconds;
-	long ticks;
-	__asm
-	{
-		fld ticks_real
-		fistp ticks
-	}
-	return ticks;
+	return real_to_long((real)g_510c54->field_2_3 * seconds);
 }
 
 static inline void cross3f(vector3f const *a, vector3f const *b, vector3f *out)
