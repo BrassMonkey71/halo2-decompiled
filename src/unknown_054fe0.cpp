@@ -1612,9 +1612,12 @@ void function_065340(void)
 	g_4cd868.unknown94 = (long)(progress * 100.0f);
 	g_4cd868.unknown98 = variant_index;
 	s_session_interface_user *user = g_4cd868.users;
-	for (long i = 0; i < 4; i++, user++)
+	for (long i = 0; i < 4; i++)
+	{
 		if (user->valid)
 			function_65530(i);
+		user++;
+	}
 }
 
 struct s_message_identities;

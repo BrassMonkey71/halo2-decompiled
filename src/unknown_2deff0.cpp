@@ -6,6 +6,8 @@
 class radius_only_2deff0 : public radius_shape_2de750
 {
 public:
+	REFERENCED_NEW_2D88A0(0x22)
+
 	radius_only_2deff0(radius_info_2de750 const &info);
 };
 

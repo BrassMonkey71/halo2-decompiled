@@ -180,6 +180,9 @@ struct s_510c50_time_view
 struct s_unknown_13bf00;
 extern s_unknown_13bf00 *g_510c50;
 
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
+
 /* the number of ticks the network simulation allows (sets synchronous) */
 long function_680c0(bool *synchronous);
 PRIVATE void game_time_set_speed_internal(real speed);
@@ -245,11 +248,7 @@ void function_146660(real seconds, real *elapsed, long *ticks_due)
 					scale = 5.0f;
 				}
 				limit = scale * 2.0f;
-				__asm
-				{
-					fld limit
-					fistp limit_ticks
-				}
+				limit_ticks = real_to_long(limit);
 				if (maximum_ticks > limit_ticks)
 				{
 					maximum_ticks = limit_ticks;

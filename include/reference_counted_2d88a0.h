@@ -11,7 +11,7 @@ public:
 	virtual void *allocate(long size, long tag) { return 0; }
 	virtual void release(void *block) {}
 	virtual void *allocate_aligned(long alignment, long size, long tag) { return 0; }
-	virtual void slot3() {}
+	virtual void release_aligned(void *block) {}
 	virtual void *allocate_block(long size, long tag) { return 0; }
 	virtual void release_block(void *block, long size, long tag) {}
 	virtual void slot6() {}

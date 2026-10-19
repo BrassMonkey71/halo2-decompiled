@@ -210,18 +210,6 @@ void s_physics_component_walk::function_1d6630(s_physics_model_owner *owner, cha
     char *output, long *output_count, void *other_context, dword *visited, bool *active)
 {
     s_havok_component *component = this;
-    (void)&owner;
-    (void)&kinds;
-    (void)&entry_mask;
-    (void)&groups;
-    (void)&context;
-    (void)&parent;
-    (void)&current;
-    (void)&output;
-    (void)&output_count;
-    (void)&other_context;
-    (void)&visited;
-    (void)&active;
     bool replace = !(bool)((component->unknown04 >> 13) & 1);
     if ((current == NONE ? groups->groups[256].count : groups->groups[current].count) > 0)
     {

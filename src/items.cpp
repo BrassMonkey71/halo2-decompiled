@@ -388,6 +388,8 @@ void function_10ccc0(long item_index)
 }
 
 #include "effects.h"
+#include "slot_handler.h"
+static __forceinline long real_to_long(real value);
 
 /* function_259d0 (0x259d0) on the first seed of g_4e7408, inlined */
 inline real item_real_random_range(real lower, real upper)
@@ -408,19 +410,12 @@ void function_10d4e0(long item_index)
 		real delay = item_real_random_range(definition->delay_lower, definition->delay_upper);
 		s_item *owner_item = ITEM_GET(item_index);
 		s_effect_owner owner;
-		long ticks;
 
 		owner.unknown4 = owner_item->location_c8;
 		owner.unknown0 = owner_item->location_c4;
 		owner.unknown8 = owner_item->location_c2;
 		function_176780(item_index, &owner, 0.0f, definition->effect_tag_index, 0.0f, NULL, NULL);
-		real scaled = (real)g_510c54->field_2_3 * delay;
-		__asm
-		{
-			fld scaled
-			fistp ticks
-		}
-		item->value_12e = (short)ticks;
+		item->value_12e = (short)real_to_long((real)g_510c54->field_2_3 * delay);
 	}
 }
 
@@ -729,9 +724,6 @@ void function_10c880(long item_index, s_item_impact const *impact, vector3f cons
 	}
 }
 
-
-#include "slot_handler.h"
-static __forceinline long real_to_long(real value);
 
 void function_bfa40(long object_index, long a);
 bool function_b9d20(long object_index);
