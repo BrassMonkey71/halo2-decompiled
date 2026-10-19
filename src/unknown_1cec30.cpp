@@ -797,7 +797,7 @@ void havok_component_rigid_body_angular_velocity_set(long rigid_body_index, s_ha
 	if (!TEST_FIELD_BIT(component->flag1))
 	{
 		hkRigidBody *const *local_1 = &component->rigid_bodies.data[rigid_body_index].rigid_body;
-		if (!*(volatile byte const *)&(*local_1)->m_fixed)
+		if (!(*local_1)->m_fixed)
 		{
 			hkVector4 havok_velocity;
 			hkRigidBody *rigid_body;
