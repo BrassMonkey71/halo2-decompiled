@@ -65,13 +65,13 @@ Analysis, documentation and review do not need it.
 
 ## Status
 
-Decompilation is under way, and 9201 retail functions now match byte for
+Decompilation is under way, and 9223 retail functions now match byte for
 byte. The checker reports:
 
 ```
-matched 9201 of 11321 game functions (1338766 of 2784283 bytes, 48.08%)
-matched 565 of 1041 Havok functions (49782 of 234536 bytes, 21.23%)
-matched 9767 of 17654 functions in scope (1388579 of 3904218 bytes, 35.57%)
+matched 9223 of 11321 game functions (1350211 of 2784283 bytes, 48.49%)
+matched 725 of 1041 Havok functions (66335 of 234536 bytes, 28.28%)
+matched 9952 of 17654 functions in scope (1416861 of 3904218 bytes, 36.29%)
 ```
 
 Matched code so far includes:
@@ -224,7 +224,7 @@ Thank you to everyone who has contributed to this project so far:
   then the match-tuning of all of it.
 - [@coldspear](https://github.com/coldspear): much of the tooling (the
   permuter's mutations, `masked.py`, the near-miss report, claim-aware
-  `ready.py`, the decomp.dev report and the hardening of the disc and XBE
+  `ready.py`, the ByteMatch report (then decomp.dev) and the hardening of the disc and XBE
   readers), and analysis documents for the object core, weapons, surface
   lighting, Havok, the Xbox Live logon and more.
 - [@BirchWoodGod](https://github.com/BirchWoodGod): matched ranges all over

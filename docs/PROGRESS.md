@@ -2,6 +2,26 @@
 
 The newest entry comes first.
 
+## 2026-10-19: 9223 functions match
+
+```
+matched 9223 of 11321 game functions (1350211 of 2784283 bytes, 48.49%)
+matched 725 of 1041 Havok functions (66335 of 234536 bytes, 28.28%)
+```
+
+9 new matches, none lost:
+- Machine 3's batch 80 (#597): `0x84630`, `0x9bd40`, `0x1101e0`, `0x15d770`, `0x18e960`, `0x274470`, `0x2798a0`, `0x27b1d0` and `0x27bfe0` match.
+
+## 2026-10-19: 9214 functions match
+
+```
+matched 9214 of 11321 game functions (1343436 of 2784283 bytes, 48.25%)
+matched 626 of 1041 Havok functions (55835 of 234536 bytes, 23.81%)
+```
+
+13 new matches, none lost:
+- Machine 3's batch 79 (#589): `0xbcc20`, `0x1a77a0`, `0x1c1e70`, `0x273480`, `0x2735c0`, `0x2736c0`, `0x273900`, `0x2739d0`, `0x273f30`, `0x274140`, `0x275a50`, `0x275b60` and `0x275d70` match.
+
 ## 2026-10-19: 9201 functions match
 
 ```
@@ -4387,7 +4407,7 @@ matched 4451 of 11321 game functions (389205 of 2785198 bytes, 13.97%)
 ```
 
 **The UI lane**, round 8: 47 new matches, none lost. They include the player
-selected list, Havok's fixed memory allocator and hkMemory, the window
+selected list, Havok's fixed memory allocator and c_havok_abstract_allocator, the window
 manager's update, and the clan (online team) tasks.
 
 ## 2026-10-04: 4404 functions match

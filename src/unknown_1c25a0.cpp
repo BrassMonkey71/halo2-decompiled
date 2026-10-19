@@ -676,7 +676,7 @@ void function_1c2890(void)
 // @retail 0x1c29d0
 void function_1c29d0(void)
 {
-	((hkEntityApi *)g_47f048)->removeEntityListener((hkEntityListener *)g_51ecac);
+	((c_physics_body_island_view *)g_47f048)->removeEntityListener((c_havok_entity_observer *)g_51ecac);
 	g_47f050--;
 	g_51e9a4->removeEntity((hkEntity *)g_47f048);
 	function_278f00();
@@ -834,7 +834,7 @@ void function_1c50c0(void)
 
 	for (island_index = 0; island_index < g_51e9a4->m_island_count; )
 	{
-		hkSimulationIsland *island = g_51e9a4->m_islands[island_index];
+		c_havok_body_group *island = g_51e9a4->m_islands[island_index];
 		long entity_count = island->m_entity_count;
 		long count = 0;
 		bool removed = false;
@@ -942,7 +942,7 @@ struct s_tag_header_globals_physics_view
 /* an hkArray of simulation islands */
 struct s_simulation_island_array
 {
-	hkSimulationIsland **data;
+	c_havok_body_group **data;
 	long count;
 	dword capacity_and_flags;
 };
@@ -953,7 +953,7 @@ struct s_physics_world_view
 	s_simulation_island_array active_islands;
 	s_simulation_island_array inactive_islands;
 	byte unknown20[0x2c - 0x20];
-	hkSimulationIsland *fixed_island;
+	c_havok_body_group *fixed_island;
 };
 
 struct s_physics_object_detach_view
@@ -1063,7 +1063,7 @@ bool function_1c4040(long attempt, bool active, bool any_object, bool even_if_un
 
 	if (!active)
 	{
-		hkSimulationIsland *island = world->fixed_island;
+		c_havok_body_group *island = world->fixed_island;
 
 		for (i = 0; i < island->m_entity_count; i++)
 		{
@@ -1084,7 +1084,7 @@ bool function_1c4040(long attempt, bool active, bool any_object, bool even_if_un
 	}
 	for (local_0.field_10 = 0; local_0.field_10 < local_0.field_c->count; local_0.field_10++)
 	{
-		hkSimulationIsland *island = local_0.field_c->data[local_0.field_10];
+		c_havok_body_group *island = local_0.field_c->data[local_0.field_10];
 
 		for (i = 0; i < island->m_entity_count; i++)
 		{
@@ -1194,7 +1194,7 @@ void function_1c4260()
   g_47f05b = true;
   for (long local_0 = 0; local_0 < g_51e9a4->m_island_count; ++local_0)
   {
-   hkSimulationIsland *local_1 = g_51e9a4->m_islands[local_0];
+   c_havok_body_group *local_1 = g_51e9a4->m_islands[local_0];
    long local_2 = ((s_1c4261 *)local_1)->field_6c;
    if (local_2 > 24)
    {
@@ -1727,9 +1727,9 @@ bool function_1c5210(transform4x3f const *matrix, void *shape, long excluded_com
     return result;
 }
 
-class hkMemory;
-extern hkMemory *g_479894;
-extern hkMemory *g_479898;
+class c_havok_abstract_allocator;
+extern c_havok_abstract_allocator *g_479894;
+extern c_havok_abstract_allocator *g_479898;
 extern c_havok_fixed_memory *g_4798a0;
 short g_51ecb0;
 
@@ -1776,8 +1776,8 @@ public:
 bool function_2797a0(s_2797a0_iterator *iterator);
 void fixed_memory_get_statistics(c_havok_fixed_memory *memory, s_fixed_memory_statistics *statistics);
 void fixed_memory_get_statistics_16(c_havok_fixed_memory *memory, s_fixed_memory_statistics_16 *statistics);
-void function_22c390(hkMemory *memory, s_fixed_memory_statistics_16 *statistics);
-void function_22cb00(hkMemory *memory, s_physics_pool_statistics *statistics);
+void function_22c390(c_havok_abstract_allocator *memory, s_fixed_memory_statistics_16 *statistics);
+void function_22cb00(c_havok_abstract_allocator *memory, s_physics_pool_statistics *statistics);
 long function_1d3880(s_havok_component const *component, long *constraints, long *bodies, long *contacts, long *other);
 
 // @retail 0x1c4590 standard

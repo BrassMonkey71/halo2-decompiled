@@ -36,3 +36,42 @@ entry_2dfec0 *sorted_2dfec0::first_not_below(entry_2dfec0 *begin, entry_2dfec0 *
 	}
 	return begin;
 }
+
+// sorts the entries from low to high (both included) by key
+// @retail 0x2dff20
+void __cdecl function_2dff20(entry_2dfec0 *entries, int low, int high, long context)
+{
+	int j = high;
+	int i = low;
+	entry_2dfec0 pivot = entries[(low + high) >> 1];
+	do
+	{
+		while (entries[i].key < pivot.key)
+		{
+			i++;
+		}
+		while (pivot.key < entries[j].key)
+		{
+			j--;
+		}
+		if (j >= i)
+		{
+			if (j != i)
+			{
+				__declspec(align(16)) entry_2dfec0 swap = entries[j];
+				entries[j] = entries[i];
+				entries[i] = swap;
+			}
+			j--;
+			i++;
+		}
+	} while (i <= j);
+	if (low < j)
+	{
+		function_2dff20(entries, low, j, context);
+	}
+	if (i < high)
+	{
+		function_2dff20(entries, i, high, context);
+	}
+}

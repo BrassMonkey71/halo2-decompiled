@@ -244,7 +244,7 @@ struct s_weapon
 	char value_173;
 	char value_174;
 	byte unknown175[2];
-	byte entry_177;
+	char entry_177;
 	long state;
 	short state_ticks;
 	byte unknown17e[0x184 - 0x17e];
@@ -2424,7 +2424,7 @@ void function_100520(long weapon_index, s_weapon_status *status)
 			if (index != NONE)
 			{
 				s_weapon *object = (s_weapon *)function_badc0(index, NONE);
-				if (object && weapon->entry_177 != 0xff)
+				if (object && weapon->entry_177 != NONE)
 				{
 					long model_index = WEAPON_DEFINITION(object)->model_index;
 					if (model_index != NONE)
@@ -2518,7 +2518,7 @@ bool __stdcall function_fdad0(long weapon_index, void *placement, bool *flag)
     *(real *)((byte *)weapon + 0x18c) = 0.0f;
     function_1058b0(weapon_index, 0, true);
     weapon->object_index_194 = NONE;
-    *(char volatile *)&weapon->entry_177 = -1;
+    weapon->entry_177 = NONE;
     weapon->time_24c = 0;
     weapon->value_173 = 0;
     weapon->value_174 = 0;
@@ -2925,33 +2925,41 @@ bool __stdcall function_ffc60(long weapon_index, long other_index, long player_i
     s_weapon *weapon = WEAPON_GET(weapon_index);
     s_weapon_definition *definition = WEAPON_DEFINITION(weapon);
     s_weapon *other = WEAPON_GET(other_index);
-    s_weapon_definition *volatile other_definition = WEAPON_DEFINITION(other);
+    s_weapon_definition *other_definition = WEAPON_DEFINITION(other);
     *rounds = 0;
-    volatile bool other_has_rounds = false;
-    volatile bool acquired = false;
+    bool other_has_rounds = false;
+    bool acquired = false;
     for (short i = 0; i < definition->magazine_count; ++i)
     {
         s_weapon_magazine_definition *magazine_definition = &definition->magazines[i];
-        short available = magazine_definition->rounds_total_maximum - weapon->magazines[i].rounds_unloaded;
+        s_weapon_magazine *magazine = &weapon->magazines[i];
+        short available = magazine_definition->rounds_total_maximum - magazine->rounds_unloaded;
         s_weapon_magazine *source = NULL;
         if (available > 0)
         {
-            if (!(weapon->definition_index == other->definition_index))
-            {
-                long count = *(long *)((byte *)magazine_definition + 0x54);
-                s_ammo_conversion_entry *entries = *(s_ammo_conversion_entry **)((byte *)magazine_definition + 0x58);
-                short j = 0;
-                while (j < count && entries[j].definition_index != other->definition_index) ++j;
-                if (j >= count) continue;
-                available = entries[j].count < available ? entries[j].count : available;
-                acquired = true;
-            }
-            else
+            if (weapon->definition_index == other->definition_index)
             {
                 source = &other->magazines[i];
                 long total = source->rounds_unloaded + source->rounds_loaded;
-                available = (short)(total < available ? total : available);
+                available = (short)(total <= available ? total : available);
                 acquired = available > 0;
+            }
+            else
+            {
+                long count = *(long *)((byte *)magazine_definition + 0x54);
+                s_ammo_conversion_entry *entries = *(s_ammo_conversion_entry **)((byte *)magazine_definition + 0x58);
+                s_ammo_conversion_entry *conversion = NULL;
+                for (short j = 0; j < count; ++j)
+                {
+                    if (entries[j].definition_index == other->definition_index)
+                    {
+                        conversion = &entries[j];
+                        break;
+                    }
+                }
+                if (!conversion) continue;
+                available = conversion->count <= available ? conversion->count : available;
+                acquired = true;
             }
             if (available > 0 && g_4e6948->mode != 4)
             {
@@ -2959,13 +2967,13 @@ bool __stdcall function_ffc60(long weapon_index, long other_index, long player_i
                 {
                     short unloaded = source->rounds_unloaded > available ? available : source->rounds_unloaded;
                     short loaded = (short)(available - unloaded);
-                    loaded = source->rounds_loaded < loaded ? source->rounds_loaded : loaded;
+                    loaded = source->rounds_loaded <= loaded ? source->rounds_loaded : loaded;
                     source->rounds_unloaded -= unloaded;
                     source->rounds_loaded -= loaded;
                     if (source->rounds_unloaded > 0 || source->rounds_loaded > 0)
                         other_has_rounds = true;
                 }
-                weapon->magazines[i].rounds_unloaded += available;
+                magazine->rounds_unloaded += available;
                 *rounds += available;
             }
         }
@@ -2975,9 +2983,9 @@ bool __stdcall function_ffc60(long weapon_index, long other_index, long player_i
         function_b7360(weapon_index);
         function_b7360(other_index);
         if (g_4e6948->mode == 4) return false;
-        byte other_type = ((byte *)g_4e0300->data)[(other_index & 0xffff) * 12 + 3];
+        byte other_type = *(byte *)other_definition;
         bool retained = false;
-        if ((bool)(((1 << other_type) >> 2) & 1)) retained = function_101640(other_index);
+        if ((bool)((((dword)1 << other_type) >> 2) & 1)) retained = function_101640(other_index);
         if (!other_has_rounds && !retained) function_b8540(other_index);
         if (event_index != NONE)
         {

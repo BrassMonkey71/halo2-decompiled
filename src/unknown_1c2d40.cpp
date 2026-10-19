@@ -198,7 +198,7 @@ void function_1c2d40()
   ++local_6;
  } while (--local_7);
  hkEntity *local_8 = (hkEntity *)function_30c170(g_51e9a4);
- hkPropertyValue local_9(NONE);
+ s_havok_property_word local_9(NONE);
  if (function_1c2d43(local_8, 0x2001))
   local_8->removeProperty(0x2001);
  local_8->addProperty(0x2001, local_9);

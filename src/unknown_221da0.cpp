@@ -773,7 +773,6 @@ real function_18cac0(long arg_0);
 // @retail 0x221a70
 void __stdcall function_221a70(long arg_0, s_voice_position_batch *arg_1)
 {
-	(void)&arg_0; (void)&arg_1;
 	s_local_camera *local_0 = local_camera_get(arg_0);
 	if (local_0 && local_0->index != NONE)
 	{
