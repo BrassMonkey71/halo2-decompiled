@@ -17,3 +17,5 @@ public:
 class_30b510::~class_30b510()
 {
 }
+
+// @retail 0x30b5c0 deleting class_30b510
