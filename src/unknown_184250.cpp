@@ -112,14 +112,16 @@ void __stdcall function_184250(s_type_1e6529 const *arg_0)
 			local_6.field_4 = 0;
 			local_6.field_8 = 0x80000200;
 			voice_fpu_enter();
+			real radius = local_2 < 0.0f ? 0.0f : local_2;
 			s_184253 local_7;
 			_mm_store_ps(&local_7.field_0, _mm_load_ps(&local_4.field_0));
-			local_7.field_c = local_2 < 0.0f ? 0.0f : local_2;
+			local_7.field_c = radius;
 			((c_184250 *)g_4f55b0)->function_18425b(&local_7, &local_6);
 			voice_fpu_leave();
+			s_184256 *bounds = (s_184256 *)g_4e0348;
 			for (long local_8 = 0; local_8 < local_6.field_4; local_8++)
 			{
-				s_184255 *local_9 = &((s_184256 *)g_4e0348)->field_210[local_6.field_0[local_8]];
+				s_184255 *local_9 = &bounds->field_210[local_6.field_0[local_8]];
 				long local_10 = local_9->field_0;
 				long local_11 = local_9->field_2;
 				if ((bool)(byte)function_184000(local_11, local_10))
