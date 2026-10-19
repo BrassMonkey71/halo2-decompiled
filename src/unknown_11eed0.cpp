@@ -131,16 +131,16 @@ void function_11f0d0(
 	angle = function_11f0d1(d);
 	angle = angle * scale;
 	angle = angle + angle;
-	max_angle = angle >= max_angle * max_angle ? *(real const volatile *)&max_angle : (real)sqrt(angle);
+	real limit = angle >= max_angle * max_angle ? max_angle : (real)sqrt(angle);
 
 	axis.i = target->k * forward->j - forward->k * target->j;
 	axis.j = target->i * forward->k - target->k * forward->i;
 	axis.k = forward->i * target->j - target->i * forward->j;
 	function_30bf0(&axis);
 
-	axis.i = axis.i * max_angle;
-	axis.j = axis.j * max_angle;
-	axis.k = axis.k * max_angle;
+	axis.i = axis.i * limit;
+	axis.j = axis.j * limit;
+	axis.k = axis.k * limit;
 	diff.i = axis.i - position->i;
 	diff.j = axis.j - position->j;
 	diff.k = axis.k - position->k;
@@ -149,7 +149,7 @@ void function_11f0d0(
 
 	if (step * step * 5.f > dist2)
 	{
-		if (step > max_angle)
+		if (step > limit)
 		{
 			*position = *g_4687a4;
 			*forward = *target;

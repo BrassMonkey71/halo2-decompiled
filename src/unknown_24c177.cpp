@@ -396,7 +396,8 @@ void function_24c1c5(c_widget *widget, char direction)
 			{
 				for (c_class_1a2c81 *item = list->child; item; item = item->next)
 				{
-					list_item(item)->value70 = step_proc(list->data, list_item(item)->value70);
+					long next_datum = step_proc(list->data, list_item(item)->value70);
+					list_item(item)->value70 = next_datum;
 				}
 			}
 		}

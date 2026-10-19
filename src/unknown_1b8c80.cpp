@@ -1143,13 +1143,14 @@ short function_1bb1d0(long actor_index, long object_index, s_object_seat const *
             if (!TEST_FIELD_BIT(seat->definition->flags.bit11))
             {
                 s_seat_approach_result approach;
-                if (function_1baae0(actor_index, seat->object_index, seat->seat_index, false, false, false, &approach))
+                long seat_index = seat->seat_index;
+                if (function_1baae0(actor_index, seat->object_index, seat_index, false, false, false, &approach))
                 {
                     eligible++;
                     if (approach.score > best_score)
                     {
                         best_object = seat->object_index;
-                        result = seat->seat_index;
+                        result = (short)seat_index;
                         best = approach;
                         best_score = approach.score;
                     }
