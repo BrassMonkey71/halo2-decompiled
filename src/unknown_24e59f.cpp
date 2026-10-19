@@ -52,7 +52,9 @@ static inline long marker_viewer_unit(void)
 // @retail 0x24e59f
 void __stdcall function_24e59f(s_marker_list *list)
 {
-	real distance = distance3d(&list->position, &g_4b9da0);
+	/* retail keeps list on the stack (ret 4); its callers push it */
+	s_marker_list *const *list_reference = &list;
+	real distance = distance3d(&(*list_reference)->position, &g_4b9da0);
 	real lift = list->r18;
 	if (lift > distance * 0.35)
 		lift = (real)(distance * 0.35);
@@ -93,13 +95,13 @@ void __stdcall function_24e59f(s_marker_list *list)
 		ny = 0.0f - transformed.y;
 	}
 
-	real radius_x = (real)(g_4b9dd8.right - g_4b9dd8.left) * 0.5f;
-	real radius_y = (real)(g_4b9dd8.bottom - g_4b9dd8.top) * 0.5f;
-	real radii = radius_y * radius_x;
-	real ex = radius_y * nx;
-	real ey = radius_x * ny;
+	real half_width = (real)(g_4b9dd8.right - g_4b9dd8.left) * 0.5f;
+	real half_height = (real)(g_4b9dd8.bottom - g_4b9dd8.top) * 0.5f;
+	real half_extents = half_height * half_width;
+	real ex = half_height * nx;
+	real ey = half_width * ny;
 
-	if (on_screen && ey * ey + ex * ex < radii * radii)
+	if (on_screen && ey * ey + ex * ex < half_extents * half_extents)
 	{
 		placement.forward_i = 0.0f;
 		placement.forward_j = 1.0f;
@@ -119,7 +121,7 @@ void __stdcall function_24e59f(s_marker_list *list)
 		placement.size = 1.0f;
 		placement.hidden = true;
 		placement.unknown15 = 1;
-		real scale = (real)sqrt(radii * radii / (ey * ey + ex * ex));
+		real scale = (real)sqrt(half_extents * half_extents / (ey * ey + ex * ex));
 		offset.x = scale * nx;
 		offset.y = scale * ny;
 		placement.forward_i = offset.x;
