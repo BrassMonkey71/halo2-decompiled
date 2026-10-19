@@ -62,6 +62,8 @@ public:
 	void function_2eb3f0(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 	void function_2eb9f0(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 	void function_2f9740(void const *a, void const *b, void const *input, void *collector, void *second_collector);
+	void function_2f9f20(void const *a, void const *b, void const *input, void *collector, void *second_collector);
+	void function_2fb790(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 };
 
 class class_2ea830 : public agent_list_2ea410
@@ -100,9 +102,13 @@ public:
 	void function_2f7790(void const *a, void const *b, void const *input, void *collector);
 };
 
+// holds the terms that solve for a point's weights in a triangle's plane
 class class_2f8330
 {
 public:
+	char unknown0[0xc];
+	float terms[4];
+
 	void function_2f8330(void const *a, void const *b, void const *input, void *collector);
 	void function_2f8620(void const *a, void const *b, void const *input, void *collector);
 };
@@ -174,9 +180,13 @@ public:
 	void function_2f0be0(void const *a, void const *b, void const *input, void *collector);
 };
 
+// holds the terms that solve for a point's weights in a triangle's plane
 class class_2f1270
 {
 public:
+	char unknown0[0x10];
+	float terms[4];
+
 	void function_2f1270(void const *a, void const *b, void const *input, void *collector);
 	void function_2f1890(void const *a, void const *b, void const *input, void *collector);
 };
