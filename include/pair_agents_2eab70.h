@@ -152,9 +152,23 @@ public:
 	void function_2f88a0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
 
+class contact_manager_2f90a0;
+
+// whether a ray of the pair has a contact point, and its id
+struct contact_entry_2f90a0
+{
+	bool valid;
+	char unknown1;
+	unsigned short id;
+};
+
 class class_2f90a0
 {
 public:
+	char unknown0[8];
+	contact_manager_2f90a0 *manager;
+	contact_entry_2f90a0 *entries;
+
 	void function_2f90a0(void const *a, void const *b, void const *input, void *collector);
 	void function_2f94a0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
@@ -233,9 +247,15 @@ public:
 	void function_2f1a50(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
 
+class contact_owner_2f1b80;
+
 class class_2f1b80
 {
 public:
+	char unknown0[8];
+	contact_owner_2f1b80 *owner;
+	unsigned short id;
+
 	void function_2f1b80(void const *a, void const *b, void const *input, void *collector);
 	void function_2f27a0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
