@@ -13,6 +13,8 @@
 
 real function_30bf0(vector3f *v);
 
+void function_2922b1(vector3f const *a, vector3f const *b, vector3f *out);
+
 /* ---- globals ---- */
 
 extern short const g_440b94[6][3] =
@@ -146,15 +148,11 @@ void function_120220(
 		u.k = delta.k * inverse;
 
 		vector3f normal;
-		normal.i = u.j * to_mid.k - u.k * to_mid.j;
-		normal.j = u.k * to_mid.i - u.i * to_mid.k;
-		normal.k = u.i * to_mid.j - u.j * to_mid.i;
+		function_2922b1(&u, &to_mid, &normal);
 		function_30bf0(&normal);
 
 		vector3f e;
-		e.i = normal.j * u.k - normal.k * u.j;
-		e.j = normal.k * u.i - normal.i * u.k;
-		e.k = normal.i * u.j - normal.j * u.i;
+		function_2922b1(&normal, &u, &e);
 
 		real distance = root_target;
 		real limit = (end_mid + mid_root) * 0.98f;
@@ -188,14 +186,10 @@ void function_120220(
 		root_forward->k = along * u.k + lift.k;
 		function_30bf0(root_forward);
 
-		root_up->i = root_forward->j * root->left.k - root_forward->k * root->left.j;
-		root_up->j = root_forward->k * root->left.i - root_forward->i * root->left.k;
-		root_up->k = root->left.j * root_forward->i - root_forward->j * root->left.i;
+		function_2922b1(root_forward, &root->left, root_up);
 		function_30bf0(root_up);
 
-		root->left.i = root_forward->k * root_up->j - root_up->k * root_forward->j;
-		root->left.j = root_up->k * root_forward->i - root_forward->k * root_up->i;
-		root->left.k = root_forward->j * root_up->i - root_up->j * root_forward->i;
+		function_2922b1(root_up, root_forward, &root->left);
 
 		point3f new_mid;
 		new_mid.x = mid_root * root_forward->i + root->position.x;
@@ -210,14 +204,10 @@ void function_120220(
 		mid_forward->k = remaining * u.k - lift.k;
 		function_30bf0(mid_forward);
 
-		mid_up->i = mid_forward->j * mid->left.k - mid_forward->k * mid->left.j;
-		mid_up->j = mid_forward->k * mid->left.i - mid_forward->i * mid->left.k;
-		mid_up->k = mid_forward->i * mid->left.j - mid->left.i * mid_forward->j;
+		function_2922b1(mid_forward, &mid->left, mid_up);
 		function_30bf0(mid_up);
 
-		mid->left.i = mid_forward->k * mid_up->j - mid_up->k * mid_forward->j;
-		mid->left.j = mid_up->k * mid_forward->i - mid_forward->k * mid_up->i;
-		mid->left.k = mid_forward->j * mid_up->i - mid_up->j * mid_forward->i;
+		function_2922b1(mid_up, mid_forward, &mid->left);
 
 		mid->position = new_mid;
 		*end = *target;
