@@ -150,7 +150,6 @@ finished:
 void function_265050(long actor_index, long prop_ref_index)
 {
 	struct { byte *definition; long volatile missing_owner; } scratch;
-	long const *prop_reference = &prop_ref_index;
 	byte *actor = g_4f55f0->data + (actor_index & 0xffff) * 0x888;
 	byte *reference = g_502418->data + (prop_ref_index & 0xffff) * 0x3c;
 	long object_index = *(long *)(reference + 0x20);
@@ -168,7 +167,7 @@ void function_265050(long actor_index, long prop_ref_index)
 			*(long *)(actor + 0x360) = *(long *)(reference + 0x20);
 			*(real *)(actor + 0x36c) = *(real *)(definition + 0xd0);
 			*(short *)(actor + 0x35a) = 0;
-			*(long *)(actor + 0x368) = *prop_reference;
+			*(long *)(actor + 0x368) = prop_ref_index;
 			long parent_index = *(long *)(object + 0xc8);
             scratch.missing_owner = NONE;
             long selected;
@@ -188,7 +187,7 @@ owner_missing:
             selected = scratch.missing_owner;
 owner_selected:
             *(long *)(actor + 0x364) = selected;
-			function_25b910(actor_index, *prop_reference);
+			function_25b910(actor_index, prop_ref_index);
 		}
 	}
 }
