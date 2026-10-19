@@ -747,12 +747,12 @@ struct s_vehicle_ray
 bool __stdcall function_168f40(long flags, s_vehicle_ray const *ray,
 	long ignore_object_index, long ignore_object_index2)
 {
+	bool result = false;
 	point3f const *point = &ray->point;
 	long leaf = function_14a280(g_4e033c, 0, (point3f *)point);
 	if (leaf == NONE)
-		return true;
-	bool result = false;
-	if ((flags & 2) || (flags & 0xc))
+		result = true;
+	else if ((flags & 2) || (flags & 0xc))
 	{
 		s_1697c0_bsp *bsp = (s_1697c0_bsp *)g_4e0348;
 		long cluster_index = bsp->leaves[leaf].cluster_index;
@@ -810,7 +810,10 @@ bool __stdcall function_168f40(long flags, s_vehicle_ray const *ray,
 					distance += z * z;
 					if (distance <= radius * radius && object_index != ignore_object_index && object_index != ignore_object_index2 &&
 						function_168e20(object_index, true, flags, point, ignore_object_index, ignore_object_index2))
-						return true;
+					{
+						result = true;
+						break;
+					}
 				}
 			}
 		}

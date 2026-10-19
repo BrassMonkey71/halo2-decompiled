@@ -50,3 +50,18 @@ void triangle_2fcfd0::function_2fcfd0(__m128 const *direction, __m128 *out) cons
 	*out = *(__m128 const *)((char const *)vertices + offset);
 	((long *)out)[3] = offset | 0x3f000000;
 }
+
+struct description_2fd8d0;
+
+class blocked_convex_2fd8d0
+{
+public:
+	void function_2fd8d0(description_2fd8d0 *out) const;
+};
+
+// the method above called as a free function
+// @retail 0x2fd090
+void __cdecl function_2fd090(blocked_convex_2fd8d0 const *object, description_2fd8d0 *out)
+{
+	object->function_2fd8d0(out);
+}

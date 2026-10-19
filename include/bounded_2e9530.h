@@ -39,6 +39,10 @@ public:
 	long value;
 };
 
+struct typed_2e9210;
+struct description_2e9210;
+struct context_2e9210;
+
 class bounded_2e9530 : public counted_2e9530
 {
 public:
@@ -50,6 +54,16 @@ public:
 
 	bounded_2e9530(long value_);
 	~bounded_2e9530();
+
+	// brings the objects kept for the shape's children up to date, with the
+	// two sides the other way round (0x2e9210)
+	void function_2e9210(typed_2e9210 **other, description_2e9210 const *description, context_2e9210 const *context);
+	// the same with the two sides given the usual way round (0x2e9680)
+	void function_2e9680(description_2e9210 const *description, typed_2e9210 **other, context_2e9210 const *context);
+	// the same for a shape that wraps the wrapper, both ways round (0x2f9e40,
+	// 0x2fac30)
+	void function_2f9e40(description_2e9210 const *description, typed_2e9210 **other, context_2e9210 const *context);
+	void function_2fac30(typed_2e9210 **other, description_2e9210 const *description, context_2e9210 const *context);
 };
 
 class derived_2eb4e0 : public bounded_2e9530

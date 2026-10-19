@@ -44,7 +44,7 @@ for whoever decompiles it.
 - **The callees** are `function_2792c0` (`0x279629`; `matched`,
   `src/unknown_2777d0.cpp:531`), `function_1cfd10` (`0x279651`; `matched`,
   `src/unknown_1cec30.cpp:1083`) and one virtual call, `other`'s
-  `hkMotion::getType` (`0x27954e`, vtable `+0x18`,
+  `c_havok_body_motion_state::getType` (`0x27954e`, vtable `+0x18`,
   `include/unknown_1cec30.h:127`).
 
 ## Conventions
@@ -119,11 +119,11 @@ at `0x45dbc0`.
 
 **The entities** (`include/unknown_1cec30.h`):
 - `hkEntity`: `m_properties` at `+0x30`, `m_property_count` at `+0x34`
-  (`:43`–`44`), entries of 8 bytes (`hkProperty`, `:21`–`25`: the key, then the
+  (`:43`–`44`), entries of 8 bytes (`s_havok_entity_property`, `:21`–`25`: the key, then the
   value). `havok_entity_property_get` (`:49`–`61`) returns 0 when the key is
   absent. The keys are `HAVOK_PROPERTY_COMPONENT_INDEX` (`0x2001`, `:456`) and
   `HAVOK_PROPERTY_2002` (`:457`).
-- `hkRigidBody::m_motion` at `+0x3c` (`:181`). `hkMotion::m_linear_velocity`
+- `hkRigidBody::m_motion` at `+0x3c` (`:181`). `c_havok_body_motion_state::m_linear_velocity`
   is at `+0x40` (`:162`) and `getType` is slot 6, vtable `+0x18` (`:127`). The
   repo compares `getType()` with 7 by number, e.g.
   `src/unknown_1c25a0.cpp:1200`.

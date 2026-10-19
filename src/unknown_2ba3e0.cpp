@@ -241,17 +241,15 @@ void function_2ba100(s_particle_properties_2ba const *definition, void *system, 
     dword requested = definition->input_mask & 0x107f0;
     function_173ba0(requested, current_system, current_emitter, current_particle, values);
     valid |= requested;
-    s_particle_property_entry_2ba *first_properties = properties;
-    for (dword i = 0; i < 3 && remaining; ++i, ++properties)
+    for (dword i = 0; i < 3 && remaining; ++i)
     {
         dword bit = 1 << i;
         if (remaining & bit)
         {
-            properties_values[i] = function_246cd0(&properties->property, values);
+            properties_values[i] = function_246cd0(&properties[i].property, values);
             remaining &= ~bit;
         }
     }
-    properties = first_properties;
     while (next != NONE)
     {
         s_particle_2b96 *particle = &((s_particle_2b96 *)g_51ec84->data)[next & 0xffff];

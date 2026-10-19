@@ -3,6 +3,9 @@
 // either order, the reversed order reporting through a collector that swaps
 // each pair back.
 #include "pair_collector_2f09b0.h"
+#include "pair_agents_2eab70.h"
+#include "side_swap_collectors_2eb1d0.h"
+#include "swapped_query_2ed2a0.h"
 
 // a collector that hands each pair on to another one with its bodies swapped
 class swapping_collector_2f0b20 : public collector_2f09b0
@@ -46,4 +49,12 @@ void __cdecl function_2f0b80(body_2f09b0 const *capsule_body, body_2f09b0 const 
 {
 	swapping_collector_2f0b20 swapped(collector);
 	function_2f09b0(sphere_body, capsule_body, input, &swapped);
+}
+
+// the query with the two sides the other way round, its hits passed on as seen from the other side
+// @retail 0x2f0be0
+void class_2f0450::function_2f0be0(void const *a, void const *b, void const *input, void *collector)
+{
+	flipped_collector_2ed110 flipped(collector);
+	function_2f0450(b, a, input, &flipped);
 }

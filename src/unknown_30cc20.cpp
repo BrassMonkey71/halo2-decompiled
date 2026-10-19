@@ -4,6 +4,7 @@
 // list, adding referenced entries to the pending lists, and flushing the
 // pending lists, dropping their references.
 #include "growable_array_2d91d0.h"
+#include "reference_base_318970.h"
 
 class hkBool
 {
@@ -46,7 +47,7 @@ static __forceinline void drop_reference_30cc20(void *pointer)
 	}
 }
 
-class hkSimulationIsland
+class c_havok_body_group
 {
 public:
 	char unknown0[0x24];
@@ -60,7 +61,7 @@ public:
 	long field_38;
 };
 
-ELEMENTS_2D91D0(islands_30cc20, hkSimulationIsland *);
+ELEMENTS_2D91D0(islands_30cc20, c_havok_body_group *);
 ELEMENTS_2D91D0(pointers_30cc20, void *);
 
 struct pending_30cc20
@@ -68,7 +69,7 @@ struct pending_30cc20
 	unsigned short unknown0[3];
 	unsigned short reference_count;
 	char unknown8[0x44 - 8];
-	hkSimulationIsland *island;
+	c_havok_body_group *island;
 };
 
 class hkWorld
@@ -82,8 +83,8 @@ public:
 	pointers_30cc20 pending_114;
 
 	void function_30cc20(void *pending);
-	void removeSimulationIsland(hkSimulationIsland *island);
-	void function_30ccd0(hkSimulationIsland *island);
+	void removeSimulationIsland(c_havok_body_group *island);
+	void function_30ccd0(c_havok_body_group *island);
 	void function_30cd50(void *pending);
 	void function_30ce20();
 };
@@ -96,7 +97,7 @@ void hkWorld::function_30cc20(void *pending)
 }
 
 // @retail 0x30cc60
-void hkWorld::removeSimulationIsland(hkSimulationIsland *island)
+void hkWorld::removeSimulationIsland(c_havok_body_group *island)
 {
 	inactive_islands.append(island);
 	active_islands.data[island->index] = active_islands.data[active_islands.size - 1];
@@ -108,7 +109,7 @@ void hkWorld::removeSimulationIsland(hkSimulationIsland *island)
 }
 
 // @retail 0x30ccd0
-void hkWorld::function_30ccd0(hkSimulationIsland *island)
+void hkWorld::function_30ccd0(c_havok_body_group *island)
 {
 	active_islands.append(island);
 	inactive_islands.data[island->index] = inactive_islands.data[inactive_islands.size - 1];
@@ -171,7 +172,7 @@ void hkWorld::function_30ce20()
 {
 	for (long i = 0; i < pending_islands.size; i++)
 	{
-		hkSimulationIsland *island = ((pending_30cc20 *)pending_islands.data[i])->island;
+		c_havok_body_group *island = ((pending_30cc20 *)pending_islands.data[i])->island;
 		if (island != 0 && island->active)
 		{
 			removeSimulationIsland(island);
@@ -180,3 +181,13 @@ void hkWorld::function_30ce20()
 	}
 	pending_islands.size = 0;
 }
+
+// an object, a reference-counted object whose destructor is the base's: its
+// deleting destructor gives the block back with tag 4
+class class_30cea0 : public reference_base_318970
+{
+public:
+	REFERENCED_NEW_2D88A0(4)
+};
+
+// @retail 0x30cea0 deleting class_30cea0

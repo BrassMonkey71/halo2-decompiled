@@ -1023,22 +1023,24 @@ done:
 // @retail 0x1a77a0
 short function_1a77a0(long actor_index, long argument, short level)
 {
+	short probe;
+	short score;
 	short count = 0;
 	short index = NONE;
 	long local_0 = actor_index;
 	s_slot *slot = actor_slot_get(local_0, level);
-	long state = slot->unknown4;
-	short result = function_1a7030(local_0, level, argument, (short *)&actor_index);
+	short state = slot->unknown4;
+	short result = function_1a7030(local_0, level, argument, &probe);
 
 	if (result == g_46fbec)
-		return g_46fbe4;
-	if (result == g_46fbe4)
+		result = g_46fbe4;
+	else if (result == g_46fbe4)
 	{
 		bool valid;
 		s_action_node **nodes = function_1a73c0(local_0, slot->type, &valid, &count);
 
 		if (state < count - 1)
-			result = function_1a75f0(local_0, nodes, state == NONE ? 0 : state, count, slot, argument, NONE, valid, state != NONE, (short *)&argument, &index);
+			result = function_1a75f0(local_0, nodes, state == NONE ? 0 : state, count, slot, argument, NONE, valid, state != NONE, &score, &index);
 		if (result != g_46fbe4)
 			slot->unknown4 = index;
 	}
