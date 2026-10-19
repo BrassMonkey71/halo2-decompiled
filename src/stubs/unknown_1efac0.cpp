@@ -54,13 +54,6 @@ struct c_surface_query_library
 };
 
 
-// @stub 0x2df5e0
-void c_surface_query_library::query_sphere(const __m128 *sphere, s_surface_key_array *keys) {}
-// @stub 0x2df610
-void c_surface_query_library::query_box(const c_query_transform *matrix, const __m128 *extent, real tolerance, s_surface_key_array *keys) {}
-// @stub 0x2df640
-void c_surface_query_library::query_bounds(const s_query_bounds *bounds, s_surface_key_array *keys) {}
-
 class c_havok_reference_counted;
 struct c_child_transform
 {

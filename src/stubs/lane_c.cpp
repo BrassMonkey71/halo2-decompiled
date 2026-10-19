@@ -70,8 +70,6 @@ class c_311100
 public:
  void function_311100(s_311100 const *arg_0);
 };
-// @stub 0x311100
-void c_311100::function_311100(s_311100 const *arg_0) {}
 
 // @stub 0x2d8780
 void __cdecl function_2d8780() {}

@@ -18,6 +18,8 @@ static __declspec(align(16)) const float g_4134e0[8][4] = {
 	{1.0f, 1.0f, -1.0f, 1.0f}, {-1.0f, 1.0f, -1.0f, 1.0f}, {1.0f, -1.0f, -1.0f, 1.0f}, {-1.0f, -1.0f, -1.0f, 1.0f},
 };
 
+void __cdecl function_2fe350(void const *query, const __m128 *half_extents, float tolerance, void *out);
+
 class class_2fe410
 {
 public:
@@ -28,6 +30,7 @@ public:
 	__m128 half_extents;
 
 	void get_half_extents(__m128 *out) const;
+	void function_2fe420(void const *query, float tolerance, void *out) const;
 	void get_support(const __m128 *direction, __m128 *out) const;
 	void get_corners(const unsigned short *tags, int count, __m128 *out) const;
 	void get_all_corners(__m128 *out) const;
@@ -37,6 +40,13 @@ public:
 void class_2fe410::get_half_extents(__m128 *out) const
 {
 	*out = half_extents;
+}
+
+// the query against the box, its tolerance grown by the box's radius
+// @retail 0x2fe420
+void class_2fe410::function_2fe420(void const *query, float tolerance, void *out) const
+{
+	function_2fe350(query, &half_extents, tolerance + *(const float *)&field_c, out);
 }
 
 // @retail 0x2fe450
