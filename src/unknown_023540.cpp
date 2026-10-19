@@ -1714,10 +1714,10 @@ void function_34770(t_34770_begin begin, real const *bounds,
                 for (long side = 0; side < 2; ++side)
                 {
                     real fraction_y = (real)(row + side) / rows;
+                    real t[2] = { fraction_x, fraction_y };
                     for (long attribute = 15; attribute >= 0; --attribute)
                     {
                         real out[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-                        real t[2] = { fraction_x, fraction_y };
                         if (vertex(attribute, bounds, t, out, user))
                             D3DDevice_SetVertexData4f(attribute ? attribute : D3DVSDE_VERTEX,
                                 out[0], out[1], out[2], out[3]);
