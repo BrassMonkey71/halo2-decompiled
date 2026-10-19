@@ -73,7 +73,7 @@ bool online_stats_read_result(long task_index, XONLINE_STAT_SPEC *specs, word co
 {
 	s_type_9df9da *task = (s_type_9df9da *)datum_get_inlined(g_4cf78c, task_index);
 	bool result = false;
-	if (task && online_logon_connected() && (task->flags & 6))
+	if (task && online_logon_connected() && (task->flag_bits.running || task->flag_bits.finished))
 	{
 		if (SUCCEEDED(XOnlineStatReadGetResult((XONLINETASK_HANDLE)task->handle, count, specs, extra_size, extra_buffer)))
 			result = true;
