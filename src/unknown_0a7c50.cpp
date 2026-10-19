@@ -3,7 +3,7 @@
 #include "game_engine_events.h"
 #include <string.h>
 
-// @flags /O2 /Gr
+// @flags /O2 /arch:SSE /Gr
 
 /* Sends a game engine event to the clients (as a simulation event of type 7,
    with the player indices made absolute). Decompiled by lane O because the
