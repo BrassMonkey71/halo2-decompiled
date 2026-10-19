@@ -90,7 +90,6 @@ void function_1d56f0(s_havok_component *component)
 bool function_1d5120(s_havok_component *arg_0, long arg_1, long arg_2, long arg_3,
  real arg_4, long *arg_5, long arg_6)
 {
- (void)&arg_0; (void)&arg_1; (void)&arg_2; (void)&arg_3; (void)&arg_4; (void)&arg_5;
  bool local_0 = false;
  _control87(0x9001f, 0x8001f);
  _mm_setcsr(_mm_getcsr() | 0x1f80);
