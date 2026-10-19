@@ -41,12 +41,12 @@ OWNED_ARRAY_317280(longs_317280, long)
 OWNED_ARRAY_317280(vectors_317280, vector_317280)
 OWNED_ARRAY_317280(pairs_317280, pair_317280)
 
-class first_base_317280
+class first_base_317280 : public referenced_2d88a0
 {
 public:
 	virtual ~first_base_317280() {}
 
-	char unknown4[0x18];
+	char unknown8[0x14];
 };
 
 class second_base_317280
@@ -60,6 +60,8 @@ public:
 class owner_317280 : public first_base_317280, public second_base_317280
 {
 public:
+	REFERENCED_NEW_2D88A0(0x2d)
+
 	virtual ~owner_317280();
 
 	longs_317280 longs_3c;
@@ -77,3 +79,5 @@ public:
 owner_317280::~owner_317280()
 {
 }
+
+// @retail 0x317fe0 deleting owner_317280

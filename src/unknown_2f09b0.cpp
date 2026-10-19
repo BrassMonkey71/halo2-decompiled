@@ -2,6 +2,7 @@
 // Havok (third-party physics library): a sphere and a capsule reported as a
 // pair when the sphere's centre is closer to the capsule's segment than the
 // sum of their radii, bracketed by two marks in the timing stream.
+#include "pair_collector_2f09b0.h"
 #include "timer_mark_2ebc80.h"
 #include <xmmintrin.h>
 
@@ -40,13 +41,6 @@ struct body_2f09b0
 	void const *shape;
 	long key;
 	motion_2f09b0 const *motion;
-};
-
-class collector_2f09b0
-{
-public:
-	virtual void slot_0() {}
-	virtual void add_pair(body_2f09b0 const *a, body_2f09b0 const *b) {}
 };
 
 // a point placed by a transform
