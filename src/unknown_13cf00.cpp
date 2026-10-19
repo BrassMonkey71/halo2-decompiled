@@ -133,10 +133,10 @@ void function_13c780(void)
 			interface_rectangle_fill(&local_4, local_2);
 			interface_rectangle_fill(&local_5, local_2);
 		}
-		for (long local_6 = 8; local_6 < 0x18; local_6 += 4)
+		for (long local_6 = 0; local_6 < 4; local_6++)
 		{
 			local_1 = (byte *)g_510c50;
-			short *local_7 = (short *)(local_1 + local_6);
+			short *local_7 = (short *)(local_1 + 8 + local_6 * 4);
 			if (local_7[0] != NONE)
 			{
 				byte *local_8 = (byte *)g_4e0350;
@@ -180,8 +180,9 @@ void function_13c780(void)
 						function_13e8a0();
 						long local_17 = local_9->field_e;
 						font_get(g_4e28f4[local_17]);
+						long local_18 = local_9->field_c;
 						g_4e73a0.font = local_17;
-						g_4e73a0.justification = local_9->field_c;
+						g_4e73a0.justification = local_18;
 						g_4e73a0.style = NONE;
 						g_4e73a0.flags = 1;
 						function_13ec70(&local_15);
