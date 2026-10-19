@@ -1,6 +1,7 @@
 // @flags /O2 /GL- /GX
 // Havok (third-party physics library): a pair that tells both sides about
 // each other, and calls passed on to a listener.
+#include "reference_counted_2d88a0.h"
 
 class class_2ed770_side
 {
@@ -89,6 +90,8 @@ void class_2ed7b0::function_2ed800(long a, long b, long c, long d, long e)
 
 // a pair's starting state, as its constructor sets it: the pair object of
 // 0x2ed770 seen from its own class, whose first virtual is its destructor
+struct collidable_2ed810;
+
 class shape_2ed810
 {
 public:
@@ -98,6 +101,13 @@ public:
 	virtual void slot_3() {}
 	virtual void slot_4() {}
 	virtual long shape_kind() const { return 0; }
+	virtual void slot_6() {}
+	virtual void slot_7() {}
+	virtual void slot_8() {}
+	virtual void slot_9() {}
+	// told of a new pair this shape takes part in: its own root, then the
+	// other side's (the pair's removal reaches slot 11 of the same table)
+	virtual void pair_added(collidable_2ed810 const *own, collidable_2ed810 const *other, long arg_2) {}
 };
 
 struct collidable_2ed810
@@ -129,6 +139,8 @@ public:
 	long type_b;
 
 	pair_2ed810(collidable_2ed810 const *a, collidable_2ed810 const *b, long value);
+
+	REFERENCED_NEW_2D88A0(0x1a)
 };
 
 // the outermost collidable a collidable hangs from
@@ -149,4 +161,25 @@ pair_2ed810::pair_2ed810(collidable_2ed810 const *a, collidable_2ed810 const *b,
 	root_b = root_2ed810(b);
 	type_a = a->shape->shape_kind();
 	type_b = b->shape->shape_kind();
+}
+
+// a new pair of collidables: a shape of kind 0x16 on either side is told of
+// it and kept as that side's listener
+// @retail 0x2ed8b0
+pair_2ed810 *__cdecl function_2ed8b0(collidable_2ed810 const *a, collidable_2ed810 const *b, long arg_2, long value)
+{
+	pair_2ed810 *pair = new pair_2ed810(a, b, value);
+	if (pair->type_a == 0x16)
+	{
+		shape_2ed810 *shape = a->shape;
+		shape->pair_added(root_2ed810(a), root_2ed810(b), arg_2);
+		pair->side_a = shape;
+	}
+	if (pair->type_b == 0x16)
+	{
+		shape_2ed810 *shape = b->shape;
+		shape->pair_added(root_2ed810(b), root_2ed810(a), arg_2);
+		pair->side_b = shape;
+	}
+	return pair;
 }
