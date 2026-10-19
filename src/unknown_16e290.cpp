@@ -373,8 +373,7 @@ void function_16de20(short index, s_16e150_bits const *table, dword *output)
 				{
 					long portal_index = cluster->portals[i];
 					dword bit = 1 << (portal_index & 31);
-					dword *visited_word = &visited[portal_index >> 5];
-					if (!(*visited_word & bit))
+					if (!(visited[portal_index >> 5] & bit))
 					{
 						s_portal_16de20 const *portal = &table->portals[portal_index];
 						if ((portal->flags & 4) && (((dword *)g_4f93a4)[portal_index >> 5] & bit))
@@ -389,7 +388,7 @@ void function_16de20(short index, s_16e150_bits const *table, dword *output)
 							for (j = word_count - 1; j >= 0; --j)
 								expanded[j] |= portal_bits[j];
 						}
-						*visited_word |= bit;
+						visited[portal_index >> 5] |= bit;
 					}
 				}
 			}
