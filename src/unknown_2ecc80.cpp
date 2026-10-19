@@ -83,3 +83,41 @@ void class_2ecc80::function_2ecd00(description_2ecc80 const *description, long a
 	child.shape = (shape_2ecc80 const *)shape->child;
 	collector->slot3(&child, arg_1, arg_2, arg_3, arg_4);
 }
+
+class typed_2ecd80
+{
+public:
+	virtual void slot_0() {}
+	virtual void slot_1() {}
+	virtual void slot_2() {}
+	virtual void slot_3() {}
+	virtual void slot_4() {}
+	virtual long type() { return 0; }
+};
+
+typedef void (__cdecl *handler_2ecd80)(description_2ecc80 const *description, typed_2ecd80 **other, void *dispatcher, long arg_3, long arg_4);
+
+struct dispatcher_2ecd80
+{
+	char field_0[0x318c];
+	handler_2ecd80 handlers[1][32];
+};
+
+// passing a pair on to the handler a table picks by the two shapes' types
+// @retail 0x2ecd80
+void __cdecl function_2ecd80(description_2ecc80 const *description, typed_2ecd80 **other, dispatcher_2ecd80 **dispatcher, long arg_3, long arg_4)
+{
+	shape_2ecc80 const *shape = description->shape;
+	placement_2ecc80 placement;
+	placement.field_0 = description->placement->field_0;
+	placement.field_10 = description->placement->field_10;
+	placement.transform.compose(&description->placement->transform, &shape->transform);
+	description_2ecc80 child;
+	child.parent = description;
+	child.placement = &placement;
+	child.field_4 = description->field_4;
+	child.shape = (shape_2ecc80 const *)shape->child;
+	long first = ((typed_2ecd80 *)child.shape)->type();
+	long second = (*other)->type();
+	(*dispatcher)->handlers[first][second](&child, other, dispatcher, arg_3, arg_4);
+}
