@@ -81,3 +81,10 @@ def test_plain_name_of_constructors_and_destructors():
     assert plain_name('??1widget@@QAE@XZ') == 'widget::~widget'
     assert plain_name('??0inner@outer@@QAE@XZ') == 'outer::inner::inner'
     assert plain_name('??1inner@outer@@QAE@XZ') == 'outer::inner::~inner'
+
+
+def test_around_lists_the_neighbouring_symbols_of_the_same_section():
+    m = LinkMap(MAP)
+    entry = m.symbol_at(0x4010a0)
+    assert [s.name for s in m.around(entry, 1)] == ['?build_table@@YIXPAK@Z']
+    assert [s.name for s in m.around(entry, 2)] == ['?build_table@@YIXPAK@Z', '?checksum@@YIXPAKPBXJ@Z']
