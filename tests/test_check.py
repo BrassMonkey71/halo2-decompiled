@@ -3,8 +3,9 @@ import json
 import pytest
 
 from build import Marked
-from check import (Identity, check_function, check_unique_markers, compare, extract, masked_offsets, parse_addresses,
-                   relative_ok, resolve, StandinCalls, write_report)
+from check import (Identity, Targets, check_function, check_unique_markers, compare, extract, function_targets,
+                   literal_size, masked_offsets, parse_addresses, relative_ok, resolve, settle_targets, StandinCalls,
+                   targets_summary, write_report)
 from linkmap import LinkMap
 
 MAP = """ Preferred load address is 00400000
@@ -429,3 +430,195 @@ def test_calls_to_overloads_reach_the_marked_one():
                               set(), {CALL_START + 1}, LO, HI, identity)[:2]
     assert result(0x401140) == ('matched', None)
     assert result(0x401100)[1] == 1
+
+
+# Where address fields lead (Targets): a marked function, a global named for
+# its retail address, literal-pool constants, and symbols nothing ties to retail.
+TARGET_MAP = """ Preferred load address is 00400000
+ 0001:00000000 00000300H .text                   CODE
+ 0002:00000000 00000100H .data                   DATA
+ 0001:00000000       ?caller@@YAXXZ             00401000 f   a.obj
+ 0001:00000100       ?function_163ba0@@YIXPAK@Z 00401100 f   a.obj
+ 0001:00000200       ?helper@@YIXXZ             00401200 f   a.obj
+ 0001:00000280       _strncmp                   00401280 f   libcmt:strncmp.obj
+ 0002:00000000       ?g_4e0300@@3PAJA           00402000     a.obj
+ 0002:00000010       ??_C@_03KLMEOHFB@abc?$AA@  00402010     a.obj
+ 0002:00000018       __real@3f800000            00402018     a.obj
+ 0002:00000020       ??_7c_foo@@6B@             00402020     a.obj
+ 0002:00000028       ?g_counter@@3JA            00402028     a.obj
+ 0002:00000030       __imp__KeTickCount         00402030     xboxkrnl:xboxkrnl.exe
+ 0002:00000034       ___lookuptable             00402034     libcmt:output.obj
+"""
+FLOAT_ONE = (0x3f800000).to_bytes(4, 'little')
+
+
+class Memory:
+    """Bytes at given addresses; anywhere else is in no section, as Xbe.read says."""
+
+    def __init__(self, chunks):
+        self.chunks = chunks
+
+    def read(self, va, size):
+        for start, data in self.chunks.items():
+            if start <= va and va + size <= start + len(data):
+                return data[va - start:va - start + size]
+        raise ValueError(f'{va:#x} is in no section')
+
+
+# "abc" is followed by 4 bytes of data the map does not name
+OUR_DATA = Memory({0x402010: b'abc\0' + bytes(4) + FLOAT_ONE})
+RETAIL_DATA = Memory({0x450000: b'abc\0' b'abd\0' + FLOAT_ONE})
+
+
+def targets(text=TARGET_MAP, rows=None):
+    return Targets(Identity(LinkMap(text), rows or {}, [CALLEE]), OUR_DATA, RETAIL_DATA)
+
+
+@pytest.mark.parametrize('mine, value, result', [
+    (0x401100, 0x2100, ('verified', None, 'function_163ba0', 0x2100)),
+    (0x401104, 0x2104, ('verified', None, 'function_163ba0+0x4', 0x2104)),
+    (0x401100, 0x2200, ('differs', None, 'function_163ba0', 0x2100)),
+])
+def test_a_marked_functions_address_must_be_its_markers(mine, value, result):
+    # push offset function_163ba0, as a callback
+    assert targets().absolute(mine, value)[:4] == result
+
+
+@pytest.mark.parametrize('decorated', ['?g_4e0300@@3PAJA', '_g_4e0300', '?g_4e0300@?1??caller@@YAXXZ@4PAJA'])
+def test_a_global_named_for_its_retail_address_must_be_at_it(decorated):
+    # a C++ global, a C one, a function's static; the field reads 4 bytes into it
+    found = targets(TARGET_MAP.replace('?g_4e0300@@3PAJA', decorated)).absolute
+    assert found(0x402004, 0x4e0304)[:2] == ('verified', None)
+    assert found(0x402004, 0x4e0308)[0] == 'differs' and found(0x402004, 0x4e0308)[3] == 0x4e0304
+    # its size is unknown, so settle_targets decides the offset
+    assert found(0x402004, 0x4e0308)[4] == (decorated, 4)
+
+
+def test_a_global_named_otherwise_is_unverified():
+    assert targets(TARGET_MAP.replace('?g_4e0300@@3PAJA', '?g_4e0300x@@3PAJA')).absolute(
+        0x402004, 0x4e0304)[:2] == ('unverified', 'named global')
+
+
+@pytest.mark.parametrize('mine, value, verdict', [
+    (0x402010, 0x450000, 'verified'),   # "abc" where retail holds "abc"
+    (0x402011, 0x450001, 'verified'),   # "abc" + 1
+    (0x402010, 0x450004, 'differs'),    # retail holds "abd" there
+    (0x402010, 0x900000, 'differs'),    # in no section of retail
+    (0x402018, 0x450008, 'verified'),   # 1.0f
+    (0x402018, 0x450004, 'differs'),
+])
+def test_a_literal_constant_must_hold_the_same_bytes_in_retail(mine, value, verdict):
+    assert targets().absolute(mine, value)[0] == verdict
+
+
+@pytest.mark.parametrize('decorated, size', [
+    ('??_C@_08INJJKPHM@XBOX?51?40?$AA@', 9), ('??_C@_0ED@CEHICPLJ@?5?5?5Type?3@', 0x43),
+    ('??_C@_1M@BHHLEAOO@?$AA?$CF?$AAs?$AA?$AA@', 12), ('__real@3f800000', 4), ('__real@3ff0000000000000', 8),
+    ('?g_counter@@3JA', None), ('??_7c_foo@@6B@', None),
+])
+def test_literal_sizes_come_from_their_names(decorated, size):
+    assert literal_size(decorated) == size
+
+
+@pytest.mark.parametrize('text, rows, mine, same', [
+    (TARGET_MAP, {0x2100: {'size': '16'}}, 0x401110, 0x2110),                             # past a marked function
+    (TARGET_MAP.replace('?g_4e0300@@3PAJA', '?g_4e0300@@3JA'), None, 0x402004, 0x4e0304),  # past a long
+    (TARGET_MAP.replace('?g_4e0300@@3PAJA', '?g_4e0300@?1??caller@@YAXXZ@4_NA'), None, 0x402001, 0x4e0301),  # a bool
+    (TARGET_MAP, None, 0x402014, None),                                                    # past "abc"
+])
+def test_an_offset_past_a_symbols_known_size_is_unverified_unless_retail_agrees(text, rows, mine, same):
+    # the map's extent runs on over data it does not name, which may lie anywhere in retail; a field the same
+    # distance from the symbol's retail address on both sides is verified all the same
+    found = targets(text, rows).absolute
+    assert found(mine, 0x450010)[:2] == ('unverified', "past a symbol's end")
+    if same is not None:
+        assert found(mine, same)[0] == 'verified'
+
+
+def test_a_field_past_a_symbol_before_or_ahead_of_one_after_is_verified_by_it():
+    # a loop's end pointer: g_4e0300's end is where "abc" starts in our image, and retail's field holds its end too
+    found = targets().absolute
+    assert found(0x402010, 0x4e0310)[:4] == ('verified', None, 'g_4e0300+0x10', 0x4e0310)
+    assert found(0x402019, 0x4e0319)[0] == 'verified'  # a member of the element past the end, beyond "abc"
+    # an array's base less one element, ahead of the global after
+    found = targets(TARGET_MAP.replace('??_C@_03KLMEOHFB@abc?$AA@', '?g_4e0340@@3PAJA')).absolute
+    assert found(0x40200c, 0x4e033c)[:3] == ('verified', None, 'g_4e0340-0x4')
+    # farther past g_4e0300's end than its own 16 bytes: our g_4e0300 would be smaller than the code needs
+    found = targets(TARGET_MAP.replace('?g_counter@@3JA', '?g_4e0360@@3PAJA')).absolute
+    assert found(0x402028, 0x4e0328)[0] == 'differs'
+    # a symbol no rule ties to retail stays unverified
+    assert found(0x402024, 0x4e0324)[:2] == ('unverified', 'vtable')
+
+
+@pytest.mark.parametrize('mine, category', [
+    (0x402020, 'vtable'), (0x402028, 'named global'), (0x402030, 'import'), (0x402034, 'library data'),
+    (0x401280, 'library code'), (0x401200, 'unmarked function'), (0x400000, 'no symbol'),
+])
+def test_other_targets_are_unverified_by_category(mine, category):
+    assert targets().absolute(mine, 0x450000)[:2] == ('unverified', category)
+
+
+def caller(base, address, string, helper, callee):
+    """mov eax, [address]; push offset string; call helper; call callee; ret."""
+    def rel(at, target):
+        return ((target - (base + at + 4)) & 0xFFFFFFFF).to_bytes(4, 'little')
+    return (b'\xa1' + address.to_bytes(4, 'little') + b'\x68' + string.to_bytes(4, 'little')
+            + b'\xe8' + rel(11, helper) + b'\xe8' + rel(16, callee) + b'\xc3')
+
+
+def test_targets_count_each_field_that_leaves_the_function():
+    # retail reads 4 bytes into g_4e0300 where ours reads its start; the call to the unmarked helper reaches
+    # an unnamed retail function, which Identity lets pass unverified
+    ours = caller(0x401000, 0x402000, 0x402010, 0x401200, 0x401100)
+    theirs = caller(0x1000, 0x4e0304, 0x450000, 0x3000, 0x2100)
+    absolute, relative = {0x401001, 0x401006}, {0x40100b, 0x401010}
+    entry = dict(targets=function_targets(ours, 0x401000, theirs, 0x1000, absolute, relative, targets()))
+    settle_targets([entry])
+    assert entry['targets'] == dict(verified=2, differs=1, unverified=1, categories={'call': 1},
+                                    differing=[dict(offset=1, ours='g_4e0300', expected='0x4e0300', retail='0x4e0304')])
+    # a report only: the function still matches
+    identity = Identity(LinkMap(TARGET_MAP), {}, [CALLEE])
+    assert check_function(ours, 0x401000, theirs, 0x1000, absolute, relative, LO, HI, identity)[:2] == (
+        'matched', None)
+
+
+def test_function_targets_leave_out_jump_table_entries():
+    ours, theirs = _jump_table_function(0x401000, (7, 8, 9)), _jump_table_function(0x1000, (7, 8, 9))
+    assert function_targets(ours, 0x401000, theirs, 0x1000, JUMP_TABLE_FIELDS, set(), None) == []
+
+
+def test_an_offset_into_a_global_of_unknown_size_differs_only_where_a_verified_field_reaches():
+    # one function verifies 8 bytes into g_4e0300, so 4 bytes in lies inside it; 12 bytes in may lie past its
+    # end, in data the map does not name
+    found = targets().absolute
+    entries = [dict(targets=[(1, 0x4e0308, *found(0x402008, 0x4e0308))]),
+               dict(targets=[(1, 0x4e0310, *found(0x402004, 0x4e0310)), (6, 0x4e0300, *found(0x40200c, 0x4e0300))]),
+               dict(status='todo')]
+    settle_targets(entries)
+    assert entries[0]['targets']['verified'] == 1
+    assert entries[1]['targets'] == dict(verified=0, differs=1, unverified=1, categories={'aggregate offset': 1},
+                                         differing=[dict(offset=1, ours='g_4e0300+0x4', expected='0x4e0304',
+                                                         retail='0x4e0310')])
+
+
+@pytest.mark.parametrize('retail_target, rows, verdict', [
+    (0x2100, {}, 'verified'), (0x2200, {}, 'differs'), (0x2200, {0x2200: {'name': ''}}, 'differs'),
+])
+def test_call_verdicts_to_a_marked_function(retail_target, rows, verdict):
+    assert Identity(LinkMap(IDENT_MAP), rows, [CALLEE]).verdict(0x401100, retail_target) == verdict
+
+
+def test_call_between_unnamed_functions_is_unverified():
+    identity = Identity(LinkMap(IDENT_MAP), {0x2200: {'name': ''}}, [])
+    assert identity.verdict(0x401200, 0x2200) == 'unverified' and identity.ok(0x401200, 0x2200)
+    assert Identity(LinkMap(IDENT_MAP), {0x2200: {'name': '_strncmp'}}, []).verdict(0x401200, 0x2200) == 'verified'
+
+
+def test_targets_summary_totals_the_matched_functions():
+    def entry(status, verified, differs, categories):
+        return dict(status=status, targets=dict(verified=verified, differs=differs,
+                                                unverified=sum(categories.values()), categories=categories))
+    entries = [entry('matched', 2, 1, {'call': 1}), entry('matched', 1, 0, {'vtable': 2, 'call': 1}),
+               entry('near', 9, 9, {'call': 9}), dict(status='todo')]
+    assert targets_summary(entries) == ('address targets in 2 matched functions: 3 verified, 1 differ (in 1 function), '
+                                        '4 unverified (2 call, 2 vtable); reported only, no status depends on them')

@@ -8,7 +8,12 @@ one holds an address inside the retail image, a relative one leaves the
 function.
 
 Writes build/report.json, updates the status and source columns of
-config/functions.csv, and prints a summary.
+config/functions.csv, and prints a summary. Each report entry's targets also
+say whether the address fields that leave the function lead to the same
+function, global or constant as retail's (Targets), and a last line totals
+them over the matched functions; in a function that does not match, the
+fields need not line up with retail's. This is a report only and changes no
+status.
 
 --fast checks the listed functions on a reduced image instead (see
 tools/reduced.py): one image holding each function's own source, the sources
@@ -34,13 +39,14 @@ import os
 import re
 import sys
 import time
+from collections import Counter
 
 from capstone import CS_ARCH_X86, CS_MODE_32, Cs
 
 import build
 import reduced
 from inventory import HAVOK, check_retail, in_scope_owner, read_rows, write_rows
-from linkmap import plain_name
+from linkmap import _number, plain_name
 from xbe import FUNCTIONS_CSV, ROOT, Xbe, retail_xbe_path
 
 NEAR = 2  # differing instructions, at most, for "near"
@@ -168,10 +174,15 @@ def relative_ok(ours, start, theirs, theirs_va, k):
     return not theirs_va <= (target & 0xFFFFFFFF) < theirs_va + len(theirs)
 
 
+def relative_targets(ours, start, theirs, theirs_va, k):
+    """(our target, retail's target) of the relative field at offset k."""
+    return ((start + k + 4 + _dword(ours, k, signed=True)) & 0xFFFFFFFF,
+            (theirs_va + k + 4 + _dword(theirs, k, signed=True)) & 0xFFFFFFFF)
+
+
 def same_callee(ours, start, theirs, theirs_va, k, identity):
     """Whether the relative field at offset k, if it leaves the function, reaches the same function as retail."""
-    mine = (start + k + 4 + _dword(ours, k, signed=True)) & 0xFFFFFFFF
-    target = (theirs_va + k + 4 + _dword(theirs, k, signed=True)) & 0xFFFFFFFF
+    mine, target = relative_targets(ours, start, theirs, theirs_va, k)
     if identity is None or start <= mine < start + len(ours):
         return True
     return identity.ok(mine, target)
@@ -282,23 +293,233 @@ class Identity:
                 self.address_of[hits[0].name] = m.retail
 
     def ok(self, ours, theirs):
+        return self.verdict(ours, theirs) != 'differs'
+
+    def verdict(self, ours, theirs):
+        """'verified' when markers or names show that ours, in our image, and
+        theirs, in retail, are the same function; 'differs' when they show
+        otherwise; 'unverified' when nothing tells (ours is unmarked and
+        retail's row has no name), which ok lets pass."""
         # several names when the linker folded identical functions into one
         symbols = self.linkmap.symbols_at(ours)
         unmarked = [s for s in symbols if s.name not in self.address_of]
         if any(self.address_of[s.name] == theirs for s in symbols if s.name in self.address_of):
-            return True
+            return 'verified'
         if symbols and not unmarked:
-            return False
+            return 'differs'
         if theirs in self.claimed:
             # the compiler's own copy of a helper (??_H, ...) that src/ marks under its plain name
             # matches; otherwise src/ says another function is retail's target
-            return any(compiler_helper(s.name) == self.claimed[theirs] for s in unmarked)
+            return 'verified' if any(compiler_helper(s.name) == self.claimed[theirs] for s in unmarked) else 'differs'
         name = self.rows.get(theirs, {}).get('name')
         if unmarked and name:
             theirs_name = plain_name(name)
             theirs_name = ALIASES.get(theirs_name, theirs_name)
-            return any(ALIASES.get(n, n) == theirs_name for n in (plain_name(s.name) for s in unmarked))
-        return True
+            same = any(ALIASES.get(n, n) == theirs_name for n in (plain_name(s.name) for s in unmarked))
+            return 'verified' if same else 'differs'
+        return 'unverified'
+
+
+# a global named for its retail address, by its plain name's last component
+ADDRESSED_GLOBAL = re.compile(r'g_([0-9a-f]{5,8})')
+# the compiler's literal-pool constants: a string literal, narrow (_0) or wide
+# (_1), then its size in bytes; a floating-point constant, then its bytes in hex
+STRING_LITERAL = re.compile(r'\?\?_C@_[01](\d|[A-P]+@)')
+FLOAT_LITERAL = re.compile(r'__real@([0-9a-f]+)')
+# a variable of scalar type: its storage class, type code and qualifier end its
+# decorated name. A pointer's code (P, Q) also stands for an array, so its size is unknown.
+SCALAR = re.compile(r'@[0-4](_N|[CDEFGHIJKMN])[A-D]$')
+SCALAR_SIZES = {'C': 1, 'D': 1, 'E': 1, '_N': 1, 'F': 2, 'G': 2, 'H': 4, 'I': 4, 'J': 4, 'K': 4, 'M': 4, 'N': 8}
+NEARBY = 8  # symbols on each side whose retail addresses may account for a field outside its own symbol
+
+
+def literal_size(decorated):
+    """The size in bytes of the literal-pool constant with this decorated name, else None."""
+    if m := STRING_LITERAL.match(decorated):
+        return _number(m.group(1))
+    if m := FLOAT_LITERAL.fullmatch(decorated):
+        return len(m.group(1)) // 2
+    return None
+
+
+def _label(symbol, offset):
+    """A symbol and an offset into it, as a report lists them: a literal-pool constant by its decorated name."""
+    name = symbol.name if literal_size(symbol.name) is not None else plain_name(symbol.name)
+    return name + (f'{offset:+#x}' if offset else '')
+
+
+def target_category(symbol):
+    """What an unverified absolute field points at in our image, by its map symbol."""
+    if symbol.name.startswith('??_7'):
+        return 'vtable'
+    if symbol.name.startswith('__imp_'):
+        return 'import'
+    if reduced.library_object(symbol.object):
+        return 'library code' if symbol.function else 'library data'
+    return 'unmarked function' if symbol.function else 'named global'
+
+
+class Targets:
+    """Whether the address fields that leave a function point at the same
+    thing in our image and in retail. An absolute field holds an address
+    inside one of our map symbols, at some offset into it:
+    - a marked function (Identity.address_of): retail's field must hold the
+      marker's address plus that offset;
+    - a global named for its retail address (g_<hex>): that address plus the
+      offset;
+    - a literal-pool constant (literal_size): retail must hold the constant's
+      bytes where its field points, less the offset.
+    Each rule makes the field verified or different; any other symbol leaves
+    it unverified, by category (target_category). A field that a rule finds
+    different but that lies just past one of the NEARBY symbols before (a
+    loop's end pointer), or just ahead of one after, is verified by that
+    symbol's retail address instead. The map gives no sizes, and link-time
+    code generation leaves static data out of it, so a symbol's extent there
+    can run on over unnamed data: an offset at or past the size that a
+    marker's row, a constant's name or a scalar's type gives is unverified
+    ('past a symbol's end') unless retail agrees, and settle_targets decides
+    an offset into a global of unknown size. A call or jump is as
+    Identity.verdict says, an unverified one in the category 'call'. Stage
+    one: this only reports; no verdict changes a function's status."""
+
+    def __init__(self, identity, image, retail):
+        self.identity, self.image, self.retail = identity, image, retail
+
+    def retail_address(self, symbol):
+        """Where its marker or its name (g_<hex>) puts a symbol in retail, else None."""
+        if symbol.name in self.identity.address_of:
+            return self.identity.address_of[symbol.name]
+        m = ADDRESSED_GLOBAL.fullmatch(plain_name(symbol.name).rpartition('::')[2])
+        return int(m.group(1), 16) if m else None
+
+    def size(self, symbol):
+        """A symbol's size where its marker's row, its name or its type gives it, else None."""
+        if symbol.name in self.identity.address_of:
+            row = self.identity.rows.get(self.identity.address_of[symbol.name])
+            return int(row['size']) if row else None
+        if (size := literal_size(symbol.name)) is not None:
+            return size
+        m = SCALAR.search(symbol.name)
+        return SCALAR_SIZES[m.group(1)] if m else None
+
+    def same_bytes(self, literal, offset, value):
+        """Whether retail holds a literal-pool constant's bytes where value points, less offset."""
+        size = literal_size(literal.name)
+        try:
+            return self.retail.read(value - offset, size) == self.image.read(literal.va, size)
+        except ValueError:  # in no section of retail
+            return False
+
+    def absolute(self, mine, value):
+        """(verdict, category of an unverified field, our symbol, the retail
+        address expected or None, reach) for an absolute field holding mine in
+        our image and value in retail. reach is (symbol, offset) for a nonzero
+        offset into a global of unknown size, for settle_targets, else None.
+        A field the same distance from its symbol's retail address on both
+        sides is verified, also past the symbol's end; so is one that a rule
+        would find different but that lies the same distance from a nearby
+        symbol's, such as a loop's end pointer past the array before."""
+        symbols = self.identity.linkmap.symbols_at(mine)
+        if not symbols:
+            return 'unverified', 'no symbol', f'{mine:#x}', None, None
+        offset = mine - symbols[0].va
+        bases = {s.name: self.retail_address(s) for s in symbols}
+        # identical functions the linker folded into one share an address: any of their markers may be retail's
+        s = next((s for s in symbols if bases[s.name] is not None and bases[s.name] + offset == value), None)
+        if s is not None:
+            reach = (s.name, offset) if offset and self.size(s) is None else None
+            return 'verified', None, _label(s, offset), value, reach
+        s = next((s for s in symbols if bases[s.name] is None), symbols[0])
+        name, base, size = _label(s, offset), bases[s.name], self.size(s)
+        literal = literal_size(s.name) is not None
+        if base is None and not literal:
+            return 'unverified', target_category(s), name, None, None
+        if literal and offset < size and self.same_bytes(s, offset, value):
+            return 'verified', None, name, None, None
+        for other in self.identity.linkmap.around(s, NEARBY):
+            other_base = self.retail_address(other)
+            start, end = self.identity.linkmap.extent(other)
+            # a member of the element just past the end, or just ahead of the start, lies within one element of
+            # it, and an element is no larger than the whole extent
+            near = 2 * start - end <= mine < 2 * end - start
+            if other_base is not None and near and other_base + mine - other.va == value:
+                return 'verified', None, _label(other, mine - other.va), value, None
+        if size is not None and offset >= size:
+            return 'unverified', "past a symbol's end", name, None, None
+        if literal:
+            return 'differs', None, name, None, None
+        return 'differs', None, name, base + offset, (s.name, offset) if offset and size is None else None
+
+    def call(self, mine, target):
+        """absolute's tuple for a call or jump to mine in our image and to target in retail."""
+        verdict = self.identity.verdict(mine, target)
+        symbols = self.identity.linkmap.symbols_at(mine)
+        expected = next((self.identity.address_of[s.name] for s in symbols if s.name in self.identity.address_of), None)
+        name = plain_name(symbols[0].name) if symbols else f'{mine:#x}'
+        return verdict, 'call' if verdict == 'unverified' else None, name, expected, None
+
+
+def function_targets(full, start, theirs, theirs_va, absolute, relative, targets):
+    """Where the address fields that leave a function lead (see Targets): a
+    list of (offset, retail's value or target, verdict, category, our symbol,
+    expected retail address, reach), which settle_targets totals. Jump table
+    entries, which check_function compares, and jumps within the function are
+    left out. Arguments as check_function's, with targets a Targets."""
+    ours = extract(full, theirs)
+    size = min(len(ours), len(theirs))
+    found = []
+    for k in sorted(field_starts(start, size, absolute)):
+        if not points_inside(ours, start, theirs, theirs_va, k):
+            found.append((k, _dword(theirs, k), *targets.absolute(_dword(ours, k), _dword(theirs, k))))
+    for k in sorted(field_starts(start, size, relative)):
+        mine, target = relative_targets(ours, start, theirs, theirs_va, k)
+        if not start <= mine < start + len(ours):
+            found.append((k, target, *targets.call(mine, target)))
+    return sorted(found)
+
+
+DIFFERING_LISTED = 8  # differing fields a report entry lists
+
+
+def settle_targets(entries):
+    """Replaces the field list (function_targets) of each report entry that
+    has one with its targets: how many fields are verified, differ or are
+    unverified, the unverified ones by category, and the first differing
+    fields. A differing nonzero offset into a global of unknown size stays a
+    difference only when a verified field among the entries reaches at least
+    as far into that global; otherwise it may lie past the global's end, in
+    data the map does not name, and is unverified ('aggregate offset')."""
+    reached = {}
+    for e in entries:
+        for *_, verdict, _, _, _, reach in e.get('targets', ()):
+            if verdict == 'verified' and reach:
+                reached[reach[0]] = max(reached.get(reach[0], 0), reach[1])
+    for e in entries:
+        if 'targets' not in e:
+            continue
+        fields = []
+        for k, value, verdict, category, name, expected, reach in e['targets']:
+            if verdict == 'differs' and reach and reach[1] > reached.get(reach[0], 0):
+                verdict, category = 'unverified', 'aggregate offset'
+            fields.append((k, value, verdict, category, name, expected))
+        counts = Counter(verdict for _, _, verdict, *_ in fields)
+        differing = [dict(offset=k, ours=name, expected=None if expected is None else f'{expected:#x}',
+                          retail=f'{value:#x}') for k, value, verdict, _, name, expected in fields if verdict == 'differs']
+        e['targets'] = dict(verified=counts['verified'], differs=counts['differs'], unverified=counts['unverified'],
+                            categories=dict(Counter(category for _, _, _, category, *_ in fields if category)),
+                            differing=differing[:DIFFERING_LISTED])
+
+
+def targets_summary(entries):
+    """One line totalling the targets of the matched functions among report entries."""
+    found = [e['targets'] for e in entries if e['status'] == 'matched' and 'targets' in e]
+    total = {key: sum(t[key] for t in found) for key in ('verified', 'differs', 'unverified')}
+    categories = sum((Counter(t['categories']) for t in found), Counter())
+    differing = sum(t['differs'] > 0 for t in found)
+    return (f'address targets in {len(found)} matched functions: {total["verified"]} verified, '
+            f'{total["differs"]} differ (in {differing} function{"" if differing == 1 else "s"}), '
+            f'{total["unverified"]} unverified (' + ', '.join(f'{n} {c}' for c, n in categories.most_common())
+            + '); reported only, no status depends on them')
 
 
 def check_function(full, start, theirs, theirs_va, absolute, relative, lo, hi, identity=None):
@@ -362,11 +583,13 @@ def write_report(path, report, merge):
         json.dump(report, f, indent=1, sort_keys=True)
 
 
-def check_one(m, row, ours, retail, identity, standin_calls):
+def check_one(m, row, ours, retail, identity, standin_calls, targets):
     """Compares the marked function m (row, its config/functions.csv row) with
     retail in a built image (ours, a reduced.Image), and prints MATCH, DIFF
     with a listing, or MISSING. Returns (its report entry, its symbol in the
-    image or None)."""
+    image or None). The entry of a function in the image also lists where its
+    address fields lead (function_targets, given targets, a Targets), for
+    settle_targets."""
     symbol = resolve(ours.linkmap, m, standin_calls)
     if symbol is None:
         print(f'MISSING {m.retail:08x} {m.name}: not in the image '
@@ -375,16 +598,18 @@ def check_one(m, row, ours, retail, identity, standin_calls):
     start, end = ours.linkmap.extent(symbol)
     theirs = retail.read(m.retail, int(row['size']))
     window = (start - 3, end)  # every fixup that touches the function
+    code = ours.image.read(start, end - start)
+    absolute, relative = _within(ours.absolute, *window), _within(ours.relative, *window)
     status, first, lines, length = check_function(
-        ours.image.read(start, end - start), start, theirs, m.retail,
-        _within(ours.absolute, *window), _within(ours.relative, *window),
+        code, start, theirs, m.retail, absolute, relative,
         retail.base, max(s.va + s.vsize for s in retail.sections), identity)
     if first is not None:
         print(f'DIFF   {m.retail:08x} {m.name} at +{first:#x} ({length} bytes, retail {len(theirs)})')
         print('\n'.join(lines))
     else:
         print(f'MATCH  {m.retail:08x} {m.name}')
-    return dict(name=m.name, source=m.path, status=status, size=len(theirs), ours=length, first_difference=first), symbol
+    return dict(name=m.name, source=m.path, status=status, size=len(theirs), ours=length, first_difference=first,
+                targets=function_targets(code, start, theirs, m.retail, absolute, relative, targets)), symbol
 
 
 FAST_IMAGE = os.path.join('build', 'fast', 'reduced.img')
@@ -488,19 +713,22 @@ def fast_check(wanted, retail, jobs, root=ROOT, started=None):
     ours = reduced.Image.read(map_path, image_path)
     standin_calls = StandinCalls(ours.linkmap, ours.image, marked)
     identity = Identity(ours.linkmap, rows, markers, standin_calls)
+    addresses = Targets(identity, ours.image, retail)
     report, failed = {}, 0
     for m in targets:
-        entry, symbol = check_one(m, rows[m.retail], ours, retail, identity, standin_calls)
+        entry, symbol = check_one(m, rows[m.retail], ours, retail, identity, standin_calls, addresses)
         failed += entry['first_difference'] is not None
         notes = caveats[m.retail] + (fast_caveats(ours, symbol, full, identity) if symbol else [])
         for note in notes:
             print(f'CAVEAT {m.retail:08x} {m.name}: {note}')
         report[f'{m.retail:08x}'] = dict(entry, caveats=([NO_FULL_BUILD] if full is None else []) + notes)
+    settle_targets(report.values())
     write_report(os.path.join(root, FAST_REPORT), report, merge=False)
     done = time.perf_counter()
 
     print(f'fast check: {len(targets) - failed} of {len(targets)} match on a reduced image of {len(units)} sources; '
           'only the full check (python tools/check.py) updates config/functions.csv')
+    print(targets_summary(report.values()))
     link, compiled = timings['link'], timings['compiled']
     print(f'time {done - started:.1f}s: prepare {built - started - timings["compile"] - (link or 0):.1f}s, '
           f'compile {compiled} source{"" if compiled == 1 else "s"} {timings["compile"]:.1f}s, '
@@ -549,6 +777,7 @@ def main():
     check_unique_markers(marked + stubs)
     standin_calls = StandinCalls(ours.linkmap, ours.image, marked)
     identity = Identity(ours.linkmap, rows, marked + stubs, standin_calls)
+    addresses = Targets(identity, ours.image, retail)
     unmarked = wanted - {m.retail for m in marked}
     if unmarked:
         print('no @retail marker in src/ for: ' + ', '.join(f'{a:#x}' for a in sorted(unmarked)))
@@ -560,7 +789,7 @@ def main():
         row = rows.get(m.retail)
         if row is None:
             raise SystemExit(f'{m.path}: @retail {m.retail:#x} is not a function start in config/functions.csv')
-        entry, _ = check_one(m, row, ours, retail, identity, standin_calls)
+        entry, _ = check_one(m, row, ours, retail, identity, standin_calls, addresses)
         claimed.add(m.retail)
         failed += entry['first_difference'] is not None
         row['status'], row['source'] = entry['status'], m.path
@@ -570,6 +799,7 @@ def main():
             if r['source'] and va not in claimed:
                 r['source'], r['status'] = '', 'todo'
     write_rows(FUNCTIONS_CSV, list(rows.values()))
+    settle_targets(report.values())
     write_report(os.path.join(ROOT, 'build', 'report.json'), report, merge=bool(wanted))
 
     def summary(label, subset):
@@ -581,6 +811,7 @@ def main():
     summary('game functions', [r for r in rows.values() if r['owner'] == 'game'])
     summary('Havok functions', [r for r in rows.values() if r['owner'] == HAVOK])
     summary('functions in scope', [r for r in rows.values() if in_scope_owner(r['owner'])])
+    print(targets_summary(report.values()))
     sys.exit(1 if failed else 0)
 
 

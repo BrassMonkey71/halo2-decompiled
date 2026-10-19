@@ -303,17 +303,19 @@ bool function_2461a0(
 	}
 	else
 	{
-		real b = dot3f(direction, &d);
+		/* retail sums these in this order */
+		real b = direction->i * d.i + d.k * direction->k + d.j * direction->j;
 		if (b > 0.f)
 		{
-			real a = length_sq3f(direction);
+			real a = direction->j * direction->j + direction->k * direction->k + direction->i * direction->i;
 			real discriminant = b * b - a * c;
 			if (discriminant >= g_45dbd8)
 			{
-				real root = b - (real)sqrt(discriminant);
+				/* retail compares the unrounded root and divides the rounded one */
+				double root = b - sqrt(discriminant);
 				if (a >= root)
 				{
-					*t = root / a;
+					*t = (real)root / a;
 					result = true;
 				}
 			}
@@ -348,7 +350,7 @@ bool function_246360(
 	vector3f const *u = direction;
 	vector3f const *v = &capsule->vector;
 	real a = length_sq3f(v);
-	real uv = dot3f(v, u);
+	real uv = v->k * u->k + v->j * u->j + v->i * u->i;
 	real uu = length_sq3f(u);
 	real den = uu * a - uv * uv;
 	if (den == g_45dbd8)
@@ -358,9 +360,9 @@ bool function_246360(
 	vector3f w;
 	vector3d_from_points3d(&capsule->origin, start, &w);
 	real uw = dot3f(u, &w);
-	real vw = dot3f(v, &w);
+	real vw = v->k * w.k + v->j * w.j + v->i * w.i;
 	real b = vw * uv - uw * a;
-	real c = (length_sq3f(&w) - capsule->radius * capsule->radius) * a - vw * vw;
+	real c = (w.k * w.k + w.j * w.j + w.i * w.i - capsule->radius * capsule->radius) * a - vw * vw;
 	real disc = b * b - c * den;
 	if (0.f > disc)
 	{

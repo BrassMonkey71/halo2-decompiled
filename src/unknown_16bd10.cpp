@@ -292,13 +292,14 @@ void function_16bf70(long animation_graph_index, long animation_name, long unit_
 {
 	if (animation_graph_index != NONE)
 	{
-		struct { c_type_709360 id; s_animation_state state; } work;
+		c_type_709360 id;
+		s_animation_state state;
 
-		work.state.initialize(animation_graph_index, NONE, true);
-		work.id = graph_tag_get(work.state.graph_tag_index)->animation_by_name(animation_name);
-		if (work.id.index != NONE)
+		state.initialize(animation_graph_index, NONE, true);
+		id = graph_tag_get(state.graph_tag_index)->animation_by_name(animation_name);
+		if (id.index != NONE)
 		{
-			s_animation *animation = function_1daea0(graph_tag_get(work.state.graph_tag_index), work.id);
+			s_animation *animation = function_1daea0(graph_tag_get(state.graph_tag_index), id);
 
 			if (animation)
 			{
@@ -321,7 +322,7 @@ void function_16bf70(long animation_graph_index, long animation_name, long unit_
 				}
 			}
 		}
-		work.state.channels_clear_partial();
+		state.channels_clear_partial();
 	}
 }
 
