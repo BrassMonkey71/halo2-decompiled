@@ -781,18 +781,17 @@ long function_cbd50(long unit_index, short weapon_index);
 struct s_object_activity_flags
 {
 	byte unknown00[0x10a];
-	byte flag0 : 1;
-	byte flag1 : 1;
-	byte blocked : 1;
-	byte unused : 5;
+	word flag0 : 1;
+	word flag1 : 1;
+	word blocked : 1;
+	word unused : 13;
 };
 
 // @retail 0x267370
 real function_267370(long volatile object_index)
 {
-	long const volatile *object_reference = &object_index;
-	volatile real result = 0.0f;
-	long const &initial_object_index = (long)*object_reference;
+	real result = 0.0f;
+	long initial_object_index = object_index;
 	if (initial_object_index != NONE)
 	{
 		s_slot_object_view *object = object_get(initial_object_index);
@@ -813,11 +812,11 @@ real function_267370(long volatile object_index)
 			}
 			else
 			{
-				first = function_cbd50(*object_reference, *(char *)((byte *)object + 0x212));
+				first = function_cbd50(initial_object_index, *(char *)((byte *)object + 0x212));
 				if (object->player_index != NONE && settings)
 					result = *(real *)(settings + 0x160);
 			}
-			long second = function_cbd50(*object_reference, *(char *)((byte *)object + 0x213));
+			long second = function_cbd50(object_index, *(char *)((byte *)object + 0x213));
 			if (object->parent_index != NONE)
 			{
 				s_slot_object_view *parent = object_get(object->parent_index);

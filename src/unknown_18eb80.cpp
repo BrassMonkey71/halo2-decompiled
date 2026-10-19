@@ -19,7 +19,6 @@ void function_18edb0(void);
 void function_11be50(void);
 void texture_cache_dispose_from_old_map(void);
 
-#pragma inline_depth(0)
 // @retail 0x18eb80
 void function_18eb80(void)
 {
@@ -55,4 +54,3 @@ void function_18eb80(void)
     g_4e6420--;
     g_4ed294 = 0;
 }
-#pragma inline_depth(255)

@@ -509,21 +509,22 @@ bool function_2580c0(short squad_index, short script_index, long *actor_indices,
 // @retail 0x258230
 bool function_258230(long cs_index, short mode, long actor_index, long new_actor_index)
 {
-	byte local_0 = false;
+	long local_0 = false;
 	s_cs_datum *new_cs;
 	s_cs_datum *cs = cs_get(cs_index);
 	long new_cs_index;
+	long thread_index = cs->thread_index;
 
 	switch (mode)
 	{
 	case 0:
-		new_cs_index = function_257ed0(new_actor_index, (short)cs->script_index, cs->thread_index);
+		new_cs_index = function_257ed0(new_actor_index, (short)cs->script_index, thread_index);
 		break;
 	case 1:
-		new_cs_index = function_257fa0(new_actor_index, (short)cs->script_index, cs->thread_index);
+		new_cs_index = function_257fa0(new_actor_index, (short)cs->script_index, thread_index);
 		break;
 	case 2:
-		new_cs_index = function_258040(new_actor_index, (short)cs->script_index, cs->thread_index);
+		new_cs_index = function_258040(new_actor_index, (short)cs->script_index, thread_index);
 		break;
 	default:
 		goto local_9;

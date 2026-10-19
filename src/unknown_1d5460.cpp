@@ -77,12 +77,11 @@ long havok_component_impact_find(s_havok_component *component, s_havok_impact_co
 // @retail 0x1d5500
 bool havok_component_impact_make_room(long rigid_body_index, s_havok_component *component, real strength)
 {
+	long weakest = NONE;
 	bool result = false;
 
 	if (rigid_body_index == NONE || (component->rigid_bodies.data[rigid_body_index].flags45 & 1))
 	{
-		long weakest = NONE;
-
 		if (havok_component_impact_count(component) == MAXIMUM_IMPACTS_PER_COMPONENT)
 		{
 			long i;
@@ -97,7 +96,7 @@ bool havok_component_impact_make_room(long rigid_body_index, s_havok_component *
 		}
 		if (havok_component_impact_count(component) >= MAXIMUM_IMPACTS_PER_COMPONENT && weakest == NONE)
 		{
-			return false;
+			goto done;
 		}
 		if (weakest != NONE)
 		{
@@ -120,15 +119,9 @@ bool havok_component_impact_make_room(long rigid_body_index, s_havok_component *
 				}
 			}
 		}
-		if (g_51ebfc->actual_count >= MAXIMUM_IMPACTS)
-		{
-			return false;
-		}
-		if (havok_component_impact_count(component) >= MAXIMUM_IMPACTS_PER_COMPONENT)
-		{
-			return false;
-		}
-		result = true;
+		result = g_51ebfc->actual_count < MAXIMUM_IMPACTS &&
+			havok_component_impact_count(component) < MAXIMUM_IMPACTS_PER_COMPONENT;
 	}
+done:
 	return result;
 }

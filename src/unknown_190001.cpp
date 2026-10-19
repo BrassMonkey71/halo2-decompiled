@@ -1018,7 +1018,6 @@ void function_1907d6(dword time)
 		}
 
 		short direction[2] = { 0 };
-		long value = 16;
 
 		if (state->analog_button_frames_down[0] == 1)
 		{
@@ -1081,6 +1080,7 @@ void function_1907d6(dword time)
 			return;
 		}
 
+		long value = 16;
 		if (state->thumbsticks[0] != 0 || state->thumbsticks[1] != 0)
 		{
 			direction[0] = state->thumbsticks[0];

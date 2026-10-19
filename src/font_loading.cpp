@@ -602,10 +602,8 @@ long function_122610(long size, void const *pixels, void *destination)
 			{
 				if (output)
 				{
-					byte alpha = type == 0;
-
-					alpha--;
-					long pixel = font_character_pixel(alpha & 7, color);
+					byte alpha = type == 0 ? 0 : 7;
+					long pixel = font_character_pixel(alpha, color);
 
 					for (long i = 0; i < run; i++)
 						output[i] = (word)pixel;
