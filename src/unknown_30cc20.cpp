@@ -83,7 +83,7 @@ public:
 	pointers_30cc20 pending_114;
 
 	void function_30cc20(void *pending);
-	void removeSimulationIsland(c_havok_body_group *island);
+	void world_island_discard(c_havok_body_group *island);
 	void function_30ccd0(c_havok_body_group *island);
 	void function_30cd50(void *pending);
 	void function_30ce20();
@@ -97,7 +97,7 @@ void hkWorld::function_30cc20(void *pending)
 }
 
 // @retail 0x30cc60
-void hkWorld::removeSimulationIsland(c_havok_body_group *island)
+void hkWorld::world_island_discard(c_havok_body_group *island)
 {
 	inactive_islands.append(island);
 	active_islands.data[island->index] = active_islands.data[active_islands.size - 1];
@@ -175,7 +175,7 @@ void hkWorld::function_30ce20()
 		c_havok_body_group *island = ((pending_30cc20 *)pending_islands.data[i])->island;
 		if (island != 0 && island->active)
 		{
-			removeSimulationIsland(island);
+			world_island_discard(island);
 		}
 		drop_reference_30cc20(pending_islands.data[i]);
 	}

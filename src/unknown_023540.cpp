@@ -191,7 +191,7 @@ bool function_25820(s_render_view_2b790 const *source)
 		g_55eed8.object_index = NONE;
 		g_55eed8.up = matrix.up;
 		real caption = *(real const *)(g_4b9970 + 10);
-		if (caption != 0.0f) g_55eed8.scale = caption * 0.5f;
+		if (caption != 0.0f) g_55eed8.scale = caption * 0.017453292f;
 		memcpy(g_55eed8.camera, &g_55eed8.position, sizeof(g_55eed8.camera));
 		function_2b790(&g_55eed8, true);
 		if (!g_5093fc)

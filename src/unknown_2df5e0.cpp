@@ -27,7 +27,7 @@ class class_3008d0
 public:
 	__m128 storage[2];
 
-	class_3008d0(void const *tree, const __m128 *sphere, s_surface_key_array *keys);
+	void function_3008d0(void const *tree, const __m128 *sphere, s_surface_key_array *keys);
 };
 
 class class_2fff90
@@ -59,7 +59,8 @@ struct c_surface_query_library
 // @retail 0x2df5e0
 void c_surface_query_library::query_sphere(const __m128 *sphere, s_surface_key_array *keys)
 {
-	class_3008d0 query(tree, sphere, keys);
+	class_3008d0 query;
+	query.function_3008d0(tree, sphere, keys);
 }
 
 // @retail 0x2df610

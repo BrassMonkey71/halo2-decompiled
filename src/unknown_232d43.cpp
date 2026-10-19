@@ -1158,7 +1158,7 @@ void c_postgame_statistics_list_459500::fill_row(c_class_1a2c81 *item, long row)
 				{
 					if (shown)
 					{
-						unicode_string_append(text, (const word *)L", ", 0x100);
+						unicode_string_append(text, (const word *)L" ", 0x100);
 						text[0xff] = 0;
 					}
 					medal_name.load((c_widget *)get_screen(), string_ids[i]);

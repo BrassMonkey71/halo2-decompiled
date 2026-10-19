@@ -142,8 +142,8 @@ void __stdcall function_1d24a0(s_havok_component *arg_0, float arg_1)
    bool local_17 = (bool)((local_12->field_0 >> 2) & 1);
    bool local_18 = (bool)((local_12->field_0 >> 1) & 1);
    hkRigidBody *local_19 = arg_0->rigid_bodies.data[local_10->field_3].rigid_body;
-   bool local_20 = (!local_19->m_fixed && local_19->isActive().m_bool) || local_1;
-   bool local_21 = local_14->rigid_bodies.data[local_15].rigid_body->isActive().m_bool || local_20;
+   bool local_20 = (!local_19->m_fixed && local_19->body_is_simulating().m_bool) || local_1;
+   bool local_21 = local_14->rigid_bodies.data[local_15].rigid_body->body_is_simulating().m_bool || local_20;
    bool local_22 = (bool)((local_12->field_0 >> 25) & 1);
    bool local_23 = (bool)((local_12->field_0 >> 26) & 1);
    s_object_marker local_24;

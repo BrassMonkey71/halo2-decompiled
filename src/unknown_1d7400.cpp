@@ -172,7 +172,7 @@ s_1d7300 *function_1d7300(s_1d7300 *arg_0, s_1d7400 *arg_1, real arg_2)
 {
  (void)&arg_1; (void)&arg_2;
  s_1d7400 *const *local_2 = &arg_1;
- if (g_47f06f && arg_0->field_3c->getType() != 7 && arg_0->field_3c->getType() != 6)
+ if (g_47f06f && arg_0->field_3c->kind_code() != 7 && arg_0->field_3c->kind_code() != 6)
  {
   c_extent_shape *local_0 = arg_0->field_c;
   c_extent_shape *local_1 = (*local_2)->function_1d7400(local_0, arg_0, arg_2);

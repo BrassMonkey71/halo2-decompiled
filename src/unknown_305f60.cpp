@@ -27,7 +27,9 @@ struct feature_305f60
 {
 	__m128 first_point;
 	__m128 second_point;
-	char unknown20[0x38 - 0x20];
+	char unknown20[0x30 - 0x20];
+	float scale;
+	float distance;
 	unsigned short kind;
 };
 
@@ -123,10 +125,38 @@ public:
 	contacts_305f60 **contacts;
 	transform_305f60 const *first_transform;
 	transform_305f60 const *second_transform;
-	char unknown1c[0x60 - 0x1c];
+	char unknown1c[0x20 - 0x1c];
+	__m128 first_extents;
+	__m128 second_extents;
+	__m128 first_bounds;
+	__m128 second_bounds;
 	float radius;
 
 	void function_305f60(table_305f60 *table, feature_305f60 const *feature, key_305f60 *key);
+	void function_3061c0(table_305f60 *table, key_305f60 key, unsigned short mask, float limit);
+	void function_3062e0(table_305f60 *table, key_305f60 key, unsigned short mask, float limit);
+};
+
+// the corner flips tried in turn (each a bit pattern of the corner nibble)
+static const unsigned short g_corner_flips_413690[7] = {0x50, 0x30, 0x60, 0x10, 0x20, 0x40, 0x00};
+
+static __declspec(align(16)) const unsigned long absolute_mask_455940[4] = {0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff};
+
+struct corner_305bf0;
+struct corner_key_305bf0;
+struct corner_305d40;
+struct corner_key_305d40;
+
+class box_corner_305bf0
+{
+public:
+	void function_305bf0(corner_305bf0 *out, corner_key_305bf0 const *key) const;
+};
+
+class box_pair_305d40
+{
+public:
+	void function_305d40(corner_305d40 *out, corner_key_305d40 const *key) const;
 };
 
 // @retail 0x305f60
@@ -211,5 +241,78 @@ void pair_305f60::function_305f60(table_305f60 *table, feature_305f60 const *fea
 	if (key->index <= 5)
 	{
 		table->field_50++;
+	}
+}
+
+// for each corner flip the mask allows: the key's corner flipped, and unless
+// the table already holds it, the first box's corner it names added as a
+// contact when it lies inside the second box's bounds and no nearer than the
+// limit along the key's axis
+// @retail 0x3061c0
+void pair_305f60::function_3061c0(table_305f60 *table, key_305f60 key, unsigned short mask, float limit)
+{
+	for (int k = 0; k < 7; k++)
+	{
+		if ((g_corner_flips_413690[k] & mask) != 0)
+		{
+			continue;
+		}
+		key_305f60 corner = key;
+		corner.field_2 = (corner.field_2 & 0xff0f) | (unsigned short)(key.field_2 ^ g_corner_flips_413690[k]);
+		for (int i = table->count - 1; i >= 0; i--)
+		{
+			if (table->entries[i].first == corner.index && table->entries[i].second == corner.field_2)
+			{
+				goto next;
+			}
+		}
+		feature_305f60 feature;
+		((box_corner_305bf0 const *)this)->function_305bf0((corner_305bf0 *)&feature, (corner_key_305bf0 const *)&corner);
+		__m128 const magnitude = _mm_and_ps(feature.first_point, *(__m128 const *)absolute_mask_455940);
+		if ((_mm_movemask_ps(_mm_cmplt_ps(magnitude, first_bounds)) & 7) != 7)
+		{
+			continue;
+		}
+		feature.distance = feature.scale * feature.first_point.m128_f32[feature.kind] - first_extents.m128_f32[feature.kind];
+		if (feature.distance >= limit - 1.192092896e-07f)
+		{
+			function_305f60(table, &feature, &corner);
+		}
+next:;
+	}
+}
+
+// the same for the second box's corners, taken into the first box's frame
+// @retail 0x3062e0
+void pair_305f60::function_3062e0(table_305f60 *table, key_305f60 key, unsigned short mask, float limit)
+{
+	for (int k = 0; k < 7; k++)
+	{
+		if ((g_corner_flips_413690[k] & mask) != 0)
+		{
+			continue;
+		}
+		key_305f60 corner = key;
+		corner.field_2 = (corner.field_2 & 0xff0f) | (unsigned short)(key.field_2 ^ g_corner_flips_413690[k]);
+		for (int i = table->count - 1; i >= 0; i--)
+		{
+			if (table->entries[i].first == corner.index && table->entries[i].second == corner.field_2)
+			{
+				goto next;
+			}
+		}
+		feature_305f60 feature;
+		((box_pair_305d40 const *)this)->function_305d40((corner_305d40 *)&feature, (corner_key_305d40 const *)&corner);
+		__m128 const magnitude = _mm_and_ps(feature.second_point, *(__m128 const *)absolute_mask_455940);
+		if ((_mm_movemask_ps(_mm_cmplt_ps(magnitude, second_bounds)) & 7) != 7)
+		{
+			continue;
+		}
+		feature.distance = -(feature.scale * feature.second_point.m128_f32[feature.kind - 3]) - second_extents.m128_f32[feature.kind - 3];
+		if (feature.distance >= limit - 1.192092896e-07f)
+		{
+			function_305f60(table, &feature, &corner);
+		}
+next:;
 	}
 }

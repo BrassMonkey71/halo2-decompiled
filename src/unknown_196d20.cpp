@@ -26,17 +26,17 @@ s_196d20_sample g_515c34[1000];
 long function_196d20(long index)
 {
 	long result = NONE;
-	if (g_510cb1 && index != NONE && g_511000[index].active)
-		result = g_511000[index].value_90;
+	if (g_510cb1 && index != NONE && g_511000.entries[index].active)
+		result = g_511000.entries[index].value_90;
 	return result;
 }
 
 // @retail 0x196d50
 void function_196d50(long index, s_input_vector *out)
 {
-	if (g_510cb1 && index != NONE && g_511000[index].active)
+	if (g_510cb1 && index != NONE && g_511000.entries[index].active)
 	{
-		*out = g_511000[index].vector;
+		*out = g_511000.entries[index].vector;
 		return;
 	}
 	memset(out, 0, sizeof(*out));
@@ -46,8 +46,8 @@ void function_196d50(long index, s_input_vector *out)
 long function_196da0(long index)
 {
 	long result = NONE;
-	if (g_510cb1 && index != NONE && g_511000[index].active)
-		result = g_511000[index].value_9c;
+	if (g_510cb1 && index != NONE && g_511000.entries[index].active)
+		result = g_511000.entries[index].value_9c;
 	return result;
 }
 

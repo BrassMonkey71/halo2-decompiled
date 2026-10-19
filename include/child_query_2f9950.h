@@ -28,8 +28,9 @@ struct body_2ea940
 	{
 		placement = placement_;
 		parent = parent_;
+		void const *child = wrapper->child;
 		key = parent->key;
-		shape = wrapper->child;
+		shape = child;
 	}
 };
 
