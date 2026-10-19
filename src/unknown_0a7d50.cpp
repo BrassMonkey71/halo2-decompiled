@@ -120,21 +120,21 @@ void function_a7d50(long index, long group, long target, short node, point3f con
             long parent = NONE;
             if (object[0x12c] & 1)
                 parent = *(long *)(object + 0x154);
-            long source = NONE;
-            long subject = NONE;
             long slot = function_101f50(index);
             long objects[2] = {NONE, NONE};
+            long source = NONE;
             if (parent != NONE)
             {
                 if (slot >= 0 && slot < 4)
                 {
-                    objects[0] = subject = parent;
+                    objects[0] = parent;
                     long linked = *(long *)(headers[parent & 0xffff].object + 0x24c);
                     source = linked != NONE ? linked : parent;
                 }
             }
             else if (slot == NONE)
-                objects[0] = subject = index;
+                objects[0] = index;
+            long subject = objects[0];
             s_event_object_header *header = &headers[subject & 0xffff];
             if (header->unknown00[3] == 1)
             {

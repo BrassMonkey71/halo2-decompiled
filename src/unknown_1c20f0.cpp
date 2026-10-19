@@ -160,10 +160,14 @@ bool __stdcall function_1c1d50(long actor_index, s_type_f17a25 *path)
 	return closest_index != NONE;
 }
 
+void scripted_vector_scale(vector3f const *vector, real scale, vector3f *result);
+void scripted_vector_add_scaled(vector3f const *a, vector3f const *b, real scale, vector3f *result);
+
 // @retail 0x1c1e70
 bool function_1c1e70(long actor_index, s_type_f17a25 *path)
 {
-	vector3f facing = actor_get(actor_index)->unknown290;
+	s_actor_view *actor = actor_get(actor_index);
+	vector3f facing = actor->unknown290;
 	vector3f perpendicular;
 	vector3f directions[8];
 	short i;
@@ -180,22 +184,22 @@ bool function_1c1e70(long actor_index, s_type_f17a25 *path)
 	perpendicular.j = facing.i;
 	perpendicular.k = facing.k;
 	directions[0] = facing;
-	directions[1].i = facing.i * 0.70710677f + perpendicular.i * 0.70710677f;
-	directions[1].j = facing.j * 0.70710677f + perpendicular.j * 0.70710677f;
-	directions[1].k = facing.k * 0.70710677f + perpendicular.k * 0.70710677f;
-	directions[2].i = facing.i * 0.70710677f - perpendicular.i * 0.70710677f;
-	directions[2].j = facing.j * 0.70710677f - perpendicular.j * 0.70710677f;
-	directions[2].k = facing.k * 0.70710677f - perpendicular.k * 0.70710677f;
+	scripted_vector_scale(&facing, 0.70710677f, &directions[1]);
+	scripted_vector_add_scaled(&directions[1], &perpendicular, 0.70710677f, &directions[1]);
+	scripted_vector_scale(&facing, 0.70710677f, &directions[2]);
+	directions[2].i = directions[2].i - perpendicular.i * 0.70710677f;
+	directions[2].j = directions[2].j - perpendicular.j * 0.70710677f;
+	directions[2].k = directions[2].k - perpendicular.k * 0.70710677f;
 	directions[3] = perpendicular;
 	directions[4].i = perpendicular.i * -1.0f;
 	directions[4].j = perpendicular.j * -1.0f;
 	directions[4].k = perpendicular.k * -1.0f;
-	directions[5].i = perpendicular.i * 0.70710677f + facing.i * -0.70710677f;
-	directions[5].j = perpendicular.j * 0.70710677f + facing.j * -0.70710677f;
-	directions[5].k = perpendicular.k * 0.70710677f + facing.k * -0.70710677f;
-	directions[6].i = facing.i * -0.70710677f - perpendicular.i * 0.70710677f;
-	directions[6].j = facing.j * -0.70710677f - perpendicular.j * 0.70710677f;
-	directions[6].k = facing.k * -0.70710677f - perpendicular.k * 0.70710677f;
+	scripted_vector_scale(&perpendicular, 0.70710677f, &directions[5]);
+	scripted_vector_add_scaled(&directions[5], &facing, -0.70710677f, &directions[5]);
+	scripted_vector_scale(&facing, -0.70710677f, &directions[6]);
+	directions[6].i = directions[6].i - perpendicular.i * 0.70710677f;
+	directions[6].j = directions[6].j - perpendicular.j * 0.70710677f;
+	directions[6].k = directions[6].k - perpendicular.k * 0.70710677f;
 	directions[7].i = facing.i * -1.0f;
 	directions[7].j = facing.j * -1.0f;
 	directions[7].k = facing.k * -1.0f;
@@ -264,17 +268,18 @@ bool __stdcall function_1c2130(long actor_index, s_slot *slot)
 		ai_scratch_buffer_release(buffer);
 		if (!state->unknown10)
 		{
-			s_path_query query;
+			s_path_settings settings;
+			s_path_source source;
 			bool valid;
 			bool found = false;
 
 			function_26c180(actor_index);
-			function_1f9240(actor_index, &query.settings);
-			function_1f90f0(actor_index, &query.source);
-			query.source.unknown45 = true;
-			query.source.unknown48 = 20.0f;
+			function_1f9240(actor_index, &settings);
+			function_1f90f0(actor_index, &source);
+			source.unknown45 = true;
+			source.unknown48 = 20.0f;
 			buffer = ai_scratch_buffer_get();
-			function_271300((s_type_f17a25 *)buffer, NULL, &query.settings, &query.source, 0);
+			function_271300((s_type_f17a25 *)buffer, NULL, &settings, &source, 0);
 			valid = function_2715a0(buffer);
 			if (!(state->flags & 1))
 			{

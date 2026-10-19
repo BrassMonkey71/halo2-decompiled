@@ -75,9 +75,7 @@ void function_294050(s_294050 const *arg_0, s_294051 const *arg_1, point3f const
 				point3f local_5;
 				function_b9dd0(local_4, &local_5);
 				vector3f local_6;
-				local_6.i = local_5.x - arg_2->x;
-				local_6.j = local_5.y - arg_2->y;
-				local_6.k = local_5.z - arg_2->z;
+				vector3d_from_points3d(arg_2, &local_5, &local_6);
 				real local_7 = function_29419d(&local_6);
 				real local_8;
 				if (local_1 > local_7)
@@ -98,9 +96,7 @@ void function_294050(s_294050 const *arg_0, s_294051 const *arg_1, point3f const
 	if (arg_0->field_24 > 0)
 	{
 		vector3f local_9;
-		local_9.i = arg_0->field_14.x - arg_2->x;
-		local_9.j = arg_0->field_14.y - arg_2->y;
-		local_9.k = arg_0->field_14.z - arg_2->z;
+		vector3d_from_points3d(arg_2, &arg_0->field_14, &local_9);
 		real local_10 = function_30bf0(&local_9);
 		real local_11 = arg_0->field_20 * local_1;
 		real local_12 = 0.0f;

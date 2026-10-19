@@ -122,12 +122,11 @@ PRIVATE __forceinline short function_1b69e6(long arg_0, long arg_1)
     if (view)
     {
         memset(&request, 0, sizeof(request));
-        s_2605d0_request *local_0 = &request;
-        *(short volatile *)&local_0->type = 5;
-        *((bool volatile *)local_0 + 4) = true;
-        *(long volatile *)((byte *)local_0 + 8) = actor->prop_index;
-        *(long volatile *)((byte *)local_0 + 0xc) = *(long *)((byte *)view + 0xc);
-        *((bool volatile *)local_0 + 0x10) = false;
+        request.type = 5;
+        *((bool *)&request + 4) = true;
+        *(long *)((byte *)&request + 8) = actor->prop_index;
+        *(long *)((byte *)&request + 0xc) = *(long *)((byte *)view + 0xc);
+        *((bool *)&request + 0x10) = false;
         vector3f *direction = (vector3f *)((byte *)view + 0x94);
         if (direction->i * direction->i + direction->j * direction->j + direction->k * direction->k > 0.0f)
         {

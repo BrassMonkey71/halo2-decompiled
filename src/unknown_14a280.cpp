@@ -113,7 +113,7 @@ bool function_23a160(point2f const *point, real radius, short count, point2f con
 // @retail 0x14a370
 bool function_14a370(s_structure_bsp_portals_view const *bsp, point3f const *point, short portal_index, real radius)
 {
-	bool result = false;
+	bool result;
 	s_structure_portal const *portal = &bsp->portals[portal_index];
 	plane3f const *plane = (plane3f const *)&bsp->field_18->planes[portal->plane_index];
 	real distance = plane_distance_to_point(plane, point);
@@ -150,12 +150,13 @@ bool function_14a370(s_structure_bsp_portals_view const *bsp, point3f const *poi
 				vertex2d->x = vertex->n[axes[0]];
 				vertex2d->y = vertex->n[axes[1]];
 			}
-			if (function_23a160(&point2d, (real)sqrt(radius * radius - distance * distance), (short)portal->vertex_count, vertices))
-			{
-				result = true;
-			}
+			result = function_23a160(&point2d, (real)sqrt(radius * radius - distance * distance), (short)portal->vertex_count, vertices);
 		}
+		else
+			result = false;
 	}
+	else
+		result = false;
 	return result;
 }
 
@@ -242,21 +243,16 @@ short function_14a6d0(short cluster_index, real cosine, point3f const *point, ve
 		s_structure_bsp_portals_view *bsp = (s_structure_bsp_portals_view *)g_4e0348;
 		short current = stack[--stack_count];
 		s_structure_cluster_portals *cluster = &bsp->clusters[current];
-		long portal_count;
-		short *portal_indices;
-		s_structure_portal *portals;
-		short i;
 
 		if (cluster_count < maximum_count)
 		{
 			clusters[cluster_count] = current;
 		}
 		cluster_count++;
-		portal_count = cluster->portal_count;
-		portal_indices = cluster->portal_indices;
-		portals = bsp->portals;
-		for (i = 0; i < portal_count; i++)
+		for (short i = 0; i < cluster->portal_count; i++)
 		{
+			short *portal_indices = cluster->portal_indices;
+			s_structure_portal *portals = bsp->portals;
 			s_structure_portal *portal = &portals[portal_indices[i]];
 			short other_cluster = portal->front_cluster;
 

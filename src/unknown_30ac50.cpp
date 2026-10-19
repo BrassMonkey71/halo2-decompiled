@@ -3,6 +3,7 @@
 // fan of new faces from an apex over a loop of horizon edges, and the four
 // faces of the starting tetrahedron.
 #include <xmmintrin.h>
+#include "reference_counted_2d88a0.h"
 
 struct edge_30aac0;
 struct face_30aac0;
@@ -73,6 +74,7 @@ public:
 	int face_count;
 	char unknown1b8[0x2100 - 0x1b8];
 	vertex_30ac50 *vertices;
+	int vertex_count;
 
 	face_30aac0 *faces_end()
 	{
@@ -82,6 +84,7 @@ public:
 	void clear_marks();
 	int function_30ac50(face_list_30ac50 const *new_faces, void const *unused, edge_30aac0 *horizon, vertex_30ac50 const *const *apex);
 	void function_30ad20();
+	int function_30ae70(long count, edge_30aac0 *horizon, __m128 const *position);
 };
 
 // each new face gets one horizon edge, the next horizon edge's start and the
@@ -164,4 +167,49 @@ void class_30a810::function_30ad20()
 		face->function_30a9d0();
 		face++;
 	}
+}
+
+struct list_30a950;
+
+class pool_30a950
+{
+public:
+	void function_30a950(list_30a950 *out, long count);
+};
+
+// a list of faces that starts out in the room for 100 held inside it
+struct new_faces_30ae70
+{
+	face_30aac0 **data;
+	int size;
+	long capacity_and_flags;
+	face_30aac0 *embedded[100];
+
+	new_faces_30ae70()
+	{
+		data = embedded;
+		size = 0;
+		capacity_and_flags = 0x80000064;
+	}
+	~new_faces_30ae70()
+	{
+		if ((capacity_and_flags & 0x80000000) == 0)
+		{
+			g_memory_2d88a0->release_block(data, (capacity_and_flags & 0x7fffffff) * sizeof(face_30aac0 *), 0x12);
+		}
+	}
+};
+
+// adds a vertex at the position, and a fan of new faces from it over the
+// horizon; the object starts with the pool the faces come from
+// @retail 0x30ae70
+int class_30a810::function_30ae70(long count, edge_30aac0 *horizon, __m128 const *position)
+{
+	int index = vertex_count++;
+	vertex_30ac50 *apex = &vertices[index];
+	apex->position = *position;
+	apex->horizon_edge = 0;
+	new_faces_30ae70 new_faces;
+	((pool_30a950 *)this)->function_30a950((list_30a950 *)&new_faces, count);
+	return function_30ac50((face_list_30ac50 const *)&new_faces, (void const *)count, horizon, &apex);
 }

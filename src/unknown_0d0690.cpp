@@ -1433,7 +1433,7 @@ extern color3f *g_468714;
 // @retail 0xd16d0
 bool function_d16d0(s_structure_lightmap_triangle const *triangle, color3f *out, real *weight)
 {
-    volatile bool result = false;
+    bool result = false;
     if (*(long const *)triangle->unknown08 == NONE)
     {
         s_mesh *mesh = NULL;
@@ -1454,12 +1454,12 @@ bool function_d16d0(s_structure_lightmap_triangle const *triangle, color3f *out,
             function_d2bf0(mesh, triangle->lightmap_part_index, triangle->u, triangle->v, &u, &v);
             if (function_d2f90(0, bitmap_index, palette_index, u, v, &color) == 0)
             {
+                result = true;
                 *weight = *(real const *)&triangle->unknown18;
                 color.red = pin_real(color.red, 0.0f, 1.0f);
                 color.green = pin_real(color.green, 0.0f, 1.0f);
                 color.blue = pin_real(color.blue, 0.0f, 1.0f);
                 *out = color;
-                return true;
             }
         }
     }
