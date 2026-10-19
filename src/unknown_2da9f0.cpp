@@ -75,6 +75,8 @@ void class_2da9f0::released(void *world_)
 
 // @retail 0x2dad80 deleting class_2da9f0
 
+// @retail 0x2dace0 adjustor class_2da9f0 0xc
+
 // @retail 0x2daa60
 class_2da9f0::~class_2da9f0()
 {

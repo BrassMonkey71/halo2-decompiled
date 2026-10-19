@@ -894,24 +894,23 @@ bool function_1140b0(long unit_index, long name)
 {
 	s_unit_animation_object *unit = UNIT_ANIMATION_OBJECT(unit_index);
 	s_unit_animation_control *control = UNIT_ANIMATION_CONTROL(unit);
-	long const *name_reference = &name;
 	bool result = false;
-	if (control->channel_9c.unknown08 == *name_reference)
+	if (control->channel_9c.unknown08 == name)
 	{
-		channel_reset_114240(&control->channel_9c);
+		control->channel_9c.clear();
 		function_ba350(unit_index, 0.267f);
 		result = true;
 	}
-	else if (control->channel_bc.unknown08 == *name_reference)
+	else if (control->channel_bc.unknown08 == name)
 	{
-		channel_reset_114240(&control->channel_bc);
+		control->channel_bc.clear();
 		function_ba350(unit_index, 0.267f);
 		result = true;
 	}
 	else
 	{
 		long first, second;
-		if (function_10f630(unit_index, &first, &second) && second == *name_reference)
+		if (function_10f630(unit_index, &first, &second) && second == name)
 		{
 			function_10f430(unit_index, 0x7000101, 0x7000101, 0x7000101, 0x7000001, 0.0f, false, 0);
 			result = true;

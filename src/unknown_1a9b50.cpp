@@ -820,13 +820,11 @@ bool __stdcall function_1aa750(long arg_0, s_slot *arg_1, bool arg_2)
 	local_11 = false;
 	if (!((local_2->flags19 & 1) && ((local_2->flags19 & 2) || !(*(byte *)local_1 & 1))))
 	{
-		memset(local_3, 0, 0x30);
-		long local_12 = 0;
-		long local_13 = 0;
-		short &local_4 = *(short *)&local_12;
-		short &local_5 = *(short *)&local_13;
+		short local_4 = 0;
+		short local_5 = 0;
 		real local_6 = 0.0f;
 		real local_7 = 0.0f;
+		memset(local_3, 0, 0x30);
 		local_3->field_0 = g_510c54->game_time;
 		local_3->field_4 = NONE;
 		local_3->field_a = (local_2->flags19 & 1) != 0;
@@ -835,8 +833,9 @@ bool __stdcall function_1aa750(long arg_0, s_slot *arg_1, bool arg_2)
 		if (local_1)
 		{
 			local_3->field_28 = local_1->field_c;
+			long unit_index = local_0->unknown018;
 			long local_8 = arg_2 ? 0xa000040 : local_3->field_a ? 0xe00067d : 0x500000a;
-			if (unit_animation_get_timing(local_0->unknown018, 0x7000101, local_8, &local_4, &local_6, &local_5, &local_7))
+			if (unit_animation_get_timing(unit_index, 0x7000101, local_8, &local_4, &local_6, &local_5, &local_7))
 			{
 				if (local_4 == NONE)
 				{
