@@ -45,13 +45,7 @@ public:
 	virtual long v5() = 0;
 };
 
-class __declspec(align(16)) c_z_capsule_temp
-{
-public:
-	c_z_capsule_temp(void const *first, void const *second, real radius);
-	~c_z_capsule_temp();
-	byte unknown00[0x30];
-};
+#include "unknown_0a9f20.h"
 
 extern real g_47f05c;
 

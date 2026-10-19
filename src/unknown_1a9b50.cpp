@@ -761,28 +761,31 @@ short __stdcall function_1a9ec0(long arg_0)
 			s_prop_node_view *local_4 = prop_node_get(local_0->prop_index);
 			s_prop_state_view *local_5 = (s_prop_state_view *)function_25d690((s_prop_datum *)local_4);
 			s_prop_view_fields *local_6 = (s_prop_view_fields *)function_25d740((s_prop_node *)local_4);
+			vector3f const *facing = &local_0->unknown290;
 			if ((local_0->unknown229 || !((s_prop_state_64 *)local_5)->unknown64) && local_4->unknown27 >= 1)
 			{
 				if (local_0->unknown225)
 					local_2 = 3;
-				else if (!function_1e2030(arg_0) || (local_6 && local_1->unknown0c > local_4->unknown28 &&
-					-0.4f > local_6->unknown2c.k * local_0->unknown290.k + local_6->unknown2c.j * local_0->unknown290.j + local_6->unknown2c.i * local_0->unknown290.i &&
-					!local_0->unknown264 && function_10f340(local_0->unknown018, 0x7000101, 0xa0005b9)))
+				else
 				{
-					local_2 = 4;
-					goto local_7;
-				}
-				else if (local_5->unknown3c == NONE && local_1->unknown04 >= local_4->unknown28 &&
-					(local_0->times[3] == NONE || (real)(g_510c54->game_time - local_0->times[3]) * g_510c54->rate > function_1e9700(0x15) * local_1->unknown18))
-				{
-					real local_8 = function_1c9ee0(local_1->unknown08);
-					if (local_8 > function_259a0(&g_4e7408->unknown0))
-						local_2 = 3;
+					bool choose_four = !function_1e2030(arg_0) || (local_6 && local_1->unknown0c > local_4->unknown28 &&
+						-0.4f > local_6->unknown2c.k * facing->k + local_6->unknown2c.j * facing->j + local_6->unknown2c.i * facing->i &&
+						!local_0->unknown264 && function_10f340(local_0->unknown018, 0x7000101, 0xa0005b9));
+					if (choose_four)
+					{
+						local_2 = 4;
+					}
+					else if (local_5->unknown3c == NONE && local_1->unknown04 >= local_4->unknown28 &&
+						(local_0->times[3] == NONE || (real)(g_510c54->game_time - local_0->times[3]) * g_510c54->rate > function_1e9700(0x15) * local_1->unknown18))
+					{
+						real local_8 = function_1c9ee0(local_1->unknown08);
+						if (local_8 > function_259a0(&g_4e7408->unknown0))
+							local_2 = 3;
+					}
 				}
 			}
 		}
 	}
-local_7:
 	return (short)local_2;
 }
 
@@ -820,13 +823,11 @@ bool __stdcall function_1aa750(long arg_0, s_slot *arg_1, bool arg_2)
 	local_11 = false;
 	if (!((local_2->flags19 & 1) && ((local_2->flags19 & 2) || !(*(byte *)local_1 & 1))))
 	{
-		memset(local_3, 0, 0x30);
-		long local_12 = 0;
-		long local_13 = 0;
-		short &local_4 = *(short *)&local_12;
-		short &local_5 = *(short *)&local_13;
+		short local_4 = 0;
+		short local_5 = 0;
 		real local_6 = 0.0f;
 		real local_7 = 0.0f;
+		memset(local_3, 0, 0x30);
 		local_3->field_0 = g_510c54->game_time;
 		local_3->field_4 = NONE;
 		local_3->field_a = (local_2->flags19 & 1) != 0;
@@ -835,8 +836,9 @@ bool __stdcall function_1aa750(long arg_0, s_slot *arg_1, bool arg_2)
 		if (local_1)
 		{
 			local_3->field_28 = local_1->field_c;
+			long unit_index = local_0->unknown018;
 			long local_8 = arg_2 ? 0xa000040 : local_3->field_a ? 0xe00067d : 0x500000a;
-			if (unit_animation_get_timing(local_0->unknown018, 0x7000101, local_8, &local_4, &local_6, &local_5, &local_7))
+			if (unit_animation_get_timing(unit_index, 0x7000101, local_8, &local_4, &local_6, &local_5, &local_7))
 			{
 				if (local_4 == NONE)
 				{

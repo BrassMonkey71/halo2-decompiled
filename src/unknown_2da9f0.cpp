@@ -8,6 +8,18 @@ bool __cdecl function_279740(long value);
 
 class listener_30c420;
 
+class class_30caf0
+{
+public:
+	void function_30caf0(void *pointer);
+};
+
+class c_2784c4
+{
+public:
+	void function_30cb30(void *arg_0);
+};
+
 class c_library_30c470
 {
 public:
@@ -48,6 +60,7 @@ public:
 
 	void *world;
 
+	class_2da9f0(void *world_);
 	~class_2da9f0();
 	void released(void *world_);
 };
@@ -73,7 +86,18 @@ void class_2da9f0::released(void *world_)
 	}
 }
 
+// attaches itself to the world through both interfaces
+// @retail 0x2dacf0
+class_2da9f0::class_2da9f0(void *world_)
+{
+	world = world_;
+	((c_2784c4 *)world_)->function_30cb30(static_cast<interface_c_2da9f0 *>(this));
+	((class_30caf0 *)world_)->function_30caf0(static_cast<interface_b_2da9f0 *>(this));
+}
+
 // @retail 0x2dad80 deleting class_2da9f0
+
+// @retail 0x2dace0 adjustor class_2da9f0 0xc
 
 // @retail 0x2daa60
 class_2da9f0::~class_2da9f0()

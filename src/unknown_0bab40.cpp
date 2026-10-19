@@ -62,48 +62,47 @@ bool function_10aac0(long object_index, long name, real *value, long *index);
 bool function_ba8c0(s_object_function_ab const *function, long object_index, real *out);
 
 // @retail 0xbab40
-bool __stdcall function_bab40(volatile long object_index, long name, real *value)
+bool __stdcall function_bab40(long object_index, long name, real *value)
 {
-    real *saved_value = value;
-    *saved_value = 0.0f;
     bool enabled = false;
+    long index;
+    *value = 0.0f;
     s_object_header const *headers = (s_object_header const *)g_4e0300->data;
     s_object *object = headers[object_index & 0xffff].object;
     if ((bool)(((dword)object->flags_c0 >> 9) & 1))
     {
-        long &index = *(long *)&value;
-        if (function_10aac0(object_index, name, saved_value, &index))
+        if (function_10aac0(object_index, name, value, &index))
             return true;
     }
-    if (name == 0x040005a7)
+    switch (name)
     {
-        *saved_value = 0.0f;
+    case 0:
+    case 0x030005a6:
+        *value = 1.0f;
+        return true;
+    case 0x040005a7:
+        *value = 0.0f;
         return false;
     }
-    if (!name || name == 0x030005a6)
+    if (object_index != NONE && !object_dispatch_query_function_value(object_index, name, value, &enabled))
     {
-        *saved_value = 1.0f;
-        return true;
-    }
-    if (object_index != NONE && !object_dispatch_query_function_value(object_index, name, saved_value, &enabled))
-    {
+        bool found = false;
         object = ((s_object_header *)g_4e0300->data)[object_index & 0xffff].object;
         s_object_functions_definition_ab *definition = (s_object_functions_definition_ab *)g_4e3b44[*(long *)object & 0xffff].bytes;
-        bool found = false;
         for (long i = 0; i < definition->count; ++i)
         {
             s_object_function_ab *function = &definition->functions[i];
             if (function->output_name == name)
             {
-                enabled = function_ba8c0(function, object_index, saved_value);
+                enabled = function_ba8c0(function, object_index, value);
                 found = true;
             }
         }
         if (!found)
         {
             if (TEST_FIELD_BIT(object->flag26) && object->parent_index != NONE)
-                return function_bab40(object->parent_index, name, saved_value);
-            *saved_value = 0.0f;
+                return function_bab40(object->parent_index, name, value);
+            *value = 0.0f;
             return false;
         }
     }

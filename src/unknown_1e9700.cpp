@@ -92,8 +92,7 @@ void function_1ea5b0(long player_index, s_statborg *statistics, long threshold, 
 	}
 	if (g_55e4d0[g_4e9ae8->engine_index])
 	{
-		byte volatile *code_reference = &code;
-		*code_reference = (byte)g_4e6948->flags184.bit0;
+		code = (byte)g_4e6948->flags184.bit0;
 	}
 	else code = 0;
 	if (code && player->team != NONE)
@@ -429,16 +428,13 @@ void function_225910(long player_index);
 // @retail 0x1e9ad0
 bool __stdcall function_1e9ad0(void *state, long mask, void *data)
 {
-	void *const *state_reference = &state;
-	const long *mask_reference = &mask;
-	void *const *data_reference = &data;
-	s_object_values *table = (s_object_values *)*state_reference;
-	s_object_values_packet *packet = (s_object_values_packet *)*data_reference;
+	s_object_values *table = (s_object_values *)state;
+	s_object_values_packet *packet = (s_object_values_packet *)data;
 	short *row = table->values[0];
- long row_offset = 0;
- for (long i = 0; i < 16; i++, row += sizeof(table->values[0]) / sizeof(short), row_offset += 9)
+	long row_offset = 0;
+	for (long i = 0; i < 16; i++)
 	{
-		if (*mask_reference & (1 << i))
+		if (mask & (1 << i))
 		{
 			for (long column = 0; column < 9; column++)
 			{
@@ -480,10 +476,12 @@ bool __stdcall function_1e9ad0(void *state, long mask, void *data)
 				row[column] = packet->values[0][row_offset + column];
 			}
 		}
+		row += sizeof(table->values[0]) / sizeof(short);
+		row_offset += 9;
 	}
 	for (long team = 0; team < 8; team++)
 	{
-		if (*mask_reference & (1 << (team + 16)))
+		if (mask & (1 << (team + 16)))
 		{
 			short *destination = &table->team_values[team][0];
 			short const *source = &packet->team_values[team][0];
@@ -825,7 +823,6 @@ public:
 // @retail 0x1e6fe0
 void function_1e6fe0(long local_player_index)
 {
- union { long spectated_player; short_rectangle2d limits; } shared;
  byte *globals = (byte *)g_51e9c0;
  if (!globals[0x6c5])
   return;
@@ -836,7 +833,7 @@ void function_1e6fe0(long local_player_index)
  if (local_player_index != NONE)
  {
   long player_index = g_4e8c20->entries[local_player_index];
-  long &spectated_player = shared.spectated_player;
+  long spectated_player;
   if (player_index != NONE && function_162c50(player_index, &spectated_player))
   {
    *(long *)((byte *)g_510c4c + 0x1b8) = spectated_player;
@@ -863,7 +860,7 @@ void function_1e6fe0(long local_player_index)
    long index = *(long *)(state + 0x80);
    if (index == NONE)
     return;
-   short transition = *(short *)(globals + local_player_index * 0x1b0 + index * 4);
+   short transition = *(short *)(state + index * 4);
    if (transition != 2 && transition != 3)
     return;
    byte *entry = (byte *)function_1e8d50(index);
@@ -903,7 +900,7 @@ void function_1e6fe0(long local_player_index)
  default_color.alpha = g_4b9ed8 >= 0 && g_4b9ed8 < 4 ? g_4e69c0[g_4b9ed8] : 1.0f;
  function_13edb0(font, NONE, 2, 0, &color, &default_color);
  function_13ec70(&color);
- short_rectangle2d &limits = shared.limits;
+ short_rectangle2d limits;
  limits.top = -32768; limits.left = -32768; limits.bottom = 32767; limits.right = 32767;
  short_rectangle2d bounds, measured;
  function_13e9c0(text, &limits, &bounds, &measured, 1.0f);

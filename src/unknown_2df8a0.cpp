@@ -21,7 +21,8 @@ public:
 	virtual void slot_2() {}
 	virtual void slot_3() {}
 	virtual void slot_4() {}
-	virtual void slot_5() {}
+	// the object's kind, an index into a per-kind flags table
+	virtual long slot_5() const { return 0; }
 	virtual void slot_6() {}
 	virtual void slot_7() {}
 	virtual void slot_8() {}
@@ -41,6 +42,43 @@ struct keyed_object_2df9d0
 	long key_24;
 };
 
+// a pair's side seen as a chain: an object, the key of the part concerned
+// (-1 for the whole), and the chain it belongs to; the outermost link carries
+// the key at +0x1c
+struct chain_2dfa20
+{
+	keyed_2df8f0 const *object;
+	long part;
+	long field_8;
+	chain_2dfa20 const *parent;
+	char unknown10[0xc];
+	long key_1c;
+};
+
+// per-kind flags, bit 2: an object of that kind gives the key of its parts
+struct kinds_2dfa20
+{
+	char unknown0[0x10c];
+	unsigned long flags[1];
+};
+
+// the key of a chain's part: from the first link up whose kind gives keys
+// for its parts, else 0
+__forceinline long part_key_2dfa20(kinds_2dfa20 const *const *kinds, chain_2dfa20 const *chain)
+{
+	chain_2dfa20 const *link = chain->parent;
+	do
+	{
+		if ((bool)(((*kinds)->flags[link->object->slot_5()] >> 2) & 1))
+		{
+			return link->object->key(chain->part);
+		}
+		link = link->parent;
+	}
+	while (link);
+	return 0;
+}
+
 class c_2df9d0
 {
 public:
@@ -50,7 +88,7 @@ public:
 class c_contact_rule_filter
 {
 public:
-	virtual void slot_0() {}
+	virtual hkBool function_2dfa20(kinds_2dfa20 const *const *kinds, chain_2dfa20 const *chain, long arg_2, keyed_2df8f0 const *other, long index) = 0;
 };
 
 class c_2df8f0
@@ -86,9 +124,12 @@ public:
 	long field_18;
 	unsigned long enabled[32];
 
+	c_2dfbf0();
+
 	virtual hkBool function_2df9d0(void const *arg_0, void const *arg_1);
 	virtual hkBool function_2df8f0(void const *arg_0, void const *arg_1, long arg_2);
 	virtual hkBool function_2dfae0(void const *arg_0, void const *arg_1);
+	virtual hkBool function_2dfa20(kinds_2dfa20 const *const *kinds, chain_2dfa20 const *chain, long arg_2, keyed_2df8f0 const *other, long index);
 
 	hkBool test(long a, long b) const
 	{
@@ -123,9 +164,43 @@ hkBool c_2dfbf0::function_2df9d0(void const *arg_0, void const *arg_1)
 		((keyed_object_2df9d0 const *)arg_1)->key_1c);
 }
 
+// the key of a chain (its outermost link's for the whole, else its part's)
+// against another object's key for one of its parts
+// @retail 0x2dfa20
+hkBool c_2dfbf0::function_2dfa20(kinds_2dfa20 const *const *kinds, chain_2dfa20 const *chain, long arg_2, keyed_2df8f0 const *other, long index)
+{
+	long const b = other->key(index);
+	long a;
+	if (chain->part == -1)
+	{
+		chain_2dfa20 const *root = chain;
+		while (root->parent)
+		{
+			root = root->parent;
+		}
+		a = root->key_1c;
+	}
+	else
+	{
+		a = part_key_2dfa20(kinds, chain);
+	}
+	return test(a, b);
+}
+
 // @retail 0x2dfae0
 hkBool c_2dfbf0::function_2dfae0(void const *arg_0, void const *arg_1)
 {
 	return test(((keyed_object_2df9d0 const *)arg_0)->key_24,
 		((keyed_object_2df9d0 const *)arg_1)->key_1c);
+}
+
+// every pair enabled
+// @retail 0x2dfbf0
+c_2dfbf0::c_2dfbf0()
+{
+	for (long i = 0; i < 32; i++)
+	{
+		enabled[i] = 0xffffffff;
+	}
+	field_18 = 0;
 }

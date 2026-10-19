@@ -225,20 +225,16 @@ void __stdcall function_2b07e2(c_class_2b01eb *widget, long frame)
     dword color = (((alpha << 8) | red) << 8 | green) << 8 | blue;
     short y, x;
     function_2363d4((short_rectangle2d const *)frame, &x, &y);
-    bool volatile show_label;
-    if (g_54d59f && widget->has_screen())
-        show_label = widget->v11() != 6;
-    else
-        show_label = false;
+    bool show_label = g_54d59f && widget->has_screen() && widget->v11() != 6;
     s_float_rect rectangle;
- s_float_rect *volatile rectangle_reference = &rectangle;
-    function_22ea81(widget, rectangle_reference, (short_rectangle2d const *)frame);
-    struct { s_widget_bounds bounds; s_widget_bounds outline; } draw;
-    draw.bounds.top = (short)rectangle.y0 + y;
-    draw.bounds.left = (short)rectangle.x0 + x;
-    draw.bounds.bottom = (short)rectangle.y1 + y;
-    draw.bounds.right = (short)rectangle.x1 + x;
-    function_147cbc((s_13c051 const *)&draw.bounds, color);
+    function_22ea81(widget, &rectangle, (short_rectangle2d const *)frame);
+    s_widget_bounds bounds;
+    s_widget_bounds outline;
+    bounds.top = (short)rectangle.y0 + y;
+    bounds.left = (short)rectangle.x0 + x;
+    bounds.bottom = (short)rectangle.y1 + y;
+    bounds.right = (short)rectangle.x1 + x;
+    function_147cbc((s_13c051 const *)&bounds, color);
     if (show_label)
     {
         c_user_interface_text_buffer_32 text;
@@ -246,16 +242,16 @@ void __stdcall function_2b07e2(c_class_2b01eb *widget, long frame)
         word label[16];
         unicode_string_snprintf(label, 16, (word const *)L"%d", widget->value0a);
         text.setup(label, 0, g_46873c, 0, NONE, 0, NONE);
-        draw.outline = widget->bounds;
-        if (draw.outline.right - draw.outline.left > 0 && draw.outline.bottom - draw.outline.top > 0)
+        outline = widget->bounds;
+        if (outline.right - outline.left > 0 && outline.bottom - outline.top > 0)
         {
-            draw.outline.left += x;
-            draw.outline.right += x;
-            draw.outline.top += y;
-            draw.outline.bottom += y;
-            function_22cd48(&text, (short_rectangle2d const *)&draw.outline, (short_rectangle2d const *)&draw.outline,
+            outline.left += x;
+            outline.right += x;
+            outline.top += y;
+            outline.bottom += y;
+            function_22cd48(&text, (short_rectangle2d const *)&outline, (short_rectangle2d const *)&outline,
                 depth, widget->animation.scale, (short_rectangle2d const *)frame);
-            function_235d69((short_rectangle2d const *)&draw.outline, depth, (short_rectangle2d const *)frame, g_4686f8);
+            function_235d69((short_rectangle2d const *)&outline, depth, (short_rectangle2d const *)frame, g_4686f8);
         }
     }
 }
@@ -4325,7 +4321,7 @@ c_clan_options_list::c_clan_options_list(word user_flags) :
 	handler(this, (list_item_method)&c_clan_options_list::handle_item)
 {
 	long controller = get_controller_index();
-	volatile bool online = function_19a935();
+	bool online = function_19a935();
 	s_clan_membership membership;
 
 	data = user_interface_data_new("clan options list", 4, 4);
@@ -4333,17 +4329,18 @@ c_clan_options_list::c_clan_options_list(word user_flags) :
 	if (function_18ffc3(controller, (s_player_slot_blockb82 *)&membership))
 	{
 		bool member = membership.rank >= 1;
+		bool ranked = membership.rank >= 1;
 
-		online = online && membership.rank >= 1;
+		bool online_member = online && membership.rank >= 1;
 		if (member)
 		{
 			list_item_add(this, 0);
 		}
-		if (member)
+		if (ranked)
 		{
 			list_item_add(this, 1);
 		}
-		if (online)
+		if (online_member)
 		{
 			list_item_add(this, 2);
 		}

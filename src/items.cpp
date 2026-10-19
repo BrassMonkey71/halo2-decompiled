@@ -822,16 +822,14 @@ void function_b92d0(long index, s_object_marker const *old_parent, transform4x3f
 // @retail 0x10d710
 void function_10d710(vector3f const *facing, long object_index, point3f const *origin, point3f *position)
 {
-    long const *object_reference = &object_index;
-    point3f **position_reference = &position;
-    s_item *item = ITEM_GET(*object_reference);
+    s_item *item = ITEM_GET(object_index);
     if (item->parent_index == NONE && !(item->flags_12c & 1))
     {
         s_object_marker marker;
-        if (function_b8d30(*object_reference, 0xc0000c1, &marker, 1, false))
+        if (function_b8d30(object_index, 0xc0000c1, &marker, 1, false))
         {
             if (!origin) origin = &marker.matrix.position;
-            if (!*position_reference) *position_reference = &marker.matrix.position;
+            if (!position) position = &marker.matrix.position;
             vector3f up;
             vector3f const *old = &marker.matrix.up;
             vector3f const *forward = &marker.matrix.forward;
@@ -864,8 +862,8 @@ void function_10d710(vector3f const *facing, long object_index, point3f const *o
             transform4x3f transform;
             function_1420f0(&transform, origin, &up, facing);
             transform.scale = *(real *)((byte *)item + 0xa0);
-            function_b92d0(*object_reference, &marker, &transform);
-            **position_reference = item->position;
+            function_b92d0(object_index, &marker, &transform);
+            *position = item->position;
         }
     }
 }

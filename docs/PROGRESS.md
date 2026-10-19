@@ -2,6 +2,66 @@
 
 The newest entry comes first.
 
+## 2026-10-19: 9185 functions match
+
+```
+matched 9185 of 11321 game functions (1328412 of 2784283 bytes, 47.71%)
+matched 497 of 1041 Havok functions (42834 of 234536 bytes, 18.26%)
+```
+
+10 new matches, none lost:
+- Machine 3's batch 77 (#587): `0x211a0`, `0x6fa60`, `0x14a6d0`, `0x196dd0`, `0x196e60`, `0x1970a0`, `0x1cf950`, `0x1d5500`, `0x256b00` and `0x273d30` match.
+
+## 2026-10-19: 9175 functions match
+
+```
+matched 9175 of 11321 game functions (1325653 of 2784283 bytes, 47.61%)
+matched 497 of 1041 Havok functions (42834 of 234536 bytes, 18.26%)
+```
+
+0 new matches, none lost:
+- @andrewnakas's #582, #583:  match.
+
+## 2026-10-19: 9175 functions match
+
+```
+matched 9175 of 11321 game functions (1325653 of 2784283 bytes, 47.61%)
+matched 490 of 1041 Havok functions (41489 of 234536 bytes, 17.69%)
+```
+
+1 new matches, none lost:
+- @andrewnakas's 0xdc370 from #573: the base reference object's destructor matches.
+
+## 2026-10-18: 9174 functions match
+
+```
+matched 9174 of 11321 game functions (1325610 of 2784283 bytes, 47.61%)
+matched 421 of 1041 Havok functions (26508 of 234536 bytes, 11.30%)
+```
+
+0 new matches, none lost:
+- @andrewnakas's #571:  match.
+
+## 2026-10-18: 9174 functions match
+
+```
+matched 9174 of 11321 game functions (1325610 of 2784283 bytes, 47.61%)
+matched 421 of 1041 Havok functions (26508 of 234536 bytes, 11.30%)
+```
+
+1 new matches, none lost:
+- @RWayne93's 0x2116c0 from #567: the creature's parent-unit conversion check matches.
+
+## 2026-10-18: 9173 functions match
+
+```
+matched 9173 of 11321 game functions (1325568 of 2784283 bytes, 47.61%)
+matched 421 of 1041 Havok functions (26508 of 234536 bytes, 11.30%)
+```
+
+10 new matches, none lost:
+- Machine 3's batch 76 (#572): `0x22c30`, `0x70280`, `0x70d60`, `0x10a390`, `0x10a520`, `0x1140b0`, `0x125690`, `0x202570`, `0x2b233d` and `0x2b6db1` match.
+
 ## 2026-10-18: 9163 functions match
 
 ```
