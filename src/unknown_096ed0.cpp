@@ -225,17 +225,8 @@ bool function_99640(c_handle_table_450cd0 *self, long handle)
 	bool result = false;
 	if (index >= 0 && (dword)index < 0x400)
 	{
-		s_handle_entry *entry = &self->entries[index];
-		if (entry->handle == handle)
-		{
-			byte flags = self->table->peers[index].flags;
-			if (flags & 4)
-			{
-				if (entry->state != 3 || (flags & 2))
-					return false;
-			}
-			result = true;
-		}
+		if (self->entries[index].handle == handle)
+			result = !self->table->peers[index].flag2 || (self->entries[index].state == 3 && !self->table->peers[index].flag1);
 	}
 	return result;
 }

@@ -3252,11 +3252,10 @@ void __stdcall function_061570(c_class_58d20 *session, bool flag)
 			network_session_reset_membership(session, true);
 			session->member_index = session->current_member;
 		}
-		s_session_transition_state transition;
-		memset(&transition, 0, sizeof(transition));
+		s_session_transition_state transition = {0};
+		((byte *)&transition.unknown00)[0] = 0;
 		transition.time = network_session_time_now();
 		transition.host_index = previous_host;
-		((byte *)&transition.unknown00)[0] = 0;
 		((byte *)&transition.unknown00)[1] = flag;
 		transition.sent_mask = 1 << session->current_member;
 		transition.mask10 = transition.sent_mask;
