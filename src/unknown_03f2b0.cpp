@@ -1351,7 +1351,7 @@ struct s_batch_cache_4b5d0
 struct s_133f70;
 
 // @retail 0x4b5d0
-void function_4b5d0(long object_index, long override, bool force, real distance, real priority,
+void function_4b5d0(bool force, long override, long object_index, real distance, real priority,
     s_133f70 *record, point3f const *unused, bool project_nodes)
 {
     byte *output = (byte *)record;
