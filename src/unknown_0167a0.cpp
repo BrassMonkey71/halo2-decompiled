@@ -959,7 +959,7 @@ void __stdcall function_17b60(byte *context, s_packed_shader_range const *range)
     if (range->count() <= 0) return;
     byte *definition = *(byte **)(context + 0xc);
     byte const *entry = *(byte **)(definition + 0x58) + range->index() * 4;
-    for (long i = 0; i < (long)range->count(); entry += 4, ++i)
+    for (long i = 0; i < (long)range->count(); ++i)
     {
         definition = *(byte **)(context + 0xc);
         word selection = (*(word **)(definition + 0x50))[entry[3]];
@@ -1006,6 +1006,7 @@ void __stdcall function_17b60(byte *context, s_packed_shader_range const *range)
             D3DDevice_GetRenderState((D3DRENDERSTATETYPE)setting->state, &previous);
             D3DDevice_SetRenderState((D3DRENDERSTATETYPE)setting->state, (previous & 0xff000000) | (color & 0xffffff));
         }
+        entry += 4;
     }
 }
 

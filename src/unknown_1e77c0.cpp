@@ -785,9 +785,8 @@ struct s_request_profile_slot
 // @retail 0x1e75d0 standard
 void __stdcall function_1e75d0(dword flush)
 {
-	(void)&flush;
 	__declspec(align(8)) s_request_settings settings;
-	for (volatile long index = next_request_player(NONE); index != NONE; index = next_request_player(index))
+	for (long index = next_request_player(NONE); index != NONE; index = next_request_player(index))
 	{
 		long player_index = index == NONE ? NONE : g_4e8c20->entries[index];
 		if (player_index != NONE)
