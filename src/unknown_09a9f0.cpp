@@ -717,9 +717,8 @@ bool c_projectile_impact_effect_event::v11(long a, long const *entities, long c,
  if (event->object_name != NONE && function_122c10(0x70726f6a, event->object_name) &&
   !(event->scale_a < 0.0f || event->scale_a > 1.0f || event->scale_b < 0.0f || event->scale_b > 1.0f))
  {
-  volatile word node = event->field_30;
   function_fd0e0(event->object_name, event->scale_a, event->scale_b, &event->direction,
-   (point3f const *)&event->position, &event->normal, node, false, NONE, NONE, false);
+   (point3f const *)&event->position, &event->normal, event->field_30, false, NONE, NONE, false);
  }
  return true;
 }
