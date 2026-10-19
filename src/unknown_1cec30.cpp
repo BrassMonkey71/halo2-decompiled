@@ -1807,7 +1807,6 @@ public:
 // @retail 0x1d35d0
 void function_1d35d0(long constraint_index, s_havok_component *component, real scale)
 {
-    real const *scale_reference = &scale;
     s_havok_component_element0c *constraint = &component->unknown7c.data[constraint_index];
     s_component_object_transform_view *object = (s_component_object_transform_view *)havok_object_get(component->object_index);
     s_component_transform_definition *definition = (s_component_transform_definition *)g_4e3b44[object->definition_index & 0xffff].bytes;
@@ -1833,12 +1832,12 @@ void function_1d35d0(long constraint_index, s_havok_component *component, real s
         {
             s_component_joint_angles *angles = &physics->angles[constraint->unknown02];
             real *joint = (real *)constraint->contact;
-            joint[0x8c / 4] = (angles->twist_minimum > angles->twist_maximum ? angles->twist_maximum : angles->twist_minimum) * *scale_reference * 0.01745329238474369f;
-            joint[0x90 / 4] = (angles->twist_minimum > angles->twist_maximum ? angles->twist_minimum : angles->twist_maximum) * *scale_reference * 0.01745329238474369f;
-            joint[0x84 / 4] = (real)sin((angles->plane_minimum > angles->plane_maximum ? angles->plane_maximum : angles->plane_minimum) * *scale_reference * 0.01745329238474369f);
-            joint[0x88 / 4] = (real)sin((angles->plane_minimum > angles->plane_maximum ? angles->plane_minimum : angles->plane_maximum) * *scale_reference * 0.01745329238474369f);
-            joint[0x80 / 4] = (real)cos((angles->cone_minimum > angles->cone_maximum ? angles->cone_minimum : angles->cone_maximum) * *scale_reference * 0.01745329238474369f);
-            ((c_component_joint_strength *)joint)->set_strength((strength != 0.0f ? strength : angles->strength) * *scale_reference);
+            joint[0x8c / 4] = (angles->twist_minimum > angles->twist_maximum ? angles->twist_maximum : angles->twist_minimum) * scale * 0.01745329238474369f;
+            joint[0x90 / 4] = (angles->twist_minimum > angles->twist_maximum ? angles->twist_minimum : angles->twist_maximum) * scale * 0.01745329238474369f;
+            joint[0x84 / 4] = (real)sin((angles->plane_minimum > angles->plane_maximum ? angles->plane_maximum : angles->plane_minimum) * scale * 0.01745329238474369f);
+            joint[0x88 / 4] = (real)sin((angles->plane_minimum > angles->plane_maximum ? angles->plane_minimum : angles->plane_maximum) * scale * 0.01745329238474369f);
+            joint[0x80 / 4] = (real)cos((angles->cone_minimum > angles->cone_maximum ? angles->cone_minimum : angles->cone_maximum) * scale * 0.01745329238474369f);
+            ((c_component_joint_strength *)joint)->set_strength((strength != 0.0f ? strength : angles->strength) * scale);
         }
         break;
     case 1:
@@ -1847,13 +1846,13 @@ void function_1d35d0(long constraint_index, s_havok_component *component, real s
             real *joint = (real *)constraint->contact;
             if (strength == 0.0f)
                 strength = hinge->strength;
-            joint[0xd0 / 4] = strength * *scale_reference;
+            joint[0xd0 / 4] = strength * scale;
             real lower = 0.0f - hinge->minimum;
             real upper = 0.0f - hinge->maximum;
-            joint[0xc8 / 4] = (lower > upper ? upper : lower) * *scale_reference * 0.01745329238474369f;
+            joint[0xc8 / 4] = (lower > upper ? upper : lower) * scale * 0.01745329238474369f;
             lower = 0.0f - hinge->minimum;
             upper = 0.0f - hinge->maximum;
-            joint[0xcc / 4] = (lower > upper ? lower : upper) * *scale_reference * 0.01745329238474369f;
+            joint[0xcc / 4] = (lower > upper ? lower : upper) * scale * 0.01745329238474369f;
         }
         break;
     }
