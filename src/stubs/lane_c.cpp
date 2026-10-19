@@ -61,8 +61,6 @@ public:
 c_3101c0::c_3101c0(s_3111d0 const &arg_0, long arg_1) {}
 // @stub 0x310900
 void c_3101c0::function_310900(c_2dfbf0 *arg_0, s_30cb70 arg_1) {}
-// @stub 0x2dadb0
-void __cdecl function_2dadb0(hkWorld *arg_0) {}
 
 
 
