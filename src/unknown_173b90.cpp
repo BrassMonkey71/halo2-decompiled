@@ -626,16 +626,18 @@ long function_173fd0(s_effect_particle_system_definition *definition, long effec
 				s_particle_system_datum *particle_system = DATUM(g_510c74, s_particle_system_datum, particle_system_index);
 
 				*((word *)particle_system + 6) = 9;
-				particle_system->flag4 = definition->flag0;
-				byte &flags = ((byte *)particle_system)[0xc];
-				if (definition->flag1)
-					flags |= 0x20;
+				if (TEST_FIELD_BIT(definition->flag0))
+					particle_system->flag4 = true;
 				else
-					flags &= ~0x20;
-				if (definition->flag2)
-					flags |= 0x40;
+					particle_system->flag4 = false;
+				if (TEST_FIELD_BIT(definition->flag1))
+					particle_system->flag5 = true;
 				else
-					flags &= ~0x40;
+					particle_system->flag5 = false;
+				if (TEST_FIELD_BIT(definition->flag2))
+					particle_system->flag6 = true;
+				else
+					particle_system->flag6 = false;
 				g_4e7408->seed = g_4e7408->seed * 1664525 + 1013904223;
 				particle_system->random_a = (real)(g_4e7408->seed >> 16) * (1.0f / 65535.0f);
 				g_4e7408->seed = g_4e7408->seed * 1664525 + 1013904223;
