@@ -33,7 +33,7 @@ public:
 	void function_2fe420(void const *query, float tolerance, void *out) const;
 	void get_support(const __m128 *direction, __m128 *out) const;
 	void get_corners(const unsigned short *tags, int count, __m128 *out) const;
-	void get_all_corners(__m128 *out) const;
+	__m128 *get_all_corners(__m128 *out) const;
 };
 
 // @retail 0x2fe410
@@ -72,16 +72,19 @@ void class_2fe410::get_corners(const unsigned short *tags, int count, __m128 *ou
 }
 
 // @retail 0x2fe4f0
-// not matched yet: retail keeps the output as an offset from the table
-// pointer and has 8 more bytes of frame
-void class_2fe410::get_all_corners(__m128 *out) const
+__m128 *class_2fe410::get_all_corners(__m128 *out) const
 {
 	__m128 extents = half_extents;
 	extents.m128_f32[3] = *(const float *)&field_c;
-	for (int i = 0; i < 8; i += 2)
+	__m128 *odd = out + 1;
+	int i = 0;
+	for (int count = 4; count != 0; count--)
 	{
 		__m128 second = _mm_mul_ps(extents, *(const __m128 *)g_4134e0[i + 1]);
 		out[i] = _mm_mul_ps(extents, *(const __m128 *)g_4134e0[i]);
-		out[i + 1] = second;
+		*odd = second;
+		i += 2;
+		odd += 2;
 	}
+	return out;
 }
