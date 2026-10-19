@@ -1543,9 +1543,16 @@ bool __stdcall function_3c3c0(bool render, bool clear)
     {
         s_tag_instance *instance = g_4e3b44 + (short)tag;
         byte *material_reference;
-        if (*(dword *)instance->unknown00 == 0x5052544d || *(dword *)instance->unknown00 == 0x70727433)
+        switch (*(dword *)instance->unknown00)
+        {
+        case 0x5052544d:
+        case 0x70727433:
             material_reference = (byte *)((c_record_reference_view *)function_137bd0(tag))->reference();
-        else material_reference = *(byte **)(g_4e3b44[tag & 0xffff].bytes + 0x24);
+            break;
+        default:
+            material_reference = *(byte **)(g_4e3b44[tag & 0xffff].bytes + 0x24);
+            break;
+        }
         byte *material = g_4e3b44[*(long *)material_reference & 0xffff].bytes;
         byte *table = *(byte **)(material + 0x5c);
         long first = **(word **)(table + 4) & 0x1ff;
