@@ -475,7 +475,7 @@ bool function_1e83c0(long local_index, long type)
    case 5: if (state->field_195 > 0) result = true; break;
    case 6: if (function_1e69d0(state->requests, 0x1c, g_510c54->field_2_3)) result = true; break;
    case 7:
-    if (*(word *)(data + 0x140) == 1 && (data[0x14c] & 3) &&
+    if (*(word *)(data + 0x140) == 1 && ((*(word *)(data + 0x14c) & 1) || (*(word *)(data + 0x14c) & 2)) &&
      *(word *)(data + 0x148) >= 3 && (data[0xa4] & 2)) result = true;
     break;
    case 8:
