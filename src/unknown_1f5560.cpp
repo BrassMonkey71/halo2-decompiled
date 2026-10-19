@@ -833,8 +833,8 @@ real function_210ac0(s_type_c3b527 const *a, point3f const *b);
 bool function_1f8660(long actor_index);
 
 // @retail 0x1f5ab0
-void __stdcall function_1f5ab0(long actor_index, vector3f const *input, vector3f *movement_out,
-    short *type_out, vector3f *facing_out, bool *blocked)
+void __stdcall function_1f5ab0(long actor_index, vector3f const *input, vector3f *facing_out,
+    short *type_out, vector3f *movement_out, bool *blocked)
 {
     byte *actor = (byte *)actor_get(actor_index);
     byte *entry = NULL;
@@ -935,12 +935,12 @@ void __stdcall function_1f5ab0(long actor_index, vector3f const *input, vector3f
         }
     }
 done:
-    if (movement_out)
-        *movement_out = movement;
-    if (type_out)
-        *type_out = 0;
     if (facing_out)
         *facing_out = facing;
+    if (type_out)
+        *type_out = 0;
+    if (movement_out)
+        *movement_out = movement;
 }
 
 // @retail 0x1f9e70
