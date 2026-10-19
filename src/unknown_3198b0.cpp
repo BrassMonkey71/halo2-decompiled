@@ -11,7 +11,7 @@ public:
 	__m128 linear_velocity;
 	__m128 angular_velocity;
 	char unknown60[0x10];
-	__m128 center_of_mass;
+	__m128 mass_centre;
 
 	void velocity_at(__m128 const *point, __m128 *out) const;
 };
@@ -19,7 +19,7 @@ public:
 // @retail 0x3198b0
 void motion_3198b0::velocity_at(__m128 const *point, __m128 *out) const
 {
-	__m128 const offset = _mm_sub_ps(*point, center_of_mass);
+	__m128 const offset = _mm_sub_ps(*point, mass_centre);
 	__m128 const w = angular_velocity;
 	*out = _mm_sub_ps(
 		_mm_mul_ps(_mm_shuffle_ps(w, w, 0xc9), _mm_shuffle_ps(offset, offset, 0xd2)),
