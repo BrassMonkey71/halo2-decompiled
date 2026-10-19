@@ -7,14 +7,41 @@ class class_30d280;
 
 void __fastcall function_30d280(class_30d280 *object);
 
-class deleting_30d250
+class deleting_30d250;
+
+// the reference object, and the two interfaces at 0xc and 0x10; the object
+// frees itself through any of the three
+class part_a_30d250
 {
 public:
-	unsigned long vtable;
-	unsigned short memory_size;
+	virtual deleting_30d250 *function_30d250(unsigned int flags) = 0;
 
-	deleting_30d250 *function_30d250(unsigned int flags);
+	unsigned short memory_size;
+	unsigned short reference_count;
+	long field_8;
 };
+
+class part_b_30d250
+{
+public:
+	virtual deleting_30d250 *function_30d250(unsigned int flags) = 0;
+};
+
+class part_c_30d250
+{
+public:
+	virtual deleting_30d250 *function_30d250(unsigned int flags) = 0;
+};
+
+class deleting_30d250 : public part_a_30d250, public part_b_30d250, public part_c_30d250
+{
+public:
+	virtual deleting_30d250 *function_30d250(unsigned int flags);
+};
+
+// through the interfaces at 0xc and 0x10
+// @retail 0x30d230 adjustor deleting_30d250::function_30d250 0xc
+// @retail 0x30d240 adjustor deleting_30d250::function_30d250 0x10
 
 // @retail 0x30d250
 deleting_30d250 *deleting_30d250::function_30d250(unsigned int flags)
