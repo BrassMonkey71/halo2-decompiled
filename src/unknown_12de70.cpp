@@ -519,7 +519,9 @@ bool __stdcall geometry_cache_block_busy(long block_index)
 	{
 		return true;
 	}
-	if (age < 5 && cache_block->block->runtime_linked)
+	if (age >= 5)
+		return false;
+	if (cache_block->block->runtime_linked)
 	{
 		result = fixup_group_has_resource((s_fixup_group *)cache_block->block, (byte *)(physical_block->offset << physical_object_get()->page_shift) + g_4e6494);
 	}

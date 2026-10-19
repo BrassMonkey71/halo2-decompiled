@@ -310,53 +310,56 @@ void function_bf380()
     long level = NONE;
     byte *globals = (byte *)g_4de2f4;
     if (globals[1])
-    level = !globals[2];
+        level = !globals[2];
     else
     {
         s_loop_allocator *loop = (s_loop_allocator *)g_4de2ec;
         long used = loop->last ? (byte *)loop->last + loop->last->size - loop->base : 0;
         if (loop->size - used <= 0xcccc || 0x800 - g_4e0300->actual_count <= 0x66)
-        level = 3;
+            level = 3;
         else if (((s_object_gc_globals_ab *)g_4de2f4)->count >= 0x32)
-        level = 2;
+            level = 2;
     }
-    if (level != NONE)
+    if (level == NONE)
     {
-        bool critical = false;
-        bool again = false;
-        bool gathered = false;
-        s_object_gc_entry_ab *entry = g_440570;
-        for (;;)
+        ((byte *)g_4de2f4)[1] = 0;
+        ((byte *)g_4de2f4)[2] = 0;
+        return;
+    }
+    bool critical = false;
+    bool again = false;
+    bool gathered = false;
+    s_object_gc_entry_ab *entry = g_440570;
+    for (;;)
+    {
+        byte *state = (byte *)g_4de2f4;
+        if (!entry->action)
         {
-            byte *volatile state = (byte *)g_4de2f4;
-            if (!entry->action)
-            {
-                state[1] = 0;
-                state[2] = 0;
-                return;
-            }
-            if (!function_bf1c0(level, &critical))
-            break;
-            if ((entry->levels & (1 << level)) && (!entry->critical_only || critical))
-            {
-                if (!gathered)
-                {
-                    if (entry->gather)
-                    entry->gather(level, scratch, sizeof(scratch));
-                    gathered = true;
-                }
-                again = false;
-                entry->action(level, scratch, sizeof(scratch), &again, unused, sizeof(unused));
-                if (!again)
-                {
-                    entry++;
-                    gathered = false;
-                }
-                continue;
-            }
-            entry++;
-            gathered = false;
+            state[1] = 0;
+            state[2] = 0;
+            return;
         }
+        if (!function_bf1c0(level, &critical))
+            break;
+        if ((entry->levels & (1 << level)) && (!entry->critical_only || critical))
+        {
+            if (!gathered)
+            {
+                if (entry->gather)
+                    entry->gather(level, scratch, sizeof(scratch));
+                gathered = true;
+            }
+            again = false;
+            entry->action(level, scratch, sizeof(scratch), &again, unused, sizeof(unused));
+            if (!again)
+            {
+                entry++;
+                gathered = false;
+            }
+            continue;
+        }
+        entry++;
+        gathered = false;
     }
     ((byte *)g_4de2f4)[1] = 0;
     ((byte *)g_4de2f4)[2] = 0;

@@ -572,8 +572,7 @@ void function_17c0e0(long contrail_index, short count, bool force)
 
 		if (marker_count > 0)
 		{
-			word flags = definition->flags;
-			real speed = function_17bef0(flags, contrail->scale, definition->velocity_lower, definition->velocity_upper, 1);
+			real speed = function_17bef0(definition->flags, contrail->scale, definition->velocity_lower, definition->velocity_upper, 1);
 			real cone_angle = contrail_scale_if_17c0e0(definition->flags, 8, contrail->scale, definition->cone_angle);
 			real inherited_velocity = contrail_scale_if_17c0e0(definition->flags, 0x10, contrail->scale, definition->inherited_velocity);
 
@@ -584,7 +583,7 @@ void function_17c0e0(long contrail_index, short count, bool force)
 				s_contrail_point_datum *previous;
 				short point_count;
 
-				if (!(*first_index == NONE))
+				if (*first_index != NONE)
 				{
 					previous = CONTRAIL_POINT(*first_index);
 					point_count = count;

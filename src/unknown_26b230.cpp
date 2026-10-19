@@ -1798,8 +1798,6 @@ void function_2689d0(void)
 // @retail 0x269250
 void function_269250(long clump_index, long actor_index)
 {
-	long const *clump_reference = &clump_index;
-	long const *actor_reference = &actor_index;
 	s_actor_view *actor = actor_get(actor_index);
 	s_clump_activity_view *clump = (s_clump_activity_view *)(g_502420->data + (clump_index & 0xffff) * sizeof(s_clump_activity_view));
 	clump->count++;
@@ -1825,7 +1823,7 @@ void function_269250(long clump_index, long actor_index)
 		long object_slot = node->object_index & 0xffff;
 		if (g_4de300[object_slot] != g_4de2fc)
 			g_4de300[object_slot] = g_4de2fc;
-		long prop_index = function_26b120(node->object_index, *clump_reference);
+		long prop_index = function_26b120(node->object_index, clump_index);
 		if (prop_index != NONE)
 		{
 			s_clump_prop *prop = (s_clump_prop *)(g_50241c->data + (prop_index & 0xffff) * sizeof(s_clump_prop));
@@ -1864,7 +1862,7 @@ void function_269250(long clump_index, long actor_index)
 				link->next = first;
 				current->first_node = index;
 				link->prop_index = props.index;
-				function_26aa40(*actor_reference, index);
+				function_26aa40(actor_index, index);
 			}
 		}
 	}

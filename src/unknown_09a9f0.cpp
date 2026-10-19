@@ -1130,7 +1130,6 @@ struct s_z_weapon_update_object
 // @retail 0xa2140
 void c_weapon_type::v31(long a, long b, long c, long d)
 {
- c_object_type_definition *volatile definition = this;
  long mask = b & 0x7ff;
  s_z_weapon_update_object *object = (s_z_weapon_update_object *)OBJECT(a);
  if (mask)
