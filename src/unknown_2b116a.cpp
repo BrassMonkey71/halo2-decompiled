@@ -4325,7 +4325,7 @@ c_clan_options_list::c_clan_options_list(word user_flags) :
 	handler(this, (list_item_method)&c_clan_options_list::handle_item)
 {
 	long controller = get_controller_index();
-	volatile bool online = function_19a935();
+	bool online = function_19a935();
 	s_clan_membership membership;
 
 	data = user_interface_data_new("clan options list", 4, 4);
@@ -4333,17 +4333,18 @@ c_clan_options_list::c_clan_options_list(word user_flags) :
 	if (function_18ffc3(controller, (s_player_slot_blockb82 *)&membership))
 	{
 		bool member = membership.rank >= 1;
+		bool ranked = membership.rank >= 1;
 
-		online = online && membership.rank >= 1;
+		bool online_member = online && membership.rank >= 1;
 		if (member)
 		{
 			list_item_add(this, 0);
 		}
-		if (member)
+		if (ranked)
 		{
 			list_item_add(this, 1);
 		}
-		if (online)
+		if (online_member)
 		{
 			list_item_add(this, 2);
 		}

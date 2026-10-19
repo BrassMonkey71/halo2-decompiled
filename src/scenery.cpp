@@ -248,12 +248,14 @@ void __stdcall function_10a0f0(long scenery_index, s_scenery_placement *placemen
 // @retail 0x10a390
 void __stdcall function_10a390(long scenery_index, transform4x3f *matrix)
 {
-	long attached_object_index = SCENERY_GET(scenery_index)->attached_object_index;
+	s_scenery *scenery = SCENERY_GET(scenery_index);
 
-	if (attached_object_index != NONE && function_badc0(attached_object_index, NONE))
+	if (scenery->attached_object_index != NONE && function_badc0(scenery->attached_object_index, NONE))
 	{
-		s_scenery *object = SCENERY_GET(attached_object_index);
-		function_142a60((transform4x3f *)((byte *)object + object->node_matrices_offset), matrix, matrix);
+		s_scenery *object = SCENERY_GET(scenery->attached_object_index);
+		transform4x3f *nodes = (transform4x3f *)((byte *)object + object->node_matrices_offset);
+
+		function_142a60(nodes, matrix, matrix);
 	}
 }
 
@@ -509,8 +511,8 @@ bool function_10a520(long object_index)
 	if (header->cluster_index != NONE)
 	{
 		if (function_20a9a0((s_type_1a7926 *)info, object_index))
-			return true;
-		if (definition->model_index != NONE)
+			result = true;
+		else if (definition->model_index != NONE)
 		{
 			s_scenery_model_view *model = TAG_DATA(s_scenery_model_view, definition->model_index);
 			if (model->graph_index != NONE && model->count > 0)
@@ -532,14 +534,16 @@ bool function_10a520(long object_index)
 									count++;
 							}
 							if (region->count != count)
-								return false;
+							{
+								result = false;
+								break;
+							}
 							result = true;
 						}
 					}
 				}
 			}
 		}
-		return result;
 	}
 	return result;
 }
