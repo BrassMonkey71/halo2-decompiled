@@ -813,7 +813,8 @@ void __stdcall function_1e75d0(dword flush)
 					if (state->version == profile_index)
 					{
 						bool changed = false;
-						if (memcmp(settings.values + 0x128, state->request_flags, sizeof(state->request_flags)))
+						int comparison = memcmp(settings.values + 0x128, state->request_flags, sizeof(state->request_flags));
+						if (comparison != 0)
 						{
 							memcpy(settings.values + 0x128, state->request_flags, sizeof(state->request_flags));
 							*((byte *)state + 0x19d) = 1;

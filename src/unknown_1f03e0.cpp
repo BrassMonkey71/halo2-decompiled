@@ -407,21 +407,20 @@ void function_1f2a80(vector3f const *velocity, byte const *request, bool moving,
         }
     }
     *out = *g_4687b0;
-    byte *contacts = *(byte **)(component + 0x88);
     switch (count)
     {
     case 1:
-        *out = *(vector3f *)(contacts + indices[0] * 0x48 + 0x28);
+        *out = *(vector3f *)(*(byte **)(component + 0x88) + indices[0] * 0x48 + 0x28);
         break;
     case 2:
         {
-            vector3f const *a = (vector3f *)(contacts + indices[0] * 0x48 + 0x28);
-            vector3f const *b = (vector3f *)(contacts + indices[1] * 0x48 + 0x28);
+            vector3f const *a = (vector3f *)(*(byte **)(component + 0x88) + indices[0] * 0x48 + 0x28);
+            vector3f const *b = (vector3f *)(*(byte **)(component + 0x88) + indices[1] * 0x48 + 0x28);
             if (selected != NONE)
             {
                 vector3f axis;
                 contact_cross(a, b, &axis);
-                vector3f const *normal = (vector3f *)(contacts + indices[selected] * 0x48 + 0x28);
+                vector3f const *normal = (vector3f *)(*(byte **)(component + 0x88) + indices[selected] * 0x48 + 0x28);
                 if (selected == 0)
                     contact_cross(&axis, normal, out);
                 else
@@ -446,7 +445,7 @@ void function_1f2a80(vector3f const *velocity, byte const *request, bool moving,
     case 3:
         if (selected != NONE)
         {
-            vector3f const *normal = (vector3f *)(contacts + indices[selected] * 0x48 + 0x28);
+            vector3f const *normal = (vector3f *)(*(byte **)(component + 0x88) + indices[selected] * 0x48 + 0x28);
             real scale = -normal->k;
             out->i = normal->i * scale + g_4687b0->i;
             out->j = normal->j * scale + g_4687b0->j;
