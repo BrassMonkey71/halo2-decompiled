@@ -92,9 +92,9 @@ void function_1c27a0()
  function_1c2b10();
  if (!g_510c58)
   g_479890 = 1;
- ((c_physics_body_island_view *)g_47f048)->removeEntityListener((c_havok_entity_observer *)g_51ecac);
+ ((c_physics_body_island_view *)g_47f048)->entity_observer_detach((c_havok_entity_observer *)g_51ecac);
  --g_47f050;
- g_51e9a4->removeEntity((hkEntity *)g_47f048);
+ g_51e9a4->entity_world_remove((hkEntity *)g_47f048);
  function_278f00();
  function_1c34a0();
  function_1c2890();

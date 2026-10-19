@@ -28,11 +28,6 @@ void __cdecl function_2ead90(void const *a, void const *b, void const *input, vo
 {
 }
 
-// @stub 0x2eb670
-void __cdecl function_2eb670(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
-
 // @stub 0x2ece90
 void __cdecl function_2ece90(void const *a, void const *b, void const *input, void *collector)
 {
@@ -57,11 +52,6 @@ void class_301a60::function_301a60(walk_3028c0 *walk, char const *cells, segment
 {
 }
 
-// @stub 0x308d90
-int __cdecl function_308d90(__m128 const *point, __m128 const *corners, float const *terms, closest_308d90 *out)
-{
-	return 0;
-}
 
 // @stub 0x3048a0
 int class_3048a0::function_3048a0(convex_2fefd0 const *first, convex_2fefd0 const *second, c_query_transform const *transform, pair_state_2fefd0 *state, closest_3048a0 *closest)
@@ -79,16 +69,6 @@ void __cdecl function_2ee8b0(void const *a, void const *b, void const *input, vo
 
 
 
-
-// @stub 0x2f13e0
-void __cdecl function_2f13e0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f1690
-void __cdecl function_2f1690(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
@@ -117,22 +97,7 @@ void __cdecl function_2f8110(void const *a, void const *b, void const *input, vo
 {
 }
 
-// @stub 0x2f84a0
-void __cdecl function_2f84a0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-
-
-// @stub 0x2f99d0
-void __cdecl function_2f99d0(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
-
-// @stub 0x2fad70
-void __cdecl function_2fad70(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
 
 // @stub 0x2fe830
 void __cdecl function_2fe830(void const *a, void const *b, void const *input, void *collector, void *second_collector)
@@ -184,11 +149,6 @@ void class_2ecf20::function_2ecf20(void const *a, void const *b, void const *inp
 
 // @stub 0x2f63d0
 void class_2f63d0::function_2f63d0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f8330
-void class_2f8330::function_2f8330(void const *a, void const *b, void const *input, void *collector)
 {
 }
 
@@ -252,14 +212,16 @@ class_2fff90::class_2fff90(void const *tree, const c_query_transform *matrix, co
 {
 }
 
+struct cell_range_2ff8b0;
+
 class class_300150
 {
 public:
-	class_300150(void const *tree, const s_query_bounds *bounds, s_surface_key_array *keys);
+	void function_2ff8b0(cell_range_2ff8b0 const *range, unsigned char const *node);
 };
 
-// @stub 0x300150
-class_300150::class_300150(void const *tree, const s_query_bounds *bounds, s_surface_key_array *keys)
+// @stub 0x2ff8b0
+void class_300150::function_2ff8b0(cell_range_2ff8b0 const *range, unsigned char const *node)
 {
 }
 
@@ -322,10 +284,6 @@ void class_2f7c40::function_2f7c40(void const *a, void const *b, void const *inp
 {
 }
 
-// @stub 0x2f90a0
-void class_2f90a0::function_2f90a0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 // @stub 0x2fb150
 void class_2fb150::function_2fb150(void const *a, void const *b, void const *input, void *collector)
@@ -347,17 +305,6 @@ public:
 
 // @stub 0x30df80
 void owner_30c8e0::function_30df80(member_30c8e0 *member)
-{
-}
-
-class class_30f030
-{
-public:
-	void function_30f030(void *island, void *other);
-};
-
-// @stub 0x30f030
-void class_30f030::function_30f030(void *island, void *other)
 {
 }
 
@@ -406,11 +353,6 @@ void class_2ece10::function_2ece10(void const *a, void const *b, void const *inp
 
 
 
-// @stub 0x2f1270
-void class_2f1270::function_2f1270(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
 
 
 // @stub 0x2f4f00
@@ -425,20 +367,12 @@ void class_2f7f10::function_2f7f10(void const *a, void const *b, void const *inp
 
 
 
-// @stub 0x2f0100
-void class_2f0100::function_2f0100(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 // @stub 0x2f1080
 void class_2f1080::function_2f1080(void const *a, void const *b, void const *input, void *collector)
 {
 }
 
-// @stub 0x2f1b80
-void class_2f1b80::function_2f1b80(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 // @stub 0x2f4440
 void class_2f4440::function_2f4440(void const *a, void const *b, void const *input, void *collector)
@@ -526,30 +460,6 @@ void class_2df670::function_3009e0(pending_301800 *pending, void const *root, fi
 {
 }
 
-struct bool_3058b0
-{
-	bool value;
-
-	bool_3058b0(bool value_)
-	{
-		value = value_;
-	}
-};
-
-struct feature_305f60;
-
-class pair_305f60
-{
-public:
-	bool_3058b0 function_306f80(feature_305f60 *feature);
-};
-
-// @stub 0x306f80
-bool_3058b0 pair_305f60::function_306f80(feature_305f60 *feature)
-{
-	return bool_3058b0(false);
-}
-
 class class_309b50
 {
 public:
@@ -588,5 +498,36 @@ void class_30f710::function_30f710()
 
 // @stub 0x3114d0
 class_3114d0::class_3114d0(void const *a, void const *b)
+{
+}
+
+// @stub 0x30beb0
+class_30bf50::class_30bf50(s_311340 const *description)
+{
+}
+
+// motion objects 0x311940 builds
+class class_31ad80 { public: class_31ad80(void const *position, void const *orientation); };
+class class_31a870 { public: class_31a870(void const *position, void const *orientation); };
+class class_3193c0 { public: class_3193c0(void const *position, void const *orientation); };
+class class_31a6b0 { public: class_31a6b0(void const *position, void const *orientation); };
+
+// @stub 0x31ad80
+class_31ad80::class_31ad80(void const *position, void const *orientation)
+{
+}
+
+// @stub 0x31a870
+class_31a870::class_31a870(void const *position, void const *orientation)
+{
+}
+
+// @stub 0x3193c0
+class_3193c0::class_3193c0(void const *position, void const *orientation)
+{
+}
+
+// @stub 0x31a6b0
+class_31a6b0::class_31a6b0(void const *position, void const *orientation)
 {
 }

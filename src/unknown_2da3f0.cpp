@@ -15,7 +15,7 @@ public:
 };
 
 // @retail 0x2da3f0
-void hkTransform::setInverse(hkTransform const &t)
+void hkTransform::transform_set_to_inverse(hkTransform const &t)
 {
 	((class_2da7a0 *)this)->set_transpose(*(class_2da7a0 const *)&t);
 	__m128 p = _mm_xor_ps(t.m_translation.m_quad, *(const __m128 *)g_4124a0);
@@ -26,7 +26,7 @@ void hkTransform::setInverse(hkTransform const &t)
 }
 
 // @retail 0x2da5d0
-void hkTransform::setMulEq(hkTransform const &b)
+void hkTransform::transform_compose_in_place(hkTransform const &b)
 {
 	hkTransform a;
 	a.set(*this);

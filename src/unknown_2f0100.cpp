@@ -1,11 +1,12 @@
 // @flags /O2 /GL-
 // Havok (third-party physics library): a sphere against a capsule: the
 // contact between them from the point of the capsule's segment nearest the
-// sphere's centre; and the pair reported when the centre is closer to the
-// segment than the sum of their radii. Each is bracketed by two marks in the
-// timing stream.
+// sphere's centre, kept under an id its owner hands out once, or passed on;
+// and the pair reported when the centre is closer to the segment than the sum
+// of their radii. Each is bracketed by two marks in the timing stream.
 #include "pair_collector_2f09b0.h"
 #include "timer_mark_2ebc80.h"
+#include "growable_array_2d91d0.h"
 #include <xmmintrin.h>
 #include <math.h>
 
@@ -102,6 +103,156 @@ inline __m128 splat_2f0450(float value)
 	return _mm_shuffle_ps(single, single, 0);
 }
 
+// a contact kept by its owner: its point, with the distance in the fourth
+// lane, its normal, and its id
+// a vector, which can be normalized in place
+struct vector_2f0100
+{
+	__m128 value;
+
+	__forceinline void scale_to_unit_length()
+	{
+		__m128 const squared = _mm_mul_ps(value, value);
+		__m128 const length_squared = _mm_add_ss(_mm_shuffle_ps(squared, squared, 0xaa), _mm_add_ss(_mm_shuffle_ps(squared, squared, 0x55), squared));
+		value = _mm_mul_ps(inverse_sqrt_2f0450(length_squared), value);
+	}
+};
+
+struct kept_contact_2f0100
+{
+	union
+	{
+		__m128 position;
+		float position_and_distance[4];
+	};
+	vector_2f0100 normal;
+	unsigned short id;
+};
+
+ELEMENTS_2D91D0_ALIGNED(kept_contacts_2f0100, kept_contact_2f0100);
+
+struct results_2f0100
+{
+	kept_contacts_2f0100 *contacts;
+};
+
+class contact_owner_2f0100
+{
+public:
+	virtual void slot_0() {}
+	virtual unsigned short add_contact(void const *a, void const *b, void const *input, kept_contact_2f0100 *contact) { return 0; }
+	virtual void release_id(unsigned short id) {}
+};
+
+class class_2f0100
+{
+public:
+	char unknown0[8];
+	contact_owner_2f0100 *owner;
+	unsigned short id;
+
+	void function_2f0100(void const *a, void const *b, void const *input, void *collector);
+};
+
+// the contact of a sphere with a capsule, kept while they are within the
+// tolerance; when the centre lies on the segment, the normal is one at right
+// angles to it
+// @retail 0x2f0100
+void class_2f0100::function_2f0100(void const *a_, void const *b_, void const *input_, void *collector)
+{
+	timer_add_2ebc80("TtSphereCapsule");
+	body_2f09b0 const *a = (body_2f09b0 const *)a_;
+	body_2f09b0 const *b = (body_2f09b0 const *)b_;
+	input_2f0450 const *input = (input_2f0450 const *)input_;
+	results_2f0100 *results = (results_2f0100 *)collector;
+	kept_contact_2f0100 *contact = &results->contacts->next_slot();
+	sphere_2f09b0 const *sphere = (sphere_2f09b0 const *)a->shape;
+	capsule_2f09b0 const *capsule = (capsule_2f09b0 const *)b->shape;
+	__m128 const *centre = &a->motion->transform.position;
+	point_2f09b0 ends[2];
+	__m128 const *vertex = capsule->ends;
+	transform_2f09b0 const *transform = &b->motion->transform;
+	point_2f09b0 *end = ends;
+	for (int count = 2; count != 0; count--)
+	{
+		end->set_transformed(transform, vertex);
+		end++;
+		vertex++;
+	}
+	__m128 nearest;
+	function_308830(*centre, ends[0].value, ends[1].value, nearest);
+	float const radius = sphere->radius + capsule->radius;
+	__m128 const offset = _mm_sub_ps(*centre, nearest);
+	float const limit = radius + input->tolerance;
+	__m128 const squares = _mm_mul_ps(offset, offset);
+	float distance_squared;
+	_mm_store_ss(&distance_squared, _mm_add_ss(_mm_shuffle_ps(squares, squares, 0xaa), _mm_add_ss(_mm_shuffle_ps(squares, squares, 0x55), squares)));
+	if (!(distance_squared >= limit * limit))
+	{
+		float distance;
+		if (distance_squared > 0.0f)
+		{
+			contact->normal.value = offset;
+			distance = (float)sqrt(distance_squared);
+		}
+		else
+		{
+			distance = 0.0f;
+			__m128 axis;
+			axis = _mm_sub_ps(ends[1].value, ends[0].value);
+			float const *component = (float const *)&axis;
+			int smallest = 0;
+			int first = 1;
+			int second = 2;
+			float least = (float)fabs(component[0]);
+			float const y = (float)fabs(component[1]);
+			float const z = (float)fabs(component[2]);
+			if (y < least)
+			{
+				first = 0;
+				least = y;
+				smallest = 1;
+			}
+			if (z < least)
+			{
+				second = smallest;
+				smallest = 2;
+			}
+			float *normal = (float *)&contact->normal;
+			normal[smallest] = 0.0f;
+			float const negated = -component[first];
+			normal[first] = component[second];
+			normal[second] = negated;
+		}
+		contact->normal.scale_to_unit_length();
+		contact->position = _mm_add_ps(*centre, _mm_mul_ps(splat_2f0450(capsule->radius - distance), contact->normal.value));
+		contact->position_and_distance[3] = distance - radius;
+		if (id == 0xffff)
+		{
+			id = owner->add_contact(a, b, input, contact);
+		}
+		unsigned short held = id;
+		if (held != 0xffff)
+		{
+			contact->id = held;
+		}
+		else
+		{
+			results->contacts->size--;
+		}
+	}
+	else
+	{
+		results->contacts->size--;
+		unsigned short held = id;
+		if (held != 0xffff)
+		{
+			owner->release_id(held);
+			id = 0xffff;
+		}
+	}
+	timer_add_2ebc80("Et");
+}
 // the contact of a sphere with a capsule, passed on when they are within the
 // tolerance; when the centre lies on the segment, the normal is one at right
 // angles to it
@@ -150,12 +301,12 @@ __forceinline void sphere_capsule_contact_2f0450(void const *a_, void const *b_,
 			__m128 axis;
 			axis = _mm_sub_ps(ends[1].value, ends[0].value);
 			float const *component = (float const *)&axis;
-			float least = (float)fabs(component[0]);
-			float const y = (float)fabs(component[1]);
-			float const z = (float)fabs(component[2]);
 			int smallest = 0;
 			int first = 1;
 			int second = 2;
+			float least = (float)fabs(component[0]);
+			float const y = (float)fabs(component[1]);
+			float const z = (float)fabs(component[2]);
 			if (y < least)
 			{
 				first = 0;

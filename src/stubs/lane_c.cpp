@@ -129,10 +129,10 @@ public:
 
 
 // @stub 0x3123a0
-s_havok_property_word hkEntity::removeProperty(dword key) { return s_havok_property_word(0); }
+s_havok_property_word hkEntity::entity_property_erase(dword key) { return s_havok_property_word(0); }
 
 // @stub 0x312530
-void hkEntity::addProperty(dword key, s_havok_property_word value) { }
+void hkEntity::entity_property_put(dword key, s_havok_property_word value) { }
 
 /* slot handler callbacks of the region not decompiled yet (their handler
    structs hold their addresses) */
@@ -151,7 +151,7 @@ struct s_havok_component;
 
 
 // @stub 0x3126f0
-void hkRigidBody::setTransform(hkTransform const &transform) { }
+void hkRigidBody::pose_write(hkTransform const &transform) { }
 /* callees of the slot handler callbacks (unknown_0259a0.h) */
 
 
@@ -162,7 +162,7 @@ void hkRigidBody::setTransform(hkTransform const &transform) { }
 /* callees of the physics code (unknown_1c25a0.cpp, unknown_1cec30.cpp) */
 
 // @stub 0x30f800
-hkBool hkWorld::removeEntity(hkEntity *entity) { return hkBool(); }
+hkBool hkWorld::entity_world_remove(hkEntity *entity) { return hkBool(); }
 
 
 
@@ -175,7 +175,7 @@ hkBool hkWorld::removeEntity(hkEntity *entity) { return hkBool(); }
 
 
 // @stub 0x30f2d0
-void hkWorld::addEntity(hkEntity *entity) { }
+void hkWorld::entity_world_insert(hkEntity *entity) { }
 
 
 
@@ -421,8 +421,6 @@ struct s_311340 { s_311340(); };
 class c_311ba0 { public: c_311ba0(const s_311340 *arg_0); };
 // @stub 0x311340
 s_311340::s_311340() {}
-// @stub 0x311ba0
-c_311ba0::c_311ba0(const s_311340 *arg_0) {}
 
 struct s_2da8c0
 {

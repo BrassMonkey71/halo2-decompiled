@@ -688,9 +688,11 @@ point3f *function_3f220(dword a, dword b, dword c, point3f *out)
 {
     dword const *reference = &c;
     point3f value;
-    real z;
-    value.x = (real)a * 8.0f * g_45dd38;
-    value.y = (real)b * 8.0f * g_45dd38;
+    real x, y, z;
+    x = (real)a * 8.0f;
+    value.x = x * g_45dd38;
+    y = (real)b * 8.0f;
+    value.y = y * g_45dd38;
     z = (real)*reference * 8.0f;
     value.z = z * g_45dd44;
     *out = value;

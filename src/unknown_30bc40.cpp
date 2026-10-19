@@ -22,11 +22,11 @@ public:
 	char unknown0[0x44];
 	group_30bc40 *group;
 
-	hkBool isActive(void) const;
+	hkBool body_is_simulating(void) const;
 };
 
 // @retail 0x30bc40
-hkBool hkRigidBody::isActive(void) const
+hkBool hkRigidBody::body_is_simulating(void) const
 {
 	hkBool result;
 	if (group == 0)

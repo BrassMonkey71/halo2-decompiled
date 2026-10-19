@@ -1637,7 +1637,7 @@ void __stdcall function_214f0(real passes, real distortion, real strength, real 
             fistp distortion
             shl distortion, 24
         }
-        g_484f68.PSFinalCombinerConstant1 = (dword)packed;
+        g_484f68.PSFinalCombinerConstant0 = (dword)packed;
         g_484f68.PSFinalCombinerInputsABCD = ((g_485a74 ? 0x1c : 0) << 24) | 0xf000d;
         g_484f68.PSFinalCombinerInputsEFG = ((g_485a74 ? 0x1d : 0) | 0xc1100) << 8;
         function_1ccf0(&g_484f68);
