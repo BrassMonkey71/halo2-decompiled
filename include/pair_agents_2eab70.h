@@ -7,6 +7,43 @@
 // of the shape that wraps it.
 #include <xmmintrin.h>
 
+class pair_agent_2ea410;
+
+// a part's key, and the agent that runs queries against that part
+struct agent_entry_2ea410
+{
+	long key;
+	long field_4;
+	pair_agent_2ea410 *agent;
+};
+
+// the agents of the parts of a pair's container side
+class agent_list_2ea410
+{
+public:
+	char unknown0[0xc];
+	agent_entry_2ea410 *entries;
+	long entry_count;
+};
+
+// runs a query between two sides through the dispatcher's function for
+// their kinds
+typedef void (__cdecl *pair_query_2e90f0)(void const *a, void const *b, void const *input, void *collector);
+void __cdecl function_2e90f0(void const *a, void const *b, void const *input, void *collector);
+
+// bring the agent list up to date with the parts the sides overlap
+class class_2e96a0
+{
+public:
+	void function_2e96a0(void const *a, void const *b, void const *input, pair_query_2e90f0 query);
+};
+
+class class_2e9d90
+{
+public:
+	void function_2e9d90(void const *a, void const *b, void const *input, pair_query_2e90f0 query);
+};
+
 class class_2eab70
 {
 public:
@@ -18,7 +55,7 @@ public:
 	void function_2faff0(void const *a, void const *b, void const *input, void *collector);
 };
 
-class class_2ea530
+class class_2ea530 : public agent_list_2ea410
 {
 public:
 	void function_2ea530(void const *a, void const *b, void const *input, void *collector, void *second_collector);
@@ -27,7 +64,7 @@ public:
 	void function_2f9740(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 };
 
-class class_2ea830
+class class_2ea830 : public agent_list_2ea410
 {
 public:
 	void function_2ea830(void const *a, void const *b, void const *input, void *collector);
@@ -45,9 +82,13 @@ public:
 	void function_2ed3a0(void const *a, void const *b, void const *input, void *collector);
 };
 
+// holds the terms that solve for a point's weights in a triangle's plane
 class class_2f1560
 {
 public:
+	char unknown0[0x10];
+	float terms[4];
+
 	void function_2f1560(void const *a, void const *b, void const *input, void *collector);
 	void function_2f17d0(void const *a, void const *b, void const *input, void *collector);
 };
@@ -161,7 +202,7 @@ public:
 	void function_2f86e0(void const *a, void const *b, void const *input, void *collector);
 };
 
-class class_2ea410
+class class_2ea410 : public agent_list_2ea410
 {
 public:
 	void function_2ea410(void const *a, void const *b, void const *input, void *collector);

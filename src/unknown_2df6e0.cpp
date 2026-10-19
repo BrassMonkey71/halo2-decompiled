@@ -8,12 +8,12 @@ struct s_244980_ray;
 struct s_244980_output;
 class c_244c10;
 
-// what a cast found, given back by value
+// whether a cast hit, given back by value
 struct result_2df6e0
 {
-	long field_0;
-	long field_4;
-	long field_8;
+	result_2df6e0() {}
+
+	bool hit;
 };
 
 struct class_2df670
