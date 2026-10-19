@@ -1,4 +1,4 @@
-// @flags /O2 /GL-
+// @flags /O2 /GL- /GX
 // Havok (third-party physics library): an object holding one listed object
 // per part of a container: telling every listed object, then destroying
 // itself through the first virtual slot; passing a query on to the listed
@@ -296,4 +296,64 @@ void __cdecl function_2ec200(body_2ebc80 const *a, body_2ebc80 const *b, input_2
 		}
 	}
 	timer_add_2ebc80("Et");
+}
+
+// a collector that stops a query early once its flag is set
+class stopping_collector_2ec310
+{
+public:
+	stopping_collector_2ec310() : early_out(false) {}
+	virtual ~stopping_collector_2ec310() {}
+
+	bool early_out;
+};
+
+// passes each pair it is given on to another collector with the two sides
+// swapped back
+class swapped_collector_2ec310 : public stopping_collector_2ec310
+{
+public:
+	swapped_collector_2ec310(collector_2ebc80 *target) : target(target) {}
+	virtual ~swapped_collector_2ec310() {}
+	virtual void add_pair(long first, long second) {}
+
+	collector_2ebc80 *target;
+};
+
+// a collector that keeps the nearest result, starting from the largest float
+class nearest_collector_2ec370
+{
+public:
+	nearest_collector_2ec370() : distance(3.40282347e+38f) {}
+	virtual ~nearest_collector_2ec370() {}
+
+	float distance;
+};
+
+// passes each hit it is given on to another collector as seen from the
+// other side
+class flipped_collector_2ec370 : public nearest_collector_2ec370
+{
+public:
+	flipped_collector_2ec370(void *target) : target(target) {}
+	virtual ~flipped_collector_2ec370() {}
+	virtual void add_hit(void const *hit) {}
+
+	void *target;
+};
+
+// 0x2ec200 with the two sides given the other way round
+// @retail 0x2ec310
+void __cdecl function_2ec310(body_2ebc80 const *b, body_2ebc80 const *a, input_2ebe40 const *input, collector_2ebc80 *collector)
+{
+	swapped_collector_2ec310 swapped(collector);
+	function_2ec200(a, b, input, (collector_2ebc80 *)&swapped);
+}
+
+// 0x2ebe40 with the two sides given the other way round
+// @retail 0x2ec370
+void __cdecl function_2ec370(body_2ebc80 const *b, body_2ebc80 const *a, input_2ebe40 const *input, void *collector)
+{
+	flipped_collector_2ec370 flipped(collector);
+	function_2ebe40(a, b, input, &flipped);
 }

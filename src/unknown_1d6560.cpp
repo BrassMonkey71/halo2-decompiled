@@ -362,7 +362,7 @@ public:
     c_physics_shape_list(c_havok_reference_counted **shapes, long count);
 };
 
-void __cdecl function_2dba80(s_physics_mass_array const *array, s_physics_mass *result);
+long __cdecl function_2dba80(s_physics_mass_array const *array, s_physics_mass *result);
 void function_141590(transform4x3f const *in, transform4x3f *out);
 int __fastcall function_142a60(transform4x3f const *a, transform4x3f const *b, transform4x3f *out);
 extern transform4x3f *g_4687d0;
