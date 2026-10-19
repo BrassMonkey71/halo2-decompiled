@@ -2,6 +2,16 @@
 
 The newest entry comes first.
 
+## 2026-10-19: 9175 functions match
+
+```
+matched 9175 of 11321 game functions (1325653 of 2784283 bytes, 47.61%)
+matched 490 of 1041 Havok functions (41489 of 234536 bytes, 17.69%)
+```
+
+1 new matches, none lost:
+- @andrewnakas's 0xdc370 from #573: the base reference object's destructor matches.
+
 ## 2026-10-18: 9174 functions match
 
 ```

@@ -11,6 +11,9 @@ struct bounds_2fbcc0
 	__m128 upper;
 };
 
+struct body_2fbe90;
+struct ray_2fbe90;
+
 class part_2fbcc0
 {
 public:
@@ -24,6 +27,43 @@ public:
 	virtual void bounds(void const *transform, float tolerance, bounds_2fbcc0 *out) const {}
 	// the furthest reach along a direction
 	virtual float reach(__m128 const *direction) const { return 0.0f; }
+	virtual void slot_8() {}
+	// a ray cast against the part, hits going to a collector
+	virtual void cast_ray(ray_2fbe90 const *ray, body_2fbe90 const *body, void *collector) const {}
+};
+
+// one side of a query: a shape, the key of the part concerned, a value
+// passed on to parts, and the side it is a part of
+struct body_2fbe90
+{
+	void const *shape;
+	long key;
+	long field_8;
+	body_2fbe90 const *parent;
+};
+
+// the one-byte answer of a filter, returned through a hidden pointer
+class answer_2fbe90
+{
+public:
+	answer_2fbe90() {}
+
+	char value;
+};
+
+class container_2fbcc0;
+
+// whether one part of a container may be cast against
+class ray_filter_2fbe90
+{
+public:
+	virtual answer_2fbe90 accepts(ray_2fbe90 const *ray, container_2fbcc0 const *container, long key) const = 0;
+};
+
+struct ray_2fbe90
+{
+	char unknown0[0x24];
+	ray_filter_2fbe90 *filter;
 };
 
 class container_2fbcc0
@@ -48,6 +88,7 @@ public:
 
 	void function_2fbcc0(void const *transform, float tolerance, bounds_2fbcc0 *out) const;
 	float function_2fbdc0(__m128 const *direction) const;
+	void function_2fbe90(ray_2fbe90 const *ray, body_2fbe90 const *body, void *collector) const;
 };
 
 // the box around every part's box: the first part's box, then every part's
@@ -90,4 +131,42 @@ float container_2fbcc0::function_2fbdc0(__m128 const *direction) const
 	}
 	timer_add_2ebc80("Et");
 	return best;
+}
+
+// a ray cast against every part (or every part a filter on the ray
+// accepts), each described as a part of the body, hits going to a collector
+// @retail 0x2fbe90
+void container_2fbcc0::function_2fbe90(ray_2fbe90 const *ray, body_2fbe90 const *body, void *collector) const
+{
+	timer_add_2ebc80("TthkShapeCollection::castRay");
+	__declspec(align(16)) char buffer[0x100];
+	body_2fbe90 part_body;
+	if (ray->filter == 0)
+	{
+		for (long key = first_key(); key != -1; key = next_key(key))
+		{
+			part_2fbcc0 const *shape = part(key, buffer);
+			part_body.parent = body;
+			part_body.field_8 = body->field_8;
+			part_body.shape = shape;
+			part_body.key = key;
+			shape->cast_ray(ray, &part_body, collector);
+		}
+	}
+	else
+	{
+		for (long key = first_key(); key != -1; key = next_key(key))
+		{
+			if (ray->filter->accepts(ray, this, key).value)
+			{
+				part_2fbcc0 const *shape = part(key, buffer);
+				part_body.parent = body;
+				part_body.field_8 = body->field_8;
+				part_body.shape = shape;
+				part_body.key = key;
+				shape->cast_ray(ray, &part_body, collector);
+			}
+		}
+	}
+	timer_add_2ebc80("Et");
 }
