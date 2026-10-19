@@ -594,7 +594,7 @@ void __stdcall function_263210(long actor_index)
 	s_2640c0 motion;
 	s_2641c0 sample;
 	s_actor_prop_view *initial_actor = actor_prop_view_get(actor_index);
-	s_actor_prop_view *volatile actor = initial_actor;
+	s_actor_prop_view *actor = initial_actor;
 	++g_4de2fc;
 	g_4de2f8 = true;
 	long *tracked = initial_actor->tracked_prop_indices;
