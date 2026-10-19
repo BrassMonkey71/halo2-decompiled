@@ -59,8 +59,6 @@ public:
 };
 // @stub 0x3101c0
 c_3101c0::c_3101c0(s_3111d0 const &arg_0, long arg_1) {}
-// @stub 0x30cb70
-void c_3101c0::function_30cb70(s_30cb70 arg_0) {}
 // @stub 0x310900
 void c_3101c0::function_310900(c_2dfbf0 *arg_0, s_30cb70 arg_1) {}
 // @stub 0x2dadb0
@@ -186,16 +184,12 @@ hkBool hkWorld::removeEntity(hkEntity *entity) { return hkBool(); }
 void hkWorld::addEntity(hkEntity *entity) { }
 
 
-// @stub 0x30bc90
-void hkEntityApi::activate(void) { }
 
 
 
 /* the rigid body accessors of the havok components (unknown_1cec30.cpp) */
 
 
-// @stub 0x30bc60
-void hkRigidBody::activate(void) { }
 
 
 /* callees of ai.cpp's 0x1caa40 */
@@ -354,23 +348,7 @@ struct s_physics_mass_array;
 struct s_physics_mass;
 
 class c_havok_reference_counted;
-class c_physics_shape_list
-{
-public:
-    c_physics_shape_list(c_havok_reference_counted **shapes, long count);
-};
-// @stub 0x2fc320
-c_physics_shape_list::c_physics_shape_list(c_havok_reference_counted **shapes, long count) {}
 
-class c_2de7b0
-{
-public:
-    virtual ~c_2de7b0();
-    byte field_4[0x4c];
-};
-
-// @stub 0x2de7b0
-c_2de7b0::~c_2de7b0() {}
 
 struct s_2dc030
 {

@@ -80,13 +80,57 @@ class c_interface_278b40;
 
 ELEMENTS_2D91D0(interfaces_30cab0, c_interface_278b40 *);
 
+// a one-byte switch passed by value
+struct s_30cb70
+{
+	byte field_0;
+};
+
+class first_30c4b0
+{
+public:
+	virtual ~first_30c4b0() {}
+	long field_4;
+};
+
+class second_base_30c4b0
+{
+public:
+	virtual ~second_base_30c4b0() {}
+};
+
+class second_30c4b0 : public second_base_30c4b0
+{
+public:
+	virtual ~second_30c4b0() {}
+};
+
+class both_30c4b0 : public first_30c4b0, public second_30c4b0
+{
+public:
+	REFERENCED_NEW_2D88A0(4)
+
+	char unknownc[0x14 - 0xc];
+
+	both_30c4b0();
+};
+
 class c_3101c0
 {
 public:
 	char unknown0[0x78];
 	interfaces_30cab0 interfaces;
+	char unknown84[0xb4 - 0x84];
+	pointers_30ca30 listeners;
+	char unknownc0[0x23e - 0xc0];
+	bool started;
+	byte listening;
+	bool listener_added;
+	char unknown241[0x254 - 0x241];
+	both_30c4b0 *listener;
 
 	void function_30cab0(c_interface_278b40 *arg_0);
+	void function_30cb70(s_30cb70 arg_0);
 };
 
 // @retail 0x30cab0
@@ -123,4 +167,26 @@ public:
 void c_2784c4::function_30cb30(void *arg_0)
 {
 	pointers.append(arg_0);
+}
+
+// the first call makes the listener, and adds it to the listeners when
+// the switch says so
+// @retail 0x30cb70
+void c_3101c0::function_30cb70(s_30cb70 arg_0)
+{
+	if (!started)
+	{
+		started = true;
+		listening = arg_0.field_0;
+		listener = new both_30c4b0;
+		if (listening)
+		{
+			listeners.append(static_cast<second_30c4b0 *>(listener));
+			listener_added = true;
+		}
+		else
+		{
+			listener_added = false;
+		}
+	}
 }
