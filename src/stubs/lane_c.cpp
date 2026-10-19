@@ -355,9 +355,6 @@ c_contact_query_bounds_info::c_contact_query_bounds_info() {}
 // @stub 0x30b6a0
 c_contact_query_transform_info::c_contact_query_transform_info() {}
 
-// @stub 0x30b480
-c_contact_query_bounds_volume::c_contact_query_bounds_volume(c_contact_query_bounds_info const *info) {}
-
 // @stub 0x30bb50
 c_contact_query_transform_volume::c_contact_query_transform_volume(c_contact_query_transform_info const *info) {}
 
