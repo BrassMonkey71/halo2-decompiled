@@ -36,10 +36,4 @@ public:
  c_2def90(real arg_0);
 };
 
-class c_contact_query_transform_volume
-{
-public:
- ~c_contact_query_transform_volume();
-};
-// @stub 0x30bb90
-c_contact_query_transform_volume::~c_contact_query_transform_volume() {}
+#include "contact_volume_30bb50.h"

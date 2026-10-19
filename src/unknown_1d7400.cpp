@@ -164,7 +164,7 @@ struct s_1d7300
  byte field_0[0xc];
  c_extent_shape *field_c;
  byte field_10[0x2c];
- hkMotion *field_3c;
+ c_havok_body_motion_state *field_3c;
 };
 
 // @retail 0x1d7300

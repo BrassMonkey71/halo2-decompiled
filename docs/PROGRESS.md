@@ -2,6 +2,46 @@
 
 The newest entry comes first.
 
+## 2026-10-19: 9214 functions match
+
+```
+matched 9214 of 11321 game functions (1343436 of 2784283 bytes, 48.25%)
+matched 626 of 1041 Havok functions (55835 of 234536 bytes, 23.81%)
+```
+
+13 new matches, none lost:
+- Machine 3's batch 79 (#589): `0xbcc20`, `0x1a77a0`, `0x1c1e70`, `0x273480`, `0x2735c0`, `0x2736c0`, `0x273900`, `0x2739d0`, `0x273f30`, `0x274140`, `0x275a50`, `0x275b60` and `0x275d70` match.
+
+## 2026-10-19: 9201 functions match
+
+```
+matched 9201 of 11321 game functions (1338766 of 2784283 bytes, 48.08%)
+matched 565 of 1041 Havok functions (49782 of 234536 bytes, 21.23%)
+```
+
+16 new matches, none lost:
+- Machine 3's batch 78 (#588): `0xb9a90`, `0x122b40`, `0x14d040`, `0x16bd10`, `0x16c110`, `0x16cfa0`, `0x1a01e0`, `0x1e75d0`, `0x226a60`, `0x284a20`, `0x285400`, `0x285e90`, `0x286a00`, `0x287590`, `0x288120` and `0x2beee0` match.
+
+## 2026-10-19: 9185 functions match
+
+```
+matched 9185 of 11321 game functions (1328412 of 2784283 bytes, 47.71%)
+matched 497 of 1041 Havok functions (42834 of 234536 bytes, 18.26%)
+```
+
+10 new matches, none lost:
+- Machine 3's batch 77 (#587): `0x211a0`, `0x6fa60`, `0x14a6d0`, `0x196dd0`, `0x196e60`, `0x1970a0`, `0x1cf950`, `0x1d5500`, `0x256b00` and `0x273d30` match.
+
+## 2026-10-19: 9175 functions match
+
+```
+matched 9175 of 11321 game functions (1325653 of 2784283 bytes, 47.61%)
+matched 497 of 1041 Havok functions (42834 of 234536 bytes, 18.26%)
+```
+
+0 new matches, none lost:
+- @andrewnakas's #582, #583:  match.
+
 ## 2026-10-19: 9175 functions match
 
 ```
@@ -4357,7 +4397,7 @@ matched 4451 of 11321 game functions (389205 of 2785198 bytes, 13.97%)
 ```
 
 **The UI lane**, round 8: 47 new matches, none lost. They include the player
-selected list, Havok's fixed memory allocator and hkMemory, the window
+selected list, Havok's fixed memory allocator and c_havok_abstract_allocator, the window
 manager's update, and the clan (online team) tasks.
 
 ## 2026-10-04: 4404 functions match

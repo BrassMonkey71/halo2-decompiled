@@ -10,8 +10,6 @@ public:
  hkBool function_30ca30(void *arg_0);
  void function_30bd10(void *arg_0);
 };
-// @stub 0x30ca30
-hkBool c_1d1261::function_30ca30(void *arg_0) { return hkBool(); }
 
 class c_2df9d0
 {
@@ -61,14 +59,8 @@ public:
 };
 // @stub 0x3101c0
 c_3101c0::c_3101c0(s_3111d0 const &arg_0, long arg_1) {}
-// @stub 0x30cb70
-void c_3101c0::function_30cb70(s_30cb70 arg_0) {}
 // @stub 0x310900
 void c_3101c0::function_310900(c_2dfbf0 *arg_0, s_30cb70 arg_1) {}
-// @stub 0x30cab0
-void c_3101c0::function_30cab0(c_interface_278b40 *arg_0) {}
-// @stub 0x2dadb0
-void __cdecl function_2dadb0(hkWorld *arg_0) {}
 
 
 
@@ -138,15 +130,13 @@ public:
 #include "unknown_0259a0.h"
 #include "unknown_1765e0.h"
 
-// @stub 0x2d91d0
-void __cdecl function_2d91d0(void *array, long element_size) { }
 
 
 // @stub 0x3123a0
-hkPropertyValue hkEntity::removeProperty(dword key) { return hkPropertyValue(0); }
+s_havok_property_word hkEntity::removeProperty(dword key) { return s_havok_property_word(0); }
 
 // @stub 0x312530
-void hkEntity::addProperty(dword key, hkPropertyValue value) { }
+void hkEntity::addProperty(dword key, s_havok_property_word value) { }
 
 /* slot handler callbacks of the region not decompiled yet (their handler
    structs hold their addresses) */
@@ -191,19 +181,13 @@ hkBool hkWorld::removeEntity(hkEntity *entity) { return hkBool(); }
 // @stub 0x30f2d0
 void hkWorld::addEntity(hkEntity *entity) { }
 
-// @stub 0x30cc60
-void hkWorld::removeSimulationIsland(hkSimulationIsland *island) { }
 
-// @stub 0x30bc90
-void hkEntityApi::activate(void) { }
 
 
 
 /* the rigid body accessors of the havok components (unknown_1cec30.cpp) */
 
 
-// @stub 0x30bc60
-void hkRigidBody::activate(void) { }
 
 
 /* callees of ai.cpp's 0x1caa40 */
@@ -219,8 +203,6 @@ struct real_quaternion_transform;
 
 
 
-// @stub 0x2d9160
-void __cdecl function_2d9160(void *array, long capacity, long element_size) { }
 
 
 class c_component_rotation
@@ -330,11 +312,7 @@ class c_contact_query_bounds_volume
 public:
     c_contact_query_bounds_volume(c_contact_query_bounds_info const *info);
 };
-class c_contact_query_transform_volume
-{
-public:
-    c_contact_query_transform_volume(c_contact_query_transform_info const *info);
-};
+#include "contact_volume_30bb50.h"
 class c_contact_query_world
 {
 public:
@@ -357,7 +335,7 @@ void *c_contact_query_world::add(void *volume) { return 0; }
 // @stub 0x30e5e0
 void c_contact_query_world::remove(void *volume) {}
 
-class hkMemory;
+class c_havok_abstract_allocator;
 struct s_fixed_memory_statistics_16;
 struct s_physics_pool_statistics;
 
@@ -368,23 +346,7 @@ struct s_physics_mass_array;
 struct s_physics_mass;
 
 class c_havok_reference_counted;
-class c_physics_shape_list
-{
-public:
-    c_physics_shape_list(c_havok_reference_counted **shapes, long count);
-};
-// @stub 0x2fc320
-c_physics_shape_list::c_physics_shape_list(c_havok_reference_counted **shapes, long count) {}
 
-class c_2de7b0
-{
-public:
-    virtual ~c_2de7b0();
-    byte field_4[0x4c];
-};
-
-// @stub 0x2de7b0
-c_2de7b0::~c_2de7b0() {}
 
 struct s_2dc030
 {
@@ -453,63 +415,6 @@ void __cdecl function_2e7d10(s_1c3a40 *arg_0) {}
 // @stub 0x2e9030
 void __cdecl function_2e9030(s_1c3a40 *arg_0) {}
 
-// @stub 0x2eb540
-void __cdecl function_2eb540(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ebbb0
-void __cdecl function_2ebbb0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ecbf0
-void __cdecl function_2ecbf0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ed700
-void __cdecl function_2ed700(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ed9b0
-void __cdecl function_2ed9b0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ee240
-void __cdecl function_2ee240(s_1c3a40 *arg_0) {}
-
-// @stub 0x2eee90
-void __cdecl function_2eee90(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ef900
-void __cdecl function_2ef900(s_1c3a40 *arg_0) {}
-
-// @stub 0x2efe20
-void __cdecl function_2efe20(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f0e00
-void __cdecl function_2f0e00(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f1ab0
-void __cdecl function_2f1ab0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f2800
-void __cdecl function_2f2800(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f42b0
-void __cdecl function_2f42b0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f7a70
-void __cdecl function_2f7a70(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f8900
-void __cdecl function_2f8900(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f96d0
-void __cdecl function_2f96d0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2faac0
-void __cdecl function_2faac0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2fb9d0
-void __cdecl function_2fb9d0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2daf00
-void __cdecl function_2daf00(s_1c3a40 *arg_0) {}
-
 // @stub 0x3144b0
 s_1d1870 c_314710::function_3144b0(void *arg_0) { return s_1d1870(); }
 
@@ -538,8 +443,6 @@ struct s_314450
  void function_314450(s_314320 *arg_0);
  void function_314480(s_314320 const *arg_0);
 };
-// @stub 0x30be00
-void s_1d1540::function_30be00(void *arg_0) {}
 // @stub 0x30d2b0
 void s_1d1541::function_30d2b0(void *arg_0) {}
 // @stub 0x314320

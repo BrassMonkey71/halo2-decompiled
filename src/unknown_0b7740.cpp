@@ -649,8 +649,7 @@ short __stdcall function_bb050(long mask, dword type_mask, void const *location,
                 if (cluster_sphere_accept_ab(object, search.record, type_mask, position, radius))
                 {
                     if (count >= maximum_count) goto done;
-                    long *output = objects + count;
-                    *output = object;
+                    objects[count] = object;
                     ++count;
                 }
             }
@@ -665,8 +664,7 @@ short __stdcall function_bb050(long mask, dword type_mask, void const *location,
                 if (cluster_sphere_accept_ab(object, search.record, type_mask, position, radius))
                 {
                     if (count >= maximum_count) goto done;
-                    long *output = objects + count;
-                    *output = object;
+                    objects[count] = object;
                     ++count;
                 }
             }

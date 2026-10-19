@@ -334,9 +334,6 @@ bool function_212bc0(long file_index, s_game_variant *variant)
 // @retail 0x212c20
 bool __stdcall function_212c20(word const *name, s_game_variant *variant, long *file_index)
 {
-	(void)&name;
-	(void)&variant;
-	(void)&file_index;
 	bool result = false;
 	if (file_index)
 		*file_index = NONE;

@@ -384,14 +384,29 @@ void players_start_countdown(void)
 	}
 }
 
-/* the input of a player for one tick (0x5c bytes) */
-struct s_player_action_target
+/* what a player's input aims at: a type and an index (8 bytes) */
+struct s_player_action_target_reference
 {
 	long type;
 	long index;
+};
+
+struct s_player_action_target
+{
+	s_player_action_target_reference reference;
 	long unknown08;
 };
 
+/* the block at 0x4c of a player's input (0xc bytes) */
+struct s_player_action_unknown4c
+{
+	word flags;
+	byte unknown02[2];
+	real unknown04;
+	real unknown08;
+};
+
+/* the input of a player for one tick (0x5c bytes) */
 struct s_player_action
 {
 	dword buttons;
@@ -421,22 +436,28 @@ struct s_player_action
 	long unknown38;
 	long unknown3c;
 	byte unknown40[0x4c - 0x40];
-	word flags4c;
-	byte unknown4e[2];
-	real unknown50;
-	real unknown54;
+	s_player_action_unknown4c unknown4c;
 	byte unknown58[4];
 };
+
+static inline void player_action_target_reference_clear(s_player_action_target_reference *reference)
+{
+	memset(reference, 0, sizeof(s_player_action_target_reference));
+}
 
 static inline void player_action_target_clear(s_player_action_target *target)
 {
 	memset(target, 0, sizeof(s_player_action_target));
-	target->type = 0;
-	target->index = 0;
+	player_action_target_reference_clear(&target->reference);
 }
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
+static inline void player_action_unknown4c_clear(s_player_action_unknown4c *value)
+{
+	value->flags = 0;
+	value->unknown04 = 0.0f;
+	value->unknown08 = 0.0f;
+}
+
 // @retail 0x14d040
 void player_action_initialize(s_player_action *action)
 {
@@ -446,19 +467,15 @@ void player_action_initialize(s_player_action *action)
 	action->grenade_index = NONE;
 	action->unknown22 = NONE;
 	action->unknown24 = NONE;
-	action->flags4c = 0;
-	action->unknown50 = 0.0f;
-	action->unknown54 = 0.0f;
+	player_action_unknown4c_clear(&action->unknown4c);
 	action->unknown34 = NONE;
 	action->unknown38 = NONE;
 	action->unknown3c = NONE;
-	_ReadWriteBarrier();
 	s_player_action_target *target = &action->target;
 	player_action_target_clear(target);
-	target->index = NONE;
+	target->reference.index = NONE;
 	target->unknown08 = NONE;
 }
-#pragma function(_ReadWriteBarrier)
 
 static inline bool function_x41b793(real value)
 {
@@ -473,12 +490,12 @@ static inline bool player_action_target_valid(s_player_action_target const *targ
 	{
 		return false;
 	}
-	type = (short)target->type;
+	type = (short)target->reference.type;
 	if (type < 0 || type >= 9)
 	{
 		return false;
 	}
-	if (type != 0 && target->index == NONE)
+	if (type != 0 && target->reference.index == NONE)
 	{
 		return false;
 	}
@@ -540,10 +557,10 @@ bool function_14d0a0(s_player_action const *action)
 		return false;
 	}
 
-	bool valid_values = action->unknown50 >= 0.0f && action->unknown50 <= 1.0f &&
-		action->unknown54 >= 0.0f && action->unknown54 <= 1.0f;
+	bool valid_values = action->unknown4c.unknown04 >= 0.0f && action->unknown4c.unknown04 <= 1.0f &&
+		action->unknown4c.unknown08 >= 0.0f && action->unknown4c.unknown08 <= 1.0f;
 
-	bool active = action->unknown50 != 0.0f || action->unknown54 != 0.0f || (action->flags4c & 1);
+	bool active = action->unknown4c.unknown04 != 0.0f || action->unknown4c.unknown08 != 0.0f || (action->unknown4c.flags & 1);
 
 	if (active)
 	{
@@ -560,10 +577,10 @@ bool function_14d0a0(s_player_action const *action)
 	s_player_action_target const *target = &action->target;
 	if (!target)
 		return false;
-	short type = (short)target->type;
+	short type = (short)target->reference.type;
 	if (type < 0 || type >= 9)
 		return false;
-	if (type != 0 && target->index == NONE)
+	if (type != 0 && target->reference.index == NONE)
 		return false;
 	return true;
 }

@@ -566,6 +566,22 @@ void __stdcall session_state_joining_send_target(c_session_state_joining *state_
 	}
 }
 
+/* sets the session's machine limit while it is live and hosting */
+static inline bool session_set_machine_limit(c_class_58d20 *session, long value)
+{
+	bool result = false;
+	if (SESSION_STATE_IS_LIVE(session->state))
+	{
+		if (session->function_058d20())
+		{
+			session->value4990 = value;
+			session->update_count++;
+			result = true;
+		}
+	}
+	return result;
+}
+
 // @retail 0x6e720
 bool function_06e720(c_class_58d20 *session)
 {
@@ -574,14 +590,17 @@ bool function_06e720(c_class_58d20 *session)
 	{
 		if (!session->flag4f20 || !&session->data4f24 || !&session->data4f90)
 		{
-			s_session_summary *summary = session->flag49fd ? (s_session_summary *)session->data4a00 : NULL;
+			s_session_summary *summary = NULL;
+			if (session->flag49fd)
+				summary = (s_session_summary *)session->data4a00;
 			s_unknown_108 machines;
 			s_session_player players[16];
 			memset(&machines, 0, sizeof(machines));
 			memset(players, 0, sizeof(players));
-			machines.data[0] = (1 << session->member_count) - 1;
+			long member_count = session->member_count;
+			machines.data[0] = (1 << member_count) - 1;
 			s_session_machine *addresses = (s_session_machine *)&machines.data[1];
-			for (long i = 0; i < session->member_count; i++)
+			for (long i = 0; i < member_count; i++)
 				addresses[i] = *(s_session_machine *)((byte *)session->members[i].words + 0xa);
 			for (long i = 0; i < 16; i++)
 			{
@@ -590,26 +609,10 @@ bool function_06e720(c_class_58d20 *session)
 						session->data4db0, summary, (char)i, &players[i], session->value49c8);
 			}
 			session->set_data_4f24(&machines, (s_unknown_3648 *)players);
-			if (SESSION_STATE_IS_LIVE(session->state) && session->value5dd0 != NONE)
+			if (session_state_is_live(session) && session->value5dd0 != NONE)
 			{
-				if (SESSION_STATE_IS_LIVE(session->state))
-				{
-					if (session->state == 5 || session->state == 6 || session->state == 7 || session->state == 8)
-					{
-						session->value4994 = 2;
-						session->update_count++;
-					}
-					else { volatile long unused = session->state; }
-				}
-				if (SESSION_STATE_IS_LIVE(session->state))
-				{
-					if (session->state == 5 || session->state == 6 || session->state == 7 || session->state == 8)
-					{
-						session->value4990 = 1;
-						session->update_count++;
-					}
-					else { volatile long unused = session->state; }
-				}
+				session->set_value_4994(2);
+				session_set_machine_limit(session, 1);
 			}
 		}
 		result = true;
@@ -843,18 +846,15 @@ bool __stdcall function_6fe90(c_session_state_joining *state, bool all_players, 
 {
  c_class_58d20 *current = state->owner->session_a;
  c_class_58d20 *joining = state->owner->session_c;
- network_session_close(joining);
  long count = 0;
+ network_session_close(joining);
  __declspec(align(8)) dword identities[16][3];
  memset(identities, 0, sizeof(identities));
  if (all_players)
  {
   for (long i = 0; i < 16; i++)
    if (current->player_mask & (1 << i))
-   {
-    memcpy(identities[count], &current->players[i], 12);
-    count++;
-   }
+    memcpy(identities[count++], &current->players[i], 12);
  }
  else
  {
@@ -868,7 +868,8 @@ bool __stdcall function_6fe90(c_session_state_joining *state, bool all_players, 
   first[j] = NONE;
   second[j] = NONE;
  }
- s_session_id id = { 0, 0 };
+ s_session_id id;
+ memset(&id, 0, sizeof(id));
  if (function_59e50(joining, *(long *)((byte *)state + 0xac), *(long *)((byte *)state + 0x6c),
   (const XNKID *)((byte *)state + 0x70), (const XNKEY *)((byte *)state + 0x78),
   (const s_session_member_identity *)((byte *)state + 0x88), count, identities[0], first, second,
@@ -876,13 +877,8 @@ bool __stdcall function_6fe90(c_session_state_joining *state, bool all_players, 
   return true;
  if (SESSION_STATE_IS_LIVE(current->state))
  {
-  long value = current->state;
-  if (value == 5 || value == 6 || value == 7 || value == 8)
+  if (current->function_058d20())
    network_session_set_mode(current, 1);
-  else
-  {
-   volatile long unused = value;
-  }
  }
  *(long *)((byte *)state + 0x104) = 16;
  return false;
@@ -945,8 +941,7 @@ void function_6fa60(c_session_state_joining *self)
  state->unknowne8 = true;
  if (current->type == 17)
  {
-  long value = current->state;
-  if (value == 5 || value == 6 || value == 7 || value == 8)
+  if (current->function_058d20())
   {
    if (session_state_is_live(joining))
    {
@@ -963,7 +958,6 @@ void function_6fa60(c_session_state_joining *self)
   }
   else
   {
-   volatile long unused = value;
    if (!joining->state && session_state_is_live(current) &&
     network_session_get_data5ddc(current, &state->part))
    {
