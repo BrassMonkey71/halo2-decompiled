@@ -12,9 +12,6 @@ void c_a::v2(bool enable)
 	g_stub_2d7240 = enable;
 }
 
-// @stub 0x2df680
-c_shape_library_base_a::~c_shape_library_base_a() {}
-
 // @stub 0x2fc420
 c_shape_library_base_b::~c_shape_library_base_b() {}
 
