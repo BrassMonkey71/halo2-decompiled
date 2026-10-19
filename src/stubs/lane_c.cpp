@@ -38,15 +38,11 @@ public:
  void function_2df950(long arg_0, long arg_1);
  void function_2df990(long arg_0, long arg_1);
 };
-// @stub 0x2dfbf0
-c_2dfbf0::c_2dfbf0() {}
 
 struct s_3111d0
 {
  s_3111d0();
 };
-// @stub 0x3111d0
-s_3111d0::s_3111d0() {}
 
 struct s_30cb70
 {
@@ -233,9 +229,6 @@ public:
 	hkVector4 value;
 	void set(hkRotation const &rotation);
 };
-
-// @stub 0x2da2d0
-void c_component_rotation::set(hkRotation const &rotation) { }
 
 // @stub 0x2db880
 void __cdecl function_2db880(hkVector4 const *position, c_component_rotation const *rotation, real frequency, hkRigidBody *body) { }

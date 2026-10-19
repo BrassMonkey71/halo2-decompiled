@@ -25,8 +25,6 @@ struct c_transformed_point
 };
 
 
-// @stub 0x2fe730
-void __cdecl function_2fe730(const void *points, long count, long stride, void *output) {}
 struct s_surface_key_array
 {
  dword *keys;
@@ -59,8 +57,6 @@ struct c_surface_query_library
 };
 
 
-// @stub 0x2da4d0
-void c_query_transform::inverse_product(const c_query_transform *a, const c_query_transform *b) {}
 // @stub 0x2df5e0
 void c_surface_query_library::query_sphere(const __m128 *sphere, s_surface_key_array *keys) {}
 // @stub 0x2df610
