@@ -127,7 +127,6 @@ long function_296520(s_296520_tree *tree, long index, point2f const *point);
 long function_1dea00(s_bsp3d const *arg_0, long arg_1, point3f const *arg_6,
  vector3f const *arg_7, short arg_2, dword const *arg_3, long arg_4, real arg_5, bool arg_8)
 {
- (void)&arg_2; (void)&arg_3; (void)&arg_4; (void)&arg_5; (void)&arg_8;
  s_1dea00 const *local_0 = (s_1dea00 const *)arg_0;
  s_1dea01 const *local_1 = &local_0->field_14[arg_1];
  long local_2 = local_1->field_2;

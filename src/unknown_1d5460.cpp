@@ -97,7 +97,7 @@ bool havok_component_impact_make_room(long rigid_body_index, s_havok_component *
 		}
 		if (havok_component_impact_count(component) >= MAXIMUM_IMPACTS_PER_COMPONENT && weakest == NONE)
 		{
-			return false;
+			goto done;
 		}
 		if (weakest != NONE)
 		{
@@ -130,5 +130,6 @@ bool havok_component_impact_make_room(long rigid_body_index, s_havok_component *
 		}
 		result = true;
 	}
+done:
 	return result;
 }

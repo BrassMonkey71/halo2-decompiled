@@ -4,6 +4,8 @@
 #include "unknown_0259a0.h"
 #include <math.h>
 
+__forceinline s_firing_position *firing_position_get(long reference);
+
 /* slot handler 0x82 (g_47ef58), and the firing position search it uses */
 
 struct s_slot_82
@@ -321,7 +323,8 @@ bool __stdcall function_1c1320(long actor_index, s_slot *slot)
 		}
 		if (reference == NONE)
 		{
-			return false;
+			result = false;
+			goto done;
 		}
 		if (function_1f4460(actor_index, &target, unknown, NONE, false))
 		{
@@ -331,14 +334,17 @@ bool __stdcall function_1c1320(long actor_index, s_slot *slot)
 			state->unknown14.y = (real)sin(position->facing);
 			state->unknown14.z = 0.0f;
 			state->unknown20 = true;
-			return true;
+			result = true;
+			goto done;
 		}
 		if (state->unknown38 >= 4)
 		{
-			return false;
+			result = false;
+			goto done;
 		}
 		state->unknown28[state->unknown38++] = reference;
 	}
+done:
 	return result;
 }
 

@@ -1079,7 +1079,7 @@ void __stdcall function_18560(byte *context, s_packed_shader_range const *range)
     if (range->count() <= 0) return;
     byte *definition = *(byte **)(context + 0xc);
     byte *entry = *(byte **)(definition + 0x58) + range->index() * 4;
-    for (long i = 0; i < (long)range->count(); entry += 4, ++i)
+    for (long i = 0; i < (long)range->count(); ++i)
     {
         definition = *(byte **)(context + 0xc);
         word selection = (*(word **)(definition + 0x50))[entry[3]];
@@ -1125,6 +1125,7 @@ void __stdcall function_18560(byte *context, s_packed_shader_range const *range)
             D3DDevice_GetTextureStageState(entry[0], (D3DTEXTURESTAGESTATETYPE)setting->state, &previous);
             sampler_state_write(entry[0], (D3DTEXTURESTAGESTATETYPE)setting->state, (previous & 0xff000000) | (color & 0xffffff));
         }
+        entry += 4;
     }
 }
 
