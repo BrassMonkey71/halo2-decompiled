@@ -1986,11 +1986,11 @@ bool function_25ccd0(s_type_5cfb45 *state, long object_index, short value, s_264
 // @retail 0x26a210
 void function_26a210(long clump_index)
 {
-    long index = clump_get(clump_index)->first_prop;
-    while (index != NONE)
+    s_iterator iterator;
+    iterator.next = clump_get(clump_index)->first_prop;
+    s_type_76cf92 *prop;
+    while ((prop = clump_next_prop(&iterator)) != NULL)
     {
-        s_type_76cf92 *prop = prop_get(index);
-        index = *(long *)((byte *)prop + 0x14);
         long object_index = *(long *)((byte *)prop + 8);
         s_object_header_view *header = (s_object_header_view *)datum_get_inlined(g_4e0300, object_index);
         if (header && ((1 << header->type) & 3) && header->object)
