@@ -20,13 +20,7 @@ public:
  virtual void v4() = 0;
  virtual long v5() = 0;
 };
-class __declspec(align(16)) c_z_capsule_temp
-{
-public:
- c_z_capsule_temp(void const *first, void const *second, real radius);
- ~c_z_capsule_temp();
- byte unknown00[0x30];
-};
+#include "unknown_0a9f20.h"
 struct s_shape_carrier_contact;
 struct s_motion_adjustment_result;
 struct s_motion_adjustment;
@@ -118,7 +112,8 @@ void __stdcall function_1e55d0(s_biped_physics_move *move, void *physics, s_bipe
 			matrix.position.z += margin * 0.5f;
 			if (!function_1c5210(&matrix, capsule, *(long *)(input + 0x18), *(long *)(input + 0x24))) *(dword *)out |= 2;
 			else *(dword *)out &= ~2;
-			capsule->~c_z_capsule_temp();
+			/* the capsule adds nothing to destroy: retail calls the reference object's destructor */
+			capsule->c_reference_a9f20::~c_reference_a9f20();
 		}
 		else if (shape->v5() == 4 || (shape->v5() == 0x15 && (*(c_z_shape_view **)((byte *)shape + 0xc))->v5() == 4)) *(dword *)out |= 2;
 		else *(dword *)out &= ~2;

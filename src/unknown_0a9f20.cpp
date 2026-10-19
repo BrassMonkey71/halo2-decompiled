@@ -7,27 +7,11 @@
 #include "unknown_11c920.h"
 #include "globals.h"
 #include "unknown_1efac0.h"
+#include "unknown_0a9f20.h"
 
-class c_sized_reference
-{
-public:
-    virtual ~c_sized_reference() {}
-    word flags;
-    word unknown06;
+// @retail 0xa9f20 deleting c_reference_a9f20
 
-    static void operator delete(void *block)
-    {
-        g_480118->allocate((long)block, ((c_sized_reference *)block)->flags, 0x10);
-    }
-};
-
-class c_reference_a9f20 : public c_sized_reference
-{
-public:
-    virtual ~c_reference_a9f20();
-};
-
-// @retail 0xa9f20 deleting
+// @retail 0xdc370
 c_reference_a9f20::~c_reference_a9f20()
 {
     if (flags & 0x8000)
@@ -70,14 +54,6 @@ public:
 	virtual void v3() = 0;
 	virtual void v4() = 0;
 	virtual long v5() = 0;
-};
-
-class __declspec(align(16)) c_z_capsule_temp
-{
-public:
-	c_z_capsule_temp(void const *first, void const *second, real radius);
-	~c_z_capsule_temp();
-	byte unknown00[0x30];
 };
 
 extern real g_47f05c;
