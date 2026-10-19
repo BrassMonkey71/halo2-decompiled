@@ -224,7 +224,7 @@ Thank you to everyone who has contributed to this project so far:
   then the match-tuning of all of it.
 - [@coldspear](https://github.com/coldspear): much of the tooling (the
   permuter's mutations, `masked.py`, the near-miss report, claim-aware
-  `ready.py`, the decomp.dev report and the hardening of the disc and XBE
+  `ready.py`, the ByteMatch report (then decomp.dev) and the hardening of the disc and XBE
   readers), and analysis documents for the object core, weapons, surface
   lighting, Havok, the Xbox Live logon and more.
 - [@BirchWoodGod](https://github.com/BirchWoodGod): matched ranges all over
