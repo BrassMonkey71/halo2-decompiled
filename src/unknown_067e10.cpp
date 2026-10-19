@@ -1613,12 +1613,14 @@ long function_6a040(c_class_6a600 *world, c_simulation_view *view)
  }
  if (view->state == 4)
  {
-  if (!view->function_85cb0()) return 0;
-  dword current = view->player_mask;
-  dword players = function_696f0(world);
-  bool ready = (current & players) == players;
-  if (!ready) return 0;
-  result = 1;
+  result = 0;
+  if (view->function_85cb0())
+  {
+   dword current = view->player_mask;
+   dword players = function_696f0(world);
+   if ((current & players) == players)
+    result = 1;
+  }
  }
  if (result == 1)
  {
