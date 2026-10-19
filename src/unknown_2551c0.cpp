@@ -75,12 +75,13 @@ short __stdcall function_2551c0(long actor_index)
 // @retail 0x2551f0
 bool __stdcall function_2551f0(long actor_index, s_slot *slot)
 {
+	bool result = false;
 	s_actor_view *actor = actor_get(actor_index);
 	s_slot_0c_state *state = (s_slot_0c_state *)slot;
 
 	if (actor->unknown018 == NONE)
 	{
-		return false;
+		goto done;
 	}
 
 	state->timer = g_510c54->field_2_3 * 10;
@@ -100,7 +101,7 @@ bool __stdcall function_2551f0(long actor_index, s_slot *slot)
 				vector3f best_direction;
 
 				function_210770(actor->unknown27c.point.output_index, &actor->unknown290, &forward);
-				for (long i = 0; i < 8; i++)
+				for (short i = 0; i < 8; i++)
 				{
 					real angle = (real)i * 0.7853982f;
 					vector3f direction = forward;
@@ -132,9 +133,10 @@ bool __stdcall function_2551f0(long actor_index, s_slot *slot)
 		{
 			function_e68c0(0x27, actor->unknown018);
 		}
-		return true;
+		result = true;
 	}
-	return false;
+done:
+	return result;
 }
 
 // @retail 0x255520
