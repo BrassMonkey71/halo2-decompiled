@@ -199,9 +199,9 @@ void function_16f60(byte *state, word const *range)
     for (; i < (*range >> 9); entry += 4, ++i)
     {
         byte *slot = state + 0x320 + entry[0] * 0x40;
-        long *source = (long *)(values + entry[3] * 12);
-        if (source[0] != NONE)
+        if (*(long *)(values + entry[3] * 12) != NONE)
         {
+            long *source = (long *)(values + entry[3] * 12);
             *(long *)slot = source[0];
             *(real *)(slot + 0x18) = (real)source[1];
             *(long *)(slot + 0x14) = source[2];
