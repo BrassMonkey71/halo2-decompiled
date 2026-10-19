@@ -477,7 +477,7 @@ c_havok_reference_counted *__stdcall function_1d5ec0(s_havok_component *componen
                     physics_mass_frame(&relative, &transform);
                     if (child->type() == 0x15)
                     {
-                        transform.setMulEq(*(hkTransform *)((byte *)child + 0x10));
+                        transform.transform_compose_in_place(*(hkTransform *)((byte *)child + 0x10));
                         child = *(c_physics_shape_view **)((byte *)child + 0xc);
                     }
                 }

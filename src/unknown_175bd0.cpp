@@ -2660,8 +2660,6 @@ void __stdcall function_17a380(s_effect_datum *effect)
 // @retail 0x177040
 long __stdcall function_177040(long particle_system_index, long effect_index)
 {
-	long const *effect_index_argument = &effect_index;
-	effect_index = *effect_index_argument;
 	s_effect_datum *effect = DATUM(g_4ea93c, s_effect_datum, effect_index);
 	s_particle_system_datum *particle_system = DATUM(g_510c74, s_particle_system_datum, particle_system_index);
 	volatile long next_index = particle_system->next_index;
