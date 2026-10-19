@@ -996,6 +996,7 @@ struct s_player_row_columns
 
 void function_159130(long seconds, word *buffer);
 void function_22d2ee(word *string, long maximum_length);
+void unicode_string_copy(word *destination, const word *source, long maximum_count);
 bool function_15b2f0(void);
 struct s_68a90_entry;
 bool function_68a90(s_68a90_entry *entry, long *quality);
@@ -1081,11 +1082,10 @@ void game_engine_player_row_build(short const *position, real alpha, long player
 	}
 
 	name_text[0] = 0;
-	wcsncpy((wchar_t *)name_text, (const wchar_t *)name, 0xff);
-	parsed_name[0] = 0;
-	wcsncpy((wchar_t *)parsed_name, (const wchar_t *)name_text, 0xff);
+	unicode_string_copy(name_text, name, 0x100);
+	unicode_string_copy(parsed_name, name_text, 0x100);
 	function_22d2ee(parsed_name, 0x100);
-	wcsncpy((wchar_t *)name_text, (const wchar_t *)parsed_name, 0xff);
+	unicode_string_copy(name_text, parsed_name, 0x100);
 	bounds.left = position[0] + 0x2d;
 	bounds.top = position[1];
 	bounds.right = bounds.left + (short)name_width;

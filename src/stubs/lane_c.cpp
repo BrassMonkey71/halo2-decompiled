@@ -59,12 +59,8 @@ public:
 };
 // @stub 0x3101c0
 c_3101c0::c_3101c0(s_3111d0 const &arg_0, long arg_1) {}
-// @stub 0x30cb70
-void c_3101c0::function_30cb70(s_30cb70 arg_0) {}
 // @stub 0x310900
 void c_3101c0::function_310900(c_2dfbf0 *arg_0, s_30cb70 arg_1) {}
-// @stub 0x2dadb0
-void __cdecl function_2dadb0(hkWorld *arg_0) {}
 
 
 
@@ -186,16 +182,12 @@ hkBool hkWorld::removeEntity(hkEntity *entity) { return hkBool(); }
 void hkWorld::addEntity(hkEntity *entity) { }
 
 
-// @stub 0x30bc90
-void hkEntityApi::activate(void) { }
 
 
 
 /* the rigid body accessors of the havok components (unknown_1cec30.cpp) */
 
 
-// @stub 0x30bc60
-void hkRigidBody::activate(void) { }
 
 
 /* callees of ai.cpp's 0x1caa40 */
@@ -354,23 +346,7 @@ struct s_physics_mass_array;
 struct s_physics_mass;
 
 class c_havok_reference_counted;
-class c_physics_shape_list
-{
-public:
-    c_physics_shape_list(c_havok_reference_counted **shapes, long count);
-};
-// @stub 0x2fc320
-c_physics_shape_list::c_physics_shape_list(c_havok_reference_counted **shapes, long count) {}
 
-class c_2de7b0
-{
-public:
-    virtual ~c_2de7b0();
-    byte field_4[0x4c];
-};
-
-// @stub 0x2de7b0
-c_2de7b0::~c_2de7b0() {}
 
 struct s_2dc030
 {
@@ -438,63 +414,6 @@ void __cdecl function_2e7d10(s_1c3a40 *arg_0) {}
 
 // @stub 0x2e9030
 void __cdecl function_2e9030(s_1c3a40 *arg_0) {}
-
-// @stub 0x2eb540
-void __cdecl function_2eb540(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ebbb0
-void __cdecl function_2ebbb0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ecbf0
-void __cdecl function_2ecbf0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ed700
-void __cdecl function_2ed700(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ed9b0
-void __cdecl function_2ed9b0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ee240
-void __cdecl function_2ee240(s_1c3a40 *arg_0) {}
-
-// @stub 0x2eee90
-void __cdecl function_2eee90(s_1c3a40 *arg_0) {}
-
-// @stub 0x2ef900
-void __cdecl function_2ef900(s_1c3a40 *arg_0) {}
-
-// @stub 0x2efe20
-void __cdecl function_2efe20(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f0e00
-void __cdecl function_2f0e00(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f1ab0
-void __cdecl function_2f1ab0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f2800
-void __cdecl function_2f2800(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f42b0
-void __cdecl function_2f42b0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f7a70
-void __cdecl function_2f7a70(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f8900
-void __cdecl function_2f8900(s_1c3a40 *arg_0) {}
-
-// @stub 0x2f96d0
-void __cdecl function_2f96d0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2faac0
-void __cdecl function_2faac0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2fb9d0
-void __cdecl function_2fb9d0(s_1c3a40 *arg_0) {}
-
-// @stub 0x2daf00
-void __cdecl function_2daf00(s_1c3a40 *arg_0) {}
 
 // @stub 0x3144b0
 s_1d1870 c_314710::function_3144b0(void *arg_0) { return s_1d1870(); }

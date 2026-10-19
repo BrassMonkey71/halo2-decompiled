@@ -2,6 +2,7 @@
 // Havok (third-party physics library): a pair that tells both sides about
 // each other, and calls passed on to a listener.
 #include "reference_counted_2d88a0.h"
+#include "agent_table_2e5d50.h"
 
 class class_2ed770_side
 {
@@ -182,4 +183,32 @@ pair_2ed810 *__cdecl function_2ed8b0(collidable_2ed810 const *a, collidable_2ed8
 		pair->side_b = shape;
 	}
 	return pair;
+}
+
+class class_2ed7b0_listener;
+class pair_2ed810;
+pair_2ed810 *__cdecl function_2ed8b0(collidable_2ed810 const *a, collidable_2ed810 const *b, long arg_2, long value);
+void __cdecl function_2ed7d0(long a, long b, long c, class_2ed7b0_listener *listener);
+// the pair's last two handlers do nothing (retail's linker folded them, with
+// the game's own empty functions, into 0x175f40)
+static void __cdecl empty_handler_2ed9b0_a(void)
+{
+}
+
+static void __cdecl empty_handler_2ed9b0_b(void)
+{
+}
+
+// registers handlers for pairs of shape types, each pair both ways round
+// where the pair differs
+// @retail 0x2ed9b0
+void __cdecl function_2ed9b0(s_1c3a40 *table)
+{
+	handlers_2e5d50 handlers;
+	handlers.handler[0] = (handler_2e5d50)function_2ed8b0;
+	handlers.handler[1] = (handler_2e5d50)function_2ed7d0;
+	handlers.handler[2] = empty_handler_2ed9b0_a;
+	handlers.handler[3] = empty_handler_2ed9b0_b;
+	table->function_2e5d50(&handlers, 22, -1);
+	table->function_2e5d50(&handlers, -1, 22);
 }

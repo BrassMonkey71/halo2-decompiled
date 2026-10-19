@@ -4,6 +4,7 @@
 // list, adding referenced entries to the pending lists, and flushing the
 // pending lists, dropping their references.
 #include "growable_array_2d91d0.h"
+#include "reference_base_318970.h"
 
 class hkBool
 {
@@ -180,3 +181,13 @@ void hkWorld::function_30ce20()
 	}
 	pending_islands.size = 0;
 }
+
+// an object, a reference-counted object whose destructor is the base's: its
+// deleting destructor gives the block back with tag 4
+class class_30cea0 : public reference_base_318970
+{
+public:
+	REFERENCED_NEW_2D88A0(4)
+};
+
+// @retail 0x30cea0 deleting class_30cea0
