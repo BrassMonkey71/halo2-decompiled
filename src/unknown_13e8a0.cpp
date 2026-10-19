@@ -674,12 +674,22 @@ void __stdcall function_13f0e0(text_glyph_callback callback, short_rectangle2d c
 				if ((short)tab != 0)
 					line_bounds.x0 = g_4e73a0.tab_stops[(short)tab - 1] * scale;
 				else
-					line_bounds.x0 += ((short)line == 0 ? g_4e73a0.unknown5e : g_4e73a0.unknown60) * scale;
+				{
+					if ((short)line == 0)
+						line_bounds.x0 += g_4e73a0.unknown5e * scale;
+					else
+						line_bounds.x0 += g_4e73a0.unknown60 * scale;
+				}
 				if ((short)tab < g_4e73a0.tab_stop_count)
 					line_bounds.x1 = g_4e73a0.tab_stops[(short)tab] * scale;
 			}
 			else
-				line_bounds.x0 += ((short)line == 0 ? g_4e73a0.unknown5e : g_4e73a0.unknown60) * scale;
+			{
+				if ((short)line == 0)
+					line_bounds.x0 += g_4e73a0.unknown5e * scale;
+				else
+					line_bounds.x0 += g_4e73a0.unknown60 * scale;
+			}
 			s_font_header *header = iterator.field_4_3;
 			position.x = *(short *)header->unknown0a * scale + line_bounds.x0;
 			position.y = (header->ascending_height +
