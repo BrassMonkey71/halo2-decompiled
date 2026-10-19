@@ -4397,7 +4397,7 @@ matched 4451 of 11321 game functions (389205 of 2785198 bytes, 13.97%)
 ```
 
 **The UI lane**, round 8: 47 new matches, none lost. They include the player
-selected list, Havok's fixed memory allocator and hkMemory, the window
+selected list, Havok's fixed memory allocator and c_havok_abstract_allocator, the window
 manager's update, and the clan (online team) tasks.
 
 ## 2026-10-04: 4404 functions match

@@ -70,7 +70,7 @@ void function_1d1260(s_havok_component *arg_0)
   hkRigidBody *local_2 = arg_0->rigid_bodies.data[local_1].rigid_body;
   ((c_1d1261 *)local_2)->function_30bd10(g_51eca8);
   if ((arg_0->unknown04 & 1) && !local_2->m_fixed && local_2->m_motion->getType() != 6)
-   ((hkEntityApi *)local_2)->removeEntityListener((hkEntityListener *)(g_51eca8 ? g_51eca8 + 4 : NULL));
+   ((c_physics_body_island_view *)local_2)->removeEntityListener((c_havok_entity_observer *)(g_51eca8 ? g_51eca8 + 4 : NULL));
   --g_47f050;
   g_51e9a4->removeEntity((hkEntity *)local_2);
   function_278f00();

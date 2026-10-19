@@ -228,7 +228,7 @@ void *c_havok_fixed_memory::allocate_aligned(long alignment, long size, long mem
 
 
 // @retail 0x22c390
-void function_22c390(hkMemory *memory, s_fixed_memory_statistics_16 *statistics)
+void function_22c390(c_havok_abstract_allocator *memory, s_fixed_memory_statistics_16 *statistics)
 {
     c_havok_fixed_memory *storage = (c_havok_fixed_memory *)memory;
     statistics->header_size = 0x15040;
@@ -267,7 +267,7 @@ struct s_22cb00_memory
 };
 
 // @retail 0x22cb00
-void function_22cb00(hkMemory *memory, s_physics_pool_statistics *statistics)
+void function_22cb00(c_havok_abstract_allocator *memory, s_physics_pool_statistics *statistics)
 {
     s_22cb00_memory *storage = (s_22cb00_memory *)memory;
     statistics->allocated = 0xf03d0;
@@ -288,7 +288,7 @@ void function_22cb00(hkMemory *memory, s_physics_pool_statistics *statistics)
 
 /* the fraction of the pool's blocks in use */
 // @retail 0x22cb90
-real hkPoolMemory::get_used_fraction(void)
+real c_havok_page_pool_allocator::get_used_fraction(void)
 {
     s_22cb00_memory *storage = (s_22cb00_memory *)this;
     long used = 0;
