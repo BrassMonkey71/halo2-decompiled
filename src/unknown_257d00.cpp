@@ -228,30 +228,6 @@ void function_258540(long actor_index, long cs_index);
 void function_258480(long joint_index, long actor_index);
 void function_2583e0(long joint_index);
 
-/* a copy of swarm_creature_iterator_next (swarm.cpp), which retail inlines here */
-static inline s_handler_object_view *ai_object_iterator_next(s_ai_object_iterator *iterator)
-{
-	s_handler_object_view *object = NULL;
-
-	if (iterator->next_index != NONE)
-	{
-		object = handler_object_get(iterator->next_index);
-		iterator->index = iterator->next_index;
-
-		byte *data;
-		if (!object->flags134 && (data = (byte *)object + object->ai_offset) != NULL)
-		{
-			iterator->next_index = *(long *)(data + 0xc);
-		}
-		else
-		{
-			iterator->next_index = NONE;
-		}
-	}
-
-	return object;
-}
-
 inline s_cs_datum *cs_get(long cs_index)
 {
 	return (s_cs_datum *)(g_502408->data + (cs_index & 0xffff) * sizeof(s_cs_datum));
@@ -1884,54 +1860,56 @@ short function_258b60(long actor_index, cs_iterate_proc proc, long cs_index)
 {
 	long const *local_0 = &actor_index;
 	s_actor_view *actor = actor_get(*local_0);
+	short result = 2;
 
 	if (actor->unknown007)
 	{
 		long perception_index = ((s_handler_actor_view *)actor)->perception_index;
-		if (perception_index == NONE)
+		if (perception_index != NONE)
 		{
-			return 2;
-		}
+			short succeeded = 0;
+			short failed = 0;
+			short count = 0;
+			s_ai_object_iterator iterator;
+			s_handler_object_view *object;
 
-		short succeeded = 0;
-		short failed = 0;
-		short count = 0;
-		s_ai_object_iterator iterator;
-		s_handler_object_view *object;
-
-		iterator.next_index = perception_get(perception_index)->object_index;
-		iterator.index = NONE;
-		while ((object = ai_object_iterator_next(&iterator)) != NULL)
-		{
-			byte *data;
-			if (!object->flags134 && (data = (byte *)object + object->ai_offset) != NULL)
+			iterator.next_index = perception_get(perception_index)->object_index;
+			iterator.index = NONE;
+			while ((object = swarm_creature_iterator_next(&iterator)) != NULL)
 			{
-				short result = proc(actor_index, iterator.index, (s_cs_state *)(data + 0x28), cs_index);
-				*(short *)(data + 0x2c) = result;
-				if (result == 2)
+				byte *data;
+				if (!object->flags134 && (data = (byte *)object + object->ai_offset) != NULL)
 				{
-					succeeded++;
+					short outcome = proc(actor_index, iterator.index, (s_cs_state *)(data + 0x28), cs_index);
+					*(short *)(data + 0x2c) = outcome;
+					if (outcome == 2)
+					{
+						succeeded++;
+					}
+					else if (outcome == 1)
+					{
+						failed++;
+					}
+					count++;
 				}
-				else if (result == 1)
-				{
-					failed++;
-				}
-				count++;
+			}
+
+			if ((real)(failed + succeeded) >= (real)count * 0.8f)
+			{
+				result = (succeeded > failed) + 1;
+			}
+			else
+			{
+				result = 0;
 			}
 		}
-
-		if ((real)(failed + succeeded) >= (real)count * 0.8f)
-		{
-			return (succeeded > failed) + 1;
-		}
-		return 0;
 	}
 	else
 	{
-		short result = proc(actor_index, actor->unknown018, (s_cs_state *)((byte *)actor + 0x864), cs_index);
+		result = proc(actor_index, actor->unknown018, (s_cs_state *)((byte *)actor + 0x864), cs_index);
 		*(short *)((byte *)actor + 0x868) = result;
-		return result;
 	}
+	return result;
 }
 
 // @retail 0x259d90
