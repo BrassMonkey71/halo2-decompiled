@@ -99,6 +99,11 @@ static inline real distance2d(point2f const *a, point2f const *b)
 	return (real)sqrt(distance);
 }
 
+static inline real dot_product2d(vector2f const *a, vector2f const *b)
+{
+	return a->i * b->i + a->j * b->j;
+}
+
 short __stdcall function_1b0cd0(long actor_index);
 bool __stdcall function_1b13b0(long actor_index, s_slot *slot, long index);
 
@@ -446,7 +451,7 @@ void __stdcall function_1b1a90(long actor_index, s_slot *slot, s_slot_target_lis
 					direction.x = point.x - actor->position.x;
 					direction.y = point.y - actor->position.y;
 					normalize2d(&direction);
-					if (leader->unknown290.i * direction.x + leader->unknown290.j * direction.y < 0.5f)
+					if (dot_product2d((vector2f const *)&leader->unknown290, (vector2f const *)&direction) < 0.5f)
 					{
 						function_1f4280(actor_index);
 					}
@@ -657,8 +662,7 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
                     real local_22 = local_11->position.x - local_19.x;
                     real local_23 = local_11->position.y - local_19.y;
                     if (local_23 * local_23 + local_22 * local_22 > 0.2f ||
-                        1.0 - (local_13.j * local_11->unknown290.j +
-                            local_13.i * local_11->unknown290.i) > 0.05f)
+                        1.0 - dot_product2d(&local_13, (vector2f const *)&local_11->unknown290) > 0.05f)
                     {
                         local_21 = false;
                         if (local_0->unknown040 && !function_1f4460(arg_0, &local_12, local_14, NONE, false))
@@ -686,8 +690,7 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
                                 real local_29 = local_27->position.x - local_28.x;
                                 real local_30 = local_27->position.y - local_28.y;
                                 if (local_30 * local_30 + local_29 * local_29 > 0.2f ||
-                                    1.0 - (local_13.j * local_27->unknown290.j +
-                                        local_13.i * local_27->unknown290.i) > 0.05f)
+                                    1.0 - dot_product2d(&local_13, (vector2f const *)&local_27->unknown290) > 0.05f)
                                 {
                                     local_21 = false;
                                     break;
