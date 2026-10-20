@@ -62,11 +62,9 @@ inline void function_2c3b0(s_interface_function_context *context)
     initialization->field_30.k = 0.12f;
     initialization->field_28 = 0.4f;
     initialization->field_2c = 0.4f;
-    double pitch = -1.2566370964050293;
-    double yaw = 0.0;
-    context->field_3c.i = (real)(cos(yaw) * cos(pitch));
-    context->field_3c.j = (real)(sin(yaw) * cos(pitch));
-    context->field_3c.k = (real)sin(pitch);
+    context->field_3c.i = (real)(cos(0.0) * cos(-1.2566370964050293));
+    context->field_3c.j = (real)(sin(0.0) * cos(-1.2566370964050293));
+    context->field_3c.k = (real)sin(-1.2566370964050293);
     vector3f const *direction = &context->field_3c;
     vector3f volatile *negative = &context->field_54;
     negative->i = 0.0f - direction->i;
@@ -1706,16 +1704,14 @@ void function_34770(t_34770_begin begin, real const *bounds,
             D3DDevice_Begin(D3DPT_TRIANGLESTRIP);
             for (long column = 0; column <= columns; ++column)
             {
-                real fraction_x = (real)column / columns;
                 for (long side = 0; side < 2; ++side)
                 {
-                    real fraction_y = (real)(row + side) / rows;
-                    real t[2] = { fraction_x, fraction_y };
                     for (long attribute = 15; attribute >= 0; --attribute)
                     {
                         real out[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+                        real t[2] = { (real)column / columns, (real)(row + side) / rows };
                         if (vertex(attribute, bounds, t, out, user))
-                            D3DDevice_SetVertexData4f(attribute ? attribute : D3DVSDE_VERTEX,
+                            D3DDevice_SetVertexData4f(!attribute ? D3DVSDE_VERTEX : attribute,
                                 out[0], out[1], out[2], out[3]);
                     }
                 }
