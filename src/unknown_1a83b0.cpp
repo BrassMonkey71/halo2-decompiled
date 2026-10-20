@@ -7,6 +7,7 @@
 #include "ai_actor.h"
 #include "unknown_2626b0.h"
 #include "unknown_0259a0.h"
+#include "unknown_11cc90.h"
 
 /* the state of a slot of type 0x58 */
 struct s_slot_58
@@ -499,12 +500,11 @@ bool function_1a8a10(point2f const *arg_0, long arg_1, short arg_2, real arg_3, 
             __assume(0);
         }
         real local_5[4];
-        real local_14 = local_4.x;
-        real local_12 = local_1->unknown290.i;
-        real local_13 = local_1->unknown290.j;
-        real local_15 = local_4.y;
-        real local_10 = local_12 * local_15 + (0.0f - local_1->unknown290.j) * local_14;
-        real local_11 = local_13 * local_15 + local_12 * local_14;
+        vector2f local_17;
+        local_17.i = local_1->unknown290.i;
+        local_17.j = local_1->unknown290.j;
+        real local_10 = (0.0f - local_1->unknown290.j) * local_4.x + local_17.i * local_4.y;
+        real local_11 = local_17.i * local_4.x + local_17.j * local_4.y;
         local_5[0] = local_10;
         local_5[2] = local_11;
         local_5[1] = 0.0f - local_10;

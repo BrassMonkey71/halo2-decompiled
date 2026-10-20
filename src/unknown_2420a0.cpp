@@ -625,10 +625,7 @@ bool function_2440a0(s_marker_list *list, long object_index, point3f const *poin
 	if (list->count < 2 && object->slot != NONE)
 	{
 		s_game_options_view *options = g_4e6948;
-		long divisor = 1;
-
-		if (options->divisor)
-			divisor = options->divisor;
+		long divisor = options->divisor == 0 ? 1 : options->divisor;
 		long scale = options->scale_b == 0 ? 5 : options->scale_b;
 		long value = NONE;
 
@@ -642,23 +639,9 @@ bool function_2440a0(s_marker_list *list, long object_index, point3f const *poin
 			value = g_51ec80->d[slot];
 
 		if (options->mode_180 == 9 && (g_51ec80->flags[slot] & 2))
-		{
-			if (value == NONE)
-				list->items[list->count].r = 0.0f;
-			else
-			{
-				real *local_1 = &list->items[list->count].r;
-				real volatile local_0 = (real)value / (real)scale;
-				*local_1 = local_0;
-			}
-		}
+			list->items[list->count].r = value == NONE ? 0.0f : (real)value / (real)scale;
 		else
-		{
-			if (value == NONE)
-				list->items[list->count].r = 0.0f;
-			else
-				list->items[list->count].r = (real)value / (real)divisor;
-		}
+			list->items[list->count].r = value == NONE ? 0.0f : (real)value / (real)divisor;
 
 		list->b0 = 1;
 		list->count++;
