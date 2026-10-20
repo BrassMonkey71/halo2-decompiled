@@ -66,10 +66,12 @@ static __int64 read_tsc(void)
 // @retail 0x146a20
 void function_146a20(void)
 {
+	void *block = g_479888;
+
 	g_479884 = NONE;
 	g_479890 = 1;
 	g_479880 = true;
-	g_479894 = new (g_479888) c_havok_fixed_memory((byte *)g_479888 + 0x30, 0x15000);
+	g_479894 = new (block) c_havok_fixed_memory((byte *)block + 0x30, 0x15000);
 	g_479898 = new ((byte *)g_479888 + 0x15040) c_havok_page_pool_allocator;
 	g_4798b4++;
 }
