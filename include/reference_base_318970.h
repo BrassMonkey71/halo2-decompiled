@@ -9,6 +9,9 @@
 class reference_base_318970
 {
 public:
+	// built with one reference
+	reference_base_318970() { reference_count = 1; }
+
 	unsigned short memory_size;
 	unsigned short reference_count;
 
