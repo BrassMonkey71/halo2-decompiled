@@ -2062,100 +2062,98 @@ void function_1905bf(long controller, bool flag);
 // @retail 0x250b1e
 bool c_session_lobby_screen::v10(s_widget_event *event)
 {
-	bool unready = network_session_manager_session_unready();
+	if (!network_session_manager_session_unready() || window_manager_channel_in_use(1))
+		return true;
 	long result = 1;
 
-	if (unready && !window_manager_channel_in_use(1))
-	{
-		long controller = event->controller_index;
+	long controller = event->controller_index;
 
-		if (TEST_FIELD_BIT(((s_player_slot_sign_in_view *)g_54e8e0)[controller].signed_in))
+	if (TEST_FIELD_BIT(((s_player_slot_sign_in_view *)g_54e8e0)[controller].signed_in))
+	{
+		switch (event->type)
 		{
-			switch (event->type)
+		case 2:
+			if (teams[controller].valid)
 			{
+				change_team(controller, NONE);
+				return result;
+			}
+			break;
+		case 4:
+			if (teams[controller].valid)
+			{
+				change_team(controller, 1);
+				return result;
+			}
+			break;
+		case 5:
+			switch (event->param)
+			{
+			case 0:
+			case 0xc:
+				if (teams[controller].valid)
+				{
+					function_250cda(controller, false);
+					return result;
+				}
+				if (function_19a902())
+				{
+					function_25106c(event->controller_index);
+				}
+				break;
+			case 1:
+			case 0xd:
+				if (teams[controller].valid)
+				{
+					teams[event->controller_index].valid = false;
+					teams[event->controller_index].team = NONE;
+				}
+				else if (function_592f0() && function_19a902())
+				{
+					function_25122f(event->controller_index);
+				}
+				else
+				{
+					function_2511b6(event->controller_index);
+				}
+				return result;
 			case 2:
 				if (teams[controller].valid)
 				{
-					change_team(controller, NONE);
-					return result;
+					function_250cda(controller, false);
 				}
-				break;
-			case 4:
-				if (teams[controller].valid)
+				else
 				{
-					change_team(controller, 1);
-					return result;
-				}
-				break;
-			case 5:
-				switch (event->param)
-				{
-				case 0:
-				case 0xc:
-					if (teams[controller].valid)
-					{
-						function_250cda(controller, false);
-						return result;
-					}
 					if (function_19a902())
 					{
-						function_25106c(event->controller_index);
-					}
-					break;
-				case 1:
-				case 0xd:
-					if (teams[controller].valid)
-					{
-						teams[event->controller_index].valid = false;
-						teams[event->controller_index].team = NONE;
-					}
-					else if (function_592f0() && function_19a902())
-					{
-						function_25122f(event->controller_index);
-					}
-					else
-					{
-						function_2511b6(event->controller_index);
-					}
-					return result;
-				case 2:
-					if (teams[controller].valid)
-					{
-						function_250cda(controller, false);
-					}
-					else
-					{
-						if (function_19a902())
+						function_199f34();
+						if (function_19a7e9(event->controller_index, 10))
 						{
-							function_199f34();
-							if (function_19a7e9(event->controller_index, 10))
-							{
-								return result;
-							}
+							return result;
 						}
-						function_250cda(event->controller_index, true);
 					}
-					return result;
-				case 5:
-					function_2510aa(controller);
-					break;
+					function_250cda(event->controller_index, true);
 				}
+				return result;
+			case 5:
+				function_2510aa(controller);
 				break;
 			}
-			result = c_class_1473c9::v10(event);
+			break;
 		}
-		else if (event->type == 5 && (event->param == 0 || event->param == 0xc))
+		result = c_class_1473c9::v10(event);
+	}
+	else if (event->type == 5 && (event->param == 0 || event->param == 0xc))
+	{
+		if (function_199fd6() > 0 && !function_19a902() && function_19a279() == 3)
 		{
-			if (function_199fd6() > 0 && !function_19a902() && function_19a279() == 3)
-			{
-				bool online = function_6c7e0();
+			bool online = function_6c7e0();
 
-				function_1905bf(event->controller_index, online);
-			}
-			else
-			{
-				function_236299(2);
-			}
+			function_1905bf(event->controller_index, online);
+		}
+		else
+		{
+			function_236299(2);
 		}
 	}
 	return result;

@@ -15,7 +15,7 @@ public:
 // @retail 0x30b3a0
 class_30b3a0::~class_30b3a0()
 {
-	referenced_2d88a0 *object = field_c;
+	referenced_2d88a0 *object = collidable.body.shape;
 	if (object)
 	{
 		object->reference_count--;

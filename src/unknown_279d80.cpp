@@ -1689,26 +1689,6 @@ __forceinline void function_288571(long arg_0, long arg_1, bool arg_2, bool arg_
 	function_288572(arg_0, arg_1, arg_2, arg_3, 2, local_0, local_1, local_2, g_sampling_settings.inheritance);
 }
 
-/* compute_orientations with the inheritance read once */
-__forceinline void compute_orientations_inheritance(long blend_method, long node_kind, bool destination_mask, bool interpolate)
-{
-	s_graph_inheritance const *inheritance = g_sampling_settings.inheritance;
-	long node_index;
-	byte const *bit_flags;
-	long node_count = g_sampling_settings.node_count;
-
-	g_5044b4 = 0;
-	g_5044b8 = 0;
-	g_5044bc = 0;
-	compute_component_orientations(blend_method, node_kind, destination_mask, interpolate, 0, bit_flags, node_index, node_count, inheritance);
-	if (node_kind == 2 && node_count > 1)
-	{
-		node_count = 1;
-	}
-	compute_component_orientations(blend_method, node_kind, destination_mask, interpolate, 1, bit_flags, node_index, node_count, inheritance);
-	compute_component_orientations(blend_method, node_kind, destination_mask, interpolate, 2, bit_flags, node_index, node_count, inheritance);
-}
-
 /* compute_orientations with a node index for each component pass */
 __forceinline void compute_orientations_split(long blend_method, long node_kind, bool destination_mask, bool interpolate)
 {
@@ -1871,52 +1851,21 @@ __forceinline void compute_orientations_split_index_last(long blend_method, long
 	compute_component_orientations_shared(blend_method, node_kind, destination_mask, interpolate, 2, node_count, scale_node_index, bit_flags, destination_index, flags, scale_last);
 }
 
-__forceinline void compute_orientations_split_flags(long blend_method, long node_kind, bool destination_mask, bool interpolate)
+/* compute_orientations with the node count of the translation and scale
+   passes (only the root's for kind 2) in its own variable */
+__forceinline void compute_orientations_component_count(long blend_method, long node_kind, bool destination_mask, bool interpolate)
 {
 	long node_index;
 	byte const *bit_flags;
-	long destination_index;
-	long rotation_flags;
-	long translation_flags;
-	long scale_flags;
-	long last;
 	long node_count = g_sampling_settings.node_count;
 
 	g_5044b4 = 0;
 	g_5044b8 = 0;
 	g_5044bc = 0;
-	compute_component_orientations_shared(blend_method, node_kind, destination_mask, interpolate, 0, node_count, node_index, bit_flags, destination_index, rotation_flags, last);
-	if (node_kind == 2 && node_count > 1)
-	{
-		node_count = 1;
-	}
-	compute_component_orientations_shared(blend_method, node_kind, destination_mask, interpolate, 1, node_count, node_index, bit_flags, destination_index, translation_flags, last);
-	compute_component_orientations_shared(blend_method, node_kind, destination_mask, interpolate, 2, node_count, node_index, bit_flags, destination_index, scale_flags, last);
-}
-
-__forceinline void compute_orientations_split_bit_flags(long blend_method, long node_kind, bool destination_mask, bool interpolate)
-{
-	long node_index;
-	byte const *rotation_bit_flags;
-	byte const *translation_bit_flags;
-	byte const *scale_bit_flags;
-	long destination_index;
-	long rotation_flags;
-	long translation_flags;
-	long scale_flags;
-	long last;
-	long node_count = g_sampling_settings.node_count;
-
-	g_5044b4 = 0;
-	g_5044b8 = 0;
-	g_5044bc = 0;
-	compute_component_orientations_shared(blend_method, node_kind, destination_mask, interpolate, 0, node_count, node_index, rotation_bit_flags, destination_index, rotation_flags, last);
-	if (node_kind == 2 && node_count > 1)
-	{
-		node_count = 1;
-	}
-	compute_component_orientations_shared(blend_method, node_kind, destination_mask, interpolate, 1, node_count, node_index, translation_bit_flags, destination_index, translation_flags, last);
-	compute_component_orientations_shared(blend_method, node_kind, destination_mask, interpolate, 2, node_count, node_index, scale_bit_flags, destination_index, scale_flags, last);
+	compute_component_orientations(blend_method, node_kind, destination_mask, interpolate, 0, bit_flags, node_index, node_count, g_sampling_settings.inheritance);
+	long component_count = node_kind == 2 && node_count > 1 ? 1 : node_count;
+	compute_component_orientations(blend_method, node_kind, destination_mask, interpolate, 1, bit_flags, node_index, component_count, g_sampling_settings.inheritance);
+	compute_component_orientations(blend_method, node_kind, destination_mask, interpolate, 2, bit_flags, node_index, component_count, g_sampling_settings.inheritance);
 }
 
 __forceinline void compute_orientations_inheritance_mapping(long blend_method, long node_kind, bool destination_mask, bool interpolate);
@@ -2068,39 +2017,25 @@ void function_2806e0(void)
 // @retail 0x280ac0
 void function_280ac0(void)
 {
-	compute_orientations_split_flags(2, 0, true, true);
+	compute_orientations_component_count(2, 0, true, true);
 }
 
 // @retail 0x281090
 void function_281090(void)
 {
-	compute_orientations_split_bit_flags(2, 0, true, false);
+	compute_orientations_component_count(2, 0, true, false);
 }
 
 // @retail 0x281370
 void function_281370(void)
 {
-	compute_orientations_split_flags(2, 0, false, true);
+	compute_orientations_component_count(2, 0, false, true);
 }
 
-/* compute_orientations(2, 0, false, false), with a node index for each
-   component pass: with the shared index, VC loads the translation add's
-   operands in the other order */
 // @retail 0x2818e0
 void function_2818e0(void)
 {
-	long rotation_index;
-	long translation_index;
-	long scale_index;
-	byte const *bit_flags;
-	long node_count = g_sampling_settings.node_count;
-
-	g_5044b4 = 0;
-	g_5044b8 = 0;
-	g_5044bc = 0;
-	compute_component_orientations(2, 0, false, false, 0, bit_flags, rotation_index, node_count, g_sampling_settings.inheritance);
-	compute_component_orientations(2, 0, false, false, 1, bit_flags, translation_index, node_count, g_sampling_settings.inheritance);
-	compute_component_orientations(2, 0, false, false, 2, bit_flags, scale_index, node_count, g_sampling_settings.inheritance);
+	compute_orientations_component_count(2, 0, false, false);
 }
 
 // @retail 0x281b60
@@ -2176,7 +2111,7 @@ void function_284010(void)
 // @retail 0x2843a0
 void function_2843a0(void)
 {
-	compute_orientations_inheritance(3, 0, true, true);
+	compute_orientations_component_count(3, 0, true, true);
 }
 
 // @retail 0x284a20
