@@ -110,7 +110,7 @@ void function_c6ef0(s_unit_state_c6ef0 *state);
 
 struct s_simulation_controller;
 void simulation_controller_initialize(s_simulation_controller *controller, c_class_6a600 *world,
-	long field_00, long field_04, long field_08, const s_machine_address *machine, const t_player_key *key);
+	long field_00, long field_04, long field_08, const t_player_key *key, const s_machine_address *machine);
 void function_155710(long index);
 bool function_78a10(long index, s_network_observer *observer, long *delay, real *rate, long *received_rate, long *loss_percent);
 
@@ -180,7 +180,7 @@ void function_694c0(c_class_6a600 *world, long player_index)
 	if (local)
 		function_155710(local_index);
 	simulation_controller_initialize((s_simulation_controller *)&world->players[index], world,
-		index, player_index, kind, &player->machine, &player->key);
+		index, player_index, kind, &player->key, &player->machine);
 }
 #pragma inline_depth()
 
