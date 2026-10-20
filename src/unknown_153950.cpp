@@ -399,7 +399,8 @@ void function_154df0(long index, s_speed_bounds *bounds, s_speed_slot *slot, vec
 {
 	real timer = (real)slot->timer80;
 
-	if (bounds->duration > timer || priority > slot->priority9c || (priority >= slot->priority9c && bounds->duration > g_510c54->rate * timer))
+	bool update = bounds->duration > timer || priority > slot->priority9c || (priority >= slot->priority9c && bounds->duration > g_510c54->rate * timer);
+	if (update)
 	{
 		vector3f w;
 		vector3f v;

@@ -8,6 +8,7 @@
 
 // @flags /O2 /arch:SSE /Gr
 #include "projection_storage.h"
+#include "normalize3d.h"
 
 /* limits read by the range checks below (zero in the retail image; set at run time) */
 real g_54e854;
@@ -189,19 +190,20 @@ void function_170bb0(real *out, real const *second, real const *first)
 
 PRIVATE inline void rotate_vector_170d70(vector3f *v, vector3f const *axis, real sine, real cosine)
 {
-	real projection = (v->i * axis->i + axis->k * v->k + axis->j * v->j) * (1.f - cosine);
-	real cross_j = axis->i * v->k - v->i * axis->k;
-	real cross_k = v->i * axis->j - axis->i * v->j;
-	v->i = v->i * cosine + projection * axis->i - (axis->k * v->j - axis->j * v->k) * sine;
-	v->j = projection * axis->j + cosine * v->j - cross_j * sine;
-	v->k = projection * axis->k + cosine * v->k - cross_k * sine;
+	real cross_i = v->j * axis->k - v->k * axis->j;
+	real projection = (v->i * axis->i + v->j * axis->j + v->k * axis->k) * (1.f - cosine);
+	real cross_j = v->k * axis->i - v->i * axis->k;
+	real cross_k = v->i * axis->j - v->j * axis->i;
+	v->i = v->i * cosine + projection * axis->i - cross_i * sine;
+	v->j = v->j * cosine + projection * axis->j - cross_j * sine;
+	v->k = v->k * cosine + projection * axis->k - cross_k * sine;
 }
 
 // @retail 0x170d70
 void function_170d70(vector3f const *rotation, vector3f *a, vector3f *b)
 {
 	vector3f axis = *rotation;
-	real angle = normalize_inline(&axis);
+	real angle = normalize3d(&axis);
 
 	if (angle != 0.f)
 	{

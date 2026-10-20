@@ -277,7 +277,6 @@ bool function_121b00(void)
 	s_type_acf665 destination;
 	s_type_acf665 table;
 	s_type_acf665 output;
-	s_type_acf665 old_files[11];
 	s_type_acf665 source_files[11];
 	s_type_acf665 destination_files[11];
 	char name[256];
@@ -322,6 +321,7 @@ bool function_121b00(void)
 			font_table_parse(text, &destination, destination_files, 11);
 			if (function_1368f0(&destination))
 			{
+				s_type_acf665 old_files[11];
 				long old_count = function_136770(0, (file_reference_data *)&destination, 11, (file_reference_data *)old_files);
 				for (long i = 0; i < old_count; i++) file_ref_delete(&old_files[i]);
 			}
@@ -334,7 +334,8 @@ bool function_121b00(void)
 			function_x73bce5(&output, path);
 			async_create_file_blocking((file_reference_data *)&output, 2, 2, 4, 7, &input);
 			dword text_size = strlen(text) + 1;
-			function_1a1050(input, text, text_size, 0, 0, 7, 6, &bytes_written, &done);
+			s_file_write_flags write_flags(0);
+			function_1a1050(input, text, text_size, 0, write_flags, 7, 6, &bytes_written, &done);
 			font_copy_wait(&done);
 			async_flush_file_blocking(input, 7);
 			function_1a1550(input, 7, 6, &done);

@@ -418,9 +418,9 @@ void function_1f2a80(vector3f const *velocity, byte const *request, bool moving,
             vector3f const *b = (vector3f *)(*(byte **)(component + 0x88) + indices[1] * 0x48 + 0x28);
             if (selected != NONE)
             {
+                vector3f const *normal = (vector3f *)(*(byte **)(component + 0x88) + indices[selected] * 0x48 + 0x28);
                 vector3f axis;
                 contact_cross(a, b, &axis);
-                vector3f const *normal = (vector3f *)(*(byte **)(component + 0x88) + indices[selected] * 0x48 + 0x28);
                 if (selected == 0)
                     contact_cross(&axis, normal, out);
                 else

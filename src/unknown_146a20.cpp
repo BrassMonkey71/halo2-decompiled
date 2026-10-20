@@ -11,6 +11,7 @@
 #include "unknown_146a20.h"
 #include "physical_memory.h"
 #include "unknown_223b60.h"
+#include "unknown_080e10.h"
 #include <xtl.h>
 #include <new.h>
 
@@ -56,12 +57,6 @@ c_havok_abstract_allocator *g_479898;
 long g_4798b4;
 bool g_47f05a;
 bool g_47f05b;
-
-static __int64 read_tsc(void)
-{
-	volatile __int64 t = 0;
-	__asm rdtsc
-}
 
 // @retail 0x146a20
 void function_146a20(void)
@@ -263,40 +258,10 @@ c_havok_abstract_allocator *function_146e30(void)
 
 		do
 		{
-			__int64 start = read_tsc();
-
-			block = NULL;
-			if (size > 0 && g_4e6464->page_count > 0)
-			{
-				long retries = 0;
-
-				for (;;)
-				{
-					block = (byte *)function_12d2f0(size, 0, 0, 0);
-					if (block)
-					{
-						break;
-					}
-					if (retries < 90)
-					{
-						retries++;
-						function_12c600();
-						continue;
-					}
-
-					__int64 elapsed = read_tsc() - start;
-					if (elapsed < 0)
-						elapsed = 0;
-					if (!((real)timing_ticks_to_seconds(elapsed) < 1.0f))
-						break;
-					D3DDevice_KickPushBuffer();
-					D3DDevice_IsBusy();
-					SwitchToThread();
-				}
-			}
+			block = (byte *)function_80e14(size, 0, 0, 0, 90, 1.0f);
 			g_47988c = (long)block;
 		}
-		while (!block && ((size = size / 2) >= 0x100000));
+		while (!block && ((size >>= 1) >= 0x100000));
 
 		adjustment = (((dword)block + 0xf) & ~0xf) - (dword)block;
 		g_4798a0 = new ((byte *)g_479888 + 0x105440) c_havok_fixed_memory(block, size - adjustment);
