@@ -62,11 +62,26 @@ struct s_network_observer_channel
 	byte samples360[0x110];
 	byte unknown470[0x48c - 0x470];
 	bool flag48c;
-	byte unknown48d[0x4a1 - 0x48d];
+	byte unknown48d;
+	bool has_callback;
+	byte unknown48f[0x4a1 - 0x48f];
 	bool flag4a1;
 	byte unknown4a2[2];
 	long value4a4;
-	byte unknown4a8[0x520 - 0x4a8];
+	byte unknown4a8[0x4b0 - 0x4a8];
+	long smoothed_delay;
+	long smoothed_interval;
+	byte unknown4b8[0x4c0 - 0x4b8];
+	bool backoff;
+	byte unknown4c1[0x4d8 - 0x4c1];
+	long loss_penalty;
+	long probe_state;
+	long probe_reset_time;
+	byte unknown4e4[0x4f0 - 0x4e4];
+	long baseline_delay;
+	byte unknown4f4[0x518 - 0x4f4];
+	long constrained_cycles;
+	long unconstrained_cycles;
 	unsigned __int64 message_mask;
 };
 

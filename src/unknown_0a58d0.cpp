@@ -1060,11 +1060,11 @@ matrix3x3 *function_141e10(matrix3x3 *out, quaternionf const *q);
 
 PRIVATE inline void z_orientation_matrix(vector3f const *forward, vector3f const *up, matrix3x3 *matrix)
 {
- matrix->forward = *forward;
- matrix->up = *up;
  matrix->left.i = up->j * forward->k - forward->j * up->k;
  matrix->left.j = forward->i * up->k - forward->k * up->i;
+ matrix->forward = *forward;
  matrix->left.k = up->i * forward->j - forward->i * up->j;
+ matrix->up = *up;
 }
 
 // @retail 0xa9b40
@@ -1075,17 +1075,17 @@ void function_a9b40(long index, s_z_copy_state *state)
  real current_angle = 0.0f;
  matrix3x3 saved_matrix, current_matrix;
  quaternionf saved_rotation, current_rotation, blended;
- vector3f axis;
+ vector3f saved_axis, current_axis;
  vector3f *saved_up = &state->forward;
  vector3f *saved_forward = &state->up;
- vector3f const *current_forward = (vector3f const *)(object + 0x70);
- vector3f const *current_up = (vector3f const *)(object + 0x7c);
  z_orientation_matrix(saved_forward, saved_up, &saved_matrix);
+ vector3f const *current_up = (vector3f const *)(object + 0x7c);
+ vector3f const *current_forward = (vector3f const *)(object + 0x70);
  z_orientation_matrix(current_forward, current_up, &current_matrix);
  function_141f60(&saved_matrix, &saved_rotation);
  function_141f60(&current_matrix, &current_rotation);
- function_11d790(&saved_rotation, &axis, &saved_angle);
- function_11d790(&current_rotation, &axis, &current_angle);
+ function_11d790(&saved_rotation, &saved_axis, &saved_angle);
+ function_11d790(&current_rotation, &current_axis, &current_angle);
  if (current_angle - saved_angle > 0.0001f)
  {
   real weight = 0.35f;
@@ -1103,8 +1103,8 @@ void function_a9b40(long index, s_z_copy_state *state)
  }
  else
  {
-  *saved_forward = *current_forward;
-  *saved_up = *current_up;
+  state->up = *current_forward;
+  state->forward = *current_up;
   state->flags &= ~2;
  }
 }

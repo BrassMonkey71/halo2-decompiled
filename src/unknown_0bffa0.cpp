@@ -266,6 +266,8 @@ real function_c18e0()
 	return result;
 }
 
+__declspec(noinline) bool function_c3110(long index);
+
 // @retail 0xc3110
 bool function_c3110(long index)
 {
