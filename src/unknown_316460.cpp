@@ -152,12 +152,12 @@ void time_search_316460::function_316460(input_316460 *input, pair_316460 *pair,
 {
 	motion_316460 *first = pair->first->body->motion;
 	motion_316460 *second = pair->second->body->motion;
-	float const first_time = first->time;
-	float const second_time = second->time;
-	float const earliest = first_time < second_time ? first_time : second_time;
-	if (first_time != second_time)
+	float const reached_a = first->time;
+	float const reached_b = second->time;
+	float const earliest = reached_a < reached_b ? reached_a : reached_b;
+	if (reached_a != reached_b)
 	{
-		motion_316460 *later = first_time > second_time ? first : second;
+		motion_316460 *later = reached_a > reached_b ? first : second;
 		later->move_to_time(earliest, input->context);
 		output->contacts->size = 0;
 		world->state->mode = 2;
@@ -169,7 +169,7 @@ void time_search_316460::function_316460(input_316460 *input, pair_316460 *pair,
 			return;
 		case 2:
 			{
-				float step = (float)fabs(first_time - second_time) * 0.5f;
+				float step = (float)fabs(reached_a - reached_b) * 0.5f;
 				float time = earliest + step;
 				while (step > world->smallest_step)
 				{
@@ -235,8 +235,8 @@ void time_search_316460::function_316460(input_316460 *input, pair_316460 *pair,
 		if (classify(output, tolerance) == 0)
 		{
 			pair->result = -3;
-			first->move_to_time(first_time, input->context);
-			second->move_to_time(second_time, input->context);
+			first->move_to_time(reached_a, input->context);
+			second->move_to_time(reached_b, input->context);
 			world->state->tolerance = -1000.0f;
 			output->contacts->size = 0;
 			pair->collector->collect((char *)pair->first - 0x10, (char *)pair->second - 0x10, input, output);
