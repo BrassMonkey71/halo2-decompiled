@@ -509,6 +509,7 @@ void function_2116c0(long arg_0, long arg_1, long arg_2);
 // @retail 0x119380
 bool function_119380(long arg_0, s_119380 *arg_1)
 {
+    bool local_2 = false;
     (void)&arg_0;
     (void)&arg_1;
     s_forward_object *local_0 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
@@ -516,7 +517,6 @@ bool function_119380(long arg_0, s_119380 *arg_1)
     memset(arg_1, 0, sizeof(*arg_1));
     arg_1->field_0 = 0x7000101;
     arg_1->field_4 = 0x7000101;
-    bool local_2 = false;
     if (local_1->channels[0].graph_tag_index != NONE && local_1->channels[0].animation_id.index != NONE)
     {
         s_forward_object *local_3 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;

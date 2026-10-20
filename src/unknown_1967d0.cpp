@@ -624,7 +624,7 @@ void sort_4byte(long *elements, unsigned long count, void *unused, t_sort_4byte_
 
 /* lists the active devices and the active entries, each sorted */
 // @retail 0x1990b0
-void function_1990b0(long *device_count, long *devices, long *entry_count, long *entries)
+void function_1990b0(long *devices, long *device_count, long *entry_count, long *entries)
 {
 	if (g_510cb0 && g_510cb1)
 	{
@@ -708,7 +708,7 @@ long function_199250(s_address_table *table, byte const *address)
 
 
 // @retail 0x1969a0
-long function_1969a0(long a, long b, long c)
+long function_1969a0(long a, long c, long b)
 {
 	long result = NONE;
 	if (g_510cb0 && g_510cb1)
