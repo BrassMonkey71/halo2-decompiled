@@ -7,6 +7,7 @@
 #include "reference_counted_2d88a0.h"
 #include "timer_mark_2ebc80.h"
 #include "pair_agents_2eab70.h"
+#include "side_bounds_2e9140.h"
 #include <xmmintrin.h>
 
 __forceinline void timer_add_2ea940(char const *label)
@@ -129,6 +130,8 @@ public:
 };
 
 typedef void (__cdecl *pair_query_2ea940)(body_2ea940 const *a, body_2ea940 const *b, input_2ea940 const *input, void *collector);
+// a query along a path, which also reports where the sides start touching
+typedef void (__cdecl *path_query_2ea640)(body_2ea940 const *a, body_2ea940 const *b, input_2ea940 const *input, void *collector, void *second_collector);
 
 // per-kind flags, then tables of query functions indexed by the kinds of the
 // two sides
@@ -136,6 +139,7 @@ struct dispatcher_2ea940
 {
 	char unknown0[0x218c];
 	pair_query_2ea940 queries_218c[32][32];
+	path_query_2ea640 path_queries_318c[32][32];
 };
 
 // a query's input: the dispatcher, the filter and the tolerance
@@ -183,6 +187,40 @@ struct part_body_2ea830
 	void const *parent;
 };
 
+// the same query along a path: the first shape's bounds, stretched along the
+// path, give the parts, and each part a filter accepts is passed on to the
+// path query for the two kinds
+// @retail 0x2ea640
+void __cdecl function_2ea640(void const *a_, void const *b_, void const *input_, void *collector, void *second_collector)
+{
+	timer_add_2ea940("LtBvTree");
+	body_2ea940 const *a = (body_2ea940 const *)a_;
+	body_2ea940 const *b = (body_2ea940 const *)b_;
+	input_2ea940 const *input = (input_2ea940 const *)input_;
+	body_2ea940 part;
+	bounds_2e9140 bounds;
+	function_2e9140(a, b, input, &bounds);
+	tree_shape_2ea940 const *tree = (tree_shape_2ea940 const *)b->shape;
+	key_array_2ea940 keys;
+	tree->overlapping_keys((bounds_2ea940 const *)&bounds, &keys);
+	timer_add_2ea940("StNarrowPhase");
+	long const kind_a = a->shape->kind();
+	part.parent = b;
+	part.placement = b->placement;
+	long const *const end = keys.data + keys.size;
+	shape_2ea940 const *container = tree->container;
+	__declspec(align(16)) char buffer[0x100];
+	for (long const *key = keys.data; key != end; key++)
+	{
+		if (input->filter->accepts(input, a, b, container, *key).value)
+		{
+			part.shape = container->part(*key, buffer);
+			part.key = *key;
+			input->dispatcher->path_queries_318c[kind_a][part.shape->kind()](a, &part, input, collector, second_collector);
+		}
+	}
+	timer_add_2ea940("lt");
+}
 // the agents of the tree's parts brought up to date, then each runs its
 // query against its part
 // @retail 0x2ea830

@@ -6,6 +6,7 @@
 #include "unknown_11c920.h"
 #include "camera_storage.h"
 #include "globals.h"
+#include "data_array.h"
 #include <string.h>
 #include <float.h>
 #include <xmmintrin.h>
@@ -430,9 +431,9 @@ bool __stdcall function_1e9ad0(void *state, long mask, void *data)
 {
 	s_object_values *table = (s_object_values *)state;
 	s_object_values_packet *packet = (s_object_values_packet *)data;
-	short *row = table->values[0];
 	for (long i = 0; i < 16; i++)
 	{
+		short *row = table->values[i];
 		if (mask & (1 << i))
 		{
 			for (long column = 0; column < 9; column++)
@@ -443,12 +444,8 @@ bool __stdcall function_1e9ad0(void *state, long mask, void *data)
 					if (count > 0)
 					{
 						long player_index = NONE;
-						if (i != NONE && i >= 0 && i < g_4e8c24->high_water_index)
-						{
-							short salt = *(short *)(g_4e8c24->data + i * g_4e8c24->size);
-							if (salt)
-								player_index = (salt << 16) | i;
-						}
+						if (datum_get_absolute_inlined(g_4e8c24, i))
+							player_index = data_datum_index(g_4e8c24, i);
 						if (player_index != NONE)
 						{
 							byte *player = NULL;
@@ -475,16 +472,14 @@ bool __stdcall function_1e9ad0(void *state, long mask, void *data)
 				row[column] = packet->values[i][column];
 			}
 		}
-		row += sizeof(table->values[0]) / sizeof(short);
 	}
 	for (long team = 0; team < 8; team++)
 	{
 		if (mask & (1 << (team + 16)))
 		{
 			short *destination = &table->team_values[team][0];
-			short const *source = &packet->team_values[team][0];
 			for (long column = 0; column < 9; column++)
-				destination[column] = source[column];
+				destination[column] = packet->team_values[team][column];
 		}
 	}
 	return true;

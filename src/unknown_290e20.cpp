@@ -307,7 +307,7 @@ short ai_trigger_find_by_name(char const *name)
 bool function_290e20(short trigger_index, long squad_index, long squad_group_index)
 {
 	s_ai_trigger *trigger = &((s_scenario_ai_triggers_view *)g_4e0350)->triggers[trigger_index];
-	short count;
+	short count = 0;
 	short needed;
 	short i;
 	bool result;
@@ -315,7 +315,6 @@ bool function_290e20(short trigger_index, long squad_index, long squad_group_ind
 	if ((trigger->flags & 1) && (((dword *)g_5044cc)[trigger_index >> 5] & (1 << (trigger_index & 0x1f))))
 		return true;
 
-	count = 0;
 	result = false;
 	if (trigger->combine_mode == 0)
 		needed = 1;
@@ -325,18 +324,10 @@ bool function_290e20(short trigger_index, long squad_index, long squad_group_ind
 	for (i = 0; i < trigger->condition_count; i++)
 	{
 		s_ai_trigger_condition *condition = &trigger->conditions[i];
-		bool holds;
 
-		if (squad_group_index != NONE && function_2912c0(condition, squad_group_index, &result))
-			holds = true;
-		else if (squad_index != NONE)
-			holds = function_290f60(condition, &result, squad_index);
-		else if (squad_group_index == NONE)
-			holds = function_290f60(condition, &result, NONE);
-		else
-			holds = false;
-
-		if (holds)
+		if ((squad_group_index != NONE && function_2912c0(condition, squad_group_index, &result)) ||
+			(squad_index != NONE && function_290f60(condition, &result, squad_index)) ||
+			(squad_index == NONE && squad_group_index == NONE && function_290f60(condition, &result, NONE)))
 		{
 			count++;
 			if (count >= needed)
@@ -344,11 +335,16 @@ bool function_290e20(short trigger_index, long squad_index, long squad_group_ind
 		}
 	}
 
-	if (count < needed)
-		return false;
-	if (trigger->flags & 1)
-		((dword *)g_5044cc)[trigger_index >> 5] |= 1 << (trigger_index & 0x1f);
-	return true;
+	bool triggered;
+	if (count >= needed)
+	{
+		triggered = true;
+		if (trigger->flags & 1)
+			((dword *)g_5044cc)[trigger_index >> 5] |= 1 << (trigger_index & 0x1f);
+	}
+	else
+		triggered = false;
+	return triggered;
 }
 
 /* the scenario's scenes (0x18 bytes each at +0x174 of g_4e0350): a name, the

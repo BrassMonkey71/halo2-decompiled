@@ -133,10 +133,10 @@ void function_13c780(void)
 			interface_rectangle_fill(&local_4, local_2);
 			interface_rectangle_fill(&local_5, local_2);
 		}
-		for (long local_6 = 8; local_6 < 0x18; local_6 += 4)
+		for (long local_6 = 0; local_6 < 4; local_6++)
 		{
 			local_1 = (byte *)g_510c50;
-			short *local_7 = (short *)(local_1 + local_6);
+			short *local_7 = (short *)(local_1 + 8 + local_6 * 4);
 			if (local_7[0] != NONE)
 			{
 				byte *local_8 = (byte *)g_4e0350;
@@ -149,23 +149,17 @@ void function_13c780(void)
 					function_1a0180(local_10, local_9->field_0, local_11);
 					if (function_13ee20(local_11, g_4e73a0.font))
 					{
+						real local_13 = 1.0f;
 						short_rectangle2d const *local_12 = &local_9->field_4;
 						if (local_12->right == local_12->left || local_12->bottom == local_12->top)
 							local_12 = (short_rectangle2d *)((byte *)g_510c94 + 0x29c);
 						real local_14 = local_7[1] * g_510c54->rate;
-						real local_13 = 1.0f;
 						if (local_9->field_18 > local_14)
-						{
 							local_13 = local_14 / local_9->field_18;
-							if (0.0f > local_13) local_13 = 0.0f;
-							else if (local_13 > 1.0f) local_13 = 1.0f;
-						}
 						else if (local_14 > local_9->field_1c)
-						{
 							local_13 = 1.0f - (local_14 - local_9->field_1c) / local_9->field_20;
-							if (0.0f > local_13) local_13 = 0.0f;
-							else if (local_13 > 1.0f) local_13 = 1.0f;
-						}
+						if (0.0f > local_13) local_13 = 0.0f;
+						else if (local_13 > 1.0f) local_13 = 1.0f;
 						color4f local_15, local_16;
 						unpack_color3f(local_9->field_10, (color3f *)&local_15.red);
 						if (fabs(local_15.red - 1.0f) < 0.0001f && fabs(local_15.green - 1.0f) < 0.0001f && fabs(local_15.blue - 1.0f) < 0.0001f)
@@ -181,8 +175,9 @@ void function_13c780(void)
 						long local_17 = local_9->field_e;
 						font_get(g_4e28f4[local_17]);
 						g_4e73a0.font = local_17;
-						g_4e73a0.justification = local_9->field_c;
+						long local_18 = local_9->field_c;
 						g_4e73a0.style = NONE;
+						g_4e73a0.justification = local_18;
 						g_4e73a0.flags = 1;
 						function_13ec70(&local_15);
 						function_13ed50(&local_16);

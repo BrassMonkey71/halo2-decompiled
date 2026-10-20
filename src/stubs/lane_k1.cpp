@@ -9,6 +9,8 @@
 #include "stream_holder_2d8e70.h"
 #include "convex_search_3048a0.h"
 #include "point_triangle_308d90.h"
+#include "string_helpers_2d8c90.h"
+#include "placed_shape_312800.h"
 
 // @stub 0x2e5a90
 void s_1c3a40::function_2e5a90(handlers_2e5d50 const *handlers, long first_type, long second_type,
@@ -17,11 +19,6 @@ void s_1c3a40::function_2e5a90(handlers_2e5d50 const *handlers, long first_type,
 }
 
 // handlers of the pair table (0x2e5d50) not decompiled yet
-
-// @stub 0x2ea640
-void __cdecl function_2ea640(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
 
 // @stub 0x2ead90
 void __cdecl function_2ead90(void const *a, void const *b, void const *input, void *collector)
@@ -77,11 +74,6 @@ void __cdecl function_2f3d00(void const *a, void const *b, void const *input, vo
 {
 }
 
-// @stub 0x2f40e0
-void __cdecl function_2f40e0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
 // @stub 0x2f5960
 void __cdecl function_2f5960(void const *a, void const *b, void const *input, void *collector)
 {
@@ -106,22 +98,6 @@ void __cdecl function_2fe830(void const *a, void const *b, void const *input, vo
 
 
 // Havok round 17: callees of matched functions not decompiled yet
-
-// @stub 0x312150
-void class_3115a0::function_312150(description_3115a0 const *description)
-{
-}
-
-class class_30aff0
-{
-public:
-	void function_30aff0(void const *description);
-};
-
-// @stub 0x30aff0
-void class_30aff0::function_30aff0(void const *description)
-{
-}
 
 class class_30c330
 {
@@ -164,16 +140,6 @@ void class_2e96a0::function_2e96a0(void const *a, void const *b, void const *inp
 
 // @stub 0x2e90f0
 void __cdecl function_2e90f0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2e4ff0
-class_2e4ff0::~class_2e4ff0()
-{
-}
-
-// @stub 0x30bf50
-class_30bf50::~class_30bf50()
 {
 }
 
@@ -247,18 +213,6 @@ struct class_2df670
 };
 
 
-
-class class_2d99d0
-{
-public:
-	int function_2d9850();
-};
-
-// @stub 0x2d9850
-int class_2d99d0::function_2d9850()
-{
-	return 0;
-}
 
 struct element_2e1090;
 struct bounds_2e0020;
@@ -360,10 +314,6 @@ void class_2f4f00::function_2f4f00(void const *a, void const *b, void const *inp
 {
 }
 
-// @stub 0x2f7f10
-void class_2f7f10::function_2f7f10(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
@@ -431,12 +381,6 @@ void query_2ef260::function_3080a0(class_308180 *manifold)
 {
 }
 
-// @stub 0x2d8f10
-stream_holder_2d8e70 &stream_holder_2d8e70::function_2d8f10(char const *text)
-{
-	return *this;
-}
-
 struct pending_2ddbd0;
 
 class class_2dce60
@@ -496,29 +440,13 @@ void class_30f710::function_30f710()
 {
 }
 
-// @stub 0x3114d0
-class_3114d0::class_3114d0(void const *a, void const *b)
-{
-}
-
-// @stub 0x30beb0
-class_30bf50::class_30bf50(s_311340 const *description)
-{
-}
-
 // motion objects 0x311940 builds
 class class_31ad80 { public: class_31ad80(void const *position, void const *orientation); };
-class class_31a870 { public: class_31a870(void const *position, void const *orientation); };
 class class_3193c0 { public: class_3193c0(void const *position, void const *orientation); };
 class class_31a6b0 { public: class_31a6b0(void const *position, void const *orientation); };
 
 // @stub 0x31ad80
 class_31ad80::class_31ad80(void const *position, void const *orientation)
-{
-}
-
-// @stub 0x31a870
-class_31a870::class_31a870(void const *position, void const *orientation)
 {
 }
 
@@ -529,5 +457,46 @@ class_3193c0::class_3193c0(void const *position, void const *orientation)
 
 // @stub 0x31a6b0
 class_31a6b0::class_31a6b0(void const *position, void const *orientation)
+{
+}
+
+// Havok round 23: callees of the functions this round writes
+
+// the C++ library's string length, out of line
+// @stub 0x2d8d80
+unsigned int __cdecl string_length_2d8d80(char const *string)
+{
+	return 0;
+}
+
+// orders each pair by the second words of its two objects, then the pairs
+// @stub 0x372b50
+void __cdecl function_372b50(pair_30d870 *pairs, long count)
+{
+}
+
+// passes on the pairs of overlapping objects that begin and end
+// @stub 0x3728c0
+void dispatcher_3728c0::function_3728c0(pair_30d870 const *added, long added_count, pair_30d870 const *removed,
+	long removed_count, pair_listener_315a10 *listener)
+{
+}
+
+// a rotation matrix set from a quaternion
+// @stub 0x372500
+void rotation_372500::function_372500(__m128 const *quaternion)
+{
+}
+
+// the islands' step handed on (925 bytes, not decompiled)
+// @stub 0x31c100
+void __cdecl function_31c100(void *step_10, void *step_20, void *step_50, void *world_info,
+	void *simulation, void *islands, long island_count, long field_58, long field_5c)
+{
+}
+
+// changes a body's motion to another kind (770 bytes, not decompiled)
+// @stub 0x311e40
+void class_3115a0::function_311e40(int kind)
 {
 }

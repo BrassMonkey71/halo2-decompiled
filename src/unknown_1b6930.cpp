@@ -109,13 +109,13 @@ bool function_1b60d0(long index, short type, short level);
 void function_25d420(long prop_index, short type, long actor_index);
 short __stdcall function_272af0(s_match_globals *structure, point3f const *point);
 
-PRIVATE __forceinline short function_1b69e6(long arg_0, long arg_1)
+PRIVATE __forceinline bool function_1b69e6(long arg_0, long arg_1)
 {
     bool unknown;
     long level;
     s_261d20_entry entry;
     s_2605d0_request request;
-    short result = 0;
+    bool result = false;
     s_actor_view *actor = actor_get(arg_1);
     s_prop_node_view *node = prop_node_get(arg_0);
     s_prop_view_fields *view = prop_node_view(node);
@@ -159,12 +159,13 @@ PRIVATE __forceinline short function_1b69e6(long arg_0, long arg_1)
             s_262b40_result *target = function_262b40(reference);
             short type = target ? target->unknown10 : NONE;
             function_1b60d0(node->unknown08, reference.unknown2, type);
-            result = 1;
+            result = true;
         }
         else
         {
             function_25d420(arg_0, 2, arg_1);
             view->unknown4c = true;
+            result = false;
         }
         ai_scratch_buffer_release(scratch);
     }
@@ -174,7 +175,7 @@ PRIVATE __forceinline short function_1b69e6(long arg_0, long arg_1)
 // @retail 0x1b69e0
 bool __stdcall function_1b69e0(long actor_index, long prop_index)
 {
-    return function_1b69e6(prop_index, actor_index) != 0;
+    return function_1b69e6(prop_index, actor_index);
 }
 
 // @retail 0x1b6c90
