@@ -12,8 +12,6 @@ public:
 };
 
 // @retail 0x2dffa0
-// not matched yet: retail loads the size into another register and takes 2
-// off with lea
 void array_2dffa0::remove_two(int first, int second)
 {
 	long *p = data + first;
@@ -22,9 +20,8 @@ void array_2dffa0::remove_two(int first, int second)
 	{
 		p[0] = p[1];
 	}
-	int remaining = size - 2;
-	end = data + remaining;
-	size = remaining;
+	end = data + size - 2;
+	size -= 2;
 	for (; p < end; p++)
 	{
 		p[0] = p[2];

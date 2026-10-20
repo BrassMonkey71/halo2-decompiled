@@ -17,12 +17,6 @@ struct holder_2ebaf0
 	info_2ebaf0 *info;
 };
 
-// the value the creation function compares
-static inline long kind_2ebaf0(holder_2ebaf0 const *holder)
-{
-	return holder->info->field_20 - 0x30;
-}
-
 // the kind made when the first argument's value is the smaller
 class class_412b08 : public bounded_2e9530
 {
@@ -40,8 +34,13 @@ public:
 // @retail 0x2ebaf0
 bounded_2e9530 *__cdecl function_2ebaf0(holder_2ebaf0 **arg_0, holder_2ebaf0 **arg_1, long arg_2, long value)
 {
-	long second = kind_2ebaf0(*arg_1);
-	long first = kind_2ebaf0(*arg_0);
+	holder_2ebaf0 *first_holder = *arg_0;
+	holder_2ebaf0 *second_holder = *arg_1;
+	info_2ebaf0 *second_info = second_holder->info;
+	info_2ebaf0 *first_info = first_holder->info;
+	// the values compared: each info's field_20 less 0x30
+	long first = first_info->field_20 - 0x30;
+	long second = second_info->field_20 - 0x30;
 	if (first < second)
 	{
 		return new class_412b08(value);

@@ -1,3 +1,4 @@
+// @flags /O2 /arch:SSE /Gr
 /* UNKNOWN_123B30.CPP: the game state allocator
 
 Retail inlines function_123d40 into callers optimized for speed and calls
