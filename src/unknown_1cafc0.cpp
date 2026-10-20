@@ -1104,7 +1104,7 @@ void s_animation_state::orientations_blend(s_blend_orientation const *targets, s
 }
 
 // @retail 0x1cb5f0
-bool function_1cb5f0(long node_count, s_animation_state *state, real seconds, s_blend_orientation *orientations,
+bool function_1cb5f0(s_animation_state *state, real seconds, long node_count, s_blend_orientation *orientations,
 	s_blend_orientation const *targets)
 {
 	bool result = false;
@@ -1159,7 +1159,7 @@ bool s_animation_state::update(animation_event_callback callback, long user, lon
 	{
 		if (channel_is_unflagged1(&channels[2]))
 		{
-			function_1cb5f0(node_count, this, 0.267f, orientations, targets);
+			function_1cb5f0(this, 0.267f, node_count, orientations, targets);
 		}
 		channels[2].clear();
 		if (channel_valid(&channels[0]) && (channels[0].flags & 1))

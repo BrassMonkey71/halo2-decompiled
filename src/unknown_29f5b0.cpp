@@ -1161,7 +1161,7 @@ void function_2a09c0(void)
 	long datum = data_datum_index(array, function_16bc00(array, 0));
 	while (datum != NONE)
 	{
-		s_hs_syntax_node_view *node = (s_hs_syntax_node_view *)array->data + (datum & 0xffff);
+		s_hs_syntax_node_view *node = (s_hs_syntax_node_view *)g_4f9394->data + (datum & 0xffff);
 		if (node->type == _hs_type_string)
 			node->value = node->source_offset + string_data;
 		long next_index = datum == NONE ? 0 : (datum & 0xffff) + 1;

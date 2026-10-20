@@ -273,7 +273,7 @@ struct s_object_node_orientation
 
 struct s_animation_state;
 struct s_blend_orientation;
-bool function_1cb5f0(long node_count, s_animation_state *state, real seconds, s_blend_orientation *orientations,
+bool function_1cb5f0(s_animation_state *state, real seconds, long node_count, s_blend_orientation *orientations,
 	s_blend_orientation const *targets);
 
 /* blends an object's node orientations toward their targets over the given
@@ -286,8 +286,8 @@ void function_ba350(long object_index, real seconds)
 	if (OBJECT_GET(object_index)->unknown112 != NONE &&
 		TAG_DATA(s_object_definition_view, object->definition_index)->model_index != NONE)
 	{
-		function_1cb5f0(object->unknown110 / sizeof(s_object_node_orientation),
-			(s_animation_state *)((byte *)object + object->animation_state_offset), seconds,
+		function_1cb5f0((s_animation_state *)((byte *)object + object->animation_state_offset), seconds,
+			object->unknown110 / sizeof(s_object_node_orientation),
 			(s_blend_orientation *)((byte *)object + object->root_node_offset),
 			(s_blend_orientation *)((byte *)object + object->unknown112));
 		function_b7360(object_index);
@@ -728,9 +728,9 @@ bool __stdcall function_bdef0(long object_index)
 {
     byte *object = (byte *)OBJECT_GET(object_index);
     byte const *definition = g_4e3b44[(word)*(long *)object].bytes;
-    bool active = (*(dword *)(object + 4) & 0x100) != 0;
-    bool from_physics = false;
     long component_index = *(long *)(object + 0xb4);
+    bool active = (*(word *)(object + 4) & 0x100) != 0;
+    bool from_physics = false;
     if (component_index != NONE && ((1 << object[0xaa]) & 0x800) && (object[0xc0] & 0x40))
     {
         s_havok_component *component = (s_havok_component *)(g_51e9b8->data +

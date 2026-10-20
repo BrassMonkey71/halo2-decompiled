@@ -207,7 +207,7 @@ struct s_weapon_magazine
 	byte unknown04[2];
 	short rounds_unloaded;
 	short rounds_loaded;
-	byte unknown0a[2];
+	short rounds_fraction;
 	short ticks_0c;
 	short ticks_0e;
 };
@@ -2605,18 +2605,15 @@ bool __stdcall function_fdd50(long weapon_index, long magazine_index)
     bool result = false;
     if (*(short *)((byte *)definition + 4) > 0 && magazine->rounds_loaded < definition->rounds_loaded_maximum)
     {
-        short loaded = magazine->rounds_loaded;
         long recharge_divisor = g_510c54->field_2_3;
-        short *fraction = (short *)((byte *)magazine + 0xa);
         long rounds = *(short *)((byte *)definition + 4) / recharge_divisor;
         long remainder = *(short *)((byte *)definition + 4) % recharge_divisor;
-        *fraction += (short)remainder;
-        loaded += rounds;
-        magazine->rounds_loaded = loaded;
-        if (*fraction >= g_510c54->field_2_3)
+        magazine->rounds_loaded += (short)rounds;
+        magazine->rounds_fraction += (short)remainder;
+        if (magazine->rounds_fraction >= g_510c54->field_2_3)
         {
-            *fraction -= g_510c54->field_2_3;
             magazine->rounds_loaded++;
+            magazine->rounds_fraction -= g_510c54->field_2_3;
         }
         if (magazine->rounds_loaded > definition->rounds_loaded_maximum)
             magazine->rounds_loaded = definition->rounds_loaded_maximum;

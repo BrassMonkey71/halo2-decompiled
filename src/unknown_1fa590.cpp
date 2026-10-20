@@ -415,7 +415,9 @@ long function_1fa3a0(long structure_index, long surface_index, long object_index
                 {
                     s_contact_surface_owner *owner = &table->owners[owner_index];
                     long first = owner->first;
-                    if (first != NONE && surface_index >= 0 && surface_index <= owner->last - first)
+                    if (first == NONE || surface_index < 0 || surface_index > owner->last - first)
+                        result = NONE;
+                    else
                     {
                         result = first + surface_index;
                         if (result < 0 || result >= table->count)

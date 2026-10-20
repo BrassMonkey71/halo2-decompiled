@@ -55,7 +55,7 @@ void function_1701f0(long player_index)
 	real *third = state->third;
 	real *second = state->second;
 	real *time = state->times;
-	for (long group = 0; group < 6; ++group, ++time)
+	for (long group = 0; group < 6; ++group)
 	{
 		real t = *time - g_4e9bd0;
 		if (t > 0.0f)
@@ -76,12 +76,12 @@ void function_1701f0(long player_index)
 		}
 		else
 			memset(out, 0, g_468d3c[group] * sizeof(real));
-		long count = g_468d3c[group];
-		out += count;
-		fifth += count;
-		fourth += count;
-		third += count;
-		second += count;
+		out += g_468d3c[group];
+		fifth += g_468d3c[group];
+		fourth += g_468d3c[group];
+		third += g_468d3c[group];
+		second += g_468d3c[group];
+		++time;
 	}
 }
 
@@ -1178,7 +1178,7 @@ s_projected_polygon_173520 *function_173520(long polygon_index, s_polygon_cache_
 				point3f const *local_cb4759 = clipped;
 				long remaining = count;
 				if (remaining > 0)
-				do
+				for (; remaining != 0; --remaining)
 				{
 					point2f *point = result->points + index;
 					real inverse = -1.0f / local_cb4759->z;
@@ -1196,7 +1196,7 @@ s_projected_polygon_173520 *function_173520(long polygon_index, s_polygon_cache_
 					result->distance = result->distance > distance ? distance : result->distance;
 					index += step;
 					++local_cb4759;
-				} while (--remaining != 0);
+				}
 				if (result->state == 3)
 				{
 					if (inside)
