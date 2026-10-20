@@ -1455,10 +1455,14 @@ void function_19ae0f(long change, long pending, long error)
 		if (show_game_menu)
 		{
 			load = function_19997f(mode) ? function_2524a8 : function_25240c;
+			function_149f49((s_message *)&parameters, 7, 0, user_flags, 5, 4, (long)load);
+			parameters.load(&parameters);
 		}
 		else if (show_lobby)
 		{
 			load = function_253185;
+			function_149f49((s_message *)&parameters, 7, 0, user_flags, 5, 4, (long)load);
+			parameters.load(&parameters);
 		}
 		else if (show_main_menu)
 		{
@@ -1469,13 +1473,13 @@ void function_19ae0f(long change, long pending, long error)
 				return;
 			}
 			load = function_2310b7;
+			function_149f49((s_message *)&parameters, 7, 0, user_flags, 5, 4, (long)load);
+			parameters.load(&parameters);
 		}
 		else
 		{
 			return;
 		}
-		function_149f49((s_message *)&parameters, 7, 0, user_flags, 5, 4, (long)load);
-		parameters.load(&parameters);
 	}
 }
 

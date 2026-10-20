@@ -137,7 +137,7 @@ void function_15c150()
 			(g_4e6948->mode == 4 || globals->lc04 == 1))
 			*(short *)((byte *)globals + 0xfa) = 0;
 		else ++*(short *)((byte *)globals + 0xfa);
-		for (long local = transition_local_player_next_15c150(NONE); local != NONE;
+		for (short local = (short)transition_local_player_next_15c150(NONE); local != NONE;
 			local = transition_local_player_next_15c150(local))
 		{
 			long index = NONE;

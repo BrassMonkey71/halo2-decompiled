@@ -7,6 +7,7 @@
 #include <xmmintrin.h>
 #include "derived_311920.h"
 #include "tagged_objects_2e4ff0.h"
+#include "motion_description_3115a0.h"
 
 // the part objects not decompiled yet, each built from two of the
 // description's vectors
@@ -50,16 +51,18 @@ public:
 class part_311940
 {
 public:
-	virtual void slot_0() {}
+	virtual ~part_311940() {}
 	virtual void slot_1() {}
 	virtual void slot_2() {}
 	virtual void slot_3() {}
 	virtual void slot_4() {}
 	virtual void slot_5() {}
-	virtual void slot_6() {}
+	// the part's kind
+	virtual int slot_6() { return 0; }
 	virtual void slot_7(float value) {}
 	virtual void slot_8() {}
-	virtual void slot_9() {}
+	// its inertia matrix
+	virtual void slot_9(void *matrix) {}
 	virtual void slot_10() {}
 	virtual void slot_11(void const *matrix) {}
 	virtual void slot_12() {}
@@ -72,10 +75,28 @@ public:
 	virtual void slot_19() {}
 	virtual void slot_20(void const *value) {}
 	virtual void slot_21(void const *value) {}
+	virtual void slot_22() {}
+	virtual void slot_23() {}
+	virtual void slot_24() {}
+	virtual void slot_25() {}
+	virtual void slot_26() {}
+	virtual void slot_27() {}
+	virtual void slot_28() {}
+	virtual void slot_29() {}
+	virtual void slot_30(part_311940 *other) {}
+	virtual void slot_31(part_311940 *other) {}
+
+	// destroyed through its table, known not to be null
+	void delete_311e40() { delete this; }
 
 	char unknown4[0x14 - 4];
 	float field_14;
 	float field_18;
+	char unknown1c[0x20 - 0x1c];
+	float field_20[4];
+	float field_30[4];
+	char unknown40[0xb0 - 0x40];
+	float field_b0[4];
 };
 
 // a 3x3 matrix, one row to a vector
@@ -195,7 +216,8 @@ class c_311ba0 : public class_30bf50
 public:
 	c_311ba0(s_311340 const *description);
 
-	char unknown4[0xc - 4];
+	char unknown4[8 - 4];
+	void *world;
 	void *shape;
 	long unknown10;
 	char *field_14;
@@ -248,4 +270,189 @@ c_311ba0::c_311ba0(s_311340 const *description) : class_30bf50(description)
 	}
 	field_4c = description->field_ac;
 	field_50 = description->field_b0;
+}
+
+// the scale a part keeps (0x183df0, game code)
+struct s_scale_holder
+{
+	float get_inverse_scale() const;
+};
+
+// the part a part was made from, if any (0x30c180)
+struct class_30c180
+{
+	long function_30c180() const;
+};
+
+// the world's bookkeeping for a body that becomes or stops being kind 7
+class entity_316000;
+struct constraints_30fb40;
+class class_30e140
+{
+public:
+	void function_30f960(entity_316000 *entity);
+	void function_30fb40(entity_316000 *entity, constraints_30fb40 *removed);
+};
+
+struct member_30c8e0;
+struct constraints_30f380;
+class owner_30c8e0
+{
+public:
+	void function_30f340(member_30c8e0 *member);
+	void function_30f380(member_30c8e0 *member, constraints_30f380 const *added);
+};
+
+// an array of four-byte values whose storage comes from the allocator's stack
+// area (src/unknown_311d10.cpp)
+struct array_311d10
+{
+	long *data;
+	long size;
+	unsigned long capacity_and_flags;
+
+	array_311d10() : data(0), size(0), capacity_and_flags(0x80000000) {}
+	~array_311d10()
+	{
+		if ((capacity_and_flags & 0x80000000) == 0)
+		{
+			g_memory_2d88a0->release_block(data, (capacity_and_flags & 0x7fffffff) * sizeof(long), 0x12);
+		}
+	}
+};
+
+struct stack_array_311d10 : array_311d10
+{
+	long *stack_block;
+	long stack_capacity;
+
+	stack_array_311d10(long capacity);
+	~stack_array_311d10();
+};
+
+// an inertia matrix as a part gives it
+struct inertia_311e40
+{
+	__m128 rows[3];
+};
+
+// whether a kind of part moves (kinds 6 and 7 do not)
+static inline bool kind_moves_311e40(int kind)
+{
+	return !(kind == 7 || kind == 6);
+}
+
+// the body's part changed to one of another kind: a moving part is replaced
+// by one of the new kind built from its state, a part that does not move
+// gets a part of its own over the moving one, and leaving kind 6 or 7 goes
+// back to the part underneath (when there is one); the world is told when
+// the body stops or starts being of kind 7
+// @retail 0x311e40
+void class_3115a0::function_311e40(int kind)
+{
+	c_311ba0 *body = (c_311ba0 *)this;
+	int const current = body->part->slot_6();
+	if (current == kind)
+	{
+		return;
+	}
+	bool const moves = kind_moves_311e40(kind);
+	bool const moved = kind_moves_311e40(current);
+	if (moves && !moved && ((class_30c180 *)body->part)->function_30c180() == 0)
+	{
+		return;
+	}
+	void *const world = body->world;
+	stack_array_311d10 constraints(0x10);
+	if (world)
+	{
+		if (current == 7)
+		{
+			((class_30e140 *)world)->function_30fb40((entity_316000 *)this, (constraints_30fb40 *)&constraints);
+		}
+		if (kind == 7)
+		{
+			((class_30e140 *)world)->function_30f960((entity_316000 *)this);
+		}
+	}
+	if (moves)
+	{
+		if (moved)
+		{
+			if (kind != 1)
+			{
+				part_311940 *old = body->part;
+				inertia_311e40 inertia;
+				old->slot_9(&inertia);
+				part_311940 *created = function_311940(kind, old->field_b0, old->field_30,
+					((s_scale_holder const *)old)->get_inverse_scale(), (matrix_311940 const *)&inertia, old->field_20);
+				old->slot_30(created);
+				created->field_14 = old->field_14;
+				created->field_18 = old->field_18;
+				body->part = created;
+				old->delete_311e40();
+			}
+		}
+		else
+		{
+			part_311940 *old = body->part;
+			body->part = (part_311940 *)((class_30c180 *)old)->function_30c180();
+			if (body->part->slot_6() != kind && kind != 1)
+			{
+				part_311940 *underneath = body->part;
+				inertia_311e40 inertia;
+				underneath->slot_9(&inertia);
+				part_311940 *created = function_311940(kind, underneath->field_b0, underneath->field_30,
+					((s_scale_holder const *)underneath)->get_inverse_scale(), (matrix_311940 const *)&inertia, underneath->field_20);
+				created->field_14 = underneath->field_14;
+				created->field_18 = underneath->field_18;
+				body->part = created;
+				underneath->delete_311e40();
+			}
+			old->slot_30(body->part);
+			old->slot_31(0);
+			old->delete_311e40();
+		}
+	}
+	else
+	{
+		part_311940 *created;
+		if (kind == 7)
+		{
+			created = (part_311940 *)new class_31a6b0(body->part->field_b0, body->part->field_30);
+		}
+		else
+		{
+			created = (part_311940 *)new class_3193c0(body->part->field_b0, body->part->field_30);
+		}
+		if (moved)
+		{
+			created->slot_31(body->part);
+			body->part = created;
+		}
+		else
+		{
+			part_311940 *old = body->part;
+			if (((class_30c180 *)old)->function_30c180())
+			{
+				old->slot_30((part_311940 *)((class_30c180 *)old)->function_30c180());
+				created->slot_31((part_311940 *)((class_30c180 *)old)->function_30c180());
+			}
+			body->part = created;
+			delete old;
+		}
+	}
+	body->field_14 = (char *)body->part + 0x60;
+	body->kind_7 = kind == 7;
+	if (world)
+	{
+		if (current == 7)
+		{
+			((owner_30c8e0 *)world)->function_30f380((member_30c8e0 *)this, (constraints_30f380 const *)&constraints);
+		}
+		if (kind == 7)
+		{
+			((owner_30c8e0 *)world)->function_30f340((member_30c8e0 *)this);
+		}
+	}
 }
