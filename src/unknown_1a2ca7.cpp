@@ -664,6 +664,13 @@ void friends_player_set(s_friend_player *player, s_online_player const *source, 
 
 void function_23620d(long string_handle, word *buffer);
 
+/* a buffer that strings of the user interface globals' string list load into */
+struct s_global_string_buffer
+{
+	word text[256];
+	void load(long string_handle) { function_23620d(string_handle, text); }
+};
+
 /* the text of a friend's state */
 // @retail 0x1a4714
 void function_1a4714(long state, word *buffer)
@@ -1025,13 +1032,13 @@ void friends_list_update()
 				}
 				else if (friend_name_get((XUID const *)&friend_->details, name))
 				{
-					word format[256];
+					s_global_string_buffer format;
 					word gamertag[48];
 	
-					format[0] = 0;
+					format.text[0] = 0;
 					ascii_string_to_unicode(friend_->gamertag, gamertag, NUMBEROF(gamertag));
-					function_23620d(0x220006bd, format);
-					unicode_string_snprintf(friend_->name, NUMBEROF(friend_->name), format, gamertag, name);
+					format.load(0x220006bd);
+					unicode_string_snprintf(friend_->name, NUMBEROF(friend_->name), format.text, gamertag, name);
 				}
 			}
 			if (friend_count != previous_count)
@@ -1329,16 +1336,16 @@ void clan_members_update()
 					if (valid && !(player->flags20 & 0xc00))
 					{
 						word state[256];
-						word format[256];
+						s_global_string_buffer format;
 						word gamertag[48];
 
 						state[0] = 0;
-						format[0] = 0;
+						format.text[0] = 0;
 						*(XUID *)&player->details = *(XUID *)&request;
 						ascii_string_to_unicode(player->gamertag, gamertag, NUMBEROF(gamertag));
 						function_1a4714(player->state, state);
-						function_23620d(0x280006be, format);
-						unicode_string_snprintf(player->name, NUMBEROF(player->name), format, gamertag, state);
+						format.load(0x280006be);
+						unicode_string_snprintf(player->name, NUMBEROF(player->name), format.text, gamertag, state);
 					}
 					else
 					{
