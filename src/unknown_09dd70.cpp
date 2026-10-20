@@ -459,7 +459,6 @@ static __forceinline byte *function_9d952(long arg_0)
 // @retail 0x9d950
 void c_unit_type::v31(long arg_0, long arg_1, long arg_2, long arg_3)
 {
-    c_unit_type *volatile local_0 = this;
     dword local_1 = arg_1;
     s_9d360 *local_2 = (s_9d360 *)arg_3;
     if (local_1 & 0x3ff)
@@ -504,7 +503,7 @@ void c_unit_type::v31(long arg_0, long arg_1, long arg_2, long arg_3)
         *(long *)(local_11 + 0x214) = local_12;
         *(short *)(local_11 + 0x210) = *(short *)(local_11 + 0x214);
     }
-    long local_13 = 0;
+    short local_13 = 0;
     do
     {
         dword local_14 = local_1 & (1 << (local_13 + 14));
