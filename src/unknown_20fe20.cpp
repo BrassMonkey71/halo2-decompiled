@@ -123,7 +123,8 @@ struct s_audio_object_state_20f960
 long function_20f960(long index, s_audio_priority_table *table, bool *expired)
 {
 	bool result = false;
-	byte *record = g_4f9398->data + (index & 0xffff) * 0x54;
+	s_record_pool *records = g_4f9398;
+	byte *record = records->data + (index & 0xffff) * 0x54;
 	long time = g_510c54->game_time;
 	s_audio_priority_definition *definition = &table->entries[*(short *)(record + 2)];
 	if (expired)
