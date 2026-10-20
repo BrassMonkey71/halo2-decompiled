@@ -312,8 +312,7 @@ void function_247950(s_particle_system_datum *arg_2, s_particle_spawn_definition
 		}
 		local_2->field_3c = arg_4;
 		++arg_1->field_2;
-		short volatile *local_22 = &local_23.field_70.value24;
-		*local_22 = NONE;
+		local_23.field_70.value24 = NONE;
 		c_247951 *local_12 = (c_247951 *)function_137bd0(local_3->tag_index);
 		for (long local_13 = 0; local_13 < local_12->function_247958(); ++local_13)
 		{
