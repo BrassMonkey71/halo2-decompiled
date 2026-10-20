@@ -82,13 +82,6 @@ void c_278370::function_a9ef0(void *arg_0) {}
 
 // @stub 0x2d8890
 void __cdecl function_2d8890() {}
-class c_2d8ab0
-{
-public:
- void function_2d8ab0();
-};
-// @stub 0x2d8ab0
-void c_2d8ab0::function_2d8ab0() {}
 
 class c_library_30c470
 {
@@ -97,17 +90,6 @@ public:
 };
 
 
-class c_278da0_kind;
-class c_library_311690
-{
-public:
-	void update(long value);
-	byte unknown00[0x54];
-	c_278da0_kind *kind;
-};
-
-// @stub 0x311690
-void c_library_311690::update(long value) { }
 
 class c_278b60_filter;
 struct s_278b60_dispatch;
@@ -150,8 +132,6 @@ void hkEntity::entity_property_put(dword key, s_havok_property_word value) { }
 struct s_havok_component;
 
 
-// @stub 0x3126f0
-void hkRigidBody::pose_write(hkTransform const &transform) { }
 /* callees of the slot handler callbacks (unknown_0259a0.h) */
 
 
@@ -161,8 +141,6 @@ void hkRigidBody::pose_write(hkTransform const &transform) { }
 
 /* callees of the physics code (unknown_1c25a0.cpp, unknown_1cec30.cpp) */
 
-// @stub 0x30f800
-hkBool hkWorld::entity_world_remove(hkEntity *entity) { return hkBool(); }
 
 
 
@@ -316,20 +294,6 @@ public:
     void remove(void *volume);
 };
 
-// @stub 0x312310
-c_contact_query_bounds_info::c_contact_query_bounds_info() {}
-
-// @stub 0x30b6a0
-c_contact_query_transform_info::c_contact_query_transform_info() {}
-
-// @stub 0x30bb50
-c_contact_query_transform_volume::c_contact_query_transform_volume(c_contact_query_transform_info const *info) {}
-
-// @stub 0x30e4b0
-void *c_contact_query_world::add(void *volume) { return 0; }
-
-// @stub 0x30e5e0
-void c_contact_query_world::remove(void *volume) {}
 
 class c_havok_abstract_allocator;
 struct s_fixed_memory_statistics_16;
@@ -419,8 +383,6 @@ s_1d1870 c_314710::function_314580(void *arg_0) { return s_1d1870(); }
 
 struct s_311340 { s_311340(); };
 class c_311ba0 { public: c_311ba0(const s_311340 *arg_0); };
-// @stub 0x311340
-s_311340::s_311340() {}
 
 struct s_2da8c0
 {
@@ -447,14 +409,6 @@ void s_314450::function_314450(s_314320 *arg_0) {}
 void s_314450::function_314480(s_314320 const *arg_0) {}
 
 
-class c_30b080
-{
-public:
- void function_30b080(__m128 const *arg_0);
-};
-
-// @stub 0x30b080
-void c_30b080::function_30b080(__m128 const *arg_0) { }
 
 /* the two snapshots and the six constraints 0x1d77d0 builds */
 struct c_component_joint_snapshot_3
