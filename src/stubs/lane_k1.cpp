@@ -64,11 +64,6 @@ int class_3048a0::function_3048a0(convex_2fefd0 const *first, convex_2fefd0 cons
 
 
 
-// @stub 0x2f3d00
-void __cdecl function_2f3d00(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
 // @stub 0x2f5960
 void __cdecl function_2f5960(void const *a, void const *b, void const *input, void *collector)
 {
@@ -238,11 +233,6 @@ public:
 	void function_3175e0(void const *step, void const *input);
 	void function_317950(void const *input);
 };
-
-// @stub 0x3175e0
-void narrow_phase_317c00::function_3175e0(void const *step, void const *input)
-{
-}
 
 // @stub 0x317950
 void narrow_phase_317c00::function_317950(void const *input)

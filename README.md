@@ -70,8 +70,8 @@ byte. The checker reports:
 
 ```
 matched 9267 of 11321 game functions (1375353 of 2784283 bytes, 49.40%)
-matched 794 of 1041 Havok functions (80813 of 234536 bytes, 34.46%)
-matched 10089 of 17654 functions in scope (1458022 of 3904218 bytes, 37.34%)
+matched 797 of 1041 Havok functions (83513 of 234536 bytes, 35.61%)
+matched 10092 of 17654 functions in scope (1460722 of 3904218 bytes, 37.41%)
 ```
 
 Matched code so far includes:
