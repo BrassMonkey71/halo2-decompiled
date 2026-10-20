@@ -59,12 +59,16 @@ public:
 	virtual void slot1(long a, long b) = 0;
 };
 
+// the first handlers of the pair's vtable (retail 0x412be4: its destructor,
+// then 0x2ed7b0, 0x2ed7f0, 0x2ed800, 0x2ed7f0 again and 0x2ed770); the two
+// that do nothing are reached only through vtables
 class class_2ed7b0
 {
 public:
-	void function_2ed7b0(long a, long b, long c, class_2ed7b0_listener *listener);
-	void function_2ed7f0(long a, long b, long c, long d);
-	void function_2ed800(long a, long b, long c, long d, long e);
+	virtual ~class_2ed7b0() {}
+	virtual void function_2ed7b0(long a, long b, long c, class_2ed7b0_listener *listener);
+	virtual void function_2ed7f0(long a, long b, long c, long d);
+	virtual void function_2ed800(long a, long b, long c, long d, long e);
 };
 
 // @retail 0x2ed7b0
