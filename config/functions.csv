@@ -11792,7 +11792,7 @@ va,size,owner,style,evidence,name,object,calls,source,status
 002de850,57,third:havok,speed,a16 pad ebp,,,002da450,src/unknown_2de810.cpp,matched
 002de890,79,third:havok,speed,a16 pad ebp,,,,src/unknown_2de890.cpp,todo
 002de8e0,256,third:havok,speed,a16 pad ebp,,,,src/unknown_2de890.cpp,matched
-002de9e0,305,third:havok,unknown,a16 ebp,,,002da6e0,src/unknown_2de890.cpp,todo
+002de9e0,305,third:havok,unknown,a16 ebp,,,002da6e0,src/unknown_2de890.cpp,matched
 002deb20,336,third:havok,speed,a16 pad ebp,,,002da450,src/unknown_2de890.cpp,todo
 002dec70,74,third:havok,unknown,a16,,,,src/unknown_2dec70.cpp,matched
 002decc0,5,third:havok,speed,a16 pad,,,002fc4e0,src/unknown_2decc0.cpp,matched
@@ -12141,7 +12141,7 @@ va,size,owner,style,evidence,name,object,calls,source,status
 002f1270,367,third:havok,speed,a16 pad ebp,,,00308d90,src/unknown_2f1270.cpp,todo
 002f13e0,381,third:havok,speed,a16 pad ebp,,,00308910 00308d90,src/unknown_2f1270.cpp,todo
 002f1560,290,third:havok,speed,a16 pad ebp,,,00308d90,src/unknown_2f1560.cpp,matched
-002f1690,305,third:havok,speed,a16 pad ebp,,,00308910 00308d90,src/unknown_2f1560.cpp,todo
+002f1690,305,third:havok,speed,a16 pad ebp,,,00308910 00308d90,src/unknown_2f1560.cpp,matched
 002f17d0,90,third:havok,speed,a16 pad,,,002f1560,src/unknown_2f17d0.cpp,matched
 002f1830,88,third:havok,speed,a16 pad,,,002f1690,src/unknown_2f17d0.cpp,matched
 002f1890,96,third:havok,speed,a16 pad,,,002f1270,src/unknown_2f17d0.cpp,matched
