@@ -113,10 +113,8 @@ bool function_23a160(point2f const *point, real radius, short count, point2f con
 // @retail 0x14a370
 bool function_14a370(s_structure_bsp_portals_view const *bsp, point3f const *point, short portal_index, real radius)
 {
-	bool result;
 	s_structure_portal const *portal = &bsp->portals[portal_index];
-	plane3f const *plane = (plane3f const *)&bsp->field_18->planes[portal->plane_index];
-	real distance = plane_distance_to_point(plane, point);
+	real distance = plane_distance_to_point((plane3f const *)&bsp->field_18->planes[portal->plane_index], point);
 
 	if (radius > (real)fabs(distance))
 	{
@@ -133,31 +131,26 @@ bool function_14a370(s_structure_bsp_portals_view const *bsp, point3f const *poi
 			point3f projected;
 			point2f point2d;
 			point2f vertices[0x80];
-			short const *axes;
 			short i;
 
 			projected.x = structure_plane->i * (0.0f - distance) + point->x;
 			projected.y = structure_plane->j * (0.0f - distance) + point->y;
 			projected.z = structure_plane->k * (0.0f - distance) + point->z;
-			axes = g_440b94[axis * 2 + positive];
-			point2d.x = projected.n[axes[0]];
-			point2d.y = projected.n[axes[1]];
+			point2d.x = projected.n[g_440b94[axis * 2 + positive][0]];
+			point2d.y = projected.n[g_440b94[axis * 2 + positive][1]];
 			for (i = 0; i < portal->vertex_count; i++)
 			{
 				point2f *vertex2d = &vertices[i];
 				point3f const *vertex = &portal->vertices[i];
 
-				vertex2d->x = vertex->n[axes[0]];
-				vertex2d->y = vertex->n[axes[1]];
+				vertex2d->x = vertex->n[g_440b94[axis * 2 + positive][0]];
+				vertex2d->y = vertex->n[g_440b94[axis * 2 + positive][1]];
 			}
-			result = function_23a160(&point2d, (real)sqrt(radius * radius - distance * distance), (short)portal->vertex_count, vertices);
+			if (function_23a160(&point2d, (real)sqrt(radius * radius - distance * distance), (short)portal->vertex_count, vertices))
+				return true;
 		}
-		else
-			result = false;
 	}
-	else
-		result = false;
-	return result;
+	return false;
 }
 
 // @retail 0x14a550
