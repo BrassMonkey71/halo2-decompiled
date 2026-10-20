@@ -159,7 +159,8 @@ answer_3094d0 search_3093e0::function_3094d0(first_step_3094d0 *out)
 	__m128 const *difference = differences;
 	if (dot3_3093e0(*difference, *difference) <= 0.001f * 0.001f)
 	{
-		out->distance = length3_3094d0(*difference);
+		__m128 const offset = *difference;
+		out->distance = length3_3094d0(offset);
 		out->direction = direction;
 		out->point = support.first;
 		out->field_24 = 0.5f;

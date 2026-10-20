@@ -126,7 +126,7 @@ public:
 	virtual void slot_6() {}
 	virtual float slot_7(__m128 const *direction) { return 0.0f; }
 	// casts a segment in the child's own frame
-	virtual answer_2de9e0 slot_8(ray_2de9e0 const *ray, hit_2de9e0 *hit) { return answer_2de9e0(); }
+	virtual void slot_8(answer_2de9e0 *result, ray_2de9e0 const *ray, hit_2de9e0 *hit) {}
 	// casts a segment in the child's own frame, results going to a collector
 	virtual void slot_9(ray_2de9e0 const *ray, description_2deb20 const *description, void *collector) {}
 };
@@ -177,7 +177,8 @@ answer_2de9e0 c_child_transform::function_2de9e0(ray_2de9e0 const *ray, hit_2de9
 	local.field_24 = ray->field_24;
 	local.from = inverse_transform_2de9e0(transform, ray->from);
 	local.to = inverse_transform_2de9e0(transform, ray->to);
-	answer_2de9e0 result = ((child_slots_2de8e0 *)child)->slot_8(&local, hit);
+	answer_2de9e0 result;
+	((child_slots_2de8e0 *)child)->slot_8(&result, &local, hit);
 	if (result.value)
 	{
 		__m128 normal = hit->value;

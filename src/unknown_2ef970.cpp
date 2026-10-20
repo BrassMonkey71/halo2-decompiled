@@ -41,9 +41,9 @@ indexed_2ef970 *__cdecl function_2ef970(long arg_0, long arg_1, long arg_2, long
 static __declspec(align(16)) const float g_unit_x_461ea0[4] = {1.0f, 0.0f, 0.0f, 0.0f};
 
 // a vector of four copies of a float
-inline __m128 splat_2ef9a0(float const &value)
+inline __m128 splat_2ef9a0(float value)
 {
-	__m128 const single = _mm_load_ss(&value);
+	__m128 const single = _mm_set_ss(value);
 	return _mm_shuffle_ps(single, single, 0);
 }
 
@@ -116,8 +116,8 @@ __forceinline void report_contact_2ef9a0(body_2ef9a0 const *a, body_2ef9a0 const
 		__m128 normal;
 		if (distance_squared > 0.0f)
 		{
-			distance = (1.0f / (float)sqrt(distance_squared)) * distance_squared;
 			normal = _mm_mul_ps(splat_2ef9a0(1.0f / (float)sqrt(distance_squared)), offset);
+			distance = (1.0f / (float)sqrt(distance_squared)) * distance_squared;
 		}
 		else
 		{
@@ -125,8 +125,9 @@ __forceinline void report_contact_2ef9a0(body_2ef9a0 const *a, body_2ef9a0 const
 			normal = *(__m128 const *)g_unit_x_461ea0;
 		}
 		contact.normal = normal;
+		float const radii = sphere_b->radius + sphere_a->radius;
 		contact.point = _mm_add_ps(*position_b, _mm_mul_ps(splat_2ef9a0(sphere_b->radius), normal));
-		contact.point.m128_f32[3] = distance - (sphere_b->radius + sphere_a->radius);
+		contact.point.m128_f32[3] = distance - radii;
 		collector->add_contact(&contact);
 	}
 }
