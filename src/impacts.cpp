@@ -2311,9 +2311,12 @@ static __forceinline bool impact_component_center_get(s_havok_component *compone
 		hkRigidBody *rigid_body = component->rigid_bodies.data[function_0b67a0((s_small_index const *)component)].rigid_body;
 
 		point3f const *local_0 = (point3f const *)((byte *)rigid_body->m_motion + 0x70);
-		center->x = local_0->x;
-		center->y = local_0->y;
-		center->z = local_0->z;
+		real x = local_0->x;
+		real z = local_0->z;
+		real y = local_0->y;
+		center->x = x;
+		center->y = y;
+		center->z = z;
 		return true;
 	}
 	return false;
@@ -2347,14 +2350,14 @@ void impact_sound_location_get(s_impact const *impact, s_impact_sound_location *
 			if (impact->component_b != NONE)
 			{
 				s_havok_component *component_b = havok_component_get(impact->component_a);
-				point3f volatile center_a;
+				point3f center_a;
 				point3f center_b;
 				bool has_a = false;
 				bool has_b = false;
 
-				if (impact_component_center_get(component, (point3f *)&center_a))
+				if (impact_component_center_get(component, &center_a))
 				{
-					arg_26d7e7->position = *(point3f *)&center_a;
+					arg_26d7e7->position = center_a;
 					has_a = true;
 				}
 				if (impact_component_center_get(component_b, &center_b))
@@ -2364,9 +2367,9 @@ void impact_sound_location_get(s_impact const *impact, s_impact_sound_location *
 				}
 				if (has_a && has_b)
 				{
-					arg_26d7e7->position.x = (center_b.x + center_a.x) * 0.5f;
-					arg_26d7e7->position.y = (center_b.y + center_a.y) * 0.5f;
-					arg_26d7e7->position.z = (center_b.z + center_a.z) * 0.5f;
+					arg_26d7e7->position.x = (center_a.x + center_b.x) * 0.5f;
+					arg_26d7e7->position.y = (center_a.y + center_b.y) * 0.5f;
+					arg_26d7e7->position.z = (center_a.z + center_b.z) * 0.5f;
 				}
 			}
 			else

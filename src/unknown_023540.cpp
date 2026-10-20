@@ -1695,10 +1695,10 @@ void function_34770(t_34770_begin begin, real const *bounds,
     if (!vertex) vertex = function_0254c0;
     if (!begin || begin(user))
     {
-        D3DDevice_SetTextureStageState(0, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(1, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(2, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(3, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(0, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(1, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(2, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(3, D3DTSS_ALPHAKILL, 0);
         function_1cf50();
         function_1c710(g_51f0f0);
         for (long row = 0; row < rows; ++row)
@@ -1760,10 +1760,10 @@ void function_34420(t_34770_begin begin, real const *bounds,
     if (!begin || begin(user))
     {
         real corners[8] = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
-        D3DDevice_SetTextureStageState(0, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(1, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(2, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(3, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(0, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(1, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(2, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(3, D3DTSS_ALPHAKILL, 0);
         function_1cf50();
         function_1c710(g_51f0f0);
         D3DDevice_Begin(D3DPT_TRIANGLEFAN);
@@ -1771,18 +1771,13 @@ void function_34420(t_34770_begin begin, real const *bounds,
         long remaining = 4;
         do
         {
-            { long attribute = 15; if (attribute >= 0) do {
-                real out[4];
-                out[3] = 1.0f;
-                out[0] = 0.0f;
-                out[1] = 0.0f;
-                out[2] = 0.0f;
+            for (long attribute = 15; attribute >= 0; --attribute)
+            {
+                real out[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
                 if (vertex(attribute, bounds, t, out, user))
-                    D3DDevice_SetVertexData4f(attribute ? attribute : D3DVSDE_VERTEX,
+                    D3DDevice_SetVertexData4f(!attribute ? D3DVSDE_VERTEX : attribute,
                         out[0], out[1], out[2], out[3]);
-            
---attribute;
-} while (attribute >= 0); }
+            }
             t += 2;
         } while (--remaining);
         D3DDevice_End();

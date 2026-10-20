@@ -6,6 +6,7 @@
    push buffer writers (batch 55-1) */
 
 #include "unknown_11c920.h"
+#include "vector_angles.h"
 #include "frame_storage.h"
 #include <xtl.h>
 #include <math.h>
@@ -54,13 +55,23 @@ D3DTexture *function_23e340(short width, short height, short format,
 
 /* ---- types ---- */
 
-struct s_view_state
+/* where a camera is and which way it faces */
+struct s_view_point
 {
-	real x;
-	real y;
-	real z;
+	point3f position;
 	real yaw;
 	real pitch;
+};
+
+/* the yaw and pitch that face along a direction */
+static __forceinline void view_face_direction(s_view_point *view, vector3f const *direction)
+{
+	view->yaw = (real)atan2(direction->j, direction->i);
+	view->pitch = (real)atan2(direction->k, sqrt(direction->j * direction->j + direction->i * direction->i));
+}
+
+struct s_view_state : s_view_point
+{
 	real unknown14;
 	real unknown18;
 };
@@ -117,9 +128,8 @@ struct s_director_camera
 s_director_camera g_5022f8;
 byte g_51ec11;
 byte g_51ec13;
-point3f g_51ec14;
-real g_51ec20;
-real g_51ec24;
+/* the free camera's start */
+s_view_point g_51ec14;
 short g_51ec3c;
 byte g_470a20 = 2;
 extern real g_54e854;
@@ -180,42 +190,30 @@ void function_23cea0(s_view_state *state, long temporary)
 		s_camera_scenario_23cea0 *scenario = (s_camera_scenario_23cea0 *)g_4e0350;
 		if (scenario->count && scenario->points)
 		{
-			g_51ec14 = scenario->points->position;
-			g_51ec20 = scenario->points->yaw;
+			s_camera_start_23cea0 const *start = scenario->points;
+			g_51ec14.position = start->position;
+			g_51ec14.yaw = start->yaw;
 		}
 		else
-		{
-			union { point3f point; dword words[3]; } zero;
-			zero.words[0] = 0;
-			zero.words[1] = 0;
-			zero.words[2] = 0;
-			g_51ec14 = zero.point;
-			g_51ec20 = zero.point.x;
-			g_51ec24 = zero.point.x;
-		}
+			memset(&g_51ec14, 0, sizeof(g_51ec14));
 	}
 	g_51ec13 = 1;
-	double cosine = cos(g_51ec24);
-	double x = cos(g_51ec20) * cosine;
-	double y = sin(g_51ec20) * cosine;
-	double z = sin(g_51ec24);
-	state->y = 0.f;
-	state->x = 0.f;
+	vector3f forward;
+	direction_from_angles(&forward, g_51ec14.yaw, g_51ec14.pitch);
+	state->position.y = 0.f;
+	state->position.x = 0.f;
 	state->yaw = 0.f;
 	state->pitch = 0.f;
 	state->unknown14 = 0.f;
 	state->unknown18 = g_54e854;
-	*(point3f *)state = g_51ec14;
-	state->yaw = (real)atan2(y, x);
-	state->pitch = (real)atan2(z, sqrt(y * y + x * x));
+	state->position = g_51ec14.position;
+	view_face_direction(state, &forward);
 	if (!temporary)
 		g_51ec28 = (point3f *)state;
 	if (g_51ec3c)
 		g_44ab84[g_51ec3c].report_state(state);
 	g_51ec11 = g_470a20;
-	/* Clear by value so this shared global's address does not escape. */
-	static const s_director_camera cleared_23cea0 = {0};
-	g_5022f8 = cleared_23cea0;
+	memset(&g_5022f8, 0, sizeof(g_5022f8));
 	g_5022f8.forward = *g_4687a8;
 	g_5022f8.up = *g_4687b0;
 }
@@ -243,10 +241,8 @@ void __stdcall function_23d090(void *state, void *input, s_observer_command *com
 			goto finished;
 		}
 		s_view_state *kept = (s_view_state *)g_51ec28;
-		*(point3f *)kept = g_5022f8.position;
-		kept->yaw = (real)atan2(g_5022f8.forward.j, g_5022f8.forward.i);
-		kept->pitch = (real)atan2(g_5022f8.forward.k,
-			sqrt(g_5022f8.forward.j * g_5022f8.forward.j + g_5022f8.forward.i * g_5022f8.forward.i));
+		kept->position = g_5022f8.position;
+		view_face_direction(kept, &g_5022f8.forward);
 		function_23d030(g_470a28);
 		if (g_51ec3c)
 			g_44ab84[g_51ec3c].report_state(kept);
@@ -263,10 +259,8 @@ void __stdcall function_23d090(void *state, void *input, s_observer_command *com
 	g_5022f8.up = *(vector3f *)((byte *)command + 0x38);
 	g_5022f8.value38 = *(real *)((byte *)command + 0x28);
 finished:
-	g_51ec14 = g_5022f8.position;
-	g_51ec20 = (real)atan2(g_5022f8.forward.j, g_5022f8.forward.i);
-	g_51ec24 = (real)atan2(g_5022f8.forward.k,
-		sqrt(g_5022f8.forward.j * g_5022f8.forward.j + g_5022f8.forward.i * g_5022f8.forward.i));
+	g_51ec14.position = g_5022f8.position;
+	view_face_direction(&g_51ec14, &g_5022f8.forward);
 }
 
 #define PLAYER(array, index) ((s_player *)((array)->data + sizeof(s_player) * (index)))
@@ -282,9 +276,8 @@ void __stdcall function_23d8e0(s_view_state *state)
 
 	globals->output = *state;
 	globals->valid = true;
-	*(point3f *)&state->x = g_5022f8.position;
-	state->yaw = (real)atan2(g_5022f8.forward.j, g_5022f8.forward.i);
-	state->pitch = (real)atan2(g_5022f8.forward.k, sqrt(g_5022f8.forward.j * g_5022f8.forward.j + g_5022f8.forward.i * g_5022f8.forward.i));
+	state->position = g_5022f8.position;
+	view_face_direction(state, &g_5022f8.forward);
 	function_23d030(g_470a28);
 }
 
@@ -298,11 +291,10 @@ void __stdcall function_23d970(s_view_state *state)
 		return;
 	}
 
-	state->x = 0.f;
-	state->y = 1.f;
-	state->z = 0.f;
-	state->yaw = (real)atan2(g_5022f8.forward.j, g_5022f8.forward.i);
-	state->pitch = (real)atan2(g_5022f8.forward.k, sqrt(g_5022f8.forward.j * g_5022f8.forward.j + g_5022f8.forward.i * g_5022f8.forward.i));
+	state->position.x = 0.f;
+	state->position.y = 1.f;
+	state->position.z = 0.f;
+	view_face_direction(state, &g_5022f8.forward);
 }
 
 PRIVATE __forceinline bool observer_next_index_23dba0(s_record_pool *players, long *index)

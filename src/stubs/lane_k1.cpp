@@ -431,3 +431,9 @@ void __cdecl function_31c100(void *step_10, void *step_20, void *step_50, void *
 void class_3115a0::function_311e40(int kind)
 {
 }
+
+// frees a block too large for Havok's pool (library code, called through g_461ddc)
+// @stub 0x2d6fb0
+void __cdecl function_2d6fb0(void *address)
+{
+}

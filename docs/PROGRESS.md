@@ -2,6 +2,26 @@
 
 The newest entry comes first.
 
+## 2026-10-20: 9276 functions match
+
+```
+matched 9276 of 11321 game functions (1380509 of 2784283 bytes, 49.58%)
+matched 805 of 1041 Havok functions (85346 of 234536 bytes, 36.39%)
+```
+
+9 new matches, none lost:
+- Machine 3's batch 86 (#620): `0x34420`, `0x4bcc0`, `0xa0c50`, `0xd16d0`, `0x173fd0`, `0x1f8510`, `0x2118c0`, `0x22a110` and `0x23cea0` match.
+
+## 2026-10-20: 9267 functions match
+
+```
+matched 9267 of 11321 game functions (1375353 of 2784283 bytes, 49.40%)
+matched 805 of 1041 Havok functions (85346 of 234536 bytes, 36.39%)
+```
+
+0 new matches, none lost:
+- Opus lane Havok round 27: 0x22c720, 0x22c740, 0x22c780, 0x22c7b0, 0x22c800, 0x22ca00, 0x22ca70 and 0x316460 match.
+
 ## 2026-10-20: 9267 functions match
 
 ```

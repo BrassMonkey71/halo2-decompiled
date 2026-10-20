@@ -768,8 +768,7 @@ void function_1e5bb0(s_biped_physics_output *output, void *physics, void *animat
      vector3f old_cross, new_cross;
      initial_cross(facing_goal, &state->forward, &old_cross);
      initial_cross(facing_goal, &rotated, &new_cross);
-     bool moved_away = false;
-     if (alignment > 0.99f && alignment > initial_dot(&rotated, facing_goal)) moved_away = true;
+     bool moved_away = alignment > 0.99f && alignment > initial_dot(&rotated, facing_goal);
      if (initial_dot(&state->up, &old_cross) * initial_dot(&state->up, &new_cross) <= 0.0f || moved_away)
      {
       state->forward = *facing_goal;
