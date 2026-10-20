@@ -100,11 +100,11 @@ class_30bf50::class_30bf50(s_311340 const *description)
 	: class_30b3a0(description)
 {
 	collidable.owner = this;
+	material.kind = description->field_18;
 	field_44 = 0;
 	field_40 = 0;
-	material.kind = description->field_18;
-	field_54 = 0;
 	field_5c = description->field_1a;
+	field_54 = 0;
 	field_58 = -1;
 }
 
