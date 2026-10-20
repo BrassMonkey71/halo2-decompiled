@@ -203,15 +203,20 @@ struct s_184068
 	long definition_index;
 };
 
-struct s_184069
+struct s_184069_block
 {
-	byte unknown00[0x1c];
+	byte unknown00[0xc];
 	real base_scale;
 	real minimum;
 	real maximum;
-	byte unknown28[0x50 - 0x28];
+	byte unknown18[0x40 - 0x18];
 	long group0;
 	long group1;
+};
+struct s_184069
+{
+	byte unknown00[0x10];
+	s_184069_block block;
 };
 
 struct s_globals_element;
@@ -233,7 +238,7 @@ void function_184060(long index, byte bit_index, s_type_1e6529 *input_data, long
 		return;
 
 	s_184067 *globals = (s_184067 *)g_4e0348;
-	s_184063 *surfaces = index == NONE ? globals->surfaces : &globals->owners[globals->references[index].owner_index].surfaces;
+	s_184063 *surfaces = index != NONE ? &globals->owners[globals->references[index].owner_index].surfaces : globals->surfaces;
 	short material_index = surfaces->references[surface_index].material_index;
 	s_184068 *material = (s_184068 *)function_188690(globals->materials[material_index].material_index);
 	if (material->definition_index == NONE)
@@ -242,35 +247,30 @@ void function_184060(long index, byte bit_index, s_type_1e6529 *input_data, long
 	if (!(*resistance > 0.0f))
 		return;
 
-	s_184069 const *definition = (s_184069 const *)g_4e3b44[input->definition_index & 0xffff].bytes;
+	s_184069_block const *definition = &((s_184069 const *)g_4e3b44[input->definition_index & 0xffff].bytes)->block;
 	real scale = (function_259d0((dword *)g_4e7408, NULL, 0, definition->minimum, definition->maximum) - definition->base_scale) * input->scale + definition->base_scale;
 	real probability = function_d5bc0(definition->group0, definition->group1, material->group0, material->group1);
 	probability *= scale;
 	probability /= *resistance;
-	if (TEST_FIELD_BIT((input->flags >> 8) & 1))
+	if (TEST_FIELD_BIT((input->flags >> 8) & 1) ? 10.0f >= *resistance : probability >= function_259a0((dword *)g_4e7408))
 	{
-		if (!(10.0f >= *resistance))
-			return;
-	}
-	else if (!(probability >= function_259a0((dword *)g_4e7408)))
-		return;
+		dword *bits = (dword *)function_183fc0(index);
+		bits[bit_index >> 5] &= ~(1 << (bit_index & 31));
+		function_184440(index, bit_index, (s_18444a const *)input_data, surface_index);
+		function_2e90a0(s_184251(false));
+		function_a87a0(index, bit_index, surface_index, (byte const *)input_data);
+		function_a8ee0(bit_index, index);
 
-	dword *bits = (dword *)function_183fc0(index);
-	bits[bit_index >> 5] &= ~(1 << (bit_index & 31));
-	function_184440(index, bit_index, (s_18444a const *)input_data, surface_index);
-	function_2e90a0(s_184251(false));
-	function_a87a0(index, bit_index, surface_index, (byte const *)input_data);
-	function_a8ee0(bit_index, index);
-
-	globals = (s_184067 *)g_4e0348;
-	long count = globals->bounds_count;
-	for (long i = 0; i < count; ++i)
-	{
-		s_184255 *bounds = &globals->bounds[i];
-		if (bounds->field_0 == index && bounds->field_2 == bit_index)
+		globals = (s_184067 *)g_4e0348;
+		long count = globals->bounds_count;
+		for (long i = 0; i < count; ++i)
 		{
-			function_1c55e0((real const *)((byte *)bounds + 8));
-			break;
+			s_184255 *bounds = &globals->bounds[i];
+			if (bounds->field_0 == index && bounds->field_2 == bit_index)
+			{
+				function_1c55e0((real const *)((byte *)bounds + 8));
+				break;
+			}
 		}
 	}
 }

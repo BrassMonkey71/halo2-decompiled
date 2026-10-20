@@ -1200,10 +1200,10 @@ done:
 	return location;
 }
 
-__declspec(noinline) void function_17aec0(s_effect_datum *effect, transform4x3f *matrix, short node_index);
+__declspec(noinline) void function_17aec0(short node_index, s_effect_datum *effect, transform4x3f *matrix);
 
 // @retail 0x17aec0
-void function_17aec0(s_effect_datum *effect, transform4x3f *matrix, short node_index)
+void function_17aec0(short node_index, s_effect_datum *effect, transform4x3f *matrix)
 {
     if (node_index != NONE && (node_index & 0x8000) && effect->unknown58 != NONE)
     {
@@ -1223,11 +1223,11 @@ void function_17af30(bool field_b4, short node_index, s_effect_datum *effect, tr
 {
 	short node = node_index;
 
-	if (field_b4 && node != NONE && node < 0 && effect->unknown58 != NONE)
+	if (field_b4 && node != NONE && (node & 0x8000) && effect->unknown58 != NONE)
 		/* the node reread from its stack slot here: retail takes the flag in al and the matrix in ecx */
 		*matrix = *function_1664a5(effect->unknown58, effect->object_index, *(short const volatile *)&node_index & 0x7fff);
 	else
-		function_17aec0(effect, matrix, node);
+		function_17aec0(node, effect, matrix);
 }
 
 __declspec(noinline) void function_17af80(long effect_index, long particle_system_index);
@@ -2357,7 +2357,7 @@ void function_179fb0(s_effect_datum *effect)
 					{
 						transform4x3f matrix;
 
-						function_17aec0(effect, &matrix, location->node_index);
+						function_17aec0(location->node_index, effect, &matrix);
 						transform_point_179fb0(&matrix, &location->matrix.position, &point);
 						effect_matrix_transform_normal(&matrix, &location->matrix.forward, &forward);
 					}
@@ -2615,7 +2615,7 @@ void __stdcall function_17a380(s_effect_datum *effect)
 			{
 				transform4x3f matrix;
 
-				function_17aec0(effect, &matrix, location->node_index);
+				function_17aec0(location->node_index, effect, &matrix);
 				effect_matrix_transform_point(&matrix, &location->matrix.position, &point);
 				effect_matrix_transform_normal_17a380(&matrix, &location->matrix.forward, &forward);
 				effect_matrix_transform_normal_17a380(&matrix, &location->matrix.up, &up);
@@ -2754,7 +2754,7 @@ bool function_1778d0(void)
 						{
 							transform4x3f matrix;
 
-							function_17aec0(effect, &matrix, location->node_index);
+							function_17aec0(location->node_index, effect, &matrix);
 							effect_matrix_transform_point(&matrix, &location->matrix.position, &point);
 						}
 						else
@@ -2825,7 +2825,7 @@ void __stdcall function_179880(s_effect_datum *effect, long effect_index)
 				if (location->node_index != NONE)
 				{
 					transform4x3f matrix;
-					function_17aec0(effect, &matrix, location->node_index);
+					function_17aec0(location->node_index, effect, &matrix);
 					effect_matrix_transform_point(&matrix, &position, &position);
 					effect_matrix_transform_normal_179880(&matrix, &forward, &forward);
 					effect_matrix_transform_normal_179880(&matrix, &up, &up);
@@ -2893,7 +2893,7 @@ void __stdcall function_179e80(s_effect_datum *effect)
 				transform4x3f node_matrix;
 				transform4x3f matrix;
 
-				function_17aec0(effect, &node_matrix, location->node_index);
+				function_17aec0(location->node_index, effect, &node_matrix);
 				function_142a60(&node_matrix, &location->matrix, &matrix);
 				function_156b60(beam, progress, &matrix);
 			}
@@ -3095,7 +3095,7 @@ bool function_17b2d0(long effect_index, point3f *point, vector3f *forward, real 
 
 			if (location->node_index != NONE)
 			{
-				function_17aec0(effect, &node_matrix, location->node_index);
+				function_17aec0(location->node_index, effect, &node_matrix);
 				function_142a60(&node_matrix, &location->matrix, &world_matrix);
 				matrix = &world_matrix;
 			}
@@ -3148,7 +3148,7 @@ bool function_17b490(long effect_index)
 					{
 						transform4x3f node_matrix;
 
-						function_17aec0(effect, &node_matrix, location->node_index);
+						function_17aec0(location->node_index, effect, &node_matrix);
 						function_142a60(&node_matrix, &location->matrix, &location->matrix);
 					}
 					location->node_index = NONE;

@@ -192,6 +192,25 @@ static inline byte *datum_get_inlined(s_record_pool *data, long datum_index)
 	return result;
 }
 
+/* likewise datum_get_absolute (the datum at an absolute index, or NULL when
+   it is free), which retail inlines into callers such as unknown_1e9700.cpp's */
+static inline byte *datum_get_absolute_inlined(s_record_pool *data, long index)
+{
+	byte *result = 0;
+
+	if (index != NONE && index >= 0 && index < data->high_water_index)
+	{
+		byte *datum = data->data + data->size * index;
+
+		if (*(short *)datum != 0)
+		{
+			result = datum;
+		}
+	}
+
+	return result;
+}
+
 /* the inline copies of the datum index lookup and of the next used index
    search (retail also calls 0x16bc00) that LTCG places in callers */
 static inline long data_datum_index(s_record_pool *array, long index)
