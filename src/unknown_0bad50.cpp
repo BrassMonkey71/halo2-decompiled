@@ -438,7 +438,10 @@ short function_bb430(long mask, short cluster_count, short const *clusters, shor
                 {
                     g_4de300[object & 0xffff] = g_4de2fc;
                     if (count >= maximum)
-                        goto done;
+                    {
+                        g_4de2f8 = false;
+                        return count;
+                    }
                     objects[count++] = object;
                 }
                 object = cluster_link_next_ab((s_record_pool *)g_4de2e4, &next);
@@ -454,14 +457,16 @@ short function_bb430(long mask, short cluster_count, short const *clusters, shor
                 {
                     g_4de300[object & 0xffff] = g_4de2fc;
                     if (count >= maximum)
-                        goto done;
+                    {
+                        g_4de2f8 = false;
+                        return count;
+                    }
                     objects[count++] = object;
                 }
                 object = cluster_link_next_ab((s_record_pool *)g_4de2d8, &next);
             }
         }
     }
-done:
     g_4de2f8 = false;
     return count;
 }
