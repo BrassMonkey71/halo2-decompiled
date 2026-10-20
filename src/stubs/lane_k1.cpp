@@ -261,11 +261,20 @@ class class_308180;
 
 struct contact_307f90;
 
+// whether a contact was found
+class answer_307f90
+{
+public:
+	answer_307f90() {}
+
+	char value;
+};
+
 class query_2ef260
 {
 public:
 	void function_3080a0(class_308180 *manifold);
-	void function_307f90(bool *found, contact_307f90 *contact);
+	void function_307f90(answer_307f90 *found, contact_307f90 *contact);
 };
 
 // whether two boxes overlap, returned through a hidden pointer
@@ -284,7 +293,7 @@ public:
 };
 
 // @stub 0x307f90
-void query_2ef260::function_307f90(bool *found, contact_307f90 *contact)
+void query_2ef260::function_307f90(answer_307f90 *found, contact_307f90 *contact)
 {
 }
 
