@@ -920,9 +920,8 @@ void __stdcall function_208070(short function_index, long thread_index, bool ini
     s_hs_expression *variable = &nodes[variable_index & 0xffff];
     long *global_index = &variable->value;
     word initial_index = (word)*global_index;
-    long definition_index = initial_index & 0x7fff;
-    short type = (initial_index & 0x8000) ? g_473468[definition_index]->type :
-        ((s_hs_scenario_view *)g_4e0350)->globals[definition_index].type;
+    short type = (initial_index & 0x8000) ? g_473468[initial_index & 0x7fff]->type :
+        ((s_hs_scenario_view *)g_4e0350)->globals[initial_index & 0x7fff].type;
     if (initialize)
     {
         if (type == _hs_type_object_list)
