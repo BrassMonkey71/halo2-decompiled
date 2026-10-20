@@ -337,13 +337,6 @@ static __forceinline point2f *avoidance_scale2d(point2f const *direction, real d
 	return scaled;
 }
 
-static __forceinline point2f *avoidance_add2d(point2f const *a, point2f const *b, point2f *out)
-{
-	out->x = a->x + b->x;
-	out->y = a->y + b->y;
-	return out;
-}
-
 static __forceinline point2f *avoidance_point_along2d(point2f const *origin, point2f const *direction,
 	real distance, point2f *point)
 {
@@ -456,10 +449,8 @@ bool avoidance_search_step(s_avoidance_search *search, s_pathfinding_data const 
 					if (trace.sector == search->value18 || node->distance < 0.2f)
 					{
 						point2f point;
-						point2f movement;
 
-						avoidance_scale2d(direction, trace.distance, &movement);
-						avoidance_add2d(&node->position, &movement, &point);
+						avoidance_point_along2d(&node->position, direction, trace.distance, &point);
 						search->value1e = avoidance_add_node(search, &point, false, search->value18, NONE, NONE,
 							node->cost - node->distance + trace.distance, (short)index);
 						added = 1;
@@ -473,11 +464,14 @@ bool avoidance_search_step(s_avoidance_search *search, s_pathfinding_data const 
 					{
 						point2f offset;
 						point2f point;
+						point2f movement;
 
 						offset.x = search->goal.x - obstacle->center.x;
 						offset.y = search->goal.y - obstacle->center.y;
 						point = node->position;
-						avoidance_point_along2d(&point, direction, trace.distance, &point);
+						avoidance_scale2d(direction, trace.distance, &movement);
+						point.x += movement.x;
+						point.y += movement.y;
 						real dx = point.x - search->goal.x;
 						real dy = point.y - search->goal.y;
 						if (dy * dy + dx * dx < obstacle->radius * obstacle->radius &&
