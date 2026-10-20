@@ -39,8 +39,14 @@ public:
 	referenced_2d88a0 *stream;
 
 	stream_holder_2d8e70(char *buffer, long size, flag_2d8e70 zero);
-	// writes a string, or "(null)" for none
-	stream_holder_2d8e70 &function_2d8f10(char const *text);
+	// write a string, or "(null)" for none, or a number, signed (0x2d8f60) or
+	// not (0x2d8fb0); each gives back the stream (a pointer, not a reference,
+	// as the build's stand-ins cannot keep a reference)
+	stream_holder_2d8e70 *function_2d8f10(char const *text);
+	stream_holder_2d8e70 *function_2d8f60(int value);
+	stream_holder_2d8e70 *function_2d8fb0(unsigned int value);
+	// writes formatted text
+	void function_2d9000(char const *format, ...);
 	~stream_holder_2d8e70();
 };
 

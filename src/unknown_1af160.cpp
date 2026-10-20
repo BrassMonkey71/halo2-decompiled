@@ -21,7 +21,9 @@ void function_265c30(long arg_0, long arg_1, bool arg_2);
 // @retail 0x1af160
 bool function_1af160(long arg_0, s_1af160 *arg_1)
 {
-    s_actor_view *local_0 = (s_actor_view *)(g_4f55f0->data + (arg_0 & 0xffff) * sizeof(s_actor_view));
+    /* retail keeps arg_0 on the stack */
+    long const *arg_0_reference = &arg_0;
+    s_actor_view *local_0 = (s_actor_view *)(g_4f55f0->data + (*arg_0_reference & 0xffff) * sizeof(s_actor_view));
     s_prop_node_view *local_1 = (s_prop_node_view *)(g_502418->data + (local_0->prop_index & 0xffff) * sizeof(s_prop_node_view));
     s_type_5cfb45 *local_2 = function_25d690((s_prop_datum *)local_1);
     s_reference local_3 = local_0->unknown418;
@@ -85,7 +87,7 @@ bool function_1af160(long arg_0, s_1af160 *arg_1)
             local_15 = function_2626b0(arg_0, local_15, local_13, local_11, local_14, true);
         if (!REFERENCE_EQUAL(local_15, local_3))
         {
-            real local_20 = (slot_random() * 0.0f + 2.0f) * g_510c54->field_2_3;
+            real local_20 = (slot_random() * 0.0f + 5.0f) * g_510c54->field_2_3;
             arg_1->field_0 = (short)real_to_long(local_20);
         }
         if (!REFERENCE_EQUAL(local_15, g_470fa0))
@@ -95,7 +97,7 @@ bool function_1af160(long arg_0, s_1af160 *arg_1)
             real local_21;
             real local_22;
             if (function_1af530(arg_0, (long *)&local_22, (long *)&local_21) &&
-                local_21 > function_210ac0((s_type_c3b527 const *)local_16, &local_2->position))
+                local_22 > function_210ac0((s_type_c3b527 const *)local_16, &local_2->position))
                 arg_1->field_8 = true;
         }
         long local_23 = function_1e1f20(arg_0);

@@ -277,23 +277,28 @@ void function_8b4d0(s_event_distribution *distribution, long type, long entity_c
 				if (entities[i] != NONE)
 					(&node->unknown10)[i] = entities[i];
 			}
-			if (size > 0 && !function_8b0a0(node, size, data))
+			bool data_copied = true;
+			if (size > 0)
+				data_copied = function_8b0a0(node, size, data);
+			if (data_copied)
 			{
-				function_89e70(distribution->owner, node);
-				return;
-			}
-			if (definition->v4())
-			{
-				for (long i = 0; i < entity_count; i++)
+				if (definition->v4())
 				{
-					if (entities[i] != NONE)
+					for (long i = 0; i < entity_count; i++)
 					{
-						s_datum_450cb8 *datum = &distribution->entities->data[entities[i] & 0x3ff];
-						datum->counter++;
+						if (entities[i] != NONE)
+						{
+							s_datum_450cb8 *datum = &distribution->entities->data[entities[i] & 0x3ff];
+							datum->counter++;
+						}
 					}
 				}
+				replication_node_start(node, distribution->owner, mask);
 			}
-			replication_node_start(node, distribution->owner, mask);
+			else
+			{
+				function_89e70(distribution->owner, node);
+			}
 		}
 	}
 }

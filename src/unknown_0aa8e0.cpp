@@ -282,6 +282,7 @@ void function_aaef0(s_bitstream *stream, s_z_input_packet const *state)
 
 
 #include <math.h>
+#include "vector_products.h"
 transform4x3f *function_ba160(long object_index, transform4x3f *matrix);
 void function_1420f0(transform4x3f *out, point3f const *position, vector3f const *forward, vector3f const *up);
 void function_141590(transform4x3f const *in, transform4x3f *out);
@@ -294,10 +295,7 @@ PRIVATE inline void z_limit_correction(vector3f *value, real maximum)
  real squared = value->k * value->k + value->j * value->j + value->i * value->i;
  if (squared > maximum * maximum)
  {
-  double scale = maximum / sqrt(squared);
-  value->i = (real)(value->i * scale);
-  value->j = (real)(value->j * scale);
-  value->k = (real)(value->k * scale);
+  scale_vector_by_double(value, maximum / sqrt(squared), value);
  }
 }
 

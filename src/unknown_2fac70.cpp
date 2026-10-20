@@ -15,10 +15,6 @@ void __cdecl function_2fac70(void const *a, void const *b, void const *input, vo
 	body_2ea940 const *side = (body_2ea940 const *)a;
 	wrapper_2f9950 const *wrapper = (wrapper_2f9950 const *)side->shape;
 	void const *placement = side->placement;
-	body_2ea940 child;
-	child.placement = placement;
-	child.parent = side;
-	child.shape = wrapper->child;
-	child.key = side->key;
+	body_2ea940 child(side, placement, wrapper);
 	function_2ead90(b, &child, input, &swapped);
 }

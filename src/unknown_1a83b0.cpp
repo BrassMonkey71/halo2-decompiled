@@ -509,15 +509,15 @@ bool function_1a8a10(point2f const *arg_0, long arg_1, short arg_2, real arg_3, 
         local_5[2] = local_11;
         local_5[1] = 0.0f - local_10;
         local_5[3] = 0.0f - local_11;
-        volatile real local_6 = -0.5f;
+        real local_6 = -0.5f;
         long local_7 = NONE;
         short local_8 = NONE;
         s_1a8a10 *local_9 = g_4453c0;
         do
         {
+            real const &bias = local_9->field_8;
             short const &axis = local_9->field_4;
             long const &identifier = local_9->field_0;
-            real const &bias = local_9->field_8;
             if (local_5[axis] + bias > local_6 && function_1f57a0(arg_1, identifier))
             {
                 local_8 = axis;

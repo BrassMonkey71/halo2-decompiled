@@ -1569,7 +1569,7 @@ void function_171830(point3f const *point, vector3f const *forward,
 		else
 			direction = (real)(upper >= 0.0f);
 		real blend = upper_fraction > lower_fraction ? lower : upper;
-		if (direction != 0.0f)
+		if (direction == 0.0f)
 			blend = 0.0f - blend;
 		fraction = (1.0f - blend) * best_fraction + blend * center_fraction;
 	}

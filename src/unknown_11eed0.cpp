@@ -71,7 +71,7 @@ bool function_11eed0(
 		accel = (target - v0) / a;
 		if ((real)fabs(accel) > b)
 		{
-			long s = accel == 0.f ? 0 : (0.f > accel ? -1 : 1);
+			long s = accel != 0.f ? (0.f > accel ? -1 : 1) : 0;
 			accel = (real)s * b;
 		}
 
