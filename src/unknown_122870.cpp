@@ -134,8 +134,8 @@ static inline long cache_file_sector_align(long size)
 // @retail 0x1228f0
 bool cache_files_load_map(char const *map_name)
 {
-	bool result = false;
 	long scenario_index = NONE;
+	bool result = false;
 
 	g_55aca8 = cache_file_find(map_name);
 	cache_file_globals.header = *(s_cache_header *)g_557c90[g_55aca8].unknown04;
@@ -172,9 +172,11 @@ bool cache_files_load_map(char const *map_name)
 					else
 					{
 						result = false;
+						g_510a08 = 0;
+						g_510819 = true;
 					}
 				}
-				if (!result)
+				else
 				{
 					g_510a08 = 0;
 					g_510819 = true;
@@ -197,6 +199,7 @@ bool cache_files_load_map(char const *map_name)
 	{
 		g_4e0350 = (s_palette_source_globals *)CACHE_TAG_INSTANCES[scenario_index & 0xffff].address;
 		g_4e034c = (s_tag_header_globals *)CACHE_TAG_INSTANCES[cache_file_globals.tags->globals_index & 0xffff].address;
+		return true;
 	}
 	return result;
 }

@@ -2817,26 +2817,28 @@ void function_1cf520(s_1cf520 *arg_1, c_1cf520 *arg_0, bool arg_2, bool arg_3, l
    const real *local_8 = (const real *)((byte *)local_6 + 0x30);
    local_7.set(local_8[0], local_8[1], local_8[2]);
    hkRigidBody *local_9 = local_6->rigid_body;
-   __m128 local_10 = _mm_mul_ps(_mm_set1_ps(0.6f), local_7.m_quad);
-   volatile __m128 local_11 = _mm_mul_ps(local_10, local_10);
+   __m128 scale = _mm_set_ss(0.6f);
+   local_7.m_quad = _mm_mul_ps(_mm_shuffle_ps(scale, scale, 0), local_7.m_quad);
+   __m128 local_11 = _mm_mul_ps(local_7.m_quad, local_7.m_quad);
    real local_12;
-   _mm_store_ss(&local_12, function_1cf527(_mm_mul_ps(local_10, local_10)));
-   local_7.m_quad = local_10;
+   _mm_store_ss(&local_12, function_1cf527(_mm_mul_ps(local_7.m_quad, local_7.m_quad)));
    if (local_12 > 0.0000010000001f)
    {
     hkVector4 local_13, local_14;
-    local_13.m_quad = local_10;
+    local_13.m_quad = local_7.m_quad;
     local_9->m_motion->getPointVelocity(local_0->field_0, local_14);
-    __m128 local_15 = function_1cf527(_mm_load_ps((const real *)&local_11));
+    __m128 local_15 = function_1cf527(local_11);
     __m128 local_16 = _mm_rsqrt_ss(local_15);
     __m128 local_17 = _mm_sub_ss(_mm_set_ss(3.0f), _mm_mul_ss(_mm_mul_ss(local_15, local_16), local_16));
     local_17 = _mm_mul_ss(_mm_mul_ss(_mm_set_ss(0.5f), local_16), local_17);
     __m128 local_18 = _mm_mul_ps(_mm_shuffle_ps(local_17, local_17, 0), local_7.m_quad);
     __m128 local_19 = _mm_mul_ps(local_14.m_quad, local_18);
     _mm_store_ss(&local_12, function_1cf527(local_19));
-    local_13.m_quad = _mm_sub_ps(local_13.m_quad, _mm_mul_ps(_mm_set1_ps(local_12), local_18));
+    __m128 along = _mm_set_ss(local_12);
+    local_13.m_quad = _mm_sub_ps(local_13.m_quad, _mm_mul_ps(_mm_shuffle_ps(along, along, 0), local_18));
     real local_20 = ((s_scale_owner *)local_9)->get_inverse_scale() * 0.2f;
-    local_13.m_quad = _mm_mul_ps(_mm_set1_ps(local_20), local_13.m_quad);
+    __m128 factor = _mm_set_ss(local_20);
+    local_13.m_quad = _mm_mul_ps(_mm_shuffle_ps(factor, factor, 0), local_13.m_quad);
     ((s_1d8e40 *)local_9)->function_1d8ec0(local_13, local_0->field_0);
    }
   }
