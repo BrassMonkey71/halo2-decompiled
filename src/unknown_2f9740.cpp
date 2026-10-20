@@ -26,12 +26,6 @@ void class_2ea530::function_2f9740(void const *a, void const *b, void const *inp
 void __cdecl function_2f9790(void const *a, void const *b, void const *input, void *collector, void *second_collector)
 {
 	body_2ea940 const *side = (body_2ea940 const *)b;
-	wrapper_2f9950 const *wrapper = (wrapper_2f9950 const *)side->shape;
-	void const *placement = side->placement;
-	body_2ea940 child;
-	child.placement = placement;
-	child.parent = side;
-	child.shape = wrapper->child;
-	child.key = side->key;
+	body_2ea940 child(side, side->placement, (wrapper_2f9950 const *)side->shape);
 	function_2ea640(a, &child, input, collector, second_collector);
 }

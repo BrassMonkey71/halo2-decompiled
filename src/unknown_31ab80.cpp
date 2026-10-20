@@ -30,16 +30,6 @@ struct s_2da8c0
 	void function_2da9a0(hkRotation const *arg_0);
 };
 
-inline void set_diagonal_31ab80(hkRotation *rows, float x, float y, float z)
-{
-	rows->m_col0.value = _mm_setzero_ps();
-	rows->m_col1.value = _mm_setzero_ps();
-	rows->m_col2.value = _mm_setzero_ps();
-	rows->m_col0.value.m128_f32[0] = x;
-	rows->m_col1.value.m128_f32[1] = y;
-	rows->m_col2.value.m128_f32[2] = z;
-}
-
 class class_31ab80
 {
 public:
@@ -63,13 +53,23 @@ void class_31ab80::function_31ab80(s_2da8c0 *out) const
 }
 
 // @retail 0x31ac20
-// not matched yet: retail stores the second reciprocal before the copy of
-// the third
+// the diagonal's reciprocals, written into the three rows of the matrix: the
+// elements are written through float pointers, so the compiler keeps retail's
+// order of the two stores at the end
 void class_31ab80::function_31ac20(s_2da8c0 *out) const
 {
+	hkRotation *rows = &out->field_0;
 	float x = 1.0f / diagonal[0];
 	float y = 1.0f / diagonal[1];
 	float z = 1.0f / diagonal[2];
-	set_diagonal_31ab80(&out->field_0, x, y, z);
+	rows->m_col0.value = _mm_setzero_ps();
+	rows->m_col1.value = _mm_setzero_ps();
+	rows->m_col2.value = _mm_setzero_ps();
+	float *first_row = (float *)&rows->m_col0.value;
+	float *second_row = (float *)&rows->m_col1.value;
+	float *r2 = (float *)&rows->m_col2.value;
+	first_row[0] = x;
+	second_row[1] = y;
+	r2[2] = z;
 	out->function_2da9a0(&rotation);
 }

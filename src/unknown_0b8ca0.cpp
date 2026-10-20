@@ -728,9 +728,9 @@ bool __stdcall function_bdef0(long object_index)
 {
     byte *object = (byte *)OBJECT_GET(object_index);
     byte const *definition = g_4e3b44[(word)*(long *)object].bytes;
-    bool active = (*(dword *)(object + 4) & 0x100) != 0;
-    bool from_physics = false;
     long component_index = *(long *)(object + 0xb4);
+    bool active = (*(word *)(object + 4) & 0x100) != 0;
+    bool from_physics = false;
     if (component_index != NONE && ((1 << object[0xaa]) & 0x800) && (object[0xc0] & 0x40))
     {
         s_havok_component *component = (s_havok_component *)(g_51e9b8->data +
@@ -1572,8 +1572,7 @@ void __stdcall function_b93b0(volatile long parent_index, volatile long index, v
     for (long ancestor = parent_index; ancestor != NONE; ancestor = *(long *)(*(byte **)(pool->data + (ancestor & 0xffff) * 12 + 8) + 0x14))
         if (ancestor == index) return;
     if (!allowed) return;
-    // Read the pool's data field again after the ancestry guard.
-    s_object_header_view *header = (s_object_header_view *)(*(byte *volatile *)&pool->data + offset);
+    s_object_header_view *header = (s_object_header_view *)(pool->data + offset);
     volatile bool was_active = (bool)((header->flags >> 2) & 1);
     byte *parent = (byte *)OBJECT_GET(parent_index);
     if (*(dword *)(object + 4) & 0x80)

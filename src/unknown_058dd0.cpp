@@ -1904,6 +1904,7 @@ bool c_session_state_start_match::update()
 #pragma inline_depth(255)
 
 long function_66050(c_class_58d20 *session, long variant_index);
+bool network_session_members_ready(c_class_58d20 *session, dword *unready_mask);
 
 // @retail 0x6e410
 bool c_session_state_pre_game::function_06e410()
@@ -1929,15 +1930,7 @@ bool c_session_state_pre_game::function_06e410()
   }
   else
   {
-   bool ready = true;
-   dword mask = 0;
-   for (long i = 0; i < session->member_count; i++)
-    if (session->members[i].unknown88 <= 2)
-    {
-     mask |= 1 << i;
-     ready = mask == 0;
-    }
-   if (ready)
+   if (network_session_members_ready(session, NULL))
     network_session_set_mode(session, 2);
    else
     network_session_start_countdown(session, true, 1, 2, 0);
