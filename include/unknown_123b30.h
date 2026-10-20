@@ -42,6 +42,12 @@ struct s_game_state_globals
 
 
 
+/* the part of a saved buffer after its header, or no pointer without a buffer */
+static inline void const *buffer_after_header(void const *buffer, long header_size)
+{
+	return buffer ? (char const *)buffer + header_size : 0;
+}
+
 void *function_123d40(char const *name, char const *type, long size);
 void *game_state_malloc_aligned(char const *name, char const *type, long size, long alignment_bits);
 
