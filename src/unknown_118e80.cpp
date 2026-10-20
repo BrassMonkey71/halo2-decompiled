@@ -337,7 +337,7 @@ bool function_119650(long object_index, long mode, long set, real seconds, long 
 			if ((old_set == 0x400000c && direction_state_119650(set)) ||
 				(direction_state_119650(old_set) && (direction_state_119650(set) || set == 0x400000c)))
 				blend = 0.267f;
-			if (blend <= seconds)
+			if (!(blend > seconds))
 				blend = seconds;
 			if (blend > 0.0f)
 				function_ba350(object_index, blend);
