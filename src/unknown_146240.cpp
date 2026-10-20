@@ -224,14 +224,18 @@ void function_146660(real seconds, real *elapsed, long *ticks_due)
 			bool unlimited = g_510c50 && ((s_510c50_time_view *)g_510c50)->unlimited;
 			long mode = options->mode;
 
-			if (mode >= 2 && mode <= 5)
+			switch (mode)
 			{
+			case 2:
+			case 3:
+			case 4:
+			case 5:
 				maximum_ticks = function_680c0(&synchronous);
 				globals = g_510c54;
-			}
-			else
-			{
+				break;
+			default:
 				maximum_ticks = globals->field_2_3 * 5;
+				break;
 			}
 			if (!synchronous && !unlimited)
 			{
@@ -256,10 +260,11 @@ void function_146660(real seconds, real *elapsed, long *ticks_due)
 			}
 			elapsed_seconds = globals->scale * seconds;
 			ticks_elapsed = (real)globals->field_2_3 * elapsed_seconds + globals->leftover_ticks;
-			ticks = (long)ticks_elapsed;
-			if (synchronous ? (ticks <= maximum_ticks && ticks + 7 >= maximum_ticks && ticks + 1 == maximum_ticks) : ticks <= maximum_ticks)
+			long candidate_ticks = (long)ticks_elapsed;
+			if (synchronous ? (candidate_ticks <= maximum_ticks && candidate_ticks + 7 >= maximum_ticks && candidate_ticks + 1 == maximum_ticks) : candidate_ticks <= maximum_ticks)
 			{
-				leftover = ticks_elapsed - (real)ticks;
+				leftover = ticks_elapsed - (real)candidate_ticks;
+				ticks = candidate_ticks;
 			}
 			else
 			{

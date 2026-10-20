@@ -72,7 +72,7 @@ void __stdcall function_180b60(s_cluster_query const *query, real radius_squared
 	s_record_pool *references = g_4ea950;
 	s_cluster_reference *reference = (s_cluster_reference *)references->data + (datum_index & 0xffff);
 	short const *cluster = clusters;
-	for (long i = 0; i < count; i++)
+	for (long remaining = count; remaining > 0; --remaining)
 	{
 		long cluster_index = *cluster++;
 		if (cluster_index != query->cluster_index)
