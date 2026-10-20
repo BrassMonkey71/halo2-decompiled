@@ -108,7 +108,7 @@ void function_146ac0(void)
 
 /* a page aligned block of virtual memory: its size and the offset back to
    the allocation sit before it */
-static void *virtual_memory_allocate_aligned(long size)
+static void virtual_memory_allocate_aligned(void **block_out, long size)
 {
 	void *result = NULL;
 	byte *block = (byte *)VirtualAlloc(result, size + 0x1000, MEM_COMMIT | MEM_TOP_DOWN, PAGE_READWRITE);
@@ -125,13 +125,13 @@ static void *virtual_memory_allocate_aligned(long size)
 		((long *)aligned)[-1] = aligned - block;
 		result = aligned;
 	}
-	return result;
+	*block_out = result;
 }
 
 // @retail 0x146b30
 void function_146b30(void)
 {
-	g_479888 = virtual_memory_allocate_aligned(0x105470);
+	virtual_memory_allocate_aligned(&g_479888, 0x105470);
 }
 
 // @retail 0x146b80

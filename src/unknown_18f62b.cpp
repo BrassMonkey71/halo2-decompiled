@@ -90,6 +90,7 @@ void function_18f62b()
 	}
 	else if (!g_551ae4)
 		function_1907d6(g_54d5b8);
+	bool *reconnect_flags = g_551ae0;
 	long index = 0;
 	do
 	{
@@ -97,7 +98,7 @@ void function_18f62b()
 		s_slot_update_view *slot = slot_update_get(index);
 		bool connected = slot_update_connected((short)index);
 		if (!connected) function_191234(index);
-		else g_551ae0[index] = false;
+		else reconnect_flags[index] = false;
 		if (connected) slot->flags |= 1;
 		else slot->flags &= ~1;
 		if (connected)
