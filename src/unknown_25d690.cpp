@@ -668,6 +668,8 @@ bool function_25d970(s_prop_datum *datum)
 	return false;
 }
 
+__declspec(noinline) bool function_25d9b0(long prop_index);
+
 // @retail 0x25d9b0
 bool function_25d9b0(long prop_index)
 {
