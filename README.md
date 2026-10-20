@@ -241,6 +241,9 @@ Thank you to everyone who has contributed to this project so far:
   near miss.
 - [@andrewnakas](https://github.com/andrewnakas): the inventory fix that took
   WMADEC's data tables out of the function list.
+- [@Roasted-Codes](https://github.com/Roasted-Codes): the first contributor
+  matches in Havok, the physics library: its collision-pair dispatch and
+  child-agent code.
 
 [@kirklandsig](https://github.com/kirklandsig) maintains the project: runs the
 build, reviews and merges every pull request, and keeps the
