@@ -230,10 +230,14 @@ void __stdcall function_2b07e2(c_class_2b01eb *widget, long frame)
     function_22ea81(widget, &rectangle, (short_rectangle2d const *)frame);
     s_widget_bounds bounds;
     s_widget_bounds outline;
-    bounds.top = (short)rectangle.y0 + y;
-    bounds.left = (short)rectangle.x0 + x;
-    bounds.bottom = (short)rectangle.y1 + y;
-    bounds.right = (short)rectangle.x1 + x;
+    bounds.left = (short)rectangle.x0;
+    bounds.right = (short)rectangle.x1;
+    bounds.top = (short)rectangle.y0;
+    bounds.bottom = (short)rectangle.y1;
+    bounds.left += x;
+    bounds.right += x;
+    bounds.top += y;
+    bounds.bottom += y;
     function_147cbc((s_13c051 const *)&bounds, color);
     if (show_label)
     {
@@ -242,8 +246,11 @@ void __stdcall function_2b07e2(c_class_2b01eb *widget, long frame)
         word label[16];
         unicode_string_snprintf(label, 16, (word const *)L"%d", widget->value0a);
         text.setup(label, 0, g_46873c, 0, NONE, 0, NONE);
-        outline = widget->bounds;
-        if (outline.right - outline.left > 0 && outline.bottom - outline.top > 0)
+        outline.left = widget->bounds.left;
+        outline.right = widget->bounds.right;
+        outline.top = widget->bounds.top;
+        outline.bottom = widget->bounds.bottom;
+        if (outline.bottom - outline.top > 0 && outline.right - outline.left > 0)
         {
             outline.left += x;
             outline.right += x;
