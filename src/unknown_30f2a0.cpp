@@ -1,15 +1,6 @@
 // @flags /O2 /GL-
-// Havok (third-party physics library): destroying the object of 0x30dc80,
-// and giving back its block when flags bit 0 is set.
+// Havok (third-party physics library): the deleting destructor of the pair
+// handler of 0x30dc80.
 #include "holder_30dc80.h"
 
-// @retail 0x30f2a0
-holder_30dc80 *holder_30dc80::function_30f2a0(unsigned int flags)
-{
-	this->~holder_30dc80();
-	if (flags & 1)
-	{
-		g_memory_2d88a0->release_block(this, 4, 0x1c);
-	}
-	return this;
-}
+// @retail 0x30f2a0 deleting holder_30dc80

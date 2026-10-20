@@ -145,9 +145,18 @@ struct hit_collector_2f88a0
 	hits_2f88a0 *hits;
 };
 
+class contact_owner_2f7c40;
+
+// keeps the ids its owner hands out for each sphere of a shape of several, and
+// the terms that solve for a point's weights in a triangle's plane
 class class_2f7c40
 {
 public:
+	char unknown0[8];
+	contact_owner_2f7c40 *owner;
+	float terms[4];
+	unsigned short ids[8];
+
 	void function_2f7c40(void const *a, void const *b, void const *input, void *collector);
 	void function_2f88a0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
@@ -240,9 +249,18 @@ public:
 	void function_2f0da0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
 
+class contact_owner_2f1080;
+
+// keeps a contact id its owner hands out, and the terms that solve for a
+// point's weights in a triangle's plane
 class class_2f1080
 {
 public:
+	char unknown0[8];
+	contact_owner_2f1080 *owner;
+	unsigned short id;
+	float terms[4];
+
 	void function_2f1080(void const *a, void const *b, void const *input, void *collector);
 	void function_2f1a50(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
