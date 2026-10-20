@@ -1424,7 +1424,7 @@ bool function_2423f0()
 	long others[8];
 	long slot_objects[9];
 	bool result = true;
-	long count = 0;
+	byte count = 0;
 	long i;
 
 	memset(slot_objects, NONE, sizeof(slot_objects));

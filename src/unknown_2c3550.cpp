@@ -597,7 +597,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
  s_path_step_view const *steps, bool avoid, short *out_count,
  s_path_step_view *out, bool *complete, long *object_index, long *type, bool *flag)
 {
- bool result = true;
+ long result = true;
  s_pathfinding_data const *pathfinding = (s_pathfinding_data const *)state->pathfinding;
  real radius = state->source.radius > 0.2f ? state->source.radius : 0.2f;
  bool final_complete = *complete;
@@ -648,7 +648,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
   if (*out_count >= 4)
   {
    *complete = false;
-   return result;
+   goto done;
   }
   point3f const *start = step > 0 ? &previous_point : &state->source.point.point;
   long start_node = step > 0 ? previous_node : state->source.unknown24;
@@ -753,7 +753,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
      {
       if (step == count - 1 && flag)
        for (short i = 0; i < obstacles->count; ++i) if (obstacles->obstacles[i].flags & 2) *flag = true;
-      return false;
+      result = false; goto done;
      }
     }
     if (search->value28)
@@ -785,7 +785,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
      if (*out_count >= 4) { truncated = true; break; }
      out[(*out_count)++] = inserted[i];
     }
-    if (truncated) { *complete = false; return result; }
+    if (truncated) { *complete = false; goto done; }
    }
    else
    {
@@ -844,6 +844,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
   }
   first_output = *out_count;
  }
+done:
  return result;
 }
 
