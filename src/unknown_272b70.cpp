@@ -2363,27 +2363,31 @@ void function_2768d0(long role_name)
 		script->type = 0x16;
 		if (joint_index != NONE)
 		{
-			short scene_index = ((s_ai_script_joint *)(g_502404->data + (joint_index & 0xffff) * sizeof(s_ai_script_joint)))->scene_index;
-			s_ai_script_scenes_view *scenario = (s_ai_script_scenes_view *)g_4e0350;
+			s_ai_script_joint *joint = (s_ai_script_joint *)(g_502404->data + (joint_index & 0xffff) * sizeof(s_ai_script_joint));
 
-			if (scene_index != NONE && scene_index >= 0 && scene_index < scenario->scene_count)
+			if (joint->scene_index != NONE)
 			{
-				s_ai_script_scene *scene = &scenario->scenes[scene_index];
-				short participant_index = NONE;
+				s_ai_script_scenes_view *scenario = (s_ai_script_scenes_view *)g_4e0350;
 
-				if (role_name != NONE)
+				if (joint->scene_index >= 0 && joint->scene_index < scenario->scene_count)
 				{
-					for (short i = 0; i < scene->role_count; i++)
+					s_ai_script_scene *scene = &scenario->scenes[joint->scene_index];
+					short participant_index = NONE;
+
+					if (role_name != NONE)
 					{
-						if (scene->roles[i].name == role_name)
+						for (short i = 0; i < scene->role_count; i++)
 						{
-							participant_index = i;
-							break;
+							if (scene->roles[i].name == role_name)
+							{
+								participant_index = i;
+								break;
+							}
 						}
 					}
+					if (participant_index != NONE)
+						function_258340(participant_index, joint_index);
 				}
-				if (participant_index != NONE)
-					function_258340(participant_index, joint_index);
 			}
 		}
 	}
