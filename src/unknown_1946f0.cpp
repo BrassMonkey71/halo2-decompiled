@@ -151,34 +151,22 @@ bool __fastcall function_195370(vector3f const *a, vector3f const *b, real lo, r
 {
 	vector3f direction_a = *a;
 	vector3f direction_b = *b;
-	real magnitude_a = (real)sqrt(direction_a.j * direction_a.j + direction_a.i * direction_a.i + direction_a.k * direction_a.k);
-	if (!(fabs(magnitude_a) < k_real_epsilon))
-	{
-		real scale = 1.0f / magnitude_a;
-		direction_a.i = scale * direction_a.i;
-		direction_a.j = scale * direction_a.j;
-		direction_a.k = direction_a.k * scale;
-	}
-	else
-		magnitude_a = 0.0f;
+	real magnitude_a = normalize3d(&direction_a);
 	real magnitude_b = normalize3d(&direction_b);
 	bool short_a = lo > magnitude_a;
 	bool short_b = lo > magnitude_b;
 	bool near_a = !short_a && function_1952f0(magnitude_a, lo, lo, hi, bits);
 	bool near_b = !short_b && function_1952f0(magnitude_b, lo, lo, hi, bits);
-	if (short_a)
+	if (!short_a || !short_b)
 	{
-		if (short_b)
-			return true;
-		if (!near_b)
+		if (short_a || short_b)
+		{
+			bool other_near = short_a ? near_b : near_a;
+			if (!other_near)
+				return false;
+		}
+		if (!direction_a.quantized_equal(&direction_b) || !function_1952f0(magnitude_a, magnitude_b, lo, hi, bits))
 			return false;
 	}
-	else if (short_b)
-	{
-		if (!near_a)
-			return false;
-	}
-	if (direction_a.quantized_equal(&direction_b) && function_1952f0(magnitude_a, magnitude_b, lo, hi, bits))
-		return true;
-	return false;
+	return true;
 }

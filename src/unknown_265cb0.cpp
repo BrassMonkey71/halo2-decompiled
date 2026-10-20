@@ -409,11 +409,7 @@ short function_263810(point3f const *origin, long actor_index, point3f const *po
 				}
 			}
 			real distance_squared = delta.k * delta.k + delta.j * delta.j + delta.i * delta.i;
-			if (!(range * range > distance_squared))
-			{
-				if (*range_reference) **range_reference = true;
-			}
-			else
+			if (range * range > distance_squared)
 			{
 				real scale = 1.0f;
 				if (!(*settings & 1))
@@ -425,11 +421,7 @@ short function_263810(point3f const *origin, long actor_index, point3f const *po
 					}
 				}
 				real scaled_range = scale * range;
-				if (!(scaled_range * scaled_range > distance_squared))
-				{
-					if (*range_reference) **range_reference = true;
-				}
-				else
+				if (scaled_range * scaled_range > distance_squared)
 				{
 					real secondary, primary;
 					if (!actor->unknown007 && *facing_reference)
@@ -478,6 +470,14 @@ short function_263810(point3f const *origin, long actor_index, point3f const *po
 					else if (primary * primary > distance_squared)
 						result = 1;
 				}
+				else
+				{
+					if (*range_reference) **range_reference = true;
+				}
+			}
+			else
+			{
+				if (*range_reference) **range_reference = true;
 			}
 		}
 	}
