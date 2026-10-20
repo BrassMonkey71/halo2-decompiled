@@ -1152,8 +1152,8 @@ void function_211cc0(void)
 
 		do
 		{
-			real previous = (real)(k - 1);
 			real t = (real)m * 0.125f + (real)k;
+			real previous = (real)(k - 1);
 			real ta = t - (previous + 2.0f);
 			real tb = t - (previous + 1.0f);
 			real tc = t - previous;
@@ -1163,22 +1163,28 @@ void function_211cc0(void)
 			do
 			{
 				long row = b << 3;
-				vector3f *out = &g_4f93bc[b * 8 + k][m];
 				vector3f *p3 = g_4f93bc[row + w3];
 				vector3f *p2 = g_4f93bc[row + w2];
 				vector3f *p1 = &g_4f93bc[b * 8 + k][0];
 				vector3f *p0 = g_4f93bc[row + w0];
+				vector3f *out = &g_4f93bc[b * 8 + k][m];
 				long i;
 
 				for (i = 0; i < 3; i++)
 				{
-					real s0 = p3->n[i] - p2->n[i];
-					real s1 = p2->n[i] - p1->n[i];
-					real s2 = p1->n[i] - p0->n[i];
-					real d2 = s1 - s2;
-					real d3 = (s0 - s1) - d2;
+					real v3 = p3->n[i];
+					real v2 = p2->n[i];
+					real v1 = p1->n[i];
+					real v0 = p0->n[i];
 
-					out->n[i] = ((d3 * ta * (1.0f / 3.0f) + d2) * tb * 0.5f + s2) * tc + p0->n[i];
+					/* the forward differences, in place */
+					v3 -= v2;
+					v2 -= v1;
+					v1 -= v0;
+					v3 -= v2;
+					v2 -= v1;
+					v3 -= v2;
+					out->n[i] = ((v3 * ta * (1.0f / 3.0f) + v2) * tb * 0.5f + v1) * tc + v0;
 				}
 
 				b++;
