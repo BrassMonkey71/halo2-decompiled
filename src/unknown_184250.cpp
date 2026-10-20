@@ -122,9 +122,9 @@ void __stdcall function_184250(s_type_1e6529 const *arg_0)
 			for (long local_8 = 0; local_8 < local_6.field_4; local_8++)
 			{
 				s_184255 *local_9 = &bounds->field_210[local_6.field_0[local_8]];
-				long local_10 = local_9->field_0;
 				long local_11 = local_9->field_2;
-				if ((bool)(byte)function_184000(local_11, local_10))
+				long local_10 = local_9->field_0;
+				if ((bool)(byte)function_184000(local_10, local_11))
 				{
 					function_184060(local_10, (byte)local_11, (s_type_1e6529 *)arg_0, local_9->field_4);
 					local_3 = true;
