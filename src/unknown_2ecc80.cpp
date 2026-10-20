@@ -30,6 +30,16 @@ struct description_2ecc80
 	long field_4;
 	placement_2ecc80 const *placement;
 	description_2ecc80 const *parent;
+
+	description_2ecc80() {}
+	description_2ecc80(description_2ecc80 const *parent_, placement_2ecc80 const *placement_, shape_2ecc80 const *outer)
+	{
+		parent = parent_;
+		placement = placement_;
+		shape_2ecc80 const *inner = (shape_2ecc80 const *)outer->child;
+		field_4 = parent->field_4;
+		shape = inner;
+	}
 };
 
 class collector_2ecc80
@@ -111,12 +121,10 @@ void __cdecl function_2ecd80(description_2ecc80 const *description, typed_2ecd80
 	placement_2ecc80 placement;
 	placement.field_0 = description->placement->field_0;
 	placement.field_10 = description->placement->field_10;
-	placement.transform.compose(&description->placement->transform, &shape->transform);
-	description_2ecc80 child;
-	child.parent = description;
-	child.placement = &placement;
-	child.field_4 = description->field_4;
-	child.shape = (shape_2ecc80 const *)shape->child;
+	// Retail reads the placement pointer again for composition after copying
+	// the two vectors; keep this read separate from those bounds reads.
+	placement.transform.compose(&(*(placement_2ecc80 const *const volatile *)&description->placement)->transform, &shape->transform);
+	description_2ecc80 child(description, &placement, shape);
 	long first = ((typed_2ecd80 *)child.shape)->type();
 	long second = (*other)->type();
 	(*dispatcher)->handlers[first][second](&child, other, dispatcher, arg_3, arg_4);
