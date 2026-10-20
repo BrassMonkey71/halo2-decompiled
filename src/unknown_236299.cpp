@@ -656,11 +656,11 @@ void function_23675a(s_bitmap_view *bitmap, s_texture_rect const *texture, dword
 	(void)&color;
 	(void)&mode;
 	point2f corners[4];
-	real height = bounds->y1 - bounds->y0;
-	volatile real &width = corners[0].x;
-	width = bounds->x1 - bounds->x0;
-	real right = bounds->x0 + width;
-	real bottom = bounds->y0 + height;
+	point2f extents;
+	extents.y = bounds->y1 - bounds->y0;
+	extents.x = bounds->x1 - bounds->x0;
+	real right = bounds->x0 + extents.x;
+	real bottom = bounds->y0 + extents.y;
 	corners[0].x = bounds->x0;
 	corners[0].y = bounds->y0;
 	corners[1].x = right;
