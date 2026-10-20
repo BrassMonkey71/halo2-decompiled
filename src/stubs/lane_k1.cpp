@@ -26,10 +26,6 @@ void __cdecl function_2ead90(void const *a, void const *b, void const *input, vo
 }
 
 
-// @stub 0x2ecfa0
-void __cdecl function_2ecfa0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 struct walk_3028c0;
 struct segment_3028c0;
