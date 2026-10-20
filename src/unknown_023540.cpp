@@ -1203,13 +1203,9 @@ bool __stdcall function_27520(long mode, real const *bounds, real const *t, real
         if (!g_4b9d9c) goto scaled;
     case 3:
         {
-            real minimum = 0.0001f;
             real end = g_4857e0;
             real begin = g_4857dc;
-            real span = end - begin;
-            real const *divisor_reference = minimum > span ? &minimum : &span;
-            real divisor = *divisor_reference;
-            real scale = 1.0f / divisor;
+            real scale = 1.0f / (0.0001f > end - begin ? 0.0001f : g_4857e0 - g_4857dc);
             out[0] = g_48565c * scale;
             out[1] = 0.0f;
             out[2] = 0.0f - g_4857dc * scale;
