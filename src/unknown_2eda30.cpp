@@ -198,22 +198,27 @@ void list_2eda30::function_2edbd0(description_2eda30 const *description, typed_2
 			child_2eda30 *agent = children[i];
 			if ((object_4805a4 *)agent == function_301a40())
 			{
+				long arg_3 = field_8;
 				dispatcher_2edbd0 *table = context->dispatcher;
 				long first = ((typed_2edbd0 *)child.key)->type();
 				long second = (*other)->type();
 				handler_2edbd0 handler = table->handlers[first][second];
-				children[i] = handler(&child, other, context, field_8);
+				child_2eda30 **slot = &children[i];
+				*slot = handler(&child, other, context, arg_3);
 			}
 			else
 			{
 				agent->update(&child, other, context);
 			}
 		}
-		else if ((object_4805a4 *)children[i] != function_301a40())
+		else
 		{
+			child_2eda30 *agent = children[i];
+			if ((object_4805a4 *)agent != function_301a40())
 			{
-				children[i]->release();
-				children[i] = (child_2eda30 *)function_301a40();
+				agent->release();
+				child_2eda30 **slot = &children[i];
+				*slot = (child_2eda30 *)function_301a40();
 			}
 		}
 	}
