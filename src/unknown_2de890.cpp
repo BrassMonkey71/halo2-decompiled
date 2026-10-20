@@ -9,17 +9,18 @@ struct transform_2de890
 {
 	__m128 columns[4];
 
+	// the element in a row of a column
+	float &element(int row, int column) { return ((float *)columns)[column * 4 + row]; }
+
 	void load_unit_columns()
 	{
-		__m128 zero = _mm_setzero_ps();
-		columns[0] = zero;
-		columns[1] = zero;
-		columns[2] = zero;
-		float *elements = (float *)columns;
-		elements[0] = 1.0f;
-		elements[5] = 1.0f;
-		elements[10] = 1.0f;
-		columns[3] = zero;
+		columns[0] = _mm_setzero_ps();
+		columns[1] = _mm_setzero_ps();
+		columns[2] = _mm_setzero_ps();
+		element(0, 0) = 1.0f;
+		element(1, 1) = 1.0f;
+		element(2, 2) = 1.0f;
+		columns[3] = _mm_setzero_ps();
 	}
 };
 
@@ -74,6 +75,7 @@ public:
 	answer_2de9e0() {}
 
 	char value;
+	operator bool() const { return value != 0; }
 };
 
 // a placement of a shape: two vectors, then its transform (0x2da450)
@@ -178,7 +180,7 @@ answer_2de9e0 c_child_transform::function_2de9e0(ray_2de9e0 const *ray, hit_2de9
 	local.from = inverse_transform_2de9e0(transform, ray->from);
 	local.to = inverse_transform_2de9e0(transform, ray->to);
 	answer_2de9e0 result = ((child_slots_2de8e0 *)child)->slot_8(&local, hit);
-	if (result.value)
+	if (result)
 	{
 		__m128 normal = hit->value;
 		hit->rotate((c_query_transform const *)&transform, &normal);
