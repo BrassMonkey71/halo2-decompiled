@@ -1434,10 +1434,21 @@ struct s_33a0b_default
 extern s_33a0b_default *g_4686d4;
 extern color3f *g_468714;
 
+/* an instance's or cluster's lightmap bitmap (4 bytes) */
+struct s_d16d0_bitmap_entry
+{
+    short bitmap_index;
+    char palette_index;
+    byte unknown3;
+};
+
 // @retail 0xd16d0
 bool function_d16d0(s_structure_lightmap_triangle const *triangle, color3f *out, real *weight)
 {
     bool result = false;
+    /* never assigned: retail hands back whatever this slot holds (the one
+       caller ignores it) */
+    real sample_weight;
     if (*(long const *)triangle->unknown08 == NONE)
     {
         s_mesh *mesh = NULL;
@@ -1445,24 +1456,35 @@ bool function_d16d0(s_structure_lightmap_triangle const *triangle, color3f *out,
         {
             byte *bsp = (byte *)g_4e0344->locations;
             long index = triangle->instance_index;
-            real u = 0.0f, v = 0.0f;
-            byte *entry;
+            real v = 0.0f, u = 0.0f;
+            s_d16d0_bitmap_entry const *rows;
             if (index != NONE)
-                entry = *(byte **)(bsp + 0x4c) + index * 4;
+                rows = *(s_d16d0_bitmap_entry const **)(bsp + 0x4c);
             else
-                entry = *(byte **)(bsp + 0x2c) + triangle->cluster_index * 4;
-            short bitmap_index = *(short *)entry;
-            long palette_index = (signed char)entry[2];
+            {
+                index = triangle->cluster_index;
+                rows = *(s_d16d0_bitmap_entry const **)(bsp + 0x2c);
+            }
+            s_d16d0_bitmap_entry const *entry = &rows[index];
 
             color3f color = *(color3f *)g_468714;
             function_d2bf0(mesh, triangle->lightmap_part_index, triangle->u, triangle->v, &u, &v);
-            if (function_d2f90(0, bitmap_index, palette_index, u, v, &color) == 0)
+            if (function_d2f90(0, entry->bitmap_index, entry->palette_index, u, v, &color) == 0)
             {
                 result = true;
-                *weight = *(real const *)&triangle->unknown18;
-                color.red = pin_real(color.red, 0.0f, 1.0f);
-                color.green = pin_real(color.green, 0.0f, 1.0f);
-                color.blue = pin_real(color.blue, 0.0f, 1.0f);
+                *weight = sample_weight;
+                if (0.0f > color.red)
+                    color.red = 0.0f;
+                else if (color.red > 1.0f)
+                    color.red = 1.0f;
+                if (0.0f > color.green)
+                    color.green = 0.0f;
+                else if (color.green > 1.0f)
+                    color.green = 1.0f;
+                if (0.0f > color.blue)
+                    color.blue = 0.0f;
+                else if (color.blue > 1.0f)
+                    color.blue = 1.0f;
                 *out = color;
             }
         }
