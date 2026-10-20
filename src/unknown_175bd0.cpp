@@ -311,7 +311,7 @@ bool function_176210(s_effect_parameters *parameters);
 long function_178120(long tag_index, s_effect_owner const *owner, bool force);
 void function_178240(point3f const *origin, vector3f const *direction, s_effect_datum *effect, real scale_a, real scale_b);
 struct s_effect_marker_source;
-void function_1786f0(s_effect_marker_source const *source, s_effect_object_marker *out, short marker_index);
+void function_1786f0(s_effect_object_marker *out, s_effect_marker_source const *source, short marker_index);
 long function_1785c0(s_effect_object_marker const *marker, s_effect_datum *effect, short location_index, bool field_b4);
 transform4x3f *function_178bc0(s_effect_location_datum *location, s_effect_datum *effect, transform4x3f *matrix, bool field_b4);
 void function_178c80(real scale, s_effect_datum *effect, s_particle_system_datum *particle_system, s_effect_particle_system_definition *definition, real unknown, bool field_b4);
@@ -1631,10 +1631,8 @@ void function_178360(long effect_index, long object_index, long unknown58, s_eff
 	source.markers = markers;
 	if (object_index != NONE)
 	{
-		s_effect_object *object = OBJECT_GET(object_index);
-
 		source.node_index = unknown18 == NONE ? 0 : unknown18;
-		source.node_matrix = &((transform4x3f *)((byte *)object + object->nodes_offset))[source.node_index];
+		source.node_matrix = effect_object_node_matrix(object_index, source.node_index);
 	}
 	else
 	{
@@ -1643,9 +1641,9 @@ void function_178360(long effect_index, long object_index, long unknown58, s_eff
 	}
 	for (long location_index = 0; location_index < definition->location_count; location_index++)
 	{
+		dword first_person_mask = 0;
 		dword name = definition->locations[location_index];
 		long count = 0;
-		dword first_person_mask = 0;
 
 		if (name == 0x700054e)
 			name = effect->unknown0c;
@@ -1657,7 +1655,7 @@ void function_178360(long effect_index, long object_index, long unknown58, s_eff
 				marker_index = effect_marker_find(markers, marker_count, name);
 			if (marker_index != NONE)
 			{
-				function_1786f0(&source, object_markers, (short)marker_index);
+				function_1786f0(object_markers, &source, (short)marker_index);
 				count = 1;
 			}
 			else
@@ -1669,7 +1667,7 @@ void function_178360(long effect_index, long object_index, long unknown58, s_eff
 						count = 1;
 					if (unknown58 != NONE)
 					{
-						short first_person_count = first_person_weapon_get_markers_internal(unknown58, name, (s_first_person_marker *)&object_markers[count], (short)(16 - count));
+						long first_person_count = first_person_weapon_get_markers_internal(object_index, name, (s_first_person_marker *)&object_markers[count], (short)(16 - count));
 
 						for (long i = 0; i < first_person_count; i++)
 							first_person_mask |= 1 << (i + count);
@@ -1678,7 +1676,7 @@ void function_178360(long effect_index, long object_index, long unknown58, s_eff
 				}
 				if (count == 0 && default_marker_index != NONE)
 				{
-					function_1786f0(&source, object_markers, (short)default_marker_index);
+					function_1786f0(object_markers, &source, (short)default_marker_index);
 					count = 1;
 				}
 			}
@@ -1732,7 +1730,7 @@ long function_1785c0(s_effect_object_marker const *marker, s_effect_datum *effec
 }
 
 // @retail 0x1786f0
-void function_1786f0(s_effect_marker_source const *source, s_effect_object_marker *out, short marker_index)
+void function_1786f0(s_effect_object_marker *out, s_effect_marker_source const *source, short marker_index)
 {
 	transform4x3f const *matrix = source->node_matrix;
 	point3f position;
@@ -1744,7 +1742,7 @@ void function_1786f0(s_effect_marker_source const *source, s_effect_object_marke
 	{
 		s_effect_marker const *marker = &source->markers[marker_index];
 
-		if (0.0f != matrix->scale)
+		if (matrix->scale != 0.0f)
 		{
 			vector3f offset;
 
@@ -1780,22 +1778,11 @@ void function_1786f0(s_effect_marker_source const *source, s_effect_object_marke
 	}
 	else
 	{
-		s_effect_marker const *marker = &source->markers[marker_index];
-
-		position = marker->position;
-		forward = marker->forward;
+		position = source->markers[marker_index].position;
+		forward = source->markers[marker_index].forward;
 	}
 	function_11d000(&forward, &up);
-
-	real magnitude = (real)sqrt(up.k * up.k + up.j * up.j + up.i * up.i);
-	if (!(fabs(magnitude) < 0.0001f))
-	{
-		real inverse = 1.0f / magnitude;
-
-		up.i = inverse * up.i;
-		up.j = up.j * inverse;
-		up.k = up.k * inverse;
-	}
+	effect_normalize(&up);
 	out->matrix.scale = 1.0f;
 	out->matrix.forward = forward;
 	out->matrix.left.i = up.j * forward.k - up.k * forward.j;

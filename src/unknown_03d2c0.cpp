@@ -56,7 +56,7 @@ struct s_3dfe0_cache
     byte unknowna8[0x58];
 };
 long function_d1850(long object_index, bool value, s_effect_color_query *query);
-void function_d4080(s_effect_color_query const *query, long type, s_lighting_record *record, bool flag);
+void function_d4080(long type, s_effect_color_query const *query, s_lighting_record *record, long flag);
 struct s_object;
 s_object *function_badc0(long object_index, dword mask);
 void function_3dfe0(long cache_index, long object_index, real priority);
@@ -97,7 +97,7 @@ s_lighting_record *function_3db00(long object_index, real priority)
 {
     byte *object = ((s_3dd10_object_header *)g_4e0300->data)[object_index & 0xffff].object;
     if (object[7] & 1) return (s_lighting_record *)((byte *)g_4de2f4 + 0x1c);
-    long cluster = *(short *)(object + 0xd0);
+    short cluster = *(short *)(object + 0xd0);
     if (cluster != NONE)
         return (s_lighting_record *)(*(byte **)((byte *)g_4e0348 + 0x230) + cluster * 0x5c + 8);
     long parent_index = function_baf80(object_index);
@@ -123,10 +123,10 @@ s_lighting_record *function_3db00(long object_index, real priority)
     byte *definition = g_4e3b44[*(long *)parent & 0xffff].bytes;
     long special = 0;
     if ((bool)(((*(dword *)(parent + 4)) >> 13) & 1)) special = 1;
-    if ((bool)((definition[2] >> 1) & 1)) special |= 1;
+    if ((bool)((*(word *)(definition + 2) >> 1) & 1)) special |= 1;
     s_effect_color_query query;
     function_d1850(parent_index, 1, &query);
-    function_d4080(&query, *(short *)definition, &g_55ee60, special);
+    function_d4080(*(short *)definition, &query, &g_55ee60, special);
     return &g_55ee60;
 }
 // @retail 0x3ddd0

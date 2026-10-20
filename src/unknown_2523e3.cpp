@@ -55,8 +55,8 @@ void c_4way_signin_screen::v3()
         if (signed_in)
         {
             player_slot_get_profile(controller, &profile, &profile_index);
-            s_widget_item *item = &items[controller];
             appearance = &profile.data[0x46];
+            s_widget_item *item = &items[controller];
             item->flags |= 2;
             for (long word_index = 0; word_index < 4; ++word_index)
                 item->value48[word_index] = appearance[word_index];

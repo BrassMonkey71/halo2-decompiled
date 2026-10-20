@@ -9,6 +9,7 @@
 #include "unknown_1cec30.h"
 #include "object_markers.h"
 #include "unknown_16d180.h"
+#include "matrix_transform.h"
 #include <math.h>
 #include <xmmintrin.h>
 #include <string.h>
@@ -1539,26 +1540,22 @@ void __stdcall function_bc5e0(long index)
     else object[0xc1] &= ~1;
 }
 
-PRIVATE inline vector3f object_attachment_vector_r18(transform4x3f const &matrix, vector3f const &value)
+PRIVATE __forceinline void object_attachment_point(transform4x3f const *matrix, point3f const *point, point3f *result)
 {
-    real const *m = (real const *)&matrix;
-    vector3f result;
-    result.i = value.k * m[7] + value.j * m[4] + value.i * m[1];
-    result.j = value.k * m[8] + value.j * m[5] + value.i * m[2];
-    result.k = value.k * m[9] + value.j * m[6] + value.i * m[3];
-    return result;
-}
-PRIVATE inline point3f object_attachment_point_r18(transform4x3f const &matrix, point3f const &value)
-{
-    vector3f scaled = *(vector3f const *)&value;
-    if (matrix.scale != 1.0f)
+    real x = point->x;
+    real y = point->y;
+    real z = point->z;
+
+    real scale = matrix->scale;
+    if (scale != 1.0f)
     {
-        scaled.i *= matrix.scale; scaled.j *= matrix.scale; scaled.k *= matrix.scale;
+        x *= scale;
+        y *= scale;
+        z *= scale;
     }
-    vector3f result = object_attachment_vector_r18(matrix, scaled);
-    point3f point;
-    point.x = result.i + matrix.position.x; point.y = result.j + matrix.position.y; point.z = result.k + matrix.position.z;
-    return point;
+    result->x = matrix->forward.i * x + matrix->left.i * y + matrix->up.i * z + matrix->position.x;
+    result->y = matrix->forward.j * x + matrix->left.j * y + matrix->up.j * z + matrix->position.y;
+    result->z = matrix->forward.k * x + matrix->left.k * y + matrix->up.k * z + matrix->position.z;
 }
 void function_b8840(long index);
 long function_baf80(long index);
@@ -1599,9 +1596,11 @@ void __stdcall function_b93b0(volatile long parent_index, volatile long index, v
     *(short *)(object + 0x2e) = g_4686c4;
     transform4x3f inverse;
     function_141590(&nodes[(short)node], &inverse);
-    point3f position = object_attachment_point_r18(inverse, *(point3f *)(object + 0x64));
-    vector3f forward = object_attachment_vector_r18(inverse, *(vector3f *)(object + 0x70));
-    vector3f up = object_attachment_vector_r18(inverse, *(vector3f *)(object + 0x7c));
+    point3f position;
+    vector3f forward, up;
+    object_attachment_point(&inverse, (point3f *)(object + 0x64), &position);
+    matrix_transform_vector(&inverse, (vector3f *)(object + 0x70), &forward);
+    matrix_transform_vector(&inverse, (vector3f *)(object + 0x7c), &up);
     function_b91d0(index, &forward, &up);
     function_b7430(index, &position, &forward, &up, 0, true, true, false, false);
     function_b9b90(index, true);
@@ -1639,10 +1638,11 @@ void __stdcall function_b8ee0(long parent_index, long parent_marker_name, long i
     {
         transform4x3f inverse;
         function_141590(&name_9ae4a2.node_matrix, &inverse);
-        transform4x3f const &source_matrix = inverse;
-        point3f position = object_attachment_point_r18(source_matrix, parent_marker.matrix.position);
-        vector3f forward = object_attachment_vector_r18(source_matrix, parent_marker.matrix.forward);
-        vector3f up = object_attachment_vector_r18(source_matrix, parent_marker.matrix.up);
+        point3f position;
+        vector3f forward, up;
+        object_attachment_point(&inverse, &parent_marker.matrix.position, &position);
+        matrix_transform_vector(&inverse, &parent_marker.matrix.forward, &forward);
+        matrix_transform_vector(&inverse, &parent_marker.matrix.up, &up);
         function_b91d0(index, &forward, &up);
         function_b7430(index, &position, &forward, &up, 0, true, true, false, false);
     }

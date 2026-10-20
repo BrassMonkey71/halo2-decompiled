@@ -818,8 +818,8 @@ bool __stdcall function_1aa750(long arg_0, s_slot *arg_1, bool arg_2)
 	bool local_11;
 	s_actor_view *local_0 = actor_get(arg_0);
 	s_1aa0d1 *local_1 = (s_1aa0d1 *)function_1e4f90(arg_0);
-	s_ai_object *local_2 = ai_object_get(local_0->unknown018);
 	s_1aa751 *local_3 = (s_1aa751 *)((byte *)arg_1 + 0xc);
+	s_ai_object *local_2 = ai_object_get(local_0->unknown018);
 	local_11 = false;
 	if (!((local_2->flags19 & 1) && ((local_2->flags19 & 2) || !(*(byte *)local_1 & 1))))
 	{
@@ -850,8 +850,8 @@ bool __stdcall function_1aa750(long arg_0, s_slot *arg_1, bool arg_2)
 					}
 					else
 					{
-						local_6 = local_7 * 0.5f;
 						local_16 = local_5 / 2;
+						local_6 = local_7 * 0.5f;
 					}
 				}
 				local_3->field_24 = local_16;
