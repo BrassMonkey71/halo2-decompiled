@@ -209,6 +209,7 @@ bool function_133790(s_bit_vector_pool *arg_1, short arg_2, bool arg_3, long *ar
 // @retail 0x133ab0
 void s_bit_vector_pool::function_133ab0(s_133f70 *arg_2, bool arg_3, bool arg_4, bool arg_5)
 {
+    long local_7;
     if (arg_2->field_166 > 0)
     {
         bool local_1 = false;
@@ -286,7 +287,7 @@ void s_bit_vector_pool::function_133ab0(s_133f70 *arg_2, bool arg_3, bool arg_4,
     }
     if (arg_3 && !arg_2->field_16c)
     {
-        long local_7 = ((s_133792 *)g_4e0300->data)[arg_2->field_0 & 0xffff].field_8->field_10;
+        local_7 = ((s_133792 *)g_4e0300->data)[arg_2->field_0 & 0xffff].field_8->field_10;
         while (local_7 != NONE)
         {
             s_133f70 local_8 = *arg_2;
@@ -294,7 +295,7 @@ void s_bit_vector_pool::function_133ab0(s_133f70 *arg_2, bool arg_3, bool arg_4,
             if (local_8.field_1c4 == 1)
             {
                 s_133791 const *local_9 = ((s_133792 *)g_4e0300->data)[local_7 & 0xffff].field_8;
-                if (local_9->field_aa == 2 && *(short *)(g_4e3b44[local_9->field_0 & 0xffff].bytes + 0x290))
+                if (local_9->field_aa == 2 ? (bool)*(short *)(g_4e3b44[local_9->field_0 & 0xffff].bytes + 0x290) : false)
                 {
                     local_8.field_1cc = false;
                     local_8.field_1c0 = 0x1f;
@@ -304,8 +305,8 @@ void s_bit_vector_pool::function_133ab0(s_133f70 *arg_2, bool arg_3, bool arg_4,
                     local_8.field_1d8 = 0.0f;
                 }
             }
-            local_8.field_1be = NONE;
             local_8.field_1b0 = (local_8.field_1b0 & ~0x40) | 1;
+            local_8.field_1be = NONE;
             ((t_function_4b5d0_133790)function_4b5d0)(arg_5, this->mode, local_7, *(real *)local_8.field_1b8,
                 local_8.field_1b4, (s_133f70 *)((byte *)&local_8 + 4), &local_8.field_194, *(bool *)(local_8.field_1a4 + 4));
             function_133ab0(&local_8, true, arg_4, arg_5);
