@@ -116,7 +116,7 @@ void function_402b0(long cache_index, long mode)
         dword selection = !mode ? ~0UL : mode == 2 ? 0x10 : 0x20;
         long n = 0;
         long index = first;
-        for (; n < block->count; ++n)
+        while (n < block->count)
         {
             s_44940_entry const *entry = entries;
             if (entry->unknown00 & selection & 0x1fffff &&
@@ -146,6 +146,7 @@ void function_402b0(long cache_index, long mode)
                     }
                 }
             }
+            ++n;
             ++index;
             ++entries;
         }
