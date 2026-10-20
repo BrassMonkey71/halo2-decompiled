@@ -840,21 +840,21 @@ bool __stdcall function_1aa750(long arg_0, s_slot *arg_1, bool arg_2)
 			long local_8 = arg_2 ? 0xa000040 : local_3->field_a ? 0xe00067d : 0x500000a;
 			if (unit_animation_get_timing(unit_index, 0x7000101, local_8, &local_4, &local_6, &local_5, &local_7))
 			{
-				if (local_4 == NONE)
+				short local_16 = local_4;
+				if (local_16 == NONE)
 				{
 					if (arg_2)
 					{
 						local_6 = 0.0f;
-						local_3->field_24 = 0;
+						local_16 = 0;
 					}
 					else
 					{
 						local_6 = local_7 * 0.5f;
-						local_3->field_24 = local_5 / 2;
+						local_16 = local_5 / 2;
 					}
 				}
-				else
-					local_3->field_24 = local_4;
+				local_3->field_24 = local_16;
 			}
 			else
 				local_3->field_24 = 0;
@@ -864,16 +864,21 @@ bool __stdcall function_1aa750(long arg_0, s_slot *arg_1, bool arg_2)
 			if (!arg_2)
 			{
 				s_1aa750 *local_9 = (s_1aa750 *)function_1e4a50(local_0->unknown054);
-				real local_10 = local_9 ? local_9->field_4 + 0.2f : 0.0f;
+				real local_10 = 0.0f;
+				if (local_9)
+					local_10 = local_9->field_4 + 0.2f;
 				local_10 += local_6;
 				local_3->field_28 = local_3->field_28 > local_10 ? local_3->field_28 : local_10;
 				local_8 = local_3->field_a ? 0xe00067d : 0xc0006cd;
-				local_5 = 0;
-				local_7 = 0.0f;
-				if (unit_animation_get_timing(local_0->unknown018, 0x7000101, local_8, &local_4, &local_6, &local_5, &local_7))
+				real local_15 = 0.0f;
+				short local_14;
+				real local_13;
+				short local_12 = 0;
+				unit_index = local_0->unknown018;
+				if (unit_animation_get_timing(unit_index, 0x7000101, local_8, &local_12, &local_13, &local_14, &local_15))
 				{
-					local_3->field_26 = local_5;
-					local_3->field_2c = local_7;
+					local_3->field_26 = local_12;
+					local_3->field_2c = local_15;
 				}
 			}
 			local_11 = true;
