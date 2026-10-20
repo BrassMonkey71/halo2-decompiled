@@ -76,8 +76,10 @@ bool function_0b6780(const s_index_triple *triple)
 	return triple->index3 != NONE && triple->index != NONE && triple->index2 != NONE;
 }
 
+__declspec(noinline) short function_0b67a0(const s_small_index *data);
+
 // @retail 0x000b67a0
-short function_0b67a0(const s_small_index *data)
+inline short function_0b67a0(const s_small_index *data)
 {
 	signed char index = data->index;
 	if (index >= 0 && index < data->count)
