@@ -11782,7 +11782,7 @@ va,size,owner,style,evidence,name,object,calls,source,status
 002dddb0,57,third:havok,speed,a16 pad,,,,src/unknown_2dddb0.cpp,matched
 002dddf0,459,third:havok,speed,a16 pad ebp,,,,src/unknown_2dddf0.cpp,todo
 002ddfc0,216,third:havok,speed,a16 pad ebp,,,,src/unknown_2ddfc0.cpp,matched
-002de0a0,65,third:havok,speed,a16 pad,,,,,todo
+002de0a0,65,third:havok,speed,a16 pad,,,,src/unknown_2de0a0.cpp,near
 002de0f0,178,third:havok,speed,a16 pad ebp,,,,src/unknown_2de0f0.cpp,todo
 002de1b0,1435,third:havok,speed,a16 pad ebp,,,000dc370 001c58f0 002dddf0 002ddfc0 002deda0 002def90,src/unknown_2de1b0.cpp,todo
 002de750,72,third:havok,speed,a16 pad,,,,src/unknown_2de750.cpp,matched
@@ -12658,7 +12658,7 @@ va,size,owner,style,evidence,name,object,calls,source,status
 00312430,131,other:library,speed,a16 pad,,,002d9160,src/unknown_312430.cpp,todo
 003124c0,104,other:library,speed,a16 pad,,,002d9160,src/unknown_312430.cpp,todo
 00312530,85,other:library,speed,a16 pad,,,002d91d0,,todo
-00312590,154,other:library,speed,a16 pad,,,003124c0,src/unknown_312590.cpp,todo
+00312590,154,other:library,speed,a16 pad,,,003124c0,src/unknown_312590.cpp,matched
 00312630,117,other:library,speed,a16 pad ebp,,,002da7f0,src/unknown_312590.cpp,matched
 003126b0,63,other:library,speed,a16 pad,,,00312430,src/unknown_312590.cpp,matched
 003126f0,106,other:library,speed,a16 pad ebp,,,00315a10,src/unknown_312590.cpp,matched
@@ -12872,7 +12872,7 @@ va,size,owner,style,evidence,name,object,calls,source,status
 00319290,6,other:library,speed,a16 pad,,,,,todo
 003192a0,10,other:library,speed,a16 pad,,,,,todo
 003192b0,5,other:library,speed,a16 pad,,,000dc370,src/unknown_3192b0.cpp,matched
-003192c0,15,other:library,speed,a16 pad,,,,src/unknown_3192b0.cpp,todo
+003192c0,15,other:library,speed,a16 pad,,,,src/unknown_3192b0.cpp,matched
 003192d0,40,other:library,speed,a16 pad,,,003192b0,,todo
 00319300,185,other:library,speed,a16 pad ebp,,,,src/unknown_319300.cpp,matched
 003193c0,102,other:library,speed,a16 pad,,,003114d0 00319740,,todo
