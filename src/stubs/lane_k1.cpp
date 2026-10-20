@@ -210,10 +210,12 @@ class c_311100
 public:
 	void function_30fcb0(s_311100 const *description);
 	void function_30fef0(s_311100 const *description);
+	void function_30e720();
 };
 
-// @stub 0x30fef0
-void c_311100::function_30fef0(s_311100 const *description)
+// a part of a world's step (1563 bytes, not decompiled)
+// @stub 0x30e720
+void c_311100::function_30e720()
 {
 }
 
@@ -223,11 +225,6 @@ public:
 	void function_3175e0(void const *step, void const *input);
 	void function_317950(void const *input);
 };
-
-// @stub 0x317950
-void narrow_phase_317c00::function_317950(void const *input)
-{
-}
 
 // Havok round havok18: callees of the queries passed on with their sides changed
 
@@ -309,11 +306,6 @@ void class_2dce60::function_2dce60(pending_2ddbd0 *pending, void const *root, __
 {
 }
 
-// @stub 0x2e1d10
-class_2e4ff0::class_2e4ff0(long arg_0, long arg_1, int bits)
-{
-}
-
 // @stub 0x3009e0
 void class_2df670::function_3009e0(pending_301800 *pending, void const *root, fixed_ray_301800 const *ray)
 {
@@ -357,7 +349,7 @@ void class_30f710::function_30f710()
 
 // motion objects 0x311940 builds
 class class_31ad80 { public: class_31ad80(void const *position, void const *orientation); };
-class class_3193c0 { public: class_3193c0(void const *position, void const *orientation); };
+class class_3193c0 { public: class_3193c0(void const *position, void const *orientation); void function_319740(unsigned long value); };
 class class_31a6b0 { public: class_31a6b0(void const *position, void const *orientation); };
 
 // @stub 0x31ad80
@@ -370,8 +362,9 @@ class_3193c0::class_3193c0(void const *position, void const *orientation)
 {
 }
 
-// @stub 0x31a6b0
-class_31a6b0::class_31a6b0(void const *position, void const *orientation)
+// an XDK networking routine (10 bytes, a slot of 0x31a6b0's vtable)
+// @stub 0x319740
+void class_3193c0::function_319740(unsigned long value)
 {
 }
 
@@ -410,14 +403,33 @@ void __cdecl function_31c100(void *step_10, void *step_20, void *step_50, void *
 {
 }
 
-// changes a body's motion to another kind (770 bytes, not decompiled)
-// @stub 0x311e40
-void class_3115a0::function_311e40(int kind)
-{
-}
-
 // frees a block too large for Havok's pool (library code, called through g_461ddc)
 // @stub 0x2d6fb0
 void __cdecl function_2d6fb0(void *address)
+{
+}
+
+// the game's test for slowing a body on a contact (src/unknown_279410.cpp,
+// disabled there; called from Havok code, so standard cdecl)
+struct s_component_contact_pair;
+class hkEntity;
+// @stub 0x279410
+bool __cdecl function_279410(s_component_contact_pair const *pair, hkEntity *moving,
+	hkEntity *opposing, float limit, float reduction, float approach)
+{
+	return false;
+}
+
+// the walk that tests a tree's nodes against planes (3124 bytes, not decompiled)
+struct pending_2ddbd0;
+struct fixed_point_2dc220;
+class class_2dc220
+{
+public:
+	void function_2dc220(pending_2ddbd0 *pending, void const *root, fixed_point_2dc220 const *fixed_point);
+};
+
+// @stub 0x2dc220
+void class_2dc220::function_2dc220(pending_2ddbd0 *pending, void const *root, fixed_point_2dc220 const *fixed_point)
 {
 }

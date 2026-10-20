@@ -419,6 +419,8 @@ byte const g_468d48[12][1024] =
 	},
 };
 
+__declspec(noinline) real function_17c900(short function_type, real input);
+
 // @retail 0x17c900
 real function_17c900(short function_type, real input)
 {

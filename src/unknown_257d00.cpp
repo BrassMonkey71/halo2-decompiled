@@ -1858,8 +1858,7 @@ void function_25aba0(long actor_index)
 // @retail 0x258b60
 short function_258b60(long actor_index, cs_iterate_proc proc, long cs_index)
 {
-	long const *local_0 = &actor_index;
-	s_actor_view *actor = actor_get(*local_0);
+	s_actor_view *actor = actor_get(actor_index);
 	short result = 2;
 
 	if (actor->unknown007)
@@ -1880,6 +1879,7 @@ short function_258b60(long actor_index, cs_iterate_proc proc, long cs_index)
 				byte *data;
 				if (!object->flags134 && (data = (byte *)object + object->ai_offset) != NULL)
 				{
+					count++;
 					short outcome = proc(actor_index, iterator.index, (s_cs_state *)(data + 0x28), cs_index);
 					*(short *)(data + 0x2c) = outcome;
 					if (outcome == 2)
@@ -1890,7 +1890,6 @@ short function_258b60(long actor_index, cs_iterate_proc proc, long cs_index)
 					{
 						failed++;
 					}
-					count++;
 				}
 			}
 

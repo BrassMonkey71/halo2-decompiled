@@ -16,6 +16,7 @@
 
 #include "unknown_11c920.h"
 #include "unknown_0259d0.h"
+#include "matrix_transform.h"
 #include "globals.h"
 #include "slot_owner.h"
 #include "unit_requests.h"
@@ -460,17 +461,6 @@ inline s_slot_object_view *object_get(long object_index)
 inline transform4x3f *object_node_matrix(s_slot_object_view *object, long node)
 {
 	return (transform4x3f *)((byte *)object + object->node_matrices_offset) + node;
-}
-
-inline void matrix_transform_vector(transform4x3f const *matrix, vector3f const *vector, vector3f *result)
-{
-	real i = vector->i;
-	real j = vector->j;
-	real k = vector->k;
-
-	result->i = matrix->forward.i * i + matrix->left.i * j + matrix->up.i * k;
-	result->j = matrix->forward.j * i + matrix->left.j * j + matrix->up.j * k;
-	result->k = matrix->forward.k * i + matrix->left.k * j + matrix->up.k * k;
 }
 
 /* the object's forward vector in world space */

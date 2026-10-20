@@ -813,6 +813,33 @@ public:
  void function_1fb10(short_rectangle2d const *bounds, real scale) const;
 };
 
+/* the fade of the given view, opaque outside the four views */
+PRIVATE inline real view_alpha_1e6fe0(long index)
+{
+ real result;
+ if (index >= 0 && index < 4)
+  result = g_4e69c0[index];
+ else
+  result = 1.0f;
+ return result;
+}
+
+struct s_transition_1e6fe0
+{
+ short state;
+ short ticks;
+};
+
+/* a local player's block (0x1b0 bytes) of g_51e9c0 as 0x1e6fe0 reads it */
+struct s_local_player_state_1e6fe0
+{
+ s_transition_1e6fe0 transitions[32];
+ long current;
+ long time;
+ byte unknown088[0x1b0 - 0x88];
+};
+typedef char assert_local_player_state_1e6fe0_size[(sizeof(s_local_player_state_1e6fe0) == 0x1b0) ? 1 : -1];
+
 // @retail 0x1e6fe0
 void function_1e6fe0(long local_player_index)
 {
@@ -831,10 +858,10 @@ void function_1e6fe0(long local_player_index)
   {
    *(long *)((byte *)g_510c4c + 0x1b8) = spectated_player;
    temporary[0] = 0;
-   long string_handle;
-   if (function_2259f0(player_index)) string_handle = *(long *)((byte *)g_510c94 + 0x438);
-   else string_handle = *(long *)((byte *)g_510c94 + 0x43c);
-   function_13925f(string_handle, temporary);
+   if (function_2259f0(player_index))
+    function_13925f(*(long *)((byte *)g_510c94 + 0x438), temporary);
+   else
+    function_13925f(*(long *)((byte *)g_510c94 + 0x43c), temporary);
    wcsncpy((wchar_t *)text, (wchar_t const *)temporary, 255);
    text[255] = 0;
    function_22d2ee(text, 256);
@@ -849,20 +876,21 @@ void function_1e6fe0(long local_player_index)
    string_handle = *(long *)(globals + 0x6c0);
   else
   {
-   byte *state = globals + local_player_index * 0x1b0;
-   long index = *(long *)(state + 0x80);
+   s_local_player_state_1e6fe0 *players = (s_local_player_state_1e6fe0 *)globals;
+   long index = players[local_player_index].current;
+   s_local_player_state_1e6fe0 *state = &players[local_player_index];
    if (index == NONE)
     return;
-   short transition = *(short *)(state + index * 4);
-   if (transition != 2 && transition != 3)
+   s_transition_1e6fe0 *transition = &players[local_player_index].transitions[index];
+   if (transition->state != 2 && transition->state != 3)
     return;
    byte *entry = (byte *)function_1e8d50(index);
    if (!entry)
     return;
    word delay = *(word *)(entry + 4);
-   if (delay && g_510c54->field_2_3 * delay <= *(long *)(state + 0x84))
+   if (delay && g_510c54->field_2_3 * delay <= state->time)
     return;
-   string_handle = function_1e8cb0(*(long *)(state + 0x80));
+   string_handle = function_1e8cb0(state->current);
   }
   temporary[0] = 0;
   if (g_510c94 && g_510c94->string_list != NONE)
@@ -879,22 +907,22 @@ void function_1e6fe0(long local_player_index)
  bool alternate = function_22acb4(g_4b9ed8);
  if (alternate)
  {
- color.alpha = g_4b9ed8 >= 0 && g_4b9ed8 < 4 ? g_4e69c0[g_4b9ed8] : 1.0f;
+  color.alpha = view_alpha_1e6fe0(g_4b9ed8);
   color.red = 0.9647058844566345f;
   color.green = 0.8627451062202454f;
  }
  else
  {
- color.alpha = g_4b9ed8 >= 0 && g_4b9ed8 < 4 ? g_4e69c0[g_4b9ed8] : 1.0f;
+  color.alpha = view_alpha_1e6fe0(g_4b9ed8);
   color.red = 0.7137255072593689f;
   color.green = 0.8588235378265381f;
  }
  color.blue = 1.0f;
- default_color.alpha = g_4b9ed8 >= 0 && g_4b9ed8 < 4 ? g_4e69c0[g_4b9ed8] : 1.0f;
+ default_color.alpha = view_alpha_1e6fe0(g_4b9ed8);
  function_13edb0(font, NONE, 2, 0, &color, &default_color);
  function_13ec70(&color);
  short_rectangle2d limits;
- limits.top = -32768; limits.left = -32768; limits.bottom = 32767; limits.right = 32767;
+ limits.left = -32768; limits.top = -32768; limits.right = 32767; limits.bottom = 32767;
  short_rectangle2d bounds, measured;
  function_13e9c0(text, &limits, &bounds, &measured, 1.0f);
  long center_x = (g_4b9dd8.left + g_4b9dd8.right) / 2 - g_4b9dd2;
@@ -902,8 +930,8 @@ void function_1e6fe0(long local_player_index)
  long half_width = (short)(bounds.right - bounds.left) / 2 + 5;
  long half_height = (short)(bounds.bottom - bounds.top) / 2 + 1;
  limits.left = (short)(center_x - half_width);
- limits.right = (short)(center_x + half_width);
  limits.top = (short)(center_y - half_height);
+ limits.right = (short)(center_x + half_width);
  limits.bottom = (short)(center_y + half_height);
  if (function_1e9140((s_request_screen_bounds const *)&limits))
   ((c_1fa50 const *)text)->function_1fa50(&limits, NULL, NULL, 0, 1.0f, 0, NULL);
