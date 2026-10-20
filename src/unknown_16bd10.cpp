@@ -871,7 +871,6 @@ void __stdcall function_16c840(long user_index, long unused, s_observer_command 
 		{
 			real t = camera_velocity_profile_evaluate(&camera->pan.profile, g_510c54->game_time - camera->pan.start_time);
 			quaternionf rotation;
-			real length_squared;
 
 			command->timer = 0.0f;
 			t = PIN(t, 0.0f, 1.0f);
@@ -881,23 +880,7 @@ void __stdcall function_16c840(long user_index, long unused, s_observer_command 
 				function_141f60(function_142d10(&camera->up, &camera->forward, &matrix), &rotation);
 			}
 			function_11da10(&rotation, &camera->pan.rotation, &rotation, t);
-			length_squared = rotation.i * rotation.i + rotation.j * rotation.j + rotation.k * rotation.k + rotation.w * rotation.w;
-			if (length_squared > 0.0f)
-			{
-				real inverse = 1.0f / (real)sqrt(length_squared);
-
-				rotation.i *= inverse;
-				rotation.j *= inverse;
-				rotation.k *= inverse;
-				rotation.w *= inverse;
-			}
-			else
-			{
-				rotation.i = 0.0f;
-				rotation.j = 0.0f;
-				rotation.k = 0.0f;
-				rotation.w = 1.0f;
-			}
+			quaternion_unit_or_identity(&rotation);
 			transform4x3f transform;
 
 			function_141e10(&transform.rotation, &rotation);
