@@ -1096,20 +1096,7 @@ void function_a9b40(long index, s_z_copy_state *state)
   blended.j = current_rotation.j * weight + saved_rotation.j * 0.65f;
   blended.k = current_rotation.k * weight + saved_rotation.k * 0.65f;
   blended.w = current_rotation.w * weight + saved_rotation.w * 0.65f;
-  real squared = blended.w * blended.w + blended.k * blended.k + blended.j * blended.j + blended.i * blended.i;
-  if (squared > 0.0f)
-  {
-   real scale = 1.0f / sqrt(squared);
-   blended.i = (real)(blended.i * scale);
-   blended.j = (real)(blended.j * scale);
-   blended.k = (real)(blended.k * scale);
-   blended.w = (real)(blended.w * scale);
-  }
-  else
-  {
-   blended.i = blended.j = blended.k = 0.0f;
-   blended.w = 1.0f;
-  }
+  quaternion_unit_or_identity(&blended);
   function_141e10(&current_matrix, &blended);
   *saved_forward = current_matrix.forward;
   *saved_up = current_matrix.up;

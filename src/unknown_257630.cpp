@@ -47,19 +47,6 @@ struct s_slot_3a_request
 	bool unknown20;
 };
 
-/* the unit request of type 0x19 (s_unit_request of slot_handler.h) */
-struct s_unit_request_19
-{
-	long type;
-	byte unknown4;
-	byte unknown5[3];
-	long unknown8;
-	bool unknownc;
-	byte unknownd[3];
-	point2f direction;
-	byte unknown18[8];
-};
-
 short g_470c58 = -1;
 short g_470c5c = -2;
 
@@ -126,15 +113,19 @@ short __stdcall function_257630(long actor_index)
 	return result;
 }
 
+bool function_1f57f0(long actor_index, long animation, long const *target);
+
 // @retail 0x2576c0
 short __stdcall function_2576c0(long actor_index, s_slot *slot, s_slot *next)
 {
-	long result = g_470c5c;
+	short result = g_470c5c;
 	s_actor_view *actor = actor_get(actor_index);
 	s_slot_7f_state *state = (s_slot_7f_state *)slot;
 	s_502424_element *joint = element_502424_get(state->joint_index);
+	long leader_index = joint->target.unknown0;
+	long target_index = joint->target.unknown4;
 
-	if (joint->target.unknown0 == NONE || joint->target.unknown4 == NONE)
+	if (leader_index == NONE || target_index == NONE)
 	{
 		result = g_470c58;
 		goto local_9;
@@ -145,43 +136,33 @@ short __stdcall function_2576c0(long actor_index, s_slot *slot, s_slot *next)
 		if (((s_joint_7f_view *)joint)->started)
 		{
 			s_slot_3a_request *request = (s_slot_3a_request *)next;
+			long timer = g_510c54->field_2_3 * 3;
 
 			request->unknown20 = true;
-			request->target_index = joint->target.unknown4;
-			long local_0 = g_510c54->field_2_3;
-			local_0 *= 3;
-			request->timer = (short)local_0;
+			request->target_index = target_index;
+			request->timer = (short)timer;
 			result = 0x3a;
 			goto local_9;
 		}
 	}
 	else
 	{
-		point3f *leader_position = &actor_get(joint->target.unknown0)->position;
+		point3f *leader_position = &actor_get(leader_index)->position;
 		point2f direction;
 
 		direction.x = leader_position->x - actor->position.x;
 		direction.y = leader_position->y - actor->position.y;
 		normalize2d(&direction);
-		if (direction.y * actor->unknown290.j + direction.x * actor->unknown290.i > 0.8 && actor->unknown26c == NONE)
+		if (direction.y * actor->unknown290.j + direction.x * actor->unknown290.i > 0.8 &&
+			function_1f57f0(actor_index, 0x700002c, (long const *)&direction))
 		{
-			s_unit_request_19 request = {0};
-
-			request.type = 0x19;
-			request.unknown4 = 2;
-			request.unknown8 = 0x700002c;
-			request.unknownc = true;
-			request.direction = direction;
-			if (function_e6900(actor->unknown018, (s_unit_request *)&request))
-			{
-				((s_joint_7f_view *)joint)->started = true;
-				result = g_470c58;
-		goto local_9;
-			}
+			((s_joint_7f_view *)joint)->started = true;
+			result = g_470c58;
+			goto local_9;
 		}
 	}
 local_9:
-	return (short)result;
+	return result;
 }
 
 struct s_actor_iterator_257870

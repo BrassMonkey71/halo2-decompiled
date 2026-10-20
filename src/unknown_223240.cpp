@@ -107,7 +107,8 @@ void function_2234e0(void)
 	}
 	else
 		local_3 = 0;
-	for (long local_0 = 0; local_0 < local_2; ++local_0)
+	long local_0 = 0;
+	do
 	{
 		byte const *local_5 = 0;
 		for (++local_1; local_1 < 4; ++local_1)
@@ -121,7 +122,8 @@ void function_2234e0(void)
 			local_5 = g_4e9c8c[local_1].field_0;
 		function_223080(0, local_0, local_1, (s_223080 *)&g_47f0f8[local_0 + 1],
 			local_2, local_3, (s_223081 const *)local_5);
-	}
+		++local_0;
+	} while (local_0 < local_2);
 	s_223240 *local_6 = &g_47f0f8[local_2 + 1];
 	function_2232a1(local_6);
 	function_2b5d0(local_2 + 1, 3, local_2, local_3, &g_47f0f8[1]);

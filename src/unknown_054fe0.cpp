@@ -1029,8 +1029,8 @@ void network_session_interface_add_user(c_class_58d20 *session, long user_index)
 	}
 	else
 	{
-		s_session_user_reservation *reservation = &((s_session_user_reservation *)session->data761c)[user_index];
-		if (reservation->valid && !memcmp(&user->xuid, &reservation->xuid, sizeof(XUID)))
+		if (((s_session_user_reservation *)session->data761c)[user_index].valid &&
+			!memcmp(&user->xuid, &((s_session_user_reservation *)session->data761c)[user_index].xuid, sizeof(XUID)))
 			user->unknowncc[owner] = true;
 	}
 }
