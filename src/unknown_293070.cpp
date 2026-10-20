@@ -641,18 +641,16 @@ void function_295600(s_295600_state *state, bool planar, real magnitude,
 // @retail 0x2938c0
 bool function_2938c0(long arg_0)
 {
-	bool local_0 = false;
 	s_flock *local_1 = &((s_flock *)g_51ecb4->data)[arg_0 & 0xffff];
-	s_record_pool *objects = g_4e0300;
-	long local_2 = local_1->unknown04;
-	while (local_2 != NONE)
+	bool local_0 = false;
+	s_flock_member_iterator local_2;
+	local_2.next_object_index = local_1->unknown04;
+	local_2.object_index = NONE;
+	s_flock_object *local_5;
+	while ((local_5 = function_2937a1(&local_2)) != NULL)
 	{
-		long local_3 = local_2;
-		s_flock_object *local_5 = ((s_flock_object_header *)objects->data)[local_3 & 0xffff].object;
+		s_flock_object_header *local_4 = &((s_flock_object_header *)g_4e0300->data)[local_2.object_index & 0xffff];
 		s_flock_member *local_6 = flock_object_get_member(local_5);
-		local_2 = local_6 ? local_6->next_object_index : NONE;
-		local_6 = flock_object_get_member(local_5);
-		s_flock_object_header *local_4 = &((s_flock_object_header *)objects->data)[local_3 & 0xffff];
 		bool local_7 = (*((byte *)local_4 + 2) & 1) != 0;
 		local_0 |= local_7;
 		if (local_6)
@@ -661,10 +659,9 @@ bool function_2938c0(long arg_0)
 	if (local_1->unknown0e)
 	{
 		*(word *)((byte *)local_1 + 0x10) = 0;
-		s_scenario_flocks_view *local_8 = (s_scenario_flocks_view *)g_4e0350;
-		if (local_1->definition_index >= 0 && local_1->definition_index < local_8->flock_count)
+		if (local_1->definition_index >= 0 && local_1->definition_index < ((s_scenario_flocks_view *)g_4e0350)->flock_count)
 		{
-			s_scenario_flock *local_9 = &local_8->flocks[local_1->definition_index];
+			s_scenario_flock *local_9 = &((s_scenario_flocks_view *)g_4e0350)->flocks[local_1->definition_index];
 			byte *mask_base = (byte *)g_4e6948;
 			for (short local_10 = 0; local_10 < *(long *)((byte *)local_9 + 0xc); local_10++)
 			{
