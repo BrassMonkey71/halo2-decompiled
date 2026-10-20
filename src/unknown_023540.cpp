@@ -2121,10 +2121,10 @@ void __stdcall function_34a90(long target, long blend, dword color_write,
 {
     long width = 0;
     long height = 0;
-    if (target == NONE)
-        function_01dd60(g_4858b8, &width, &height);
-    else
+    if (target != NONE)
         function_01dd60(target, &width, &height);
+    else
+        function_01dd60(g_4858b8, &width, &height);
     real bounds[4];
     if (full_surface)
     {
@@ -2150,10 +2150,10 @@ void __stdcall function_34a90(long target, long blend, dword color_write,
         long texture_width, texture_height;
         if (viewport_textures)
         {
-            parameters.offsets[i].x = (real)g_4b9dd2;
-            parameters.offsets[i].y = (real)g_4b9dd0;
             texture_width = g_4b9dd6 - g_4b9dd2;
             texture_height = g_4b9dd4 - g_4b9dd0;
+            parameters.offsets[i].x = (real)g_4b9dd2;
+            parameters.offsets[i].y = (real)g_4b9dd0;
         }
         else
         {

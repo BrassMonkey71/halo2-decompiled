@@ -35,6 +35,15 @@ struct contact_307f90
 	char unknown28[0x30 - 0x28];
 };
 
+// whether a contact was found
+class answer_307f90
+{
+public:
+	answer_307f90() {}
+
+	char value;
+};
+
 // told of each contact found
 class collector_2ef4b0
 {
@@ -64,7 +73,7 @@ public:
 
 	query_2ef260(long a, long b, long c, long d, long e, long f, __m128 const &from_, long g, __m128 const &to_, float radius_);
 	void function_3080a0(class_308180 *manifold);
-	void function_307f90(bool *found, contact_307f90 *contact);
+	void function_307f90(answer_307f90 *found, contact_307f90 *contact);
 };
 
 // a box: a radius it is grown by, and its half extents
@@ -123,10 +132,13 @@ void manifold_pair_2ef2f0::function_2ef3b0(description_2ed170 const *a, descript
 	timer_add_2ebc80("TtBoxBox");
 	box_2ef3b0 const *first_box = (box_2ef3b0 const *)a->shape;
 	box_2ef3b0 const *second_box = (box_2ef3b0 const *)b->shape;
-	__m128 from = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
-	__m128 to = _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius));
-	query_2ef260 query((long)a, (long)b, (long)input, field_8, arg_3, (long)a->placement + 0x20, from,
-		(long)b->placement + 0x20, to, input->tolerance);
+	__m128 const first_half_extents = first_box->half_extents;
+	float const first_radius = first_box->radius;
+	float const second_radius = second_box->radius;
+	__m128 grown_first = _mm_add_ps(first_half_extents, _mm_set_ps1(first_radius));
+	__m128 grown_second = _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_radius));
+	query_2ef260 query((long)a, (long)b, (long)input, field_8, arg_3, (long)a->placement + 0x20, grown_first,
+		(long)b->placement + 0x20, grown_second, input->tolerance);
 	query.function_3080a0(&manifold);
 	timer_add_2ebc80("Et");
 }
@@ -142,19 +154,19 @@ public:
 // @retail 0x2ef4b0
 void box_pair_2ef4b0::function_2ef4b0(description_2ed170 const *a, description_2ed170 const *b, input_2ef2f0 const *input, collector_2ef4b0 *collector)
 {
-	bool found;
 	contact_307f90 contact;
 	timer_add_2ebc80("TtBoxBox");
 	box_2ef3b0 const *first_box = (box_2ef3b0 const *)a->shape;
 	box_2ef3b0 const *second_box = (box_2ef3b0 const *)b->shape;
-	__m128 from = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
-	__m128 to = _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius));
-	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, from,
-		(long)b->placement + 0x20, to, input->tolerance);
+	__m128 grown_first = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
+	__m128 grown_second = _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius));
+	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, grown_first,
+		(long)b->placement + 0x20, grown_second, input->tolerance);
 	contact.a = a;
 	contact.b = b;
+	answer_307f90 found;
 	query.function_307f90(&found, &contact);
-	if (found)
+	if (found.value)
 	{
 		collector->slot_1(&contact);
 	}
@@ -171,16 +183,16 @@ void __cdecl function_2ef5d0(void const *a_, void const *b_, void const *input_,
 	timer_add_2ebc80("TtBoxBox");
 	box_2ef3b0 const *first_box = (box_2ef3b0 const *)a->shape;
 	box_2ef3b0 const *second_box = (box_2ef3b0 const *)b->shape;
-	__m128 from = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
-	__m128 to = _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius));
-	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, from,
-		(long)b->placement + 0x20, to, input->tolerance);
+	__m128 grown_first = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
+	__m128 grown_second = _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius));
+	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, grown_first,
+		(long)b->placement + 0x20, grown_second, input->tolerance);
 	contact_307f90 contact;
 	contact.a = a;
 	contact.b = b;
-	bool found;
+	answer_307f90 found;
 	query.function_307f90(&found, &contact);
-	if (found)
+	if (found.value)
 	{
 		((collector_2ef4b0 *)collector_)->slot_1(&contact);
 	}
@@ -230,9 +242,10 @@ void box_pair_2ef6e0::function_2ef6e0(description_2ed170 const *a, description_2
 	timer_add_2ebc80("TtBoxBox");
 	box_2ef3b0 const *first_box = (box_2ef3b0 const *)a->shape;
 	box_2ef3b0 const *second_box = (box_2ef3b0 const *)b->shape;
-	__m128 from = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
-	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, from,
-		(long)b->placement + 0x20, _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius)), input->tolerance);
+	__m128 grown_first = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
+	__m128 grown_second = _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius));
+	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, grown_first,
+		(long)b->placement + 0x20, grown_second, input->tolerance);
 	((box_pair_306400 *)&query)->function_306400();
 	answer_306580 overlap = ((class_306580 *)&query)->function_306580();
 	if (overlap.value)
@@ -252,9 +265,10 @@ void __cdecl function_2ef7f0(void const *a_, void const *b_, void const *input_,
 	timer_add_2ebc80("TtBoxBox");
 	box_2ef3b0 const *first_box = (box_2ef3b0 const *)a->shape;
 	box_2ef3b0 const *second_box = (box_2ef3b0 const *)b->shape;
-	__m128 from = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
-	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, from,
-		(long)b->placement + 0x20, _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius)), input->tolerance);
+	__m128 grown_first = _mm_add_ps(first_box->half_extents, _mm_set_ps1(first_box->radius));
+	__m128 grown_second = _mm_add_ps(second_box->half_extents, _mm_set_ps1(second_box->radius));
+	query_2ef260 query((long)a, (long)b, 0, 0, 0, (long)a->placement + 0x20, grown_first,
+		(long)b->placement + 0x20, grown_second, input->tolerance);
 	((box_pair_306400 *)&query)->function_306400();
 	answer_306580 overlap = ((class_306580 *)&query)->function_306580();
 	if (overlap.value)

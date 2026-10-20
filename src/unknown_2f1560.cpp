@@ -93,12 +93,12 @@ void __cdecl function_2f1690(void const *a_, void const *b_, void const *input, 
 	__m128 row2 = frame->axes[2];
 	__m128 row3 = row2;
 	_MM_TRANSPOSE4_PS(row0, row1, row2, row3);
-	__m128 centre = _mm_add_ps(_mm_add_ps(
+	__m128 centre_in_frame = _mm_add_ps(_mm_add_ps(
 		_mm_mul_ps(row0, _mm_shuffle_ps(d, d, 0x00)),
 		_mm_mul_ps(row1, _mm_shuffle_ps(d, d, 0x55))),
 		_mm_mul_ps(row2, _mm_shuffle_ps(d, d, 0xaa)));
 	closest_308d90 closest;
-	function_308d90(&centre, triangle->corners, terms, &closest);
+	function_308d90(&centre_in_frame, triangle->corners, terms, &closest);
 	if (triangle->radius + sphere->radius > closest.distance)
 	{
 		((collector_2f1560 *)collector)->slot_1(a, b);
