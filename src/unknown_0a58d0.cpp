@@ -1060,10 +1060,11 @@ matrix3x3 *function_141e10(matrix3x3 *out, quaternionf const *q);
 
 PRIVATE inline void z_orientation_matrix(vector3f const *forward, vector3f const *up, matrix3x3 *matrix)
 {
- matrix->left.i = up->j * forward->k - forward->j * up->k;
- matrix->left.j = forward->i * up->k - forward->k * up->i;
+ vector3f *left = &matrix->left;
  matrix->forward = *forward;
- matrix->left.k = up->i * forward->j - forward->i * up->j;
+ left->i = up->j * forward->k - forward->j * up->k;
+ left->j = forward->i * up->k - forward->k * up->i;
+ left->k = up->i * forward->j - forward->i * up->j;
  matrix->up = *up;
 }
 
@@ -1076,12 +1077,10 @@ void function_a9b40(long index, s_z_copy_state *state)
  matrix3x3 saved_matrix, current_matrix;
  quaternionf saved_rotation, current_rotation, blended;
  vector3f saved_axis, current_axis;
- vector3f *saved_up = &state->forward;
- vector3f *saved_forward = &state->up;
- z_orientation_matrix(saved_forward, saved_up, &saved_matrix);
+ z_orientation_matrix(&state->up, &state->forward, &saved_matrix);
  vector3f const *current_up = (vector3f const *)(object + 0x7c);
+ z_orientation_matrix((vector3f const *)(object + 0x70), current_up, &current_matrix);
  vector3f const *current_forward = (vector3f const *)(object + 0x70);
- z_orientation_matrix(current_forward, current_up, &current_matrix);
  function_141f60(&saved_matrix, &saved_rotation);
  function_141f60(&current_matrix, &current_rotation);
  function_11d790(&saved_rotation, &saved_axis, &saved_angle);
@@ -1098,8 +1097,8 @@ void function_a9b40(long index, s_z_copy_state *state)
   blended.w = current_rotation.w * weight + saved_rotation.w * 0.65f;
   quaternion_unit_or_identity(&blended);
   function_141e10(&current_matrix, &blended);
-  *saved_forward = current_matrix.forward;
-  *saved_up = current_matrix.up;
+  state->up = current_matrix.forward;
+  state->forward = current_matrix.up;
  }
  else
  {
