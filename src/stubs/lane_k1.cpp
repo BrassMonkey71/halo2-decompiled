@@ -67,16 +67,6 @@ void __cdecl function_2f6db0(void const *a, void const *b, void const *input, vo
 
 // Havok round 17: callees of matched functions not decompiled yet
 
-class class_30c330
-{
-public:
-	void function_30c330(void const *record);
-};
-
-// @stub 0x30c330
-void class_30c330::function_30c330(void const *record)
-{
-}
 
 
 
