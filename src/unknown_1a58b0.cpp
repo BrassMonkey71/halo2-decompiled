@@ -772,11 +772,7 @@ void function_1a7b30(s_flag_bits *result, long owner_index)
 
 	if (other != NONE)
 	{
-		s_flag_bits *mask = (s_flag_bits *)(tags[other & 0xffff].bytes + 0x38);
-		long k;
-
-		for (k = 0; k < 5; k++)
-			result->d[k] &= mask->d[k];
+		bit_vector_intersect(0x83, result->d, (dword *)(tags[other & 0xffff].bytes + 0x38), result->d);
 	}
 }
 

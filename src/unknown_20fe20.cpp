@@ -1078,8 +1078,8 @@ void function_2118c0(void)
 		{
 			s_cell_tag *tag = (s_cell_tag *)g_4e3b44[source->tag_index & 0xffff].bytes;
 			vector3f const &direction = source->direction;
-			double azimuth;
-			double elevation;
+			real azimuth;
+			real elevation;
 			real scale;
 			long j;
 
@@ -1099,8 +1099,8 @@ void function_2118c0(void)
 			elevation += tag->valuec * cell->valuec * 0.5f;
 			azimuth += cell->value8 * tag->value8 * 0.5f;
 
-			cell->direction.i = (real)cos(azimuth) * (real)cos(elevation);
-			cell->direction.j = (real)sin(azimuth) * (real)cos(elevation);
+			cell->direction.i = (real)(cos(azimuth) * cos(elevation));
+			cell->direction.j = (real)(sin(azimuth) * cos(elevation));
 			cell->direction.k = (real)sin(elevation);
 
 			scale = source->scale * cell->interpolation;
