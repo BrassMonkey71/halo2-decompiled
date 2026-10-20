@@ -126,60 +126,68 @@ long function_20f960(long index, s_audio_priority_table *table, bool *expired)
 	s_audio_priority_definition *definition = &table->entries[*(short *)(record + 2)];
 	if (expired)
 		*expired = false;
-	if (!*((byte *)g_4f55d0 + 0x20) || *(short *)((byte *)g_4f55d0 + 0x22) > 0)
-		goto rejected;
+	if (*((byte *)g_4f55d0 + 0x20) && *(short *)((byte *)g_4f55d0 + 0x22) <= 0)
 	{
 		real seconds = g_510c54->field_2_3 * *(real *)((byte *)definition + 0x20);
-		long start = *(long *)(record + 0x10);
 		long ticks = real_to_long(seconds);
-		if (time - start > ticks)
-			goto report_expiration;
-	}
-	{
-		byte *object = *(byte **)(g_4e0300->data + (*(long *)(record + 4) & 0xffff) * 12 + 8);
-		result = true;
-		if (TEST_FIELD_BIT(((s_audio_object_state_20f960 *)object)->blocked))
-			goto rejected;
-		long actor_index = *(long *)(object + 0x12c);
-		if (actor_index == NONE)
-			goto done;
-		byte *actor = g_4f55f0->data + (actor_index & 0xffff) * 0x888;
-		if (*(short *)(actor + 0x86) > *(short *)((byte *)definition + 0x16) ||
-			time - *(long *)(actor + 0x4c) < g_510c54->field_2_3 * 3)
-			goto rejected;
-		short type = *(short *)(record + 0x24);
-		if (type >= 0 && type < 200 && *(long *)(record + 0x28) != NONE)
+		long start = *(long *)(record + 0x10);
+		if (time - start <= ticks)
 		{
-			switch (type)
+			byte *object = *(byte **)(g_4e0300->data + (*(long *)(record + 4) & 0xffff) * 12 + 8);
+			result = true;
+			if (TEST_FIELD_BIT(((s_audio_object_state_20f960 *)object)->blocked))
 			{
-			case 138:
-			case 142:
-			case 150:
-			case 159:
-			case 194:
-			case 196:
-			case 198:
+				result = false;
+			}
+			else
+			{
+				long actor_index = *(long *)(object + 0x12c);
+				if (actor_index != NONE)
 				{
-					s_audio_object_state_20f960 *target = (s_audio_object_state_20f960 *)function_badc0(*(long *)(record + 0x28), NONE);
-					if (!target || TEST_FIELD_BIT(target->blocked))
-						goto rejected;
+					byte *actor = g_4f55f0->data + (actor_index & 0xffff) * 0x888;
+					if (*(short *)(actor + 0x86) > *(short *)((byte *)definition + 0x16) ||
+						time - *(long *)(actor + 0x4c) < g_510c54->field_2_3 * 3)
+					{
+						result = false;
+					}
+					else
+					{
+						short type = *(short *)(record + 0x24);
+						if (type >= 0 && type < 200 && *(long *)(record + 0x28) != NONE)
+						{
+							switch (type)
+							{
+							case 138:
+							case 142:
+							case 150:
+							case 159:
+							case 194:
+							case 196:
+							case 198:
+								{
+									s_audio_object_state_20f960 *target = (s_audio_object_state_20f960 *)function_badc0(*(long *)(record + 0x28), NONE);
+									if (!target || TEST_FIELD_BIT(target->blocked))
+										result = false;
+								}
+								break;
+							}
+						}
+					}
 				}
-				break;
 			}
 		}
-		goto done;
 	}
-rejected:
-	result = false;
-report_expiration:
-	if (expired)
+	else
+	{
+		result = false;
+	}
+	if (!result && expired)
 	{
 		bool value = false;
 		if (*(long *)(g_4f9398->data + (index & 0xffff) * 0x54 + 0x2c))
 			value = true;
 		*expired = value;
 	}
-done:
 	return result;
 }
 
