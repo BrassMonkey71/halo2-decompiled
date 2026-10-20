@@ -1351,7 +1351,7 @@ void function_1c590(s_shader_cache *state, long tag, long index)
 }
 
 // @retail 0x1c620
-void function_1c620(s_shader_cache *state, long a, long b, long c, byte const *descriptor)
+inline void function_1c620(s_shader_cache *state, long a, long b, long c, byte const *descriptor)
 {
 	long index = state->stream_count;
 	if (state->streams[index].field_04 != b || state->streams[index].field_00 != a || state->streams[index].field_08 != c)

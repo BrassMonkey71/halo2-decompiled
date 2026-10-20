@@ -1144,6 +1144,10 @@ void function_211cc0(void)
 
 	do
 	{
+		word w0 = (word)((k - 1) & 7);
+		word w2 = (word)((k + 1) & 7);
+		word w3 = (word)((k + 2) & 7);
+
 		m = 1;
 
 		do
@@ -1158,11 +1162,12 @@ void function_211cc0(void)
 
 			do
 			{
+				long row = b << 3;
 				vector3f *out = &g_4f93bc[b * 8 + k][m];
-				vector3f *p3 = &g_4f93bc[b * 8 + (word)((k + 2) & 7)][0];
-				vector3f *p2 = &g_4f93bc[b * 8 + (word)((k + 1) & 7)][0];
+				vector3f *p3 = g_4f93bc[row + w3];
+				vector3f *p2 = g_4f93bc[row + w2];
 				vector3f *p1 = &g_4f93bc[b * 8 + k][0];
-				vector3f *p0 = &g_4f93bc[b * 8 + (word)((k - 1) & 7)][0];
+				vector3f *p0 = g_4f93bc[row + w0];
 				long i;
 
 				for (i = 0; i < 3; i++)

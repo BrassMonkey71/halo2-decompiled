@@ -1942,10 +1942,14 @@ s_particle_system_datum *function_178eb0(long effect_index, long definition_inde
 		if (location_index != NONE)
 		{
 			long first_location_index = effect->location_indices[location_index];
-			s_effect_location_datum *location = effect_location_next(effect, &first_location_index, definition->location_mode);
+			short location_mode = definition->location_mode;
+			s_effect_location_datum *location = effect_location_next(effect, &first_location_index, location_mode);
 
-			if (location && function_178020(definition->placement, &location->matrix.position, &effect->location))
+			if (location)
 			{
+				short placement = definition->placement;
+				if (!function_178020(placement, &location->matrix.position, &effect->location))
+					return 0;
 				long particle_system_index = function_173fd0(definition, effect_index, effect->tag_index, definition_index, effect->event_index);
 
 				if (particle_system_index != NONE)

@@ -651,24 +651,17 @@ void __stdcall function_52040(void const *request, void const *vertices);
 // @retail 0x23675a
 void function_23675a(s_bitmap_view *bitmap, s_texture_rect const *texture, dword color, short mode, s_float_rect const *bounds)
 {
-	(void)&bitmap;
-	(void)&texture;
-	(void)&color;
-	(void)&mode;
 	point2f corners[4];
-	real height = bounds->y1 - bounds->y0;
-	volatile real &width = corners[0].x;
-	width = bounds->x1 - bounds->x0;
-	real right = bounds->x0 + width;
-	real bottom = bounds->y0 + height;
-	corners[0].x = bounds->x0;
 	corners[0].y = bounds->y0;
-	corners[1].x = right;
+	corners[0].x = bounds->x0;
+	real height = bounds->y1 - bounds->y0;
+	real width = bounds->x1 - bounds->x0;
+	corners[1].x = bounds->x0 + width;
 	corners[1].y = bounds->y0;
-	corners[2].x = right;
-	corners[2].y = bottom;
+	corners[2].x = bounds->x0 + width;
+	corners[2].y = bounds->y0 + height;
 	corners[3].x = bounds->x0;
-	corners[3].y = bottom;
+	corners[3].y = bounds->y0 + height;
 	s_interface_draw_vertex vertices[4];
 	for (long i = 0; i < 4; i++)
 	{

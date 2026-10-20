@@ -20,20 +20,8 @@ void s_1c3a40::function_2e5a90(handlers_2e5d50 const *handlers, long first_type,
 
 // handlers of the pair table (0x2e5d50) not decompiled yet
 
-// @stub 0x2ead90
-void __cdecl function_2ead90(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-// @stub 0x2ece90
-void __cdecl function_2ece90(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-// @stub 0x2ecfa0
-void __cdecl function_2ecfa0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 struct walk_3028c0;
 struct segment_3028c0;
@@ -89,17 +77,9 @@ public:
 void class_30c330::function_30c330(void const *record)
 {
 }
-// @stub 0x2eab70
-void class_2eab70::function_2eab70(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
-// @stub 0x2ecf20
-void class_2ecf20::function_2ecf20(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
@@ -192,10 +172,6 @@ void class_2e1090::function_2e0020(element_2e1090 const *element, bounds_2e0020 
 {
 }
 
-// @stub 0x2ed030
-void class_2ed030::function_2ed030(void const *a, void const *b, void *collector)
-{
-}
 
 
 // @stub 0x2fe350
@@ -228,10 +204,6 @@ public:
 
 // Havok round havok18: callees of the queries passed on with their sides changed
 
-// @stub 0x2ece10
-void class_2ece10::function_2ece10(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
@@ -261,11 +233,20 @@ class class_308180;
 
 struct contact_307f90;
 
+// whether a contact was found
+class answer_307f90
+{
+public:
+	answer_307f90() {}
+
+	char value;
+};
+
 class query_2ef260
 {
 public:
 	void function_3080a0(class_308180 *manifold);
-	void function_307f90(bool *found, contact_307f90 *contact);
+	void function_307f90(answer_307f90 *found, contact_307f90 *contact);
 };
 
 // whether two boxes overlap, returned through a hidden pointer
@@ -284,7 +265,7 @@ public:
 };
 
 // @stub 0x307f90
-void query_2ef260::function_307f90(bool *found, contact_307f90 *contact)
+void query_2ef260::function_307f90(answer_307f90 *found, contact_307f90 *contact)
 {
 }
 
