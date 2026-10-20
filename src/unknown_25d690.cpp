@@ -1311,10 +1311,7 @@ bool function_25ccd0(s_type_5cfb45 *arg_0, long arg_1, short arg_2, s_2640c0 *ar
 	{
 		*(point3f *)((byte *)arg_0 + 0x10) = arg_0->position;
 	}
-	/* retail calls the cluster test here */
-#pragma inline_depth(0)
 	arg_0->unknown69 = function_11c120((s_location *)((byte *)arg_0 + 0x28), (point3f *)((byte *)arg_0 + 0x10), NULL);
-#pragma inline_depth()
 	arg_0->unknown3c = NONE;
 	arg_0->unknown65 = false;
 	arg_0->unknown66 = false;
@@ -1327,7 +1324,7 @@ bool function_25ccd0(s_type_5cfb45 *arg_0, long arg_1, short arg_2, s_2640c0 *ar
 		{
 			arg_0->unknown3c = function_1caa10(local_3->parent_index);
 			arg_0->unknown65 = *(long *)((byte *)local_7 + 0x24c) == arg_1 || local_3->type == 15;
-			arg_0->unknown66 = *(long *)((byte *)local_7 + 0x248) == arg_1 && function_f0f90(local_3->parent_index);
+			arg_0->unknown66 = *(long *)((byte *)local_7 + 0x248) == arg_1 && function_f0f90(arg_0->unknown3c);
 		}
 		else if ((1 << local_7->type) & 3)
 		{
