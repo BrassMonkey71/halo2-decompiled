@@ -251,8 +251,9 @@ bool function_1b0400(long arg_0, s_follow_search_state *arg_1)
             if (!local_8[0xaa] && *(long *)(local_8 + 0x14) != NONE)
                 local_7 = *(long *)(local_8 + 0x14);
             local_7 = function_baf40(local_7);
+            short local_10 = state->location.cluster_index;
             short local_9 = function_1c8df0(local_7, (point3f const *)((byte *)state + 0x30),
-                *(short *)((byte *)state + 0x2c), *(short *)((byte *)entry + 0x12),
+                local_10, *(short *)((byte *)entry + 0x12),
                 &local_6, 1, false, local_0->unknown26c != NONE, false, NULL);
             if (local_3->unknown24 >= 1)
                 local_1 = local_9 == 0;

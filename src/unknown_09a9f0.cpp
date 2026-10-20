@@ -1348,16 +1348,19 @@ long c_projectile_type::v29(long a, s_entity_info *info, long *flags, long size,
     byte creation[0xc4];
     function_a5d90(creation, info, flags, state);
     byte *fields = (byte *)info;
-    byte *record = datum_get_absolute_inlined(g_4e8c24, *(long *)(fields + 0x10));
-    if (record)
+    if (*(long *)(fields + 0x10) != NONE)
     {
-        long player_index = data_datum_index(g_4e8c24, *(long *)(fields + 0x10));
-        *(long *)(creation + 0x60) = *(long *)(record + 0x2c);
-        *(long *)(creation + 0x5c) = player_index;
-        *(long *)(creation + 0x64) = (signed char)record[0xc0];
-        *(long *)(creation + 0x6c) = *(long *)(record + 0x2c);
-        *(long *)(creation + 0x68) = player_index;
-        *(short *)(creation + 0x70) = (signed char)record[0xc0];
+        byte *record = datum_get_absolute_inlined(g_4e8c24, *(long *)(fields + 0x10));
+        if (record)
+        {
+            long player_index = data_datum_index(g_4e8c24, *(long *)(fields + 0x10));
+            *(long *)(creation + 0x60) = *(long *)(record + 0x2c);
+            *(long *)(creation + 0x5c) = player_index;
+            *(long *)(creation + 0x64) = (signed char)record[0xc0];
+            *(long *)(creation + 0x6c) = *(long *)(record + 0x2c);
+            *(long *)(creation + 0x68) = player_index;
+            *(short *)(creation + 0x70) = (signed char)record[0xc0];
+        }
     }
     long index;
     if (info->field0 != NONE) index = function_a73b0(info);

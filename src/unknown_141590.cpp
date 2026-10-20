@@ -20,16 +20,16 @@ void function_141590(
 	{
 		real z, y, x;
 		real t;
-		z = 0.f - in->position.z;
-		y = 0.f - in->position.y;
 		x = 0.f - in->position.x;
+		y = 0.f - in->position.y;
+		z = 0.f - in->position.z;
 		if (in->scale != 1.f)
 		{
 			real const &inverse = 1.f / in->scale;
 			out->scale = inverse;
-			z = (real)(z * inverse);
-			y = (real)(y * inverse);
 			x = (real)(x * inverse);
+			y = (real)(y * inverse);
+			z = (real)(z * inverse);
 		}
 		else
 		{
