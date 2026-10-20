@@ -648,6 +648,18 @@ bool function_1b580(byte const *definition, long component, long unused, long mo
     return true;
 }
 
+/* one 4-byte entry of the value list that function_17960 walks */
+struct s_shader_value_entry
+{
+    word output : 4;
+    word group : 1;
+    word mode : 5;
+    word kind : 3;
+    word unused : 3;
+    byte unknown2;
+    byte parameter;
+};
+
 // @retail 0x17960
 void __stdcall function_17960(byte *state, word const *range)
 {
@@ -656,24 +668,21 @@ void __stdcall function_17960(byte *state, word const *range)
     if (range_view->count() > 0)
     {
         byte const *definition = *(byte **)(state + 0xc);
-        byte const *entry = *(byte **)(definition + 0x58) + (initial_range & 0x1ff) * 4;
+        s_shader_value_entry const *entry = (s_shader_value_entry const *)(*(byte **)(definition + 0x58) + (initial_range & 0x1ff) * 4);
         real *outputs[2] = { (real *)(state + 0x1530), (real *)(state + 0x1630) };
         dword *changed[2] = { (dword *)(state + 0x1730), (dword *)(state + 0x1734) };
-        for (long i = 0; i < (*range >> 9); ++i, entry += 4)
+        for (long i = 0; i < (*range >> 9); ++i)
         {
             definition = *(byte **)(state + 0xc);
-            long range_index = ((word const *)*(byte **)(definition + 0x50))[entry[3]] & 0x1ff;
+            long range_index = ((word const *)*(byte **)(definition + 0x50))[entry->parameter] & 0x1ff;
             long index = ((short const *)*(byte **)(definition + 0x48))[range_index * 2];
             byte const *parameter = *(byte **)(definition + 0x40) + index * 20;
-            word packed = *(word const *)entry;
-            long group = (packed >> 4) & 1;
-            real *out = outputs[group] + (packed & 15) * 4;
-            long mode = (packed >> 5) & 31;
-            if (mode < 5)
+            real *out = outputs[entry->group] + entry->output * 4;
+            if (entry->mode < 5)
             {
-                s_1b230_function const *volatile curve = (s_1b230_function const *)(parameter + 12);
-                s_1b230_function const *input_curve = curve;
-                real value = function_1b230(input_curve, *(long const *)parameter,
+                s_1b230_function const *curve = (s_1b230_function const *)(parameter + 12);
+                long mode = entry->mode;
+                real value = function_1b230(curve, *(long const *)parameter,
                     *(long const *)(parameter + 4), *(real const *)(parameter + 8));
                 if (mode != 4)
                 {
@@ -700,9 +709,9 @@ void __stdcall function_17960(byte *state, word const *range)
                 }
             }
             else
-                function_1b790(state, (packed >> 10) & 7, out, mode);
-            packed = *(word const *)entry;
-            *changed[(packed >> 4) & 1] |= 1 << (packed & 15);
+                function_1b790(state, entry->kind, out, entry->mode);
+            *changed[entry->group] |= 1 << entry->output;
+            ++entry;
         }
     }
 }

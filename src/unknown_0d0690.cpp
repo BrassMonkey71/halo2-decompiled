@@ -1344,10 +1344,13 @@ long function_d2f90(long flags, short bitmap_index, long palette_index, real u, 
             {
                 if (!function_d15e0(bitmap, 0.0f))
                 {
-                    if (*(void **)((byte *)bitmap + 0x54))
-                        result = 0;
-                    else
+                    if (!*(void **)((byte *)bitmap + 0x54))
+                    {
                         function_12360((s_bitmap_view *)bitmap, 0.0f);
+                        result = 1;
+                    }
+                    else
+                        result = 0;
                 }
                 else if (function_d1680(bitmap))
                     result = 0;
@@ -1369,7 +1372,7 @@ long function_d2f90(long flags, short bitmap_index, long palette_index, real u, 
                     if (*(short *)((byte *)bitmap + 0xc) == 0x12)
                         pixel = function_015cd0(palette_index, pixel);
                     unpack_color3f(pixel, out);
-                    return result;
+                    goto done;
                 }
             }
             out->blue = 0.0f;
@@ -1377,6 +1380,7 @@ long function_d2f90(long flags, short bitmap_index, long palette_index, real u, 
             out->red = 0.0f;
         }
     }
+done:
     return result;
 }
 

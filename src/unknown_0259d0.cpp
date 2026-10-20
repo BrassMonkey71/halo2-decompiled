@@ -39,7 +39,7 @@ inline real distance3d(
 }
 
 // @retail 0x259d0
-real function_259d0(
+inline real function_259d0(
 	dword *seed,
 	char const *file,
 	long line,

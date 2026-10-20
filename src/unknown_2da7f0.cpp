@@ -1,28 +1,11 @@
 // @flags /O2 /GL-
 // Havok (third-party physics library): compares two 3x4 matrices of SSE
 // columns within a tolerance.
-#include <xmmintrin.h>
-
-struct bool_result_2da7f0
-{
-    bool value;
-
-    bool_result_2da7f0(bool value_)
-    {
-        value = value_;
-    }
-};
+#include "matrix_compare_2da7f0.h"
 
 // every bit but the sign bit, in four lanes
 __declspec(align(16)) static const unsigned long absolute_mask_455940[4] = {
     0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff
-};
-
-struct matrix_2da7f0
-{
-    __m128 column[3];
-
-    bool_result_2da7f0 equal_within(matrix_2da7f0 const &other, float tolerance) const;
 };
 
 // @retail 0x2da7f0

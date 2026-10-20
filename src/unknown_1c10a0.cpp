@@ -108,6 +108,7 @@ bool function_1c0b80(long actor_index, long const *excluded, short excluded_coun
 					{
 						long position_reference = (zone_index << 16) | (word)position_index;
 						s_firing_position *position;
+						s_actor_point_target const *position_target;
 						point3f point;
 						vector3f vector;
 						real path_distance;
@@ -117,26 +118,23 @@ bool function_1c0b80(long actor_index, long const *excluded, short excluded_coun
 						{
 							if (excluded[i] == position_reference)
 							{
-								break;
+								goto next_position;
 							}
 						}
-						if (i < excluded_count)
-						{
-							continue;
-						}
 						position = &zone->positions[position_index];
-						if (position->target.output_index == NONE)
-							vector3d_from_points3d(&position->target.point, &actor->position, &vector);
+						position_target = &position->target;
+						if (position_target->output_index == NONE)
+							vector3d_from_points3d(&position_target->point, &actor->position, &vector);
 						else
 						{
-							actor_point_target_position(&position->target, &point);
+							actor_point_target_position(position_target, &point);
 							vector3d_from_points3d(&point, &actor->position, &vector);
 						}
-						if (!(g_46fbdc * g_46fbdc > length_sq3f(&vector)))
+						if (!(length_sq3f(&vector) < g_46fbdc * g_46fbdc))
 						{
 							continue;
 						}
-						function_270750(buffer, position->unknown30, &position->target, &path_distance, 0, 0);
+						function_270750(buffer, position->unknown30, position_target, &path_distance, 0, 0);
 						if (3.4028235e38f > path_distance)
 						{
 							real distance;
@@ -144,17 +142,16 @@ bool function_1c0b80(long actor_index, long const *excluded, short excluded_coun
 							vector3f direction;
 							point3f cost_point, direction_point;
 
-							actor_point_target_position(&position->target, &cost_point);
+							actor_point_target_position(position_target, &cost_point);
 							vector3d_from_points3d(&cost_point, prop_position, &vector);
 							distance = (real)sqrt(length_sq3f(&vector)) + path_distance;
-							if (position->target.output_index == NONE)
-								vector3d_from_points3d(prop_position, &position->target.point, &direction);
+							if (position_target->output_index == NONE)
+								vector3d_from_points3d(prop_position, &position_target->point, &direction);
 							else
 							{
-								actor_point_target_position(&position->target, &direction_point);
+								actor_point_target_position(position_target, &direction_point);
 								vector3d_from_points3d(prop_position, &direction_point, &direction);
 							}
-							cost = 3.4028235e38f;
 							if (normalize_inline(&direction) > 0.0f)
 							{
 								vector3f facing;
@@ -168,6 +165,14 @@ bool function_1c0b80(long actor_index, long const *excluded, short excluded_coun
 								{
 									cost = (2.0f - alignment) * distance;
 								}
+								else
+								{
+									cost = 3.4028235e38f;
+								}
+							}
+							else
+							{
+								cost = 3.4028235e38f;
 							}
 							if (best_cost > cost)
 							{
@@ -178,6 +183,7 @@ bool function_1c0b80(long actor_index, long const *excluded, short excluded_coun
 								result = true;
 							}
 						}
+					next_position:;
 					}
 				}
 			}

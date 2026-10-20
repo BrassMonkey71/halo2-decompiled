@@ -301,16 +301,7 @@ struct s_http_connection_ab
 
 bool function_b51b0(s_transport_endpoint *endpoint, s_type_99af70 const *address);
 
-static __forceinline bool http_address_valid_ab(s_type_99af70 const *address)
-{
-    long length = address->address_length;
-    if (length == NONE || length == 4)
-        return address->ipv4_address != 0;
-    if (length == 16)
-        for (long i = 0; i < 8; i++)
-            if (address->ipv6_address[i]) return true;
-    return false;
-}
+bool function_7af40(s_type_99af70 const *address);
 
 // @retail 0xb5d40
 bool s_http_connection_ab::connect(long address, word port, char const *path, bool flag)
@@ -321,7 +312,7 @@ bool s_http_connection_ab::connect(long address, word port, char const *path, bo
     connection->address.port = htons(port);
     connection->hostname[0] = 0;
     function_b6290(connection->hostname, "%d.%d.%d.%d", (byte)address, (byte)(address >> 8), (byte)(address >> 16), (byte)(address >> 24));
-    if (http_address_valid_ab(&connection->address))
+    if (function_7af40(&connection->address))
     {
         s_transport_endpoint *endpoint = connection->endpoint;
         endpoint->socket = NONE;
