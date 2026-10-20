@@ -42,8 +42,7 @@ static __inline real normalize3d(vector3f *v)
 // Decode normalization uses the rounded local components in double products.
 static __forceinline real normalize_decoded_direction(vector3f *v)
 {
-	vector3f const volatile *stored = v;
-	real m = (real)sqrt((double)stored->i * stored->i + (double)stored->k * stored->k + (double)stored->j * stored->j);
+	real m = (real)sqrt((double)v->i * v->i + (double)v->k * v->k + (double)v->j * v->j);
 	if (!(fabs(m) < k_real_epsilon))
 	{
 		real inv = 1.f / m;
@@ -143,11 +142,11 @@ void function_195070(s_bitstream *stream, vector3f *out, real lo, real hi, long 
 		long index = (long)function_1959c0(stream, k_direction_bits);
 		vector3f direction;
 		{
-			s_direction_face const *face = &g_475480[index >> 12];
 			real x = (real)(index & 0x3f) * (1.f / 63.f);
 			real y = (real)((index >> 6) & 0x3f) * (1.f / 63.f);
 			x = x * 2.f;
 			y = y * 2.f;
+			s_direction_face const *face = &g_475480[index >> 12];
 			real z = 0.f;
 			if (face->scale != 1.f)
 			{

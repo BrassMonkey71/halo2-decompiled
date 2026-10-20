@@ -404,13 +404,23 @@ struct s_cluster_link_ab
 
 static __forceinline long cluster_link_next_ab(s_record_pool *array, long *next)
 {
-    if (*next == NONE)
-        return NONE;
-    s_cluster_link_ab *link = (s_cluster_link_ab *)(array->data + (*next & 0xffff) * array->size);
-    long result = link->object_index;
-    *next = link->next;
+    long result;
     if (*next != NONE)
-        _mm_prefetch((char const *)(array->data + (*next & 0xffff) * array->size), _MM_HINT_T0);
+    {
+        long size = array->size;
+        byte *data = array->data;
+        s_cluster_link_ab *link = (s_cluster_link_ab *)(data + (*next & 0xffff) * size);
+        long following = link->next;
+
+        if (following != NONE)
+            _mm_prefetch((char const *)(data + (following & 0xffff) * size), _MM_HINT_T0);
+        *next = following;
+        result = link->object_index;
+    }
+    else
+    {
+        result = NONE;
+    }
     return result;
 }
 
@@ -434,9 +444,10 @@ short function_bb430(long mask, short cluster_count, short const *clusters, shor
             object = cluster_link_next_ab((s_record_pool *)g_4de2e4, &next);
             while (object != NONE)
             {
-                if (g_4de300[object & 0xffff] != g_4de2fc)
+                long index = object & 0xffff;
+                if (g_4de300[index] != g_4de2fc)
                 {
-                    g_4de300[object & 0xffff] = g_4de2fc;
+                    g_4de300[index] = g_4de2fc;
                     if (count >= maximum)
                     {
                         g_4de2f8 = false;
@@ -453,9 +464,10 @@ short function_bb430(long mask, short cluster_count, short const *clusters, shor
             object = cluster_link_next_ab((s_record_pool *)g_4de2d8, &next);
             while (object != NONE)
             {
-                if (g_4de300[object & 0xffff] != g_4de2fc)
+                long index = object & 0xffff;
+                if (g_4de300[index] != g_4de2fc)
                 {
-                    g_4de300[object & 0xffff] = g_4de2fc;
+                    g_4de300[index] = g_4de2fc;
                     if (count >= maximum)
                     {
                         g_4de2f8 = false;
