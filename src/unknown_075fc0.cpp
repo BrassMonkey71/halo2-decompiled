@@ -167,7 +167,7 @@ bool s_network_observer::connection_v05(long arg_1,
 		if (local_23 < local_13)
 			return local_2;
 	}
-	else if (local_17 != 0.0f)
+	else if (local_17 == 0.0f)
 		return local_2;
 	long local_26 = NONE;
 	if (local_18 >= 0)
