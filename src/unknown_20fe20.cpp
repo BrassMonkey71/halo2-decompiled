@@ -9,6 +9,8 @@
 #include "object_iterator.h"
 #include "unknown_1428b0.h"
 #include "unknown_20fe20.h"
+#include "unknown_11cc90.h"
+#include "vector_angles.h"
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
@@ -1058,17 +1060,10 @@ static inline real random_step(void)
 
 static inline real pin_real(real x, real lower, real upper)
 {
-	if (x < lower)
-	{
-		x = lower;
-	}
-	else if (x > upper)
-	{
-		x = upper;
-	}
-
-	return x;
+	return x < lower ? lower : (x > upper ? upper : x);
 }
+
+vector2f *function_11df30(vector2f *angles, vector3f const *v);
 
 // @retail 0x2118c0
 void function_2118c0(void)
@@ -1087,10 +1082,8 @@ void function_2118c0(void)
 		{
 			s_cell_tag *tag = (s_cell_tag *)g_4e3b44[source->tag_index & 0xffff].bytes;
 			vector3f const &direction = source->direction;
-			real azimuth;
-			real elevation;
+			vector2f angles;
 			real scale;
-			long j;
 
 			cell->value4 += random_step();
 			cell->value4 = pin_real(cell->value4, 0.0f, 1.0f);
@@ -1103,20 +1096,15 @@ void function_2118c0(void)
 
 			cell->interpolation = (tag->value4 - tag->value0) * cell->value4 + tag->value0;
 
-			azimuth = atan2(direction.j, direction.i);
-			elevation = atan2(direction.k, sqrt(direction.j * direction.j + direction.i * direction.i));
-			elevation += tag->valuec * cell->valuec * 0.5f;
-			azimuth += cell->value8 * tag->value8 * 0.5f;
+			function_11df30(&angles, &direction);
+			angles.j += tag->valuec * cell->valuec * 0.5f;
 
-			cell->direction.i = (real)(cos(azimuth) * cos(elevation));
-			cell->direction.j = (real)(sin(azimuth) * cos(elevation));
-			cell->direction.k = (real)sin(elevation);
+			direction_from_angles(&cell->direction, angles.i + cell->value8 * tag->value8 * 0.5f, angles.j);
 
 			scale = source->scale * cell->interpolation;
-			for (j = 0; j < 3; j++)
-			{
-				cell->direction.n[j] *= scale;
-			}
+			cell->direction.i *= scale;
+			cell->direction.j *= scale;
+			cell->direction.k *= scale;
 
 			cell->active = true;
 		}

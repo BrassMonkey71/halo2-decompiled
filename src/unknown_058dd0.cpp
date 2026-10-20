@@ -1575,10 +1575,10 @@ bool network_session_parameters_set_data4db0(c_class_58d20 *session, const s_ses
 // @retail 0x71480
 bool function_71480(c_session_state_matchmaking *state)
 {
+	bool result = false;
 	s_session_owner *owner = state->owner;
 	c_class_58d20 *session = owner->session_a;
 	c_class_58d20 *other = owner->session_b;
-	bool result = false;
 	if (session->type == 10)
 	{
 		function_70b70(state);

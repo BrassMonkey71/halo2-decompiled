@@ -2,8 +2,11 @@
 // Havok (third-party physics library): starting a query of a tree of cells
 // for the keys of the cells a pair of bounds touches, the bounds taken into
 // the tree's fixed-point grid; 0x2fff90 first takes the bounds of a box
-// turned by a transform.
+// turned by a transform. The same for a sphere (0x3008d0), and the walk of the
+// tree's command stream for it (0x300290).
 #include <xmmintrin.h>
+#include "growable_array_2d91d0.h"
+#include "stream_holder_2d8e70.h"
 
 struct s_surface_key_array;
 
@@ -151,4 +154,443 @@ void class_300150::function_300150(void const *tree_, const s_query_bounds *boun
 	range.field_30 = 0;
 	range.field_34 = 0;
 	function_2ff8b0(&range, ((tree_300150 const *)tree_)->nodes);
+}
+
+// what reports a stream's errors: its second slot gives the stream to write
+// the message to, which also ends the report (src/unknown_2fefd0.cpp)
+class reporter_2ff210
+{
+public:
+	virtual void slot_0() {}
+	virtual stream_holder_2d8e70 *slot_1() { return 0; }
+};
+
+extern reporter_2ff210 *g_48017c;
+
+struct class_2d9060
+{
+	long function_2d9060();
+};
+
+ELEMENTS_2D91D0(keys_300290, long);
+
+// a big-endian number of two, three or four bytes
+#define READ_2_300290(p) (((p)[0] << 8) + (p)[1])
+#define READ_3_300290(p) (((((p)[0] << 8) + (p)[1]) << 8) + (p)[2])
+#define READ_4_300290(p) (((((((p)[0] << 8) + (p)[1]) << 8) + (p)[2]) << 8) + (p)[3])
+
+// a box of cells around the sphere, in whole cells of the current level: the
+// sphere's centre from the cell's corner and its radius, the corner, the
+// first key of the cell's subtree, how many bits of the fixed-point grid the
+// level leaves, and a value the commands set
+struct cell_box_300290
+{
+	long centre[3];
+	long radius;
+	long corner[3];
+	long key_base;
+	long shift;
+	long values[1];
+};
+
+// a value rounded to the nearest integer by the FPU
+__forceinline int round_3008d0(float value)
+{
+	int result;
+	__asm
+	{
+		fld value
+		fistp result
+	}
+	return result;
+}
+
+// a tree's grid: its origin, its scale, and its nodes
+struct tree_3008d0
+{
+	float origin[3];
+	float scale;
+	char unknown10[0x30 - 0x10];
+	unsigned char nodes[1];
+};
+
+class class_3008d0
+{
+public:
+	s_surface_key_array *keys;
+	long unknown4[3];
+	// the sphere's centre and radius in the tree's fixed-point grid
+	long centre[3];
+	long radius;
+
+	void function_3008d0(void const *tree, const __m128 *sphere, s_surface_key_array *keys);
+	void function_300290(cell_box_300290 const *box, unsigned char const *node);
+};
+
+// runs a tree's command stream for a sphere: commands narrow the box to a
+// child cell, split the walk where the sphere spans both sides of a plane
+// (the first side by recursion), cut it off where the sphere misses a slab,
+// move the key base, or give a key to add to the list
+// @retail 0x300290
+void class_3008d0::function_300290(cell_box_300290 const *box, unsigned char const *node)
+{
+	cell_box_300290 copy;
+	long offset;
+	long value;
+	long position;
+	long extent;
+	long low;
+	long high;
+	for (;;)
+	{
+		long const op = *node;
+		switch (op)
+		{
+		// planes across two axes or three, then one
+		case 0x13:
+			position = box->centre[1] + box->centre[2];
+			extent = box->radius + (box->radius >> 1) + 1;
+			low = node[1] * 2;
+			high = node[2] * 2;
+			goto split;
+		case 0x14:
+			position = box->centre[1] - box->centre[2] + 0xff;
+			extent = box->radius + (box->radius >> 1) + 1;
+			low = node[1] * 2;
+			high = node[2] * 2;
+			goto split;
+		case 0x15:
+			position = box->centre[0] + box->centre[2];
+			extent = box->radius + (box->radius >> 1) + 1;
+			low = node[1] * 2;
+			high = node[2] * 2;
+			goto split;
+		case 0x16:
+			position = box->centre[0] - box->centre[2] + 0xff;
+			extent = box->radius + (box->radius >> 1) + 1;
+			low = node[1] * 2;
+			high = node[2] * 2;
+			goto split;
+		case 0x17:
+			position = box->centre[0] + box->centre[1];
+			extent = box->radius + (box->radius >> 1) + 1;
+			low = node[1] * 2;
+			high = node[2] * 2;
+			goto split;
+		case 0x18:
+			position = box->centre[0] - box->centre[1] + 0xff;
+			extent = box->radius + (box->radius >> 1) + 1;
+			low = node[1] * 2;
+			high = node[2] * 2;
+			goto split;
+		case 0x19:
+			position = box->centre[2] + box->centre[1] + box->centre[0];
+			extent = box->radius * 4;
+			low = node[1] * 3;
+			high = node[2] * 3;
+			goto split;
+		case 0x1a:
+			position = box->centre[1] - box->centre[2] + box->centre[0] + 0xff;
+			extent = box->radius * 4;
+			low = node[1] * 3;
+			high = node[2] * 3;
+			goto split;
+		case 0x1b:
+			position = box->centre[2] - box->centre[1] + box->centre[0] + 0xff;
+			extent = box->radius * 4;
+			low = node[1] * 3;
+			high = node[2] * 3;
+			goto split;
+		case 0x1c:
+			position = box->centre[0] - box->centre[2] - box->centre[1] + 0x1fe;
+			extent = box->radius * 4;
+			low = node[1] * 3;
+			high = node[2] * 3;
+			goto split;
+
+		case 0x10:
+		case 0x11:
+		case 0x12:
+			position = box->centre[op - 0x10];
+			extent = box->radius;
+			low = node[1];
+			high = node[2];
+		// the sphere on the first side of the plane goes on there; on the
+		// second, to the second side; on both, the first side by recursion
+		split:
+		{
+			node += 4;
+			if (position + extent < high)
+			{
+				break;
+			}
+			long const skip = node[-1];
+			node += skip;
+			if (position > low + extent)
+			{
+				break;
+			}
+			function_300290(box, node - skip);
+			break;
+		}
+
+		// one plane across an axis, the second side's start given
+		case 0x20:
+		case 0x21:
+		case 0x22:
+		{
+			long const along = box->centre[op - 0x20];
+			long const plane = node[1];
+			node += 3;
+			if (along + box->radius < plane)
+			{
+				break;
+			}
+			long const skip = node[-1];
+			node += skip;
+			if (along > box->radius + plane + 1)
+			{
+				break;
+			}
+			function_300290(box, node - skip);
+			break;
+		}
+		// two planes across an axis, both sides' starts given
+		case 0x23:
+		case 0x24:
+		case 0x25:
+		{
+			long const along = box->centre[op - 0x23];
+			long const second_low = node[1];
+			long const first_high = node[2];
+			long const first_skip = READ_2_300290(node + 3);
+			node += 7;
+			if (along + box->radius < first_high)
+			{
+				node += first_skip;
+				break;
+			}
+			long const second_skip = READ_2_300290(node - 2);
+			node += second_skip;
+			if (along > box->radius + second_low)
+			{
+				break;
+			}
+			function_300290(box, node - second_skip + first_skip);
+			break;
+		}
+		// a slab across an axis the sphere must touch
+		case 0x26:
+		case 0x27:
+		case 0x28:
+		{
+			long const along = box->centre[op - 0x26];
+			if (along + box->radius < node[1])
+			{
+				return;
+			}
+			if (along > node[2] + box->radius)
+			{
+				return;
+			}
+			node += 3;
+			break;
+		}
+		// the same in the whole grid
+		case 0x29:
+		case 0x2a:
+		case 0x2b:
+		{
+			long const along = centre[op - 0x29];
+			if (radius + along < READ_3_300290(node + 1))
+			{
+				return;
+			}
+			if (along > READ_3_300290(node + 4) + radius)
+			{
+				return;
+			}
+			node += 7;
+			break;
+		}
+		case 0x05:
+			node += node[1] + 2;
+			break;
+		case 0x06:
+			node += READ_2_300290(node + 1) + 3;
+			break;
+		case 0x07:
+			node += READ_3_300290(node + 1) + 4;
+			break;
+		case 0x01:
+		case 0x02:
+		case 0x03:
+		case 0x04:
+		{
+			long const shift = op;
+			copy.shift = box->shift - shift;
+			copy.corner[0] = (node[1] + box->corner[0]) << shift;
+			copy.centre[0] = (centre[0] >> copy.shift) - copy.corner[0];
+			copy.corner[1] = (node[2] + box->corner[1]) << shift;
+			copy.centre[1] = (centre[1] >> copy.shift) - copy.corner[1];
+			copy.corner[2] = (node[3] + box->corner[2]) << shift;
+			copy.centre[2] = (centre[2] >> copy.shift) - copy.corner[2];
+			copy.radius = (radius >> copy.shift) + 1;
+			copy.key_base = box->key_base;
+			copy.values[0] = box->values[0];
+			box = &copy;
+			node += 4;
+			break;
+		}
+		case 0x09:
+		{
+			long const delta = node[1];
+			if (box != &copy)
+			{
+				copy = *box;
+				box = &copy;
+			}
+			copy.key_base += delta;
+			node += 2;
+			break;
+		}
+		case 0x0a:
+		{
+			long const delta = READ_2_300290(node + 1);
+			if (box != &copy)
+			{
+				copy = *box;
+				box = &copy;
+			}
+			copy.key_base += delta;
+			node += 3;
+			break;
+		}
+		case 0x0b:
+		{
+			long const start = READ_4_300290(node + 1);
+			if (box != &copy)
+			{
+				copy = *box;
+				box = &copy;
+			}
+			copy.key_base = start;
+			node += 5;
+			break;
+		}
+
+		// the value in the first of four slots (retail writes the slot the
+		// command names, past the end for the other three)
+		case 0x60:
+		case 0x61:
+		case 0x62:
+		case 0x63:
+			copy.values[op - 0x60] = node[1];
+			node += 2;
+			value = copy.values[0];
+			if (box != &copy)
+			{
+				copy = *box;
+				box = &copy;
+			}
+			copy.values[0] = value;
+			break;
+		case 0x64:
+		case 0x65:
+		case 0x66:
+		case 0x67:
+			copy.values[op - 0x64] = READ_2_300290(node + 1);
+			node += 3;
+			value = copy.values[0];
+			if (box != &copy)
+			{
+				copy = *box;
+				box = &copy;
+			}
+			copy.values[0] = value;
+			break;
+		case 0x68:
+		case 0x69:
+		case 0x6a:
+		case 0x6b:
+			copy.values[op - 0x68] = READ_4_300290(node + 1);
+			node += 5;
+			value = copy.values[0];
+			if (box != &copy)
+			{
+				copy = *box;
+				box = &copy;
+			}
+			copy.values[0] = value;
+			break;
+		default:
+			g_48017c->slot_1()->function_2d9000("unknown command %i\n", op);
+			((class_2d9060 *)g_48017c->slot_1())->function_2d9060();
+			*(long *)0 = 0;
+			return;
+		case 0x00:
+			return;
+		case 0x50:
+			offset = node[1];
+			goto found;
+		case 0x51:
+			offset = READ_2_300290(node + 1);
+			goto found;
+		case 0x52:
+			offset = READ_3_300290(node + 1);
+			goto found;
+		case 0x53:
+			offset = READ_4_300290(node + 1);
+			goto found;
+		case 0x30: case 0x31: case 0x32: case 0x33: case 0x34: case 0x35: case 0x36: case 0x37:
+		case 0x38: case 0x39: case 0x3a: case 0x3b: case 0x3c: case 0x3d: case 0x3e: case 0x3f:
+		case 0x40: case 0x41: case 0x42: case 0x43: case 0x44: case 0x45: case 0x46: case 0x47:
+		case 0x48: case 0x49: case 0x4a: case 0x4b: case 0x4c: case 0x4d: case 0x4e: case 0x4f:
+			offset = op - 0x30;
+			goto found;
+		}
+	}
+found:
+	((keys_300290 *)keys)->append(box->key_base + offset);
+}
+
+// the sphere's centre and radius in the tree's fixed-point grid, and the
+// walk of the tree from its root
+// @retail 0x3008d0
+void class_3008d0::function_3008d0(void const *tree_, const __m128 *sphere, s_surface_key_array *keys_)
+{
+	tree_3008d0 const *tree = (tree_3008d0 const *)tree_;
+	keys = keys_;
+	float const *sphere_centre = (float const *)sphere;
+	unsigned char const *const nodes = tree->nodes;
+	centre[0] = round_3008d0((sphere_centre[0] - tree->origin[0]) * tree->scale) - 1;
+	centre[1] = round_3008d0((sphere_centre[1] - tree->origin[1]) * tree->scale) - 1;
+	centre[2] = round_3008d0((sphere_centre[2] - tree->origin[2]) * tree->scale) - 1;
+	radius = round_3008d0(sphere_centre[3] * tree->scale);
+	cell_box_300290 box;
+	box.centre[0] = centre[0] >> 16;
+	box.radius = (radius >> 16) + 1;
+	box.centre[1] = centre[1] >> 16;
+	box.corner[0] = 0;
+	box.corner[1] = 0;
+	box.corner[2] = 0;
+	box.key_base = 0;
+	box.values[0] = 0;
+	box.centre[2] = centre[2] >> 16;
+	box.shift = 0x10;
+	function_300290(&box, nodes);
+}
+
+struct class_3009b0
+{
+    char unknown0[0x24];
+    long field_24;
+
+    void function_3009b0();
+};
+
+// @retail 0x3009b0
+void class_3009b0::function_3009b0()
+{
+    field_24++;
 }

@@ -287,8 +287,7 @@ struct s_particle_system_datum
 	long effect_index;
 	s_location location;
 	long unknown24;
-	real random_a;
-	real random_b;
+	real random[2];
 	long location_index;
 	long unknown34;
 	long next_index;
