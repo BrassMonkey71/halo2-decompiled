@@ -798,8 +798,7 @@ short __stdcall function_1b9640(long actor_index, s_slot *slot)
 		iterator.data = g_4e8c24;
 		iterator.index = NONE;
 		iterator.datum_index = NONE;
-		if (data_datum_iterator_next(&iterator))
-		do
+		while (data_datum_iterator_next(&iterator))
 		{
 			s_player_unit_view *player = (s_player_unit_view *)iterator.datum;
 
@@ -828,7 +827,6 @@ short __stdcall function_1b9640(long actor_index, s_slot *slot)
 				}
 			}
 		}
-		while (data_datum_iterator_next(&iterator));
 
 		if (vehicle_index != NONE)
 		{
@@ -838,7 +836,8 @@ short __stdcall function_1b9640(long actor_index, s_slot *slot)
 			if (prop_index != NONE && prop_node_get(prop_index)->unknown24 < 1)
 				function_25c230(actor_index, prop_index, 3);
 			slot_index = actor_behavior_find_level(actor_index, 0x4c);
-			if (slot_index == NONE || function_1b8c80(((s_slot_4c *)&actor->slots[slot_index])->unknown1c) != vehicle_index)
+			bool already_assigned = slot_index != NONE && function_1b8c80(((s_slot_4c *)&actor->slots[slot_index])->unknown1c) == vehicle_index;
+			if (!already_assigned)
 			{
 				s_slot_4c *state = (s_slot_4c *)slot;
 
