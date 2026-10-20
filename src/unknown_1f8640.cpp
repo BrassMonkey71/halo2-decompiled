@@ -287,7 +287,7 @@ void function_1f90f0(long actor_index, s_path_source *source)
 }
 
 real function_30bf0(vector3f *v);
-void function_11d180(vector3f *left, vector3f const *in, vector3f *out, vector3f const *up, vector3f *forward);
+void function_11d180(vector3f const *in, vector3f const *up, vector3f *forward, vector3f *left, vector3f *out);
 
 /* the vector in the frame of the forward direction (forward, left, up), as
    a unit vector; flat frames ignore the vertical */
@@ -300,7 +300,7 @@ void __stdcall function_1f8510(bool full_frame, vector3f const *vector, vector3f
 		vector3f up;
 		vector3f normalized_forward;
 
-		function_11d180(&left, forward, &up, g_4687b0, &normalized_forward);
+		function_11d180(forward, g_4687b0, &normalized_forward, &left, &up);
 		out->i = dot3f(forward, vector);
 		out->j = dot3f(vector, &left);
 		out->k = dot3f(vector, &up);
