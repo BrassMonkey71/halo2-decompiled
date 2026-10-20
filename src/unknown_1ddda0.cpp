@@ -90,7 +90,8 @@ bool function_1debd0(dword const *arg_1, s_bsp3d const *arg_0, short arg_2, long
    point2f local_12 = { *(real const *)((byte const *)local_11 + local_7), *(real const *)((byte const *)local_11 + local_8) };
    point2f local_14 = { arg_6->x - local_12.x, arg_6->y - local_12.y };
    real const *local_16 = (real const *)&local_3[local_9->field_0[!local_10]].field_0;
-   point2f local_17 = { *(real const *)((byte const *)local_16 + local_7) - local_12.x, *(real const *)((byte const *)local_16 + local_8) - local_12.y };
+   point2f local_15 = { *(real const *)((byte const *)local_16 + local_7), *(real const *)((byte const *)local_16 + local_8) };
+   point2f local_17 = { local_15.x - local_12.x, local_15.y - local_12.y };
    if (local_17.y * local_14.x - local_14.y * local_17.x > 0.0f) goto done;
    local_5 = local_9->field_4[local_10];
   } while (local_5 != local_4);
