@@ -146,7 +146,7 @@ void function_11d6a0(
 	vector3f const *b,
 	quaternionf *out)
 {
-	real s = (a->i * b->i + a->j * b->j + a->k * b->k + 1.f) * 2.f;
+	real s = (dot3f(a, b) + 1.f) * 2.f;
 	if (!(s > 0.f))
 		s = 0.f;
 	s = (real)sqrt(s);

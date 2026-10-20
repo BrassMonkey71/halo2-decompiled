@@ -126,8 +126,10 @@ real function_1d9430(s_1d9240 const *p)
 #define PIN(value, lower, upper) ((value) < (lower) ? (lower) : (value) > (upper) ? (upper) : (value))
 
 /* 6t^5 - 15t^4 + 10t^3, clamped to [0, 1] */
+__declspec(noinline) inline real function_1d9670(real t);
+
 // @retail 0x1d9670
-real function_1d9670(real t)
+inline real function_1d9670(real t)
 {
 	real t3 = t * t * t;
 	real t4 = t3 * t;
@@ -143,42 +145,39 @@ real function_10e8e0(real t);
 // @retail 0x1d9370
 real function_1d9370(s_1d9240 const *p)
 {
-	if (!p->count)
-		return 0.0f;
-
-	real result;
-
-	real count = (real)p->count;
-
-	if (!(count > 1.0f))
+	real result = 0.0f;
+	if (p->count)
 	{
-		count = 1.0f;
-	}
-	result = (real)p->value / count;
-	switch (p->unknown02)
-	{
-	case 1:
-		result = function_10e8e0(result);
-		break;
-	case 2:
-		result = function_1d9670(result);
-		break;
-	case 3:
-		result -= 1.0f;
-		result = 1.0f - result * result;
-		break;
-	case 4:
-	{
-		real u = 1.0f - result;
+		real count = (real)p->count;
 
-		result = 1.0f - u * u * u;
-		break;
+		if (!(count > 1.0f))
+		{
+			count = 1.0f;
+		}
+		result = (real)p->value / count;
+		switch (p->unknown02)
+		{
+		case 1:
+			result = function_10e8e0(result);
+			break;
+		case 2:
+			result = function_1d9670(result);
+			break;
+		case 3:
+			result -= 1.0f;
+			result = 1.0f - result * result;
+			break;
+		case 4:
+		{
+			result = 1.0f - (1.0f - result) * (1.0f - result) * (1.0f - result);
+			break;
+		}
+		}
+		if (0.0f > result)
+			result = 0.0f;
+		else if (result > 1.0f)
+			result = 1.0f;
 	}
-	}
-	if (0.0f > result)
-		result = 0.0f;
-	else if (result > 1.0f)
-		result = 1.0f;
 	return result;
 }
 
