@@ -32,8 +32,3 @@ struct s_biped_ground_collision;
 struct s_state_c570;
 // @stub 0x1ec690
 void function_1ec690(byte const *input, s_state_c570 *state, byte *output) {}
-
-#include "unknown_0a9f20.h"
-// @stub 0x2de0a0
-c_z_capsule_temp::c_z_capsule_temp(void const *first, void const *second, real radius) {}
-
