@@ -6,6 +6,16 @@ The newest entry comes first.
 
 ```
 matched 9267 of 11321 game functions (1375353 of 2784283 bytes, 49.40%)
+matched 805 of 1041 Havok functions (85346 of 234536 bytes, 36.39%)
+```
+
+0 new matches, none lost:
+- Opus lane Havok round 27: 0x22c720, 0x22c740, 0x22c780, 0x22c7b0, 0x22c800, 0x22ca00, 0x22ca70 and 0x316460 match.
+
+## 2026-10-20: 9267 functions match
+
+```
+matched 9267 of 11321 game functions (1375353 of 2784283 bytes, 49.40%)
 matched 794 of 1041 Havok functions (80813 of 234536 bytes, 34.46%)
 ```
 
