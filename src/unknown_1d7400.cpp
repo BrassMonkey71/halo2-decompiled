@@ -74,19 +74,13 @@ struct s_1d7400
  c_extent_shape *function_1d7400(c_extent_shape *arg_0, void *arg_1, real arg_2);
 };
 
-/* whether a shape kind holds a list of child shapes */
-static __forceinline bool shape_is_list_1d7400(long kind)
-{
- return kind == 2 || (kind > 9 && kind <= 11);
-}
-
 // @retail 0x1d7400
 c_extent_shape *s_1d7400::function_1d7400(c_extent_shape *arg_0, void *arg_1, real arg_2)
 {
  real local_1, local_0;
  function_182aa0(arg_0, &local_1, &local_0);
  real local_2 = (local_0 * arg_2 * 0.5f + g_47f05c) * g_510c54->field_2_3;
- if (shape_is_list_1d7400(arg_0->shape_kind()))
+ if (shape_kind_is_list(arg_0->shape_kind()))
  {
   c_extent_shape *local_4[32];
   long local_5 = 0;
