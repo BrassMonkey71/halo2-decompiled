@@ -122,19 +122,6 @@ public:
 	void function_300290(cell_box_300290 const *box, unsigned char const *node);
 };
 
-struct cell_range_2ff8b0;
-
-class class_300150
-{
-public:
-	void function_2ff8b0(cell_range_2ff8b0 const *range, unsigned char const *node);
-};
-
-// @stub 0x2ff8b0
-void class_300150::function_2ff8b0(cell_range_2ff8b0 const *range, unsigned char const *node)
-{
-}
-
 struct s_244980_ray;
 struct s_244980_output;
 class c_244c10;
@@ -221,11 +208,6 @@ void class_2f4f00::function_2f4f00(void const *a, void const *b, void const *inp
 
 // @stub 0x2f4440
 void class_2f4440::function_2f4440(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2fa2f0
-void class_2fa2f0::function_2fa2f0(void const *a, void const *b, void const *input, void *collector)
 {
 }
 
