@@ -738,7 +738,7 @@ void __stdcall function_1e1a00(long actor_index, long value)
 long __stdcall function_1dfb90(long definition_index);
 void function_1e3b60(long actor_index);
 
-PRIVATE inline short actor_initial_team(short type)
+PRIVATE inline short actor_initial_team(long type)
 {
 	switch (type)
 	{
