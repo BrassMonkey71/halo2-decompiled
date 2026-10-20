@@ -1201,6 +1201,7 @@ short function_25cb60(long arg_0, long arg_1, short arg_2, void *arg_3, void *ar
 // @retail 0x25c9d0
 short function_25c9d0(long arg_0, long arg_1, bool arg_2, long arg_3, void *arg_4, byte *arg_5, long arg_6)
 {
+	short result;
 	s_squad_datum *local_1 = actor_get(arg_0)->unknown030 != NONE ? squad_get(actor_get(arg_0)->unknown030) : NULL;
 	s_prop_datum *local_2 = prop_ref_get(arg_1);
 	byte *local_3 = (byte *)function_badc0(local_2->object_index, 3);
@@ -1209,22 +1210,27 @@ short function_25c9d0(long arg_0, long arg_1, bool arg_2, long arg_3, void *arg_
 	if (local_3 && (arg_2 ? *(real *)(local_3 + 0x2b0) > 0.05f : *(real *)(local_3 + 0x2b0) > 0.8f))
 	{
 		if (local_4)
-			return 0;
-		local_5 |= arg_2 && local_2->unknown28 > 4.f;
+			local_5 = true;
+		else
+			local_5 |= arg_2 && local_2->unknown28 > 4.f;
 	}
 	if (local_5)
-		return 0;
-	bool local_6 = true;
-	if (actor_get(arg_0)->unknown270 == 4 || actor_get(arg_0)->unknown004 == 15 ||
-		(!local_4 && local_2->type != 3) ||
-		(local_2->state >= 1 && local_2->state <= 2) || actor_get(arg_0)->unknown223)
-		local_6 = false;
-	volatile long local_7;
-	if (actor_get(arg_0)->unknown086 >= 3)
-		local_7 = 2;
+		result = 0;
 	else
-		local_7 = actor_get(arg_0)->unknown084 >= 4;
-	return function_263810((point3f const *)arg_5, arg_0, (point3f const *)arg_4, (point3f const *)(arg_5 + 0xc), 2, (short)arg_3, local_6, (bool *)arg_6);
+	{
+		bool local_6 = true;
+		if (actor_get(arg_0)->unknown270 == 4 || actor_get(arg_0)->unknown004 == 15 ||
+			(!local_4 && local_2->type != 3) ||
+			(local_2->state >= 1 && local_2->state <= 2) || actor_get(arg_0)->unknown223)
+			local_6 = false;
+		volatile long local_7;
+		if (actor_get(arg_0)->unknown086 >= 3)
+			local_7 = 2;
+		else
+			local_7 = actor_get(arg_0)->unknown084 >= 4;
+		result = function_263810((point3f const *)arg_4, arg_0, (point3f const *)arg_5, (point3f const *)(arg_5 + 0xc), 2, (short)arg_3, local_6, (bool *)arg_6);
+	}
+	return result;
 }
 
 /* decides whether the actor reacts to its current prop */
