@@ -120,7 +120,6 @@ long __stdcall function_3ddd0(long object_index);
 // @retail 0x3d430
 signed char *function_3d430(long object_index)
 {
-    (void)&object_index;
     signed char *result = NULL;
     if (g_4ba050 >= 0 && g_4ba050 < 4)
     {

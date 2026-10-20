@@ -131,14 +131,14 @@ bool __stdcall function_8ca70(long mode, s_name_buffer *output)
 					function_8ca71(&file, 0x200, true);
 					if (file_ref_read(&file, sizeof(list), &list, true))
 					{
-					long local_1 = list.count;
-					if (local_1 <= 32)
-					{
-						g_4e7408->seed = g_4e7408->seed * 0x19660d + 0x3c6ef35f;
-						short index = (short)(((g_4e7408->seed >> 16) * (short)local_1) >> 16);
-						function_08cc20(output, list.names[index].name);
-						result = true;
-					}
+						if (list.count <= 32)
+						{
+							short choice_count = (short)list.count;
+							g_4e7408->seed = g_4e7408->seed * 0x19660d + 0x3c6ef35f;
+							short index = (short)(((g_4e7408->seed >> 16) * choice_count) >> 16);
+							function_08cc20(output, list.names[index].name);
+							result = true;
+						}
 					}
 				}
 				else
