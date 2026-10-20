@@ -261,14 +261,15 @@ void function_17000(byte *context, word const *range)
 	byte *record = *(byte **)(instance + 0x24) + (**range_reference & 0x1ff) * 4;
 	for (long i = 0; i < (**range_reference >> 9); ++i, record += 4)
 	{
-		volatile word packed = *(word *)record;
-		long bank = (packed >> 4) & 1;
-		dword *base = tables_r16.banks[bank];
-		dword *mask = tables_r16.masks[bank];
+		word packed = *(word *)record;
+		long bank = packed >> 4;
+		dword *base = tables_r16.banks[bank & 1];
+		dword *mask = tables_r16.masks[bank & 1];
 		long slot = packed & 15;
+		dword bit = 1 << slot;
 		dword *out = base + slot * 4;
-		*mask |= 1 << slot;
 		dword *source = values + record[3] * 4;
+		*mask |= bit;
 		switch (((dword)*(word *)record >> 5) & 31)
 		{
 		case 0: case 5: out[0] = source[0]; break;

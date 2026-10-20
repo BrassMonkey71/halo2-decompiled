@@ -807,12 +807,12 @@ bool function_23ea80(long tag, transform4x3f const *matrix, long variant, long s
 	function_1cf50();
 	long entry = variant + 7;
 	long binding_tag = *(long *)(shader + 0x100);
-	if (binding_tag != NONE &&
+	result = binding_tag != NONE &&
 		(dword)entry < *(dword *)(g_4e3b44[binding_tag & 0xffff].bytes + 4) &&
-		(dword)(*(long *)(*(byte **)(g_4e3b44[binding_tag & 0xffff].bytes + 8) + entry * 0x1c + 0xc) >> 4) > 0)
+		(dword)(*(long *)(*(byte **)(g_4e3b44[binding_tag & 0xffff].bytes + 8) + entry * 0x1c + 0xc) >> 4) > 0;
+	if (result)
 	{
 		{
-			result = true;
 			function_1c590((s_shader_cache *)g_51f0f0, binding_tag, entry);
 			if (g_470a38 && g_470a39)
 				function_1ccb0(43);

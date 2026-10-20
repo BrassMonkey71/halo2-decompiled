@@ -1198,10 +1198,10 @@ real g_467494 = 5.0f;
 real function_30bf0(vector3f *vector);
 
 // @retail 0xd4080
-void function_d4080(s_effect_color_query const *query, long type, s_lighting_record *record, bool flag)
+void function_d4080(long type, s_effect_color_query const *query, s_lighting_record *record, long flag)
 {
-	bool const *const flag_reference = &flag;
-	bool flag_value = *flag_reference;
+	long const *const flag_reference = &flag;
+	long flag_value = *flag_reference;
 	(void)flag_value;
 	byte *context = (byte *)g_4e0350;
 	vector3f const *input_normal = (vector3f const *)query;
