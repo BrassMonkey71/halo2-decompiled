@@ -144,3 +144,29 @@ void class_2ece10::function_2ece10(void const *a, void const *b, void const *inp
 	description_2ecc80 child(description, &placement, shape);
 	target->slot2(&child, (long)b, (long)input, (long)out);
 }
+
+// selects the pair handler after composing the wrapper's child placement
+struct dispatcher_2ece90
+{
+	char field_0[0x218c];
+	typedef void (__cdecl *handler)(description_2ecc80 const *description, typed_2ecd80 **other, void const *input, void *out);
+	handler handlers[1][32];
+};
+
+// @retail 0x2ece90
+void __cdecl function_2ece90(void const *a, void const *b, void const *input, void *out)
+{
+	description_2ecc80 const *description = (description_2ecc80 const *)a;
+	typed_2ecd80 **other = (typed_2ecd80 **)b;
+	dispatcher_2ece90 **dispatcher = (dispatcher_2ece90 **)input;
+	shape_2ecc80 const *shape = description->shape;
+	placement_2ecc80 placement;
+	placement.field_0 = description->placement->field_0;
+	placement.field_10 = description->placement->field_10;
+	// Retail reloads the placement pointer for composition after the bounds copy.
+	placement.transform.compose(&(*(placement_2ecc80 const *const volatile *)&description->placement)->transform, &shape->transform);
+	description_2ecc80 child(description, &placement, shape);
+	long first = ((typed_2ecd80 *)child.shape)->type();
+	long second = (*other)->type();
+	(*dispatcher)->handlers[first][second](&child, other, input, out);
+}
