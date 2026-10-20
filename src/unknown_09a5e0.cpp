@@ -1098,7 +1098,7 @@ bool c_vehicle_flip_event_definition::v11(long a, long const *entities, long c, 
 			{
 				_ReadWriteBarrier();
 				s_typed_object_header *current_headers = (s_typed_object_header *)g_4e0300->data;
-				if (!TEST_FIELD_BIT(((s_object_view *)current_headers[unit_index & 0xffff].object)->flag2) &&
+				if (!TEST_FIELD_BIT(((s_object_view *)OBJECT(unit_index))->flag2) &&
 					!TEST_FIELD_BIT(((s_object_view *)current_headers[vehicle_index & 0xffff].object)->flag2))
 				{
 					s_unit_flip_request request;

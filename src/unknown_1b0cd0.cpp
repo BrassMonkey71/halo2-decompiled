@@ -48,11 +48,24 @@ struct s_4e0350_point_view
 	s_point_globals *points;
 };
 
-__forceinline point2f *point_get(long reference)
+struct s_point_entry
+{
+	byte unknown00[0x20];
+	s_type_c3b527 location;
+	long unknown30;
+	byte unknown34[0x3c - 0x34];
+};
+
+__forceinline s_point_entry *point_entry_get(long reference)
 {
 	s_point_block *block = &((s_4e0350_point_view *)g_4e0350)->points->blocks[(reference >> 16) & 0xffff];
 
-	return (point2f *)(block->points + (reference & 0xffff) * 0x3c + 0x20);
+	return (s_point_entry *)block->points + (reference & 0xffff);
+}
+
+__forceinline point2f *point_get(long reference)
+{
+	return (point2f *)&point_entry_get(reference)->location;
 }
 
 vector2f *g_468778;
@@ -562,12 +575,15 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
                 goto done;
             if (function_25ab50(local_2->unknown88))
             {
-                s_type_c3b527 *local_5 = (s_type_c3b527 *)point_get(local_2->unknown88);
-                { local_3 = function_1f4460(arg_0, local_5, *(long *)((byte *)local_5 + 0x10), NONE, false); goto done; }
+                s_point_entry *local_5 = point_entry_get(local_2->unknown88);
+                if (!function_1f4460(arg_0, &local_5->location, local_5->unknown30, NONE, false))
+                    local_3 = false;
+                goto done;
             }
             if (!REFERENCE_EQUAL(local_0->unknown418, g_470fa0) && function_1f86f0(arg_0))
                 function_262800(arg_0, local_0->unknown418, false);
-            s_2605d0_request local_6 = {0};
+            s_2605d0_request local_6;
+            memset(&local_6, 0, sizeof(local_6));
             local_6.type = 4;
             local_6.unknown015 = true;
             local_6.unknown05b = true;
@@ -592,16 +608,16 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
             if (local_2->unknown84 != NONE && function_25ab50(local_2->unknown84) &&
                 function_25ab50(local_2->unknown88))
             {
-                s_type_c3b527 *local_16 = (s_type_c3b527 *)point_get(local_2->unknown84);
+                s_point_entry *local_16 = point_entry_get(local_2->unknown84);
                 s_type_c3b527 *local_17 = (s_type_c3b527 *)point_get(local_2->unknown88);
                 vector3f local_18;
-                function_210be0(local_16, local_17, &local_18);
+                function_210be0(&local_16->location, local_17, &local_18);
                 local_13.i = local_18.i;
                 local_13.j = local_18.j;
                 if (normalize2d((point2f *)&local_13) == 0.0f)
                     local_13 = *g_468778;
-                local_12 = *local_16;
-                local_14 = *(long *)((byte *)local_16 + 0x10);
+                /* as in retail, this path leaves local_12 unfilled */
+                local_14 = local_16->unknown30;
                 local_15 = true;
             }
             else
@@ -627,40 +643,41 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
                     real local_22 = local_11->position.x - local_19.x;
                     real local_23 = local_11->position.y - local_19.y;
                     if (local_23 * local_23 + local_22 * local_22 > 0.2f ||
-                        1.0 - ((double)local_13.j * local_11->unknown290.j +
-                            (double)local_13.i * local_11->unknown290.i) > 0.05000000074505806)
+                        1.0 - (local_13.j * local_11->unknown290.j +
+                            local_13.i * local_11->unknown290.i) > 0.05f)
                     {
                         local_21 = false;
                         if (local_0->unknown040 && !function_1f4460(arg_0, &local_12, local_14, NONE, false))
                             local_3 = false;
-                        local_2->unknown80 = local_21;
-                        goto done;
                     }
                 }
-                for (short local_24 = 0; local_24 < 10; ++local_24)
+                if (local_21)
                 {
-                    s_slot_target_entry *local_25 = &local_2->entries[local_24];
-                    if (local_25->type == 3 && local_25->actor_index != arg_0)
+                    for (short local_24 = 0; local_24 < 10; ++local_24)
                     {
-                        short local_26 = function_1b10e0(local_24, local_2);
-                        if (local_26 == NONE)
+                        s_slot_target_entry *local_25 = &local_2->entries[local_24];
+                        if (local_25->type == 3 && local_25->actor_index != arg_0)
                         {
-                            local_21 = false;
-                            break;
-                        }
-                        s_actor_view *local_27 = actor_get(local_25->actor_index);
-                        point2f local_28;
-                        if (function_1b0e40(&local_28, (point2f *)&local_19, &local_13,
-                            local_26, local_2->mode, &local_20))
-                        {
-                            real local_29 = local_27->position.x - local_28.x;
-                            real local_30 = local_27->position.y - local_28.y;
-                            if (local_30 * local_30 + local_29 * local_29 > 0.2f ||
-                                1.0 - ((double)local_13.j * local_27->unknown290.j +
-                                    (double)local_13.i * local_27->unknown290.i) > 0.05000000074505806)
+                            short local_26 = function_1b10e0(local_24, local_2);
+                            if (local_26 == NONE)
                             {
                                 local_21 = false;
                                 break;
+                            }
+                            s_actor_view *local_27 = actor_get(local_25->actor_index);
+                            point2f local_28;
+                            if (function_1b0e40(&local_28, (point2f *)&local_19, &local_13,
+                                local_26, local_2->mode, &local_20))
+                            {
+                                real local_29 = local_27->position.x - local_28.x;
+                                real local_30 = local_27->position.y - local_28.y;
+                                if (local_30 * local_30 + local_29 * local_29 > 0.2f ||
+                                    1.0 - (local_13.j * local_27->unknown290.j +
+                                        local_13.i * local_27->unknown290.i) > 0.05f)
+                                {
+                                    local_21 = false;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -670,23 +687,26 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
             }
             if (!local_0->unknown040)
                 goto done;
-            point2f local_31;
-            if (local_1->position_index == NONE)
             {
-                if (function_1b1100(arg_0, &local_13, local_1, local_2, (point2f *)&local_19,
-                    &local_20, &local_31) == NONE)
+                point3f local_31;
+                bool local_34;
+                if (local_1->position_index == NONE)
+                    local_34 = function_1b1100(arg_0, &local_13, local_1, local_2, (point2f *)&local_19,
+                        &local_20, (point2f *)&local_31) != NONE;
+                else
+                    local_34 = function_1b0e40((point2f *)&local_31, (point2f *)&local_19, &local_13,
+                        local_1->position_index, local_2->mode, &local_20);
+                if (!local_34)
                     { local_3 = false; goto done; }
+                local_31.z = local_0->position.z;
+                s_type_c3b527 local_32;
+                long local_33 = function_26d0e0(&local_31, &local_32, function_1fa7f0());
+                if (local_33 == NONE)
+                    { local_3 = false; goto done; }
+                if (!function_1f4460(arg_0, &local_32, local_33, NONE, false))
+                    local_3 = false;
+                goto done;
             }
-            else if (!function_1b0e40(&local_31, (point2f *)&local_19, &local_13,
-                local_1->position_index, local_2->mode, &local_20))
-                { local_3 = false; goto done; }
-            local_19.x = local_31.x;
-            local_19.y = local_31.y;
-            local_19.z = local_0->position.z;
-            long local_33 = function_26d0e0(&local_19, &local_12, function_1fa7f0());
-            if (local_33 == NONE)
-                { local_3 = false; goto done; }
-            { local_3 = function_1f4460(arg_0, &local_12, local_33, NONE, false); goto done; }
         }
     }
 done:

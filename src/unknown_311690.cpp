@@ -58,7 +58,7 @@ void c_library_311690::update(long value)
 	switch (value)
 	{
 	case 1:
-		g_480bb8.unknown06++;
+		g_480bb8.reference_count++;
 		if (field_54)
 		{
 			havok_reference_remove(field_54);

@@ -131,6 +131,30 @@ static inline real plane_distance_to_point(plane3f const *plane, point3f const *
 	return plane->i * point->x + plane->j * point->y + plane->k * point->z - plane->d;
 }
 
+/* q scaled to unit length, or the identity rotation when it has no length;
+   the inverse length is kept in double precision */
+static __forceinline void quaternion_unit_or_identity(quaternionf *q)
+{
+	real length_squared = q->w * q->w + q->k * q->k + q->j * q->j + q->i * q->i;
+
+	if (length_squared > 0.0f)
+	{
+		double scale = 1.0f / sqrt(length_squared);
+
+		q->i = (real)(q->i * scale);
+		q->j = (real)(q->j * scale);
+		q->k = (real)(q->k * scale);
+		q->w = (real)(q->w * scale);
+	}
+	else
+	{
+		q->i = 0.0f;
+		q->j = 0.0f;
+		q->k = 0.0f;
+		q->w = 1.0f;
+	}
+}
+
 /* the global random generator step (146240) and the 16 bit scaling of it */
 static inline dword random_next(dword *seed)
 {

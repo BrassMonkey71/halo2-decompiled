@@ -1305,7 +1305,7 @@ void function_226a0(void)
 extern long g_4858b8;
 void function_14f60(short stage, short index);
 bool function_1ccf0(D3DPIXELSHADERDEF const *program);
-void __stdcall function_34a90(long target, short blend, dword color_write,
+void __stdcall function_34a90(long target, long blend, dword color_write,
     bool use_depth, bool depth_write, real depth, real distortion, real scale,
     long count, bool full_surface, bool viewport_textures);
 
@@ -1351,7 +1351,7 @@ void __stdcall function_22070(real strength, real exponent)
 }
 
 typedef bool (__stdcall *t_211a0_vertex)(long, real const *, real const *, real *, long);
-void function_34d90(long target, real const *weights, short blend, dword color_write,
+void function_34d90(long target, real const *weights, long blend, dword color_write,
     bool use_depth, bool depth_write, real depth, real low, real high,
     bool full_surface, t_211a0_vertex vertex);
 void __stdcall function_351a0(long texture, long target);
