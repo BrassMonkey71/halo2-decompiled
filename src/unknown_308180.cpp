@@ -32,12 +32,27 @@ void class_308180::remove(int index, long a, long b)
 }
 
 // @retail 0x3081b0
+// the eight entries are cleared one after another, walking a pointer: retail
+// has no loop here
 class_308180::class_308180()
 {
-	for (int i = 0; i < 8; i++)
-	{
-		entries[i].field_4 = 0;
-	}
+	s_308180_entry *e = entries;
+	e->field_4 = 0;
+	e++;
+	e->field_4 = 0;
+	e++;
+	e->field_4 = 0;
+	e++;
+	e->field_4 = 0;
+	e++;
+	e->field_4 = 0;
+	e++;
+	e->field_4 = 0;
+	e++;
+	e->field_4 = 0;
+	e++;
+	e->field_4 = 0;
+	e++;
 	count = 0;
 	field_50 = 0;
 	changed = false;
