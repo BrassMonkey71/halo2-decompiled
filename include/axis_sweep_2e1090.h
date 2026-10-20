@@ -75,6 +75,9 @@ struct bounds_2e0020
 
 ELEMENTS_2D91D0_ALIGNED(bounds_array_2e1020, bounds_2e0020);
 
+// three lists of endpoints and their storage (src/unknown_2e3370.cpp)
+struct overlap_endpoints_2e3370;
+
 class class_2e1090
 {
 public:
@@ -96,6 +99,7 @@ public:
 	void function_2e10b0(bounds_2e0020 const *bounds, pairs_2e1090 *pairs);
 	void function_2e24b0(long *owner, bounds_2e0020 const *bounds, pairs_2e1090 *pairs);
 	void function_2e29b0(long *owner, pairs_2e1090 *pairs);
+	void function_2e3370(bounds_2e0020 const *bounds, overlap_endpoints_2e3370 *out);
 };
 
 // the quantizing constants: the corner words' ceiling and floor, and the

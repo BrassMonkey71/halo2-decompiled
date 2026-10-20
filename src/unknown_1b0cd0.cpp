@@ -89,13 +89,14 @@ inline real normalize2d_fast(vector2f *v)
 	return magnitude;
 }
 
-inline real distance2d(point2f const *a, point2f const *b)
+static inline real distance2d(point2f const *a, point2f const *b)
 {
-	vector2f d;
+	real dx = a->x - b->x;
+	real dy = a->y - b->y;
+	real distance = dx * dx;
 
-	d.i = a->x - b->x;
-	d.j = a->y - b->y;
-	return magnitude2d(&d);
+	distance += dy * dy;
+	return (real)sqrt(distance);
 }
 
 short __stdcall function_1b0cd0(long actor_index);
@@ -292,7 +293,12 @@ short function_1b1100(long actor_index, s_slot_7e *state, s_slot_target_list *li
 		{
 			if (function_1b0e40(i, origin, forward, &points[i], list->mode, left))
 			{
-				real distance = distance2d((point2f *)&actor->position, &points[i]);
+				vector2f delta;
+
+				delta.i = actor->position.x - points[i].x;
+				delta.j = actor->position.y - points[i].y;
+
+				real distance = magnitude2d(&delta);
 
 				distances[i] = distance;
 				if (best_distance > distance)
@@ -306,7 +312,9 @@ short function_1b1100(long actor_index, s_slot_7e *state, s_slot_target_list *li
 				distances[i] = 3.4028235e38f;
 			}
 		}
-		while (best_index != NONE)
+		bool done = false;
+
+		while (!done && best_index != NONE)
 		{
 			short other_index = NONE;
 
@@ -321,24 +329,32 @@ short function_1b1100(long actor_index, s_slot_7e *state, s_slot_target_list *li
 				}
 			}
 			if (other_index == NONE)
-				break;
-
-			s_actor_view *other_actor = actor_get(list->entries[other_index].actor_index);
-
-			if (distance2d((point2f *)&other_actor->position, &points[best_index]) + 0.1f > distances[best_index])
 			{
-				((s_slot_7e *)&other_actor->slots[other_actor->current])->position_index = NONE;
-				break;
+				done = true;
 			}
-			distances[best_index] = 3.4028235e38f;
-			best_index = NONE;
-			best_distance = 3.4028235e38f;
-			for (short k = 1; k < count; k++)
+			else
 			{
-				if (best_distance > distances[k])
+				s_actor_view *other_actor = actor_get(list->entries[other_index].actor_index);
+
+				if (distance2d((point2f *)&other_actor->position, &points[best_index]) + 0.1f > distances[best_index])
 				{
-					best_distance = distances[k];
-					best_index = k;
+					/* the other actor is not nearer to it by more than 0.1: take its position */
+					((s_slot_7e *)&other_actor->slots[other_actor->current])->position_index = NONE;
+					done = true;
+				}
+				else
+				{
+					distances[best_index] = 3.4028235e38f;
+					best_index = NONE;
+					best_distance = 3.4028235e38f;
+					for (short k = 1; k < count; k++)
+					{
+						if (best_distance > distances[k])
+						{
+							best_distance = distances[k];
+							best_index = k;
+						}
+					}
 				}
 			}
 		}

@@ -919,6 +919,9 @@ bool function_1140b0(long unit_index, long name)
 	return result;
 }
 
+/* kept out of line: retail calls it from every caller */
+__declspec(noinline) bool __stdcall function_113e90(long unit_index, long name, real blend, c_animation_channel **output, long mode);
+
 // @retail 0x113e90
 bool __stdcall function_113e90(long unit_index, long name, real blend, c_animation_channel **output, long mode)
 {
@@ -955,8 +958,13 @@ bool __stdcall function_113e90(long unit_index, long name, real blend, c_animati
 		return true;
 	}
 	long first, second;
-	if ((function_10f630(unit_index, &first, &second) && second == name) ||
-		function_10f430(unit_index, 0x7000101, 0x7000101, 0x7000101, name, blend, false, 0))
+	if (function_10f630(unit_index, &first, &second) && second == name)
+	{
+		if (output)
+			*output = &UNIT_ANIMATION_STATE(unit)->channels[0];
+		return true;
+	}
+	if (function_10f430(unit_index, 0x7000101, 0x7000101, 0x7000101, name, blend, false, 0))
 	{
 		if (output)
 			*output = &UNIT_ANIMATION_STATE(unit)->channels[0];
