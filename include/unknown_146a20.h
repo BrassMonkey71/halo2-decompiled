@@ -70,14 +70,14 @@ class c_havok_page_pool_allocator : public c_havok_abstract_allocator
 public:
 	c_havok_page_pool_allocator();
 
-	virtual void *allocate(long size, long memory_class) { return 0; }
-	virtual void deallocate(void *address) {}
-	virtual void *allocate_aligned(long alignment, long size, long memory_class) { return 0; }
-	virtual void deallocate_aligned(void *address) {}
-	virtual void *allocate16(long size, long memory_class) { return 0; }
-	virtual void deallocate16(void *address, long size, long memory_class) {}
-	virtual void method6(long unknown) {}
-	virtual void method7(long unknown) {}
+	virtual void *allocate(long size, long memory_class);
+	virtual void deallocate(void *address);
+	virtual void *allocate_aligned(long alignment, long size, long memory_class);
+	virtual void deallocate_aligned(void *address);
+	virtual void *allocate16(long size, long memory_class);
+	virtual void deallocate16(void *address, long size, long memory_class);
+	virtual void method6(long unknown);
+	virtual void method7(long unknown);
 
 	/* the fraction of the pool's blocks in use (0x22cb90) */
 	real get_used_fraction(void);
