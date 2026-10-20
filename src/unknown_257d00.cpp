@@ -1401,12 +1401,14 @@ void function_25a380(long arg_0)
 	}
 	if (local_2->unknown46)
 	{
+		bool target_set = false;
 		switch (local_2->unknown48)
 		{
 		case 1:
 			local_0->unknown430 = 2;
 			local_0->unknown434 = 6;
 			local_0->unknown438.object_index = local_2->unknown4c;
+			target_set = true;
 			break;
 		case 2:
 			if (function_25ab50(local_2->unknown4c))
@@ -1416,13 +1418,15 @@ void function_25a380(long arg_0)
 				local_0->unknown434 = 3;
 				local_0->unknown438.point = local_3;
 				local_0->unknown430 = 2;
-				break;
+				target_set = true;
 			}
-		default:
+			break;
+		}
+		if (!target_set)
+		{
 			local_0->unknown438.vector = local_0->unknown290;
 			local_0->unknown434 = 4;
 			local_0->unknown430 = 2;
-			break;
 		}
 		local_0->unknown444 = NONE;
 	}

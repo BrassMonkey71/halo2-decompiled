@@ -1,86 +1,10 @@
 // @flags /O2 /GL- /GX
 // Havok (third-party physics library): creating the object kept for a pair of
 // convex shapes (constructor 0x2ee2e0), and the queries that pass a pair on
-// when the search between its shapes finds them touching.
-#include "pair_agent_2ed170.h"
-#include "convex_search_3048a0.h"
+// when the search between its shapes finds them touching, or pass on the
+// contact it finds.
+#include "convex_pair_2ee2e0.h"
 #include "timer_mark_2ebc80.h"
-
-struct c_query_transform
-{
-	__m128 axes[3];
-	__m128 position;
-
-	void inverse_product(const c_query_transform *a, const c_query_transform *b);
-};
-
-class convex_2fefd0
-{
-public:
-	virtual void slot_0() {}
-	virtual void slot_1() {}
-	virtual void slot_2() {}
-	virtual void slot_3() {}
-	virtual void slot_4() {}
-	virtual long type() const { return 0; }
-
-	long field_4;
-	long field_8;
-	float radius;
-};
-
-struct triangle_2ff0c0;
-
-struct pair_state_2fefd0
-{
-	unsigned short first_id;
-	unsigned short second_id;
-	unsigned short field_4;
-	unsigned short field_6;
-	bool field_8;
-	unsigned char field_9;
-	bool first_flag;
-	unsigned char second_flag;
-
-	void start(convex_2fefd0 const *first, convex_2fefd0 const *second, c_query_transform const *transform);
-	void function_2ff0c0(convex_2fefd0 const *first, triangle_2ff0c0 const *triangle, c_query_transform const *transform);
-};
-
-// where a body sits: two vectors, then its transform
-struct placement_2ee3f0
-{
-	__m128 field_0;
-	__m128 field_10;
-	c_query_transform transform;
-};
-
-// one side of a query: a shape, a key, where it sits, and its parent side
-struct body_2ee3f0
-{
-	convex_2fefd0 const *shape;
-	long key;
-	placement_2ee3f0 const *placement;
-	body_2ee3f0 const *parent;
-};
-
-// told of each pair found touching
-class collector_2ee3f0
-{
-public:
-	virtual void slot_0() {}
-	virtual void slot_1(body_2ee3f0 const *a, body_2ee3f0 const *b) {}
-};
-
-// the object as its constructor's file declares it, with its full size
-class convex_pair_2ee2e0 : public sized_2ed170
-{
-public:
-	pair_state_2fefd0 state;
-	char unknown18[0xf0 - 0x18];
-
-	convex_pair_2ee2e0(description_2ed170 const *first, description_2ed170 const *second, long arg_3);
-	void function_2ee3f0(body_2ee3f0 const *a, body_2ee3f0 const *b, void const *input, collector_2ee3f0 *collector);
-};
 
 // @retail 0x2ee390
 void *__cdecl function_2ee390(long arg_0, long arg_1, long arg_2, long value)
@@ -146,4 +70,101 @@ void __cdecl function_2ee500(void const *a_, void const *b_, void const *input, 
 	{
 		collector->slot_1(a, b);
 	}
+}
+
+// @retail 0x2ee610
+found_2ee610 convex_pair_2ee2e0::function_2ee610(body_2ee3f0 const *a, body_2ee3f0 const *b, void const *input, kept_contact_2ee610 *out)
+{
+	return query_kept_2ee610(this, a, b, input, out);
+}
+
+// the contact of two convex shapes, with a search state started for the
+// pair alone: the closest points the search finds, taken onto the shapes'
+// surfaces, passed on when they are within the tolerance
+// @retail 0x2ee8b0
+void __cdecl function_2ee8b0(void const *a_, void const *b_, void const *input, void *collector)
+{
+	timer_add_2ebc80("LtGsk");
+	body_2ee3f0 const *a = (body_2ee3f0 const *)a_;
+	body_2ee3f0 const *b = (body_2ee3f0 const *)b_;
+	convex_2fefd0 const *first = a->shape;
+	convex_2fefd0 const *second = b->shape;
+	c_query_transform transform;
+	transform.inverse_product(&a->placement->transform, &b->placement->transform);
+	pair_state_2fefd0 state;
+	if (second->type() == 5)
+	{
+		state.function_2ff0c0(first, (triangle_2ff0c0 const *)second, &transform);
+	}
+	else
+	{
+		state.start(first, second, &transform);
+	}
+	first = a->shape;
+	second = b->shape;
+	class_3048a0 search;
+	search.field_c = false;
+	closest_3048a0 closest;
+	if (search.function_3048a0(first, second, &transform, &state, &closest) == 0)
+	{
+		contact_3032c0 found;
+		((source_3032c0 const *)&search)->function_3032c0(&state, (plane_3032c0 *)&closest, &found);
+		vector_2da6e0 normal;
+		normal.rotate(&a->placement->transform, &found.normal);
+		found.distance = found.distance - first->radius - second->radius;
+		float const distance = found.distance;
+		if (distance < ((input_2ee8b0 const *)input)->tolerance)
+		{
+			found.point = _mm_add_ps(found.point, _mm_mul_ps(splat_2ee8b0(-first->radius), found.normal));
+			__m128 const surface = _mm_add_ps(found.point, _mm_mul_ps(splat_2ee8b0(-distance), found.normal));
+			local_point_2ee8b0 local;
+			local.inverse_transform(&transform, surface);
+			contact_2ee8b0 contact;
+			contact.a = a;
+			contact.b = b;
+			contact.point = transform_2ee8b0(&b->placement->transform, local.value);
+			contact.point.m128_f32[3] = distance;
+			contact.normal = normal.value;
+			((contact_collector_2ee8b0 *)collector)->add_contact(&contact);
+		}
+	}
+	timer_add_2ebc80("lt");
+}
+
+struct candidate_302c70;
+struct body_302eb0;
+struct input_302eb0;
+struct contact_302eb0;
+struct world_contacts_302eb0;
+class id_owner_302eb0;
+struct s_3029d0_entry;
+class class_3029d0_owner;
+
+void __cdecl function_302c70(void const *a, void const *b, void const *input, candidate_302c70 const *candidate, owner_302a10 *owner, point_302a10 *points, int *count);
+void __cdecl function_302eb0(body_302eb0 const *a, body_302eb0 const *b, input_302eb0 const *input, float minimum,
+	contact_302eb0 *contacts, int *count, world_contacts_302eb0 **out_list, id_owner_302eb0 *ids);
+void __cdecl function_3029d0(s_3029d0_entry *entries, int *count, class_3029d0_owner *owner);
+
+// the pair's kept contact points brought up to date: skipped, the points
+// given up, while the shapes' motion since the last query cannot have used
+// up the distance they were apart; else the search's contact, when within the
+// tolerance, is added to the kept points and the kept points are passed on,
+// and otherwise the points are given up and the separating direction may be
+// kept for next time
+// @retail 0x2eeb40
+void convex_pair_2ee2e0::function_2eeb40(body_2ee3f0 const *a, body_2ee3f0 const *b, void const *input_, void *out)
+{
+	timer_add_2ebc80("LtGsk");
+	kept_contact_2ee610 kept;
+	if (query_kept_2ee610(this, a, b, input_, &kept).value)
+	{
+		function_302c70(a, b, input_, (candidate_302c70 const *)&kept, (owner_302a10 *)field_8, points, (int *)&field_18);
+		function_302eb0((body_302eb0 const *)a, (body_302eb0 const *)b, (input_302eb0 const *)input_, kept.found.distance - 0.001f,
+			(contact_302eb0 *)points, (int *)&field_18, (world_contacts_302eb0 **)out, (id_owner_302eb0 *)field_8);
+	}
+	else
+	{
+		function_3029d0((s_3029d0_entry *)points, (int *)&field_18, (class_3029d0_owner *)field_8);
+	}
+	timer_add_2ebc80("lt");
 }
