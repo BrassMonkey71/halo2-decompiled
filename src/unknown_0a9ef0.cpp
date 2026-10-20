@@ -184,11 +184,12 @@ void function_aa260(long selection, long object_index, vector3f const *linear, l
 				vector3f adjusted_linear, adjusted_angular;
 				function_aaca0(object_index, &local_010335, &local_de61cc, &local_523673,
 					&desired_linear, &desired_angular, &adjusted_linear, &adjusted_angular);
+				if (!change_linear && !change_angular)
+					return;
 				if (change_linear)
 					function_aa9e0(object_index, NULL, &adjusted_linear);
-				if (change_linear || change_angular)
-					function_b77d0(object_index, change_linear ? &adjusted_linear : NULL,
-						change_angular ? &adjusted_angular : NULL);
+				function_b77d0(object_index, change_linear ? &adjusted_linear : NULL,
+					change_angular ? &adjusted_angular : NULL);
 			}
 		}
 		break;
