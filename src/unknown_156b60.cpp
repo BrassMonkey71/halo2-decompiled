@@ -23,7 +23,7 @@ struct s_material_156b60
 	long index;
 	byte kind;
 	byte mode;
-	short value6;
+	word value6;
 	short count;
 	short unknowna;
 	long valuec;
@@ -112,7 +112,7 @@ long __stdcall function_156ed0(long tag, long unused1, long row, long column,
 		if (*(dword *)(dependency_definition + 4) > 8)
 		{
 			byte *data = *(byte **)(dependency_definition + 8);
-			if ((*(dword *)(data + 0xec) >> 4) > 0)
+			if ((dword)(*(long *)(data + 0xec) >> 4) > 0)
 				return 1;
 		}
 	}

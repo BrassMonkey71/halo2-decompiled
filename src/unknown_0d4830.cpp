@@ -231,8 +231,7 @@ void object_widgets_delete(long object_index)
 // @retail 0xd4ae0
 void object_widget_delete(long object_index, long handle)
 {
-    long const volatile *handle_reference = &handle;
-    long handle_value = *handle_reference;
+    long handle_value = handle;
     if (handle_value != NONE)
     {
         s_widget_object_header *header = (s_widget_object_header *)(g_4e0300->data + (object_index & 0xffff) * 12);
@@ -245,10 +244,11 @@ void object_widget_delete(long object_index, long handle)
 
             if (widget->handle == handle_value)
             {
+                short type = widget->type;
                 object->widget_head = widget->next;
 
                 if (widget->handle != NONE)
-                    g_467498[widget->type].dispose(widget->handle);
+                    g_467498[type].dispose(widget->handle);
 
                 record_pool_release(g_4e0320, widget_index);
             }

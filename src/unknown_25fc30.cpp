@@ -825,9 +825,8 @@ void __stdcall function_25ec90(
 
 			if (position->unknown4c)
 			{
-				short local_0 = position->reference.unknown2;
-				if ((local_0 & 0x8000) ||
-					local_0 != context->unknown68e ||
+				if ((position->reference.unknown2 & 0x8000) ||
+					position->reference.unknown2 != context->unknown68e ||
 					position->definition->unknown10 != context->unknown690)
 				{
 					position->unknown4d = true;

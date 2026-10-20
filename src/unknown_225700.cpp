@@ -155,16 +155,16 @@ void function_225880(
 	if (state)
 	{
 		s_unknown_225700_player *player = unknown_225700_player_get(player_index);
-		real level;
+		long level;
 
 		state->level_time = GetTickCount();
-		level = (real)(long)((long)g_510a0c + 1.0f);
-		if (level >= g_4cf754)
+		level = (long)((long)g_510a0c + 1.0f);
+		if ((real)level >= g_4cf754)
 		{
 			((s_unknown_225700_slot *)g_54e8e0)[player->gamepad_index].level_reached = true;
 			function_18fe9e(player->gamepad_index);
 		}
-		g_510a0c = level;
+		g_510a0c = (real)level;
 		global_preferences_globals.dirty = true;
 	}
 }
@@ -178,16 +178,16 @@ void function_225910(
 	if (state)
 	{
 		s_unknown_225700_player *player = unknown_225700_player_get(player_index);
-		real level;
+		long level;
 
 		state->level_time = GetTickCount();
-		level = (real)(long)((long)g_510a0c + g_4cf75c);
-		if (level >= g_4cf754)
+		level = (long)((long)g_510a0c + g_4cf75c);
+		if ((real)level >= g_4cf754)
 		{
 			((s_unknown_225700_slot *)g_54e8e0)[player->gamepad_index].level_reached = true;
 			function_18fe9e(player->gamepad_index);
 		}
-		g_510a0c = level;
+		g_510a0c = (real)level;
 		global_preferences_globals.dirty = true;
 	}
 }

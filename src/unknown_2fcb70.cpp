@@ -69,8 +69,8 @@ void triangle_2fcb70::function_2fcb70(s_2fcb70 *out) const
 // @retail 0x2fcba0
 void triangle_2fcb70::function_2fcba0(const void *transform, float tolerance, box_2fcba0 *out) const
 {
-	__m128 grow = _mm_set1_ps(tolerance + radius);
 	c_transformed_point a;
+	__m128 grow = _mm_set1_ps(tolerance + radius);
 	c_transformed_point b;
 	c_transformed_point c;
 	a.transform(transform, &corners[0]);
@@ -78,7 +78,7 @@ void triangle_2fcb70::function_2fcba0(const void *transform, float tolerance, bo
 	c.transform(transform, &corners[2]);
 	__m128 minimum = _mm_min_ps(_mm_min_ps(a.value, b.value), c.value);
 	__m128 maximum = _mm_max_ps(_mm_max_ps(a.value, b.value), c.value);
-	out->minimum = _mm_sub_ps(minimum, grow);
 	out->maximum.value = maximum;
+	out->minimum = _mm_sub_ps(minimum, grow);
 	out->maximum.add(grow);
 }

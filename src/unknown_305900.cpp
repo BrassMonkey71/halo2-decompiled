@@ -9,5 +9,5 @@ void __cdecl function_305900(const __m128 *vector, const float *value, int *mask
 {
 	__m128 limit = _mm_set_ss(*value);
 	limit = _mm_shuffle_ps(limit, limit, 0);
-	*mask = _mm_movemask_ps(_mm_cmplt_ps(limit, *vector)) & 7;
+	*mask = _mm_movemask_ps(_mm_cmpgt_ps(*vector, limit)) & 7;
 }

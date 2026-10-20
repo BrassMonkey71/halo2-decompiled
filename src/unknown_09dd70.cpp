@@ -405,24 +405,23 @@ bool c_unit_type::v14(long arg_0, long arg_1, long arg_2, long arg_3, long arg_4
                 function_9dfc2(local_2, local_3->field_ab + 1, 3);
             }
             flags_writer_end(&local_1);
-            short const *local_10 = &local_3->field_ac[0].field_6;
             local_5 = 0;
             do
             {
+                short const *local_10 = &local_3->field_ac[local_5].field_6;
                 if (flags_writer_begin(&local_1, local_5 + 14, "weapon-type-exists"))
                 {
-                    scenario_object_name_encode(*(long const *)(local_10 - 3), local_2);
-                    function_9dfc2(local_2, local_10[-1] + 1, 4);
+                    scenario_object_name_encode(local_3->field_ac[local_5].field_0, local_2);
+                    function_9dfc2(local_2, local_3->field_ac[local_5].field_4 + 1, 4);
                 }
                 flags_writer_end(&local_1);
                 if (flags_writer_begin(&local_1, local_5 + 18, "weapon-state-exists"))
                 {
                     function_9dfc2(local_2, local_10[0], 8);
                     function_9dfc2(local_2, local_10[1], 11);
-                    function_9dfc1(local_2, *(real const *)(local_10 + 3), 126.0f, 7);
+                    function_9dfc1(local_2, local_3->field_ac[local_5].field_c, 126.0f, 7);
                 }
                 flags_writer_end(&local_1);
-                local_10 += 8;
                 ++local_5;
             } while (local_5 < 4);
             if (flags_writer_begin(&local_1, 22, "grenade-counts-exists"))
