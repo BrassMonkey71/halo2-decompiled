@@ -273,7 +273,7 @@ struct s_object_node_orientation
 
 struct s_animation_state;
 struct s_blend_orientation;
-bool function_1cb5f0(long node_count, s_animation_state *state, real seconds, s_blend_orientation *orientations,
+bool function_1cb5f0(s_animation_state *state, real seconds, long node_count, s_blend_orientation *orientations,
 	s_blend_orientation const *targets);
 
 /* blends an object's node orientations toward their targets over the given
@@ -286,8 +286,8 @@ void function_ba350(long object_index, real seconds)
 	if (OBJECT_GET(object_index)->unknown112 != NONE &&
 		TAG_DATA(s_object_definition_view, object->definition_index)->model_index != NONE)
 	{
-		function_1cb5f0(object->unknown110 / sizeof(s_object_node_orientation),
-			(s_animation_state *)((byte *)object + object->animation_state_offset), seconds,
+		function_1cb5f0((s_animation_state *)((byte *)object + object->animation_state_offset), seconds,
+			object->unknown110 / sizeof(s_object_node_orientation),
 			(s_blend_orientation *)((byte *)object + object->root_node_offset),
 			(s_blend_orientation *)((byte *)object + object->unknown112));
 		function_b7360(object_index);
