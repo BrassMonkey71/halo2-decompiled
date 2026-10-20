@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "unknown_1a58b0.h"
 #include "object_markers.h"
+#include "vector_products.h"
 
 /* ---- views of the data used below ---- */
 
@@ -109,7 +110,7 @@ bool function_1a58b0(long object_index)
 	return false;
 }
 void __stdcall function_df6c0(point3f *bottom, vector3f *axis, long object_index, real *radius);
-void function_1a6340(vector3f const *a, vector3f const *b, point3f *out, point3f const *c, point3f const *p, real radius);
+void function_1a6340(vector3f const *b, vector3f const *a, point3f *out, point3f const *c, point3f const *p, real radius);
 
 // @retail 0x1a62e0
 bool function_1a62e0(long object_index, point3f const *origin, vector3f const *direction, point3f *out)
@@ -120,33 +121,28 @@ bool function_1a62e0(long object_index, point3f const *origin, vector3f const *d
 	bool result = false;
 	if (local_0.field_0 > 0.0001f)
 	{
-		function_1a6340(direction, &local_0.field_10, out, origin, &local_0.field_4, local_0.field_0);
+		function_1a6340(&local_0.field_10, direction, out, origin, &local_0.field_4, local_0.field_0);
 		result = true;
 	}
 	return result;
 }
 
-PRIVATE inline vector3f *local_scale_vector(vector3f const *input, double scale, vector3f *output);
-
 // @retail 0x1a6340
-void function_1a6340(vector3f const *a, vector3f const *b, point3f *out, point3f const *c, point3f const *p, real radius)
+void function_1a6340(vector3f const *b, vector3f const *a, point3f *out, point3f const *c, point3f const *p, real radius)
 {
-	real ni = a->k * b->j - b->k * a->j;
-	real nj = b->k * a->i - b->i * a->k;
-	real nk = b->i * a->j - a->i * b->j;
-	real m = nj * nj + nk * nk + ni * ni;
+	vector3f n;
+	cross3f(b, a, &n);
+	real m = n.i * n.i + n.k * n.k + n.j * n.j;
 
 	if (m > 0.0f)
 	{
-		real dz = c->z - p->z;
-		real dy = c->y - p->y;
-		real dx = c->x - p->x;
-		real ci = a->k * dy - dz * a->j;
-		real cj = a->i * dz - a->k * dx;
-		real ck = dx * a->j - dy * a->i;
-		real t = cj * nj;
-		t += ck * nk;
-		t += ci * ni;
+		vector3f d;
+		vector3d_from_points3d(p, c, &d);
+		vector3f e;
+		cross3f(&d, a, &e);
+		real t = e.j * n.j;
+		t += e.k * n.k;
+		t += e.i * n.i;
 		t /= m;
 
 		t = 0.0f > t ? 0.0f : t > 1.0f ? 1.0f : t;
@@ -175,19 +171,11 @@ void function_1a6340(vector3f const *a, vector3f const *b, point3f *out, point3f
 
 	if (wm > radius * radius)
 	{
-		local_scale_vector(&w, radius / sqrt(wm), &w);
+		scale_vector_by_double(&w, radius / sqrt(wm), &w);
 	}
 	out->x = out->x - w.i;
 	out->y = out->y - w.j;
 	out->z = out->z - w.k;
-}
-
-PRIVATE inline vector3f *local_scale_vector(vector3f const *input, double scale, vector3f *output)
-{
-	output->i = scale * input->i;
-	output->j = scale * input->j;
-	output->k = scale * input->k;
-	return output;
 }
 
 // @retail 0x1a65b0
@@ -210,7 +198,7 @@ void function_1a65b0(vector3f const *a, point3f *out, point3f const *p, point3f 
 
 	if (wm > radius * radius)
 	{
-		local_scale_vector(&w, radius / sqrt(wm), &w);
+		scale_vector_by_double(&w, radius / sqrt(wm), &w);
 	}
 	out->x = out->x - w.i;
 	out->y = out->y - w.j;
@@ -772,11 +760,7 @@ void function_1a7b30(s_flag_bits *result, long owner_index)
 
 	if (other != NONE)
 	{
-		s_flag_bits *mask = (s_flag_bits *)(tags[other & 0xffff].bytes + 0x38);
-		long k;
-
-		for (k = 0; k < 5; k++)
-			result->d[k] &= mask->d[k];
+		bit_vector_intersect(0x83, result->d, (dword *)(tags[other & 0xffff].bytes + 0x38), result->d);
 	}
 }
 
@@ -1645,7 +1629,7 @@ bool function_1a5e40(long object_index, bool alternate, long marker_index, s_tar
 		{
 			vector3f axis;
 			vector3d_from_points3d(&first->position, &second->position, &axis);
-			function_1a6340(direction, &axis, &candidate->point, origin, &first->position, marker->radius);
+			function_1a6340(&axis, direction, &candidate->point, origin, &first->position, marker->radius);
 		}
 		else
 			function_1a65b0(direction, &candidate->point, &first->position, origin, marker->radius);

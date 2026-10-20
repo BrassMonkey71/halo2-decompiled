@@ -34,15 +34,18 @@ __forceinline real function_2941a7(vector3f const *vector)
 __forceinline real function_29419d(vector3f *arg_0)
 {
 	real local_0 = function_2941a7(arg_0);
+	real local_2;
 	if (!(fabs(local_0) < 0.0001f))
 	{
+		local_2 = local_0;
 		real local_1 = 1.0f / local_0;
 		arg_0->i = local_1 * arg_0->i;
 		arg_0->j = local_1 * arg_0->j;
 		arg_0->k = arg_0->k * local_1;
-		return local_0;
 	}
-	return 0.0f;
+	else
+		local_2 = 0.0f;
+	return local_2;
 }
 
 __forceinline void function_294240(vector3f *arg_0, real arg_1, vector3f const *arg_2)
