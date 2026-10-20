@@ -930,15 +930,18 @@ struct s_visibility_link
 };
 __forceinline long visibility_next(s_record_pool *pool, long *next)
 {
-	long result = NONE;
+	long result;
 	if (*next != NONE)
 	{
 		s_visibility_link *link = (s_visibility_link *)(pool->data + (*next & 0xffff) * pool->size);
-		*next = link->next;
-		if (*next != NONE)
-			_mm_prefetch((char const *)(pool->data + (*next & 0xffff) * pool->size), _MM_HINT_T0);
+		long following = link->next;
+		if (following != NONE)
+			_mm_prefetch((char const *)(pool->data + (following & 0xffff) * pool->size), _MM_HINT_T0);
+		*next = following;
 		result = link->object_index;
 	}
+	else
+		result = NONE;
 	return result;
 }
 
@@ -949,7 +952,7 @@ void __stdcall function_132220(s_bit_vector_pool *data)
 	short extra_cluster = NONE;
 	for (long i = 0; i < context->count; i++)
 	{
-		short cluster = context->entries[i].value;
+		long cluster = context->entries[i].value;
 		s_record_pool *pool = (s_record_pool *)g_4de2e4;
 		bool selected = function_16e210(cluster, g_4b9f8c);
 		long next;

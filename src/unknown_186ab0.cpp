@@ -94,7 +94,7 @@ struct s_186ab5
     char field_23d;
     char field_23e[2];
     byte field_240[0x348 - 0x240];
-    byte field_348;
+    word field_348;
 };
 struct s_186ab6
 {
@@ -158,12 +158,10 @@ void __stdcall function_186ab0(long arg_0, real arg_1, real arg_2, s_player_acti
     s_186ab4 local_2;
     s_186ab3 local_3;
     byte *local_5 = (byte *)g_4e034c;
-    local_2.field_4 = *(byte *volatile *)(local_5 + 0xf4);
+    local_2.field_4 = *(byte **)(local_5 + 0xf4);
     local_2.field_0 = NULL;
     function_185be0(local_0->field_24, local_0->field_28, arg_1, arg_2, &local_2, &local_3);
-    byte reset = function_148fff(local_0->field_24);
-    reset |= function_12be90();
-    reset |= ((byte *)g_4e8c44)[local_0->field_28 * 0x140 + 0x56];
+    byte reset = function_148fff(local_0->field_24) | function_12be90() | ((byte *)g_4e8c44)[local_0->field_28 * 0x140 + 0x56];
     if (reset)
     {
         bool local_4 = (local_3.field_20 >> 8) & 1;
@@ -258,8 +256,10 @@ void __stdcall function_186ab0(long arg_0, real arg_1, real arg_2, s_player_acti
             function_187510(local_0->field_28, local_3.field_10, local_3.field_14);
         if (local_4->field_14 == NONE)
         {
-            if ((bool)((*(dword *)&g_54e8e0[local_0->field_24] >> 4) & 1) &&
-                (bool)((*(dword *)((byte *)&g_54e8e0[local_0->field_24] + 0x114) >> 3) & 1) &&
+            bool local_14 = false;
+            if ((bool)((*(dword *)&g_54e8e0[local_0->field_24] >> 4) & 1))
+                local_14 = (bool)((*(dword *)((byte *)&g_54e8e0[local_0->field_24] + 0x114) >> 3) & 1);
+            if (local_14 &&
                 (real)fabs((double)local_1->field_18.i) > 0.5f && local_3.field_14 < 0.0001f && !local_1->field_68)
             {
                 long local_9 = local_1->field_31 + 1;
@@ -307,7 +307,7 @@ void __stdcall function_186ab0(long arg_0, real arg_1, real arg_2, s_player_acti
         if ((1 << local_4->field_3) & 1)
         {
             s_186ab5 *local_5 = local_4->field_8;
-            if ((bool)(((dword)local_5->field_348 >> 5) & 1))
+            if ((bool)((local_5->field_348 >> 5) & 1))
             {
                 local_1->field_10 = (real)atan2((double)local_5->field_16c, (double)local_5->field_168);
                 local_1->field_14 = (real)atan2((double)local_5->field_170,

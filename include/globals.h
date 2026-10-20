@@ -141,6 +141,16 @@ typedef char assert_game_options_view_flag11f8[((long)&((s_game_options_view *)0
 
 extern s_game_options_view *g_4e6948;
 
+/* the timed message's colour and its two tick counts (+0xcc of the HUD
+   globals) */
+struct s_hud_timed_message_definition
+{
+	dword color;
+	byte unknown04[0x1c - 0x4];
+	short value_1c;
+	short value_1e;
+};
+
 /* the hud globals definition (g_510c94): message timing and colors, the
    motion sensor's range at +0x290 and the string list at +0x3fc */
 struct s_hud_globals_definition
@@ -156,10 +166,7 @@ struct s_hud_globals_definition
 	byte unknownac[0xb6 - 0xac];
 	byte flags_b6;
 	byte unknownb7[0xcc - 0xb7];
-	dword color_cc;
-	byte unknownd0[0xe8 - 0xd0];
-	short value_e8;
-	short value_ea;
+	s_hud_timed_message_definition timed_message;
 	byte unknownec[0x290 - 0xec];
 	real motion_sensor_range;
 	real motion_sensor_minimum_speed;

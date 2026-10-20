@@ -249,7 +249,6 @@ s_unknown_485a88 g_unknown_485a88;
 // @retail 0x17000
 void function_17000(byte *context, word const *range)
 {
-	word const *const *range_reference = &range;
 	struct { dword *banks[2]; dword *masks[2]; } tables_r16 = {
         { (dword *)(context + 0x1530), (dword *)(context + 0x1630) },
         { (dword *)(context + 0x1730), (dword *)(context + 0x1734) }
@@ -258,18 +257,17 @@ void function_17000(byte *context, word const *range)
 	byte *definition = *(byte **)(context + 0xc);
 	byte *instance = *(byte **)(context + 0x10);
 	dword *values = *(dword **)(definition + 0x18);
-	byte *record = *(byte **)(instance + 0x24) + (**range_reference & 0x1ff) * 4;
-	for (long i = 0; i < (**range_reference >> 9); ++i, record += 4)
+	byte *record = *(byte **)(instance + 0x24) + (*range & 0x1ff) * 4;
+	for (long i = 0; i < (*range >> 9); record += 4, ++i)
 	{
 		word packed = *(word *)record;
 		long bank = packed >> 4;
-		dword *base = tables_r16.banks[bank & 1];
-		dword *mask = tables_r16.masks[bank & 1];
 		long slot = packed & 15;
-		dword bit = 1 << slot;
+		dword *base = tables_r16.banks[bank & 1];
 		dword *out = base + slot * 4;
 		dword *source = values + record[3] * 4;
-		*mask |= bit;
+		dword *mask = tables_r16.masks[bank & 1];
+		*mask |= 1 << slot;
 		switch (((dword)*(word *)record >> 5) & 31)
 		{
 		case 0: case 5: out[0] = source[0]; break;

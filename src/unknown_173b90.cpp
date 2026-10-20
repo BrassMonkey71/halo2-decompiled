@@ -695,47 +695,37 @@ s_effect_particle_system_definition *s_particle_system_datum::function_1751d0()
 // @retail 0x175270
 void function_175270(s_particle_system_datum *particle_system, s_particle_system_spawn *spawn, transform4x3f const *matrix, bool field_b4)
 {
-	struct
-	{
-		dword mask;
-		s_particle_system_datum *particle_system;
-		s_particle_location_datum *particle_location;
-		void *unknown0c;
-	} query;
-	real values[17];
+	s_particle_value_cache cache;
 	s_particle_location_datum *particle_location;
 
 	*((word *)particle_system + 6) |= 0x101;
-	query.mask = 0;
-	query.particle_system = 0;
-	query.particle_location = 0;
-	query.unknown0c = 0;
-	bool created = spawn->location_index == NONE;
-	if (created)
-		spawn->location_index = function_248620();
+	cache.mask = 0;
+	cache.field_48 = 0;
+	cache.field_4c = 0;
+	cache.field_50 = 0;
 	if (spawn->location_index == NONE)
-		return;
-	if (created)
 	{
+		spawn->location_index = function_248620();
+		if (spawn->location_index == NONE)
+			return;
 		particle_location = DATUM(g_51ec8c, s_particle_location_datum, spawn->location_index);
 		function_248d90(particle_location, &particle_system->location_index, &particle_system->unknown34);
 		particle_location->position = matrix->position;
 	}
 	particle_system->unknown04 = (spawn->unknown + spawn->scale) * particle_system->unknown08;
 	particle_location = DATUM(g_51ec8c, s_particle_location_datum, spawn->location_index);
-	if (particle_system != query.particle_system)
+	if (particle_system != cache.field_48)
 	{
-		query.particle_system = particle_system;
-		query.mask &= 0xfffff98f;
+		cache.field_48 = particle_system;
+		cache.mask &= 0xfffff98f;
 	}
-	if (particle_location != query.particle_location)
+	if (particle_location != cache.field_4c)
 	{
-		query.particle_location = particle_location;
-		query.mask &= 0xfffecf7f;
+		cache.field_4c = particle_location;
+		cache.mask &= 0xfffecf7f;
 	}
-	function_173ba0(~query.mask & 0x1ffff, query.particle_system, query.particle_location, matrix, values);
-	query.mask |= 0x1ffff;
-	function_248970(particle_location, field_b4, spawn->unknown, particle_system, values, matrix);
+	cache.function_173c10(0x1ffff);
+	function_248970(particle_location, field_b4, spawn->unknown, particle_system, cache.values, matrix);
 	spawn->location_index = particle_location->next_index;
 }
 
