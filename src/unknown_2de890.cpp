@@ -9,17 +9,18 @@ struct transform_2de890
 {
 	__m128 columns[4];
 
+	// the element in a row of a column
+	float &element(int row, int column) { return ((float *)columns)[column * 4 + row]; }
+
 	void load_unit_columns()
 	{
-		__m128 zero = _mm_setzero_ps();
-		columns[0] = zero;
-		columns[1] = zero;
-		columns[2] = zero;
-		float *elements = (float *)columns;
-		elements[0] = 1.0f;
-		elements[5] = 1.0f;
-		elements[10] = 1.0f;
-		columns[3] = zero;
+		columns[0] = _mm_setzero_ps();
+		columns[1] = _mm_setzero_ps();
+		columns[2] = _mm_setzero_ps();
+		element(0, 0) = 1.0f;
+		element(1, 1) = 1.0f;
+		element(2, 2) = 1.0f;
+		columns[3] = _mm_setzero_ps();
 	}
 };
 
