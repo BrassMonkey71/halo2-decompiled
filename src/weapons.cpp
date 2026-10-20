@@ -2397,9 +2397,9 @@ void function_100520(long weapon_index, s_weapon_status *status)
 	status->magazine_count = (short)definition->magazine_count;
 	for (short i = 0; i < definition->magazine_count; i++)
 	{
+		bool active = false;
 		s_weapon_magazine_definition *magazine = &definition->magazines[i];
 		long state = WEAPON_GET(weapon_index)->magazines[i].state;
-		bool active = false;
 		if (state > 0 && state <= 6)
 			active = true;
 		status->magazines[i].active = active;
