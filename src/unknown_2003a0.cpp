@@ -857,8 +857,9 @@ PRIVATE __forceinline short squad_valid_command_script(s_squad_placement_table *
 {
 	if (index >= 0 && index < scenario->script_count)
 	{
+		char const *string = name;
 		unsigned long length = 0;
-		while (length < 32 && *name++)
+		while (length < 32 && *string++)
 			length++;
 		if (length > 0 && *(short *)(scenario->scripts + index * 0x28 + 0x20) == 5)
 			return index;
@@ -870,12 +871,11 @@ PRIVATE __forceinline short squad_valid_command_script(s_squad_placement_table *
 void function_201b70(long squad_index, short entry_index, long actor_index)
 {
 	(void)&actor_index;
-	s_squad_placement_table *scenario = (s_squad_placement_table *)g_4e0350;
-	s_squad_placement_definition *squad = &scenario->squads[squad_index & 0xffff];
+	s_squad_placement_definition *squad = &((s_squad_placement_table *)g_4e0350)->squads[squad_index & 0xffff];
 	s_squad_placement_entry *entry = &squad->entries[entry_index];
-	short script_index = squad_valid_command_script(scenario, entry->command_script_index, entry->command_script_name);
+	short script_index = squad_valid_command_script((s_squad_placement_table *)g_4e0350, entry->command_script_index, entry->command_script_name);
 	if (script_index == NONE)
-		script_index = squad_valid_command_script(scenario, squad->command_script_index, squad->command_script_name);
+		script_index = squad_valid_command_script((s_squad_placement_table *)g_4e0350, squad->command_script_index, squad->command_script_name);
 	if (script_index != NONE)
 		function_257ed0(actor_index, script_index, NONE);
 }
