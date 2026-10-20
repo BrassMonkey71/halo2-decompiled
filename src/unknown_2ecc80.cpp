@@ -3,6 +3,9 @@
 // with the child's transform composed into the description's transform.
 #include "unknown_182d90.h"
 #include "pair_agents_2eab70.h"
+#include <stddef.h>
+
+typedef char assert_2ecc80_widths[(sizeof(void *) == 4 && sizeof(long) == 4) ? 1 : -1];
 
 struct shape_2ecc80
 {
@@ -66,6 +69,12 @@ public:
 	void function_2ecd00(description_2ecc80 const *description, long arg_1, long arg_2, long arg_3, long arg_4);
 };
 
+typedef char assert_description_2ecc80_size[(sizeof(description_2ecc80) == 0x10) ? 1 : -1];
+typedef char assert_class_2ecc80_collector[(offsetof(class_2ecc80, collector) == 0xc) ? 1 : -1];
+typedef char assert_class_2ece10_collector[(offsetof(class_2ece10, collector) == 0xc) ? 1 : -1];
+typedef char assert_class_2ecf20_collector[(offsetof(class_2ecf20, collector) == 0xc) ? 1 : -1];
+typedef char assert_class_2ed030_collector[(offsetof(class_2ed030, collector) == 0xc) ? 1 : -1];
+
 // @retail 0x2ecc80
 void class_2ecc80::function_2ecc80(description_2ecc80 const *description, long arg_1, long arg_2, long arg_3)
 {
@@ -110,8 +119,13 @@ typedef void (__cdecl *handler_2ecd80)(description_2ecc80 const *description, ty
 struct dispatcher_2ecd80
 {
 	char field_0[0x318c];
-	handler_2ecd80 handlers[1][32];
+	// Retail 0x2e5990 initializes 32 rows of 32 four-byte entries.
+	handler_2ecd80 handlers[32][32];
 };
+
+typedef char assert_dispatcher_2ecd80_offset[(offsetof(dispatcher_2ecd80, handlers) == 0x318c) ? 1 : -1];
+typedef char assert_dispatcher_2ecd80_row[(sizeof(((dispatcher_2ecd80 *)0)->handlers[0]) == 0x80) ? 1 : -1];
+typedef char assert_dispatcher_2ecd80_table[(sizeof(((dispatcher_2ecd80 *)0)->handlers) == 0x1000) ? 1 : -1];
 
 // passing a pair on to the handler a table picks by the two shapes' types
 // @retail 0x2ecd80
@@ -150,8 +164,13 @@ struct dispatcher_2ece90
 {
 	char field_0[0x218c];
 	typedef void (__cdecl *handler)(description_2ecc80 const *description, typed_2ecd80 **other, void const *input, void *out);
-	handler handlers[1][32];
+	// Retail 0x2e5990 initializes 32 rows of 32 four-byte entries.
+	handler handlers[32][32];
 };
+
+typedef char assert_dispatcher_2ece90_offset[(offsetof(dispatcher_2ece90, handlers) == 0x218c) ? 1 : -1];
+typedef char assert_dispatcher_2ece90_row[(sizeof(((dispatcher_2ece90 *)0)->handlers[0]) == 0x80) ? 1 : -1];
+typedef char assert_dispatcher_2ece90_table[(sizeof(((dispatcher_2ece90 *)0)->handlers) == 0x1000) ? 1 : -1];
 
 // @retail 0x2ece90
 void __cdecl function_2ece90(void const *a, void const *b, void const *input, void *out)
@@ -191,8 +210,13 @@ struct dispatcher_2ecfa0
 {
 	char field_0[0x118c];
 	typedef void (__cdecl *handler)(description_2ecc80 const *description, typed_2ecd80 **other, void const *input, void *out);
-	handler handlers[1][32];
+	// Retail 0x2e5990 initializes 32 rows of 32 four-byte entries.
+	handler handlers[32][32];
 };
+
+typedef char assert_dispatcher_2ecfa0_offset[(offsetof(dispatcher_2ecfa0, handlers) == 0x118c) ? 1 : -1];
+typedef char assert_dispatcher_2ecfa0_row[(sizeof(((dispatcher_2ecfa0 *)0)->handlers[0]) == 0x80) ? 1 : -1];
+typedef char assert_dispatcher_2ecfa0_table[(sizeof(((dispatcher_2ecfa0 *)0)->handlers) == 0x1000) ? 1 : -1];
 
 // @retail 0x2ecfa0
 void __cdecl function_2ecfa0(void const *a, void const *b, void const *input, void *out)

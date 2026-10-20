@@ -3,6 +3,8 @@
 // query on to each child, with a description of the child (its key from the
 // parent's table, its index, and the parent's description).
 
+#include <stddef.h>
+
 struct key_entry_2eda30
 {
 	long key;
@@ -67,8 +69,13 @@ typedef child_2eda30 *(__cdecl *handler_2edbd0)(child_description_2eda30 const *
 struct dispatcher_2edbd0
 {
 	char unknown0[0x18c];
-	handler_2edbd0 handlers[1][32];
+	// Retail 0x2e5990 initializes 32 rows of 32 four-byte entries.
+	handler_2edbd0 handlers[32][32];
 };
+
+typedef char assert_dispatcher_2edbd0_offset[(offsetof(dispatcher_2edbd0, handlers) == 0x18c) ? 1 : -1];
+typedef char assert_dispatcher_2edbd0_row[(sizeof(((dispatcher_2edbd0 *)0)->handlers[0]) == 0x80) ? 1 : -1];
+typedef char assert_dispatcher_2edbd0_table[(sizeof(((dispatcher_2edbd0 *)0)->handlers) == 0x1000) ? 1 : -1];
 
 struct bool_result_2edbd0
 {
