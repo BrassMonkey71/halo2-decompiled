@@ -784,7 +784,8 @@ bool __stdcall function_168f40(long flags, s_vehicle_ray const *ray,
 			s_1697c0_cluster *cluster = &bsp->clusters[cluster_index];
 			for (long i = 0; i < cluster->instance_count; ++i)
 			{
-				if (collision_point_inside_instance(cluster->instances[i], point, flags))
+				long instance_index = cluster->instances[i];
+				if (collision_point_inside_instance(instance_index, point, flags))
 				{
 					result = true;
 					break;
