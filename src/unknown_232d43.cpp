@@ -705,12 +705,12 @@ void function_232d77()
 				g_55caf0[row].value10c = function_1969a0(player, NONE, 21);
 				g_55caf0[row].value110 = function_1969a0(player, NONE, 20);
 			}
+			g_55caf0[row].count = 0;
+			g_55caf0[row].value = 0;
+			g_55caf0[row].value2 = 0;
 			long *total_count = &g_55caf0[row].count;
 			long *total_value = &g_55caf0[row].value;
 			long *total_value2 = &g_55caf0[row].value2;
-			*total_count = 0;
-			*total_value = 0;
-			*total_value2 = 0;
 			for (long statistic = 5; statistic < 39; statistic++)
 			{
 				*total_count += game_results_get_player_category_statistic(player, 4, statistic);

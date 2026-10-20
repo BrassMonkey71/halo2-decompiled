@@ -1089,8 +1089,8 @@ void function_a9b40(long index, s_z_copy_state *state)
  if (current_angle - saved_angle > 0.0001f)
  {
   real weight = 0.35f;
-  real dot = current_rotation.w * saved_rotation.w + current_rotation.k * saved_rotation.k +
-   current_rotation.j * saved_rotation.j + current_rotation.i * saved_rotation.i;
+  real dot = saved_rotation.i * current_rotation.i + saved_rotation.j * current_rotation.j +
+   saved_rotation.k * current_rotation.k + saved_rotation.w * current_rotation.w;
   if (dot < 0.0f) weight = -0.35f;
   blended.i = current_rotation.i * weight + saved_rotation.i * 0.65f;
   blended.j = current_rotation.j * weight + saved_rotation.j * 0.65f;

@@ -930,17 +930,17 @@ static inline void view_cross_product(vector3f const *a, vector3f const *b, vect
 }
 
 /* the rotation of `angle` about `axis` */
-static inline void rotation_matrix_from_axis_angle_171d90(s_rotation_matrix *m, vector3f const *axis, real angle)
+static __forceinline void rotation_matrix_from_axis_angle_171d90(s_rotation_matrix *m, vector3f const *axis, real angle)
 {
-	real s = (real)sin(angle);
-	real c = (real)cos(angle);
 	real i2 = axis->i * axis->i;
 	real j2 = axis->j * axis->j;
 	real k2 = axis->k * axis->k;
+	real s = (real)sin(angle);
+	real c = (real)cos(angle);
 	real one_minus_c = 1.f - c;
-	real tij = (one_minus_c * axis->i) * axis->j;
-	real tik = (one_minus_c * axis->k) * axis->i;
 	real tjk = (one_minus_c * axis->k) * axis->j;
+	real tik = (one_minus_c * axis->k) * axis->i;
+	real tij = (one_minus_c * axis->i) * axis->j;
 
 	m->m00 = (1.f - i2) * c + i2;
 	m->m01 = tij - s * axis->k;
