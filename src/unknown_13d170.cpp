@@ -338,12 +338,13 @@ long __stdcall function_13d370(s_physical_object *physical, long size, long type
 				entry->offset = best.offset;
 				entry->pages = pages;
 				entry->time = physical->time;
-				return result;
+				goto done;
 			}
 		}
 		if (type == limit_index)
 			physical->limits[limit_index] = physical->limits[limit_index] > pages ? pages : physical->limits[limit_index];
 	}
+done:
 	return result;
 }
 
