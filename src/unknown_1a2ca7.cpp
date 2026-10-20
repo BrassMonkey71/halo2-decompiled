@@ -645,7 +645,10 @@ void friends_player_set(s_friend_player *player, s_online_player const *source, 
 	string_copy(player->gamertag, source->gamertag, 16);
 	player->flags20 = 0;
 	player->name[0] = 0;
-	player->flags20 = source->flags_0 << 10;
+	if (TEST_FIELD_BIT(source->flags_0))
+		player->flags20 = 0x400;
+	else
+		player->flags20 = 0;
 	if (TEST_FIELD_BIT(source->flags_2))
 		player->flags21_3 = true;
 	else
