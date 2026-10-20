@@ -394,8 +394,8 @@ short function_263810(point3f const *origin, long actor_index, point3f const *po
 					plane3f plane;
 					plane.n = *(vector3f *)((byte *)actor + 0x2c0);
 					plane.d = origin->y * plane.n.j + origin->z * plane.n.k + origin->x * plane.n.i;
-					real volatile amount;
-					if (function_26d370(point, &motion, &plane, (real *)&amount) && amount >= 0.0f)
+					real amount;
+					if (function_26d370(point, &motion, &plane, &amount) && !(0.0f > amount))
 					{
 						real clipped_amount = amount;
 						if (clipped_amount > 1.0f) clipped_amount = 1.0f;

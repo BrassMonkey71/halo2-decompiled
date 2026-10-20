@@ -203,7 +203,6 @@ long __stdcall async_copy_file_callback(s_async_task *task)
 	}
 	case 4:
 		finished = true;
-		*copy->success = true;
 		break;
 	default:
 		break;
@@ -213,6 +212,10 @@ long __stdcall async_copy_file_callback(s_async_task *task)
 	{
 		finished = true;
 		*copy->success = false;
+	}
+	else if (finished)
+	{
+		*copy->success = true;
 	}
 	return finished != false;
 }
