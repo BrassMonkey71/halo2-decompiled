@@ -364,28 +364,15 @@ bool function_1b1970(long actor_index, short mode, vector2f const *forward,
 			if (normalize2d(&direction) != 0.0f)
 			{
 				real forward_dot = forward->i * direction.x + forward->j * direction.y;
-				real left_dot = left->i * direction.x + left->j * direction.y;
 
 				if (index % 2 == 0)
-				{
-					if (left_dot <= 0.0f)
-					{
-						result = true;
-						goto done;
-					}
-				}
-				else if (left_dot >= 0.0f)
-				{
-					result = true;
-					goto done;
-				}
-				if (forward_dot >= 0.9f)
-					result = true;
+					result = !(left->i * direction.x + left->j * direction.y > 0.0f) || forward_dot >= 0.9f;
+				else
+					result = !(left->i * direction.x + left->j * direction.y < 0.0f) || forward_dot >= 0.9f;
 			}
 		}
 		break;
 	}
-done:
 	return result;
 }
 

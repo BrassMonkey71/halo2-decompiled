@@ -1749,13 +1749,14 @@ void function_69b50(c_class_6a600 *world, dword mask, const byte *input);
 // @retail 0x684e0
 void function_684e0(byte *block)
 {
- c_class_6a600 *world = SIMULATION_WORLD;
- if (world->state != 3 && world->state != 5)
+ long state = SIMULATION_WORLD->state;
+ if (state != 3 && state != 5)
  {
-  if (world->state == 2) function_69880(world, block);
-  else if (world->state == 4)
+  c_class_6a600 *world = SIMULATION_WORLD;
+  if (state == 2) function_69880(world, block);
+  else if (state == 4)
   {
-   function_69a00(block + 0xc, world, *(dword *)(block + 8));
+   function_69a00(block + 0xc, SIMULATION_WORLD, *(dword *)(block + 8));
    function_69b50(world, *(dword *)(block + 0x5cc), block + 0x610);
   }
  }

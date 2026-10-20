@@ -71,9 +71,21 @@ class pair_listening_315a10 : public referenced_2d88a0, public pair_listener_315
 {
 };
 
+// what the dispatcher hands the pairs to while it runs
+struct pair_handler_3173f0
+{
+	void const *table;
+};
+
 class dispatcher_3728c0
 {
 public:
+	char unknown0[0x24];
+	pair_handler_3173f0 *handler;
+	char unknown28[0x100 - 0x28];
+	// the dispatcher's own handler, put back when a caller is done
+	pair_handler_3173f0 own_handler;
+
 	void function_3728c0(pair_30d870 const *added, long added_count, pair_30d870 const *removed,
 		long removed_count, pair_listener_315a10 *listener);
 };

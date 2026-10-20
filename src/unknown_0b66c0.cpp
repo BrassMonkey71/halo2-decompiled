@@ -125,6 +125,13 @@ long s_text512_ab::find(long start, char const *substring) const
 	return result;
 }
 
+static __forceinline char *upload_copy_ab(char *destination, char const *source, long size)
+{
+	strncpy(destination, source, size);
+	destination[size - 1] = 0;
+	return destination;
+}
+
 // @retail 0xb6220
 bool function_b6220(char const *volatile string, long start, long count, char *destination)
 {
@@ -135,8 +142,7 @@ bool function_b6220(char const *volatile string, long start, long count, char *d
 		if (count > 0x200)
 			count = 0x200;
 		start += (long)string;
-		strncpy(destination, (char const *)start, count);
-		destination[count - 1] = 0;
+		upload_copy_ab(destination, (char const *)start, count);
 		result = true;
 	}
 	return result;
@@ -161,13 +167,6 @@ struct s_upload_file_ab
 };
 
 
-
-static __forceinline char *upload_copy_ab(char *destination, char const *source, long size)
-{
-    strncpy(destination, source, size);
-    destination[size - 1] = 0;
-    return destination;
-}
 
 // @retail 0xb62b0
 s_upload_ab *function_b62b0(s_upload_ab *upload)
