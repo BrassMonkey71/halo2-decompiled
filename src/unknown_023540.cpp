@@ -62,11 +62,9 @@ inline void function_2c3b0(s_interface_function_context *context)
     initialization->field_30.k = 0.12f;
     initialization->field_28 = 0.4f;
     initialization->field_2c = 0.4f;
-    double pitch = -1.2566370964050293;
-    double yaw = 0.0;
-    context->field_3c.i = (real)(cos(yaw) * cos(pitch));
-    context->field_3c.j = (real)(sin(yaw) * cos(pitch));
-    context->field_3c.k = (real)sin(pitch);
+    context->field_3c.i = (real)(cos(0.0) * cos(-1.2566370964050293));
+    context->field_3c.j = (real)(sin(0.0) * cos(-1.2566370964050293));
+    context->field_3c.k = (real)sin(-1.2566370964050293);
     vector3f const *direction = &context->field_3c;
     vector3f volatile *negative = &context->field_54;
     negative->i = 0.0f - direction->i;
