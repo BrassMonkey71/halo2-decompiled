@@ -39,10 +39,11 @@ static __inline real normalize3d(vector3f *v)
 	return m;
 }
 
-// Decode normalization uses the rounded local components in double products.
+/* the decode path's normalization: the length of the stored components,
+   then each component scaled by its inverse */
 static __forceinline real normalize_decoded_direction(vector3f *v)
 {
-	real m = (real)sqrt((double)v->i * v->i + (double)v->k * v->k + (double)v->j * v->j);
+	real m = (real)sqrt(v->i * v->i + v->k * v->k + v->j * v->j);
 	if (!(fabs(m) < k_real_epsilon))
 	{
 		real inv = 1.f / m;
@@ -154,9 +155,9 @@ void function_195070(s_bitstream *stream, vector3f *out, real lo, real hi, long 
 				y = face->scale * y;
 				z = face->scale * z;
 			}
-			direction.i = (double)face->axes[2].i * z + (double)face->axes[1].i * y + (double)face->axes[0].i * x + face->origin.i;
-			direction.j = (double)face->axes[2].j * z + (double)face->axes[1].j * y + (double)face->axes[0].j * x + face->origin.j;
-			direction.k = (double)face->axes[2].k * z + (double)face->axes[1].k * y + (double)face->axes[0].k * x + face->origin.k;
+			direction.i = z * face->axes[2].i + y * face->axes[1].i + x * face->axes[0].i + face->origin.i;
+			direction.j = z * face->axes[2].j + y * face->axes[1].j + x * face->axes[0].j + face->origin.j;
+			direction.k = z * face->axes[2].k + y * face->axes[1].k + x * face->axes[0].k + face->origin.k;
 		}
 		normalize_decoded_direction(&direction);
 		real magnitude = function_194ff0(stream, lo, hi, bits);

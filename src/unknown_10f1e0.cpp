@@ -1795,20 +1795,18 @@ struct s_request_114b60
 	s_request_extra_114b60 extra;
 };
 
+__declspec(noinline) bool unit_submit_entry_request(short fallback_index, short entry_index, long unit_index, long priority, void const *extra);
+
 // @retail 0x114b60
 bool unit_submit_entry_request(short fallback_index, short entry_index, long unit_index, long priority, void const *extra)
 {
-	bool local_0 = false;
-	// Retail keeps the object on the stack and reuses the priority slot for the tag.
-	long const *unit_reference = &unit_index;
-	unit_index = *unit_reference;
-	short request_priority = (short)priority;
 	short index = entry_index;
+	short request_priority = (short)priority;
 	if (index == NONE)
 	{
 		index = function_20ba00(fallback_index);
 		if (index == NONE)
-			goto local_1;
+			return false;
 	}
 	priority = NONE;
 	if (function_114520(unit_index, index, request_priority, NULL, &priority))
@@ -1823,19 +1821,17 @@ bool unit_submit_entry_request(short fallback_index, short entry_index, long uni
 		if (extra)
 		{
 			memcpy(&request.extra, extra, sizeof(request.extra));
-			function_114680(unit_index, &request);
-			local_0 = true;
-			goto local_1;
 		}
-		request.extra.marker = NONE;
-		request.extra.object_index = NONE;
-		request.extra.flags = 0;
+		else
+		{
+			request.extra.marker = NONE;
+			request.extra.object_index = NONE;
+			request.extra.flags = 0;
+		}
 		function_114680(unit_index, &request);
-		local_0 = true;
-		goto local_1;
+		return true;
 	}
-local_1:
-	return local_0;
+	return false;
 }
 
 /* the same request with the entry first, for callers written in that order */

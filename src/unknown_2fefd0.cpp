@@ -3,6 +3,8 @@
 // first object's support vertex towards the second's centre, and the
 // second's support vertex back towards that vertex, in the second's frame.
 #include <xmmintrin.h>
+#include "growable_array_2d91d0.h"
+#include "stream_holder_2d8e70.h"
 
 // the sign bit, in four lanes
 __declspec(align(16)) static const unsigned long sign_mask_4124a0[4] = {
@@ -166,4 +168,322 @@ void pair_state_2fefd0::function_2ff0c0(convex_2fefd0 const *first, triangle_2ff
 	field_9 = 3;
 	first_flag = first->slot_15();
 	second_flag = 3;
+}
+
+// what reports a stream's errors: its second slot gives the stream to write
+// the message to, which also ends the report
+class reporter_2ff210
+{
+public:
+	virtual void slot_0() {}
+	virtual stream_holder_2d8e70 *slot_1() { return 0; }
+};
+
+reporter_2ff210 *g_48017c;
+
+struct class_2d9060
+{
+	long function_2d9060();
+};
+
+// where a command stream stands: an offset, and a value the commands set
+struct position_2ff210
+{
+	long offset;
+	long values[1];
+};
+
+ELEMENTS_2D91D0(offsets_2ff210, long);
+
+// the position as a copy that may be changed: the caller's at first
+__forceinline position_2ff210 *writable_2ff210(position_2ff210 const *&position, position_2ff210 &copy)
+{
+	if (position != &copy)
+	{
+		copy = *position;
+		position = &copy;
+	}
+	return &copy;
+}
+
+// a big-endian number of two, three or four bytes
+#define READ_2_2FF210(p) (((p)[0] << 8) + (p)[1])
+#define READ_3_2FF210(p) (((((p)[0] << 8) + (p)[1]) << 8) + (p)[2])
+#define READ_4_2FF210(p) (((((((p)[0] << 8) + (p)[1]) << 8) + (p)[2]) << 8) + (p)[3])
+
+class offset_list_2ff210
+{
+public:
+	offsets_2ff210 *offsets;
+
+	void function_2ff210(position_2ff210 const *position, unsigned char const *commands);
+	void function_2ff570(position_2ff210 const *position, unsigned char const *commands);
+};
+
+// runs a command stream until a command gives an offset, and adds the
+// position's offset plus that one to the list; commands before it skip their
+// operands or move the position
+// @retail 0x2ff210
+void offset_list_2ff210::function_2ff210(position_2ff210 const *position, unsigned char const *commands)
+{
+	position_2ff210 copy;
+	long offset;
+	long value;
+	for (;;)
+	{
+		unsigned char const *p = commands;
+		long const op = *p;
+		switch (op)
+		{
+		case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x15: case 0x16:
+		case 0x17: case 0x18: case 0x19: case 0x1a: case 0x1b: case 0x1c:
+			commands = p + p[3] + 4;
+			break;
+		case 0x20:
+		case 0x21:
+		case 0x22:
+			commands = p + p[2] + 3;
+			break;
+		case 0x23:
+		case 0x24:
+		case 0x25:
+			commands = p + READ_2_2FF210(p + 5) + 7;
+			break;
+		case 0x26:
+		case 0x27:
+		case 0x28:
+			commands = p + 3;
+			break;
+		case 0x29:
+		case 0x2a:
+		case 0x2b:
+			commands = p + 7;
+			break;
+		case 0x05:
+			commands = p + p[1] + 2;
+			break;
+		case 0x06:
+			commands = p + READ_2_2FF210(p + 1) + 3;
+			break;
+		case 0x07:
+			commands = p + READ_3_2FF210(p + 1) + 4;
+			break;
+		case 0x01:
+		case 0x02:
+		case 0x03:
+		case 0x04:
+			commands = p + 4;
+			break;
+		case 0x09:
+		{
+			long const delta = p[1];
+			writable_2ff210(position, copy)->offset += delta;
+			commands = p + 2;
+			break;
+		}
+		case 0x0a:
+		{
+			long const delta = READ_2_2FF210(p + 1);
+			writable_2ff210(position, copy)->offset += delta;
+			commands = p + 3;
+			break;
+		}
+		case 0x0b:
+		{
+			long const start = READ_4_2FF210(p + 1);
+			writable_2ff210(position, copy)->offset = start;
+			commands = p + 5;
+			break;
+		}
+		// the value in the first of four slots (retail writes the slot the
+		// command names, past the end for the other three)
+		case 0x60:
+		case 0x61:
+		case 0x62:
+		case 0x63:
+			copy.values[op - 0x60] = p[1];
+			commands = p + 2;
+			value = copy.values[0];
+			writable_2ff210(position, copy)->values[0] = value;
+			break;
+		case 0x64:
+		case 0x65:
+		case 0x66:
+		case 0x67:
+			copy.values[op - 0x64] = READ_2_2FF210(p + 1);
+			commands = p + 3;
+			value = copy.values[0];
+			writable_2ff210(position, copy)->values[0] = value;
+			break;
+		case 0x68:
+		case 0x69:
+		case 0x6a:
+		case 0x6b:
+			copy.values[op - 0x68] = READ_4_2FF210(p + 1);
+			commands = p + 5;
+			value = copy.values[0];
+			writable_2ff210(position, copy)->values[0] = value;
+			break;
+		default:
+			g_48017c->slot_1()->function_2d9000("unknown command %i\n", op);
+			((class_2d9060 *)g_48017c->slot_1())->function_2d9060();
+			*(long *)0 = 0;
+			return;
+		case 0x00:
+			return;
+		case 0x50:
+			offset = p[1];
+			goto found;
+		case 0x51:
+			offset = READ_2_2FF210(p + 1);
+			goto found;
+		case 0x52:
+			offset = READ_3_2FF210(p + 1);
+			goto found;
+		case 0x53:
+			offset = READ_4_2FF210(p + 1);
+			goto found;
+		case 0x30: case 0x31: case 0x32: case 0x33: case 0x34: case 0x35: case 0x36: case 0x37:
+		case 0x38: case 0x39: case 0x3a: case 0x3b: case 0x3c: case 0x3d: case 0x3e: case 0x3f:
+		case 0x40: case 0x41: case 0x42: case 0x43: case 0x44: case 0x45: case 0x46: case 0x47:
+		case 0x48: case 0x49: case 0x4a: case 0x4b: case 0x4c: case 0x4d: case 0x4e: case 0x4f:
+			offset = op - 0x30;
+			goto found;
+		}
+	}
+found:
+	offsets->append(position->offset + offset);
+}
+
+// the same for a stream whose commands 0x10 to 0x2b have other operands
+// @retail 0x2ff570
+void offset_list_2ff210::function_2ff570(position_2ff210 const *position, unsigned char const *commands)
+{
+	position_2ff210 copy;
+	long offset;
+	long value;
+	for (;;)
+	{
+		unsigned char const *p = commands;
+		long const op = *p;
+		switch (op)
+		{
+		case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x15: case 0x16:
+		case 0x17: case 0x18: case 0x19: case 0x1a: case 0x1b: case 0x1c:
+			commands = p + 4;
+			break;
+		case 0x20:
+		case 0x21:
+		case 0x22:
+			commands = p + 3;
+			break;
+		case 0x23:
+		case 0x24:
+		case 0x25:
+			commands = p + READ_2_2FF210(p + 3) + 7;
+			break;
+		case 0x26:
+		case 0x27:
+		case 0x28:
+			commands = p + 3;
+			break;
+		case 0x29:
+		case 0x2a:
+		case 0x2b:
+			commands = p + 7;
+			break;
+		case 0x05:
+			commands = p + p[1] + 2;
+			break;
+		case 0x06:
+			commands = p + READ_2_2FF210(p + 1) + 3;
+			break;
+		case 0x07:
+			commands = p + READ_3_2FF210(p + 1) + 4;
+			break;
+		case 0x01:
+		case 0x02:
+		case 0x03:
+		case 0x04:
+			commands = p + 4;
+			break;
+		case 0x09:
+		{
+			long const delta = p[1];
+			writable_2ff210(position, copy)->offset += delta;
+			commands = p + 2;
+			break;
+		}
+		case 0x0a:
+		{
+			long const delta = READ_2_2FF210(p + 1);
+			writable_2ff210(position, copy)->offset += delta;
+			commands = p + 3;
+			break;
+		}
+		case 0x0b:
+		{
+			long const start = READ_4_2FF210(p + 1);
+			writable_2ff210(position, copy)->offset = start;
+			commands = p + 5;
+			break;
+		}
+		// the value in the first of four slots (retail writes the slot the
+		// command names, past the end for the other three)
+		case 0x60:
+		case 0x61:
+		case 0x62:
+		case 0x63:
+			copy.values[op - 0x60] = p[1];
+			commands = p + 2;
+			value = copy.values[0];
+			writable_2ff210(position, copy)->values[0] = value;
+			break;
+		case 0x64:
+		case 0x65:
+		case 0x66:
+		case 0x67:
+			copy.values[op - 0x64] = READ_2_2FF210(p + 1);
+			commands = p + 3;
+			value = copy.values[0];
+			writable_2ff210(position, copy)->values[0] = value;
+			break;
+		case 0x68:
+		case 0x69:
+		case 0x6a:
+		case 0x6b:
+			copy.values[op - 0x68] = READ_4_2FF210(p + 1);
+			commands = p + 5;
+			value = copy.values[0];
+			writable_2ff210(position, copy)->values[0] = value;
+			break;
+		default:
+			g_48017c->slot_1()->function_2d9000("unknown command %i\n", op);
+			((class_2d9060 *)g_48017c->slot_1())->function_2d9060();
+			*(long *)0 = 0;
+			return;
+		case 0x00:
+			return;
+		case 0x50:
+			offset = p[1];
+			goto found;
+		case 0x51:
+			offset = READ_2_2FF210(p + 1);
+			goto found;
+		case 0x52:
+			offset = READ_3_2FF210(p + 1);
+			goto found;
+		case 0x53:
+			offset = READ_4_2FF210(p + 1);
+			goto found;
+		case 0x30: case 0x31: case 0x32: case 0x33: case 0x34: case 0x35: case 0x36: case 0x37:
+		case 0x38: case 0x39: case 0x3a: case 0x3b: case 0x3c: case 0x3d: case 0x3e: case 0x3f:
+		case 0x40: case 0x41: case 0x42: case 0x43: case 0x44: case 0x45: case 0x46: case 0x47:
+		case 0x48: case 0x49: case 0x4a: case 0x4b: case 0x4c: case 0x4d: case 0x4e: case 0x4f:
+			offset = op - 0x30;
+			goto found;
+		}
+	}
+found:
+	offsets->append(position->offset + offset);
 }

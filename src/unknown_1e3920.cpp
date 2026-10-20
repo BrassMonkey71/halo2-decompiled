@@ -1114,9 +1114,7 @@ void function_1e04a0(long primary_tag, long character_index, long unit_index, lo
 		{
 			short lower = *(short *)(settings + 0x34);
 			short upper = (short)(*(short *)(settings + 0x36) + 1);
-			dword value = g_4e7408->unknown0 * 0x19660d + 0x3c6ef35f;
-			g_4e7408->unknown0 = value;
-			long count = (((value >> 16) * (upper - lower)) >> 16) + lower;
+			long count = ((random_next(&g_4e7408->unknown0) * (upper - lower)) >> 16) + lower;
 			function_cccd0(unit_index, grenade_type, (char)count);
 		}
 	}
