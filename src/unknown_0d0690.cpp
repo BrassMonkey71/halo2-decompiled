@@ -1457,19 +1457,24 @@ bool function_d16d0(s_structure_lightmap_triangle const *triangle, color3f *out,
             byte *bsp = (byte *)g_4e0344->locations;
             long index = triangle->instance_index;
             real v = 0.0f, u = 0.0f;
-            s_d16d0_bitmap_entry const *rows;
+            long palette_index;
+            long bitmap_index;
             if (index != NONE)
-                rows = *(s_d16d0_bitmap_entry const **)(bsp + 0x4c);
+            {
+                s_d16d0_bitmap_entry const *entry = &(*(s_d16d0_bitmap_entry const **)(bsp + 0x4c))[index];
+                palette_index = entry->palette_index;
+                bitmap_index = entry->bitmap_index;
+            }
             else
             {
-                index = triangle->cluster_index;
-                rows = *(s_d16d0_bitmap_entry const **)(bsp + 0x2c);
+                s_d16d0_bitmap_entry const *entry = &(*(s_d16d0_bitmap_entry const **)(bsp + 0x2c))[triangle->cluster_index];
+                palette_index = entry->palette_index;
+                bitmap_index = entry->bitmap_index;
             }
-            s_d16d0_bitmap_entry const *entry = &rows[index];
 
             color3f color = *(color3f *)g_468714;
             function_d2bf0(mesh, triangle->lightmap_part_index, triangle->u, triangle->v, &u, &v);
-            if (function_d2f90(0, entry->bitmap_index, entry->palette_index, u, v, &color) == 0)
+            if (function_d2f90(0, bitmap_index, palette_index, u, v, &color) == 0)
             {
                 result = true;
                 *weight = sample_weight;

@@ -105,7 +105,8 @@ void function_1ecf50(vector3f *forward, vector3f *up, s_direction_rotation_input
 				axis.i = input->up.j * input->direction.k - input->up.k * input->direction.j;
 				axis.j = input->up.k * input->direction.i - input->up.i * input->direction.k;
 				axis.k = input->up.i * input->direction.j - input->up.j * input->direction.i;
-				if (function_30bf0(&axis) != 0.0f)
+				real length = function_30bf0(&axis);
+				if (length != 0.0f)
 				{
 					real sine = (real)sin(angle);
 					real cosine = (real)cos(angle);
@@ -167,7 +168,7 @@ void function_1eb6f0(s_ease_input *input, s_ease_state *state, s_ease_output *ou
 	real squared = velocity.k * velocity.k + velocity.j * velocity.j + velocity.i * velocity.i;
 	if (squared > 6.25f)
 	{
-		real scale = 2.5f / (real)sqrt(squared);
+		double scale = 2.5f / sqrt(squared);
 		velocity.i = (real)(velocity.i * scale);
 		velocity.j = (real)(velocity.j * scale);
 		velocity.k = (real)(velocity.k * scale);
