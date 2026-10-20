@@ -1,4 +1,4 @@
-// @flags /O2 /Gr
+// @flags /O2 /arch:SSE /Gr
 /* UNKNOWN_199560.CPP: compressed data blocks (lane H) */
 
 #include "unknown_11c920.h"

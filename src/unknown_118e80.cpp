@@ -179,7 +179,7 @@ void function_118e80(long object_index, vector3f *forward);
 bool function_1faf80(vector3f *facing, long object_index, void const *settings_pointer,
 	vector3f const *control, real threshold, real *turn);
 void function_11f0d0(vector3f *position, vector3f *forward, vector3f const *target, real rate, real max_angle, real scale);
-void function_11d180(vector3f *left, vector3f const *in, vector3f *out, vector3f const *up, vector3f *forward);
+void function_11d180(vector3f const *in, vector3f const *up, vector3f *forward, vector3f *left, vector3f *out);
 real function_11ce20(vector3f const *a, vector3f const *b);
 void object_dispatch_moved(long object_index, long a, long b, long c);
 
@@ -245,12 +245,12 @@ void function_1197b0(long object_index)
 	vector3f up;
 	world_up_1197b0(object_index, &up);
 	vector3f new_forward, target_up, left1, left2, forward2;
-	function_11d180(&left1, &forward, &target_up, &object->requested_up, &new_forward);
-	function_11d180(&left2, &forward, &up, &up, &forward2);
+	function_11d180(&forward, &object->requested_up, &new_forward, &left1, &target_up);
+	function_11d180(&forward, &up, &forward2, &left2, &up);
 	if (function_11ce20(&up, &target_up) > max_angle * g_510c54->rate)
 	{
 		function_11f0d0(&temporary_velocity, &up, &target_up, g_510c54->rate, max_angle, acceleration * 2.0f);
-		function_11d180(&left2, &forward, &up, &up, &forward2);
+		function_11d180(&forward, &up, &forward2, &left2, &up);
 	}
 	else
 		up = target_up;
@@ -872,7 +872,7 @@ long function_119c10(long arg_0)
                 local_2.j = 0.0f - local_14.j;
                 local_2.k = 0.0f - local_14.k;
                 vector3f local_26;
-                function_11d180(&local_26, &local_2, &local_6, &local_0->up, &local_2);
+                function_11d180(&local_2, &local_0->up, &local_2, &local_26, &local_6);
                 function_b75a0(arg_0, &local_13, &local_2, &local_6, &local_15, false);
                 function_b93b0(local_1, arg_0, (short)(local_11));
                 real local_27 = g_510c54->field_2_3 * 0.2f;

@@ -369,20 +369,6 @@ void function_19c6d0(s_record_pool *data, long key0)
 	}
 }
 
-/* the next used index at or after index, or NONE */
-static inline long record_pool_next_used_index(s_record_pool *data, long index)
-{
-	if (index >= 0)
-	{
-		for (; index < data->high_water_index; index++)
-		{
-			if (data->bitmap[index >> 5] & (1 << (index & 0x1f)))
-				return index;
-		}
-	}
-	return NONE;
-}
-
 // @retail 0x19c7e0
 void function_19c7e0(s_record_pool *data)
 {
@@ -418,17 +404,14 @@ void function_19c7e0(s_record_pool *data)
 	}
 
 	sort_4byte(flagged, flagged_count, &flagged_count, function_19c7c0, 0);
-	long index = NONE;
-	while (true)
-	{
-		s_level_datum *datum;
+	s_record_pool_iterator iterator;
+	s_level_datum *datum;
 
-		index = record_pool_next_used_index(data, index + 1);
-		if (index == NONE)
-			break;
-		datum = (s_level_datum *)(data->data + data->size * index);
-		if (!datum)
-			break;
+	iterator.data = data;
+	iterator.index = NONE;
+	iterator.datum_index = NONE;
+	while ((datum = (s_level_datum *)data_iterator_next_inlined(&iterator)) != NULL)
+	{
 		if (binary_search_4byte(datum->value, flagged, flagged_count, function_19c7d0, 0) != NONE)
 			datum->flag = true;
 	}
