@@ -112,10 +112,6 @@ void class_2eab70::function_2eab70(void const *a, void const *b, void const *inp
 
 
 
-// @stub 0x2ecf20
-void class_2ecf20::function_2ecf20(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
