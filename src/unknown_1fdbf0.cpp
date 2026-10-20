@@ -171,8 +171,8 @@ void function_1fe120(long actor_index, vector3f *direction)
 		long target_index = actor->unknown274;
 		if (target_index != NONE)
 		{
+			s_moving_object_header *header = &((s_moving_object_header *)g_4e0300->data)[target_index & 0xffff];
 			object_index = target_index;
-			s_moving_object_header *header = &((s_moving_object_header *)g_4e0300->data)[object_index & 0xffff];
 			if (header->type == 1)
 			{
 				s_moving_object *object = (s_moving_object *)header->object;
