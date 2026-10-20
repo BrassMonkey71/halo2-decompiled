@@ -671,7 +671,7 @@ void __stdcall function_17960(byte *state, word const *range)
         s_shader_value_entry const *entry = (s_shader_value_entry const *)(*(byte **)(definition + 0x58) + (initial_range & 0x1ff) * 4);
         real *outputs[2] = { (real *)(state + 0x1530), (real *)(state + 0x1630) };
         dword *changed[2] = { (dword *)(state + 0x1730), (dword *)(state + 0x1734) };
-        for (long i = 0; i < (*range >> 9); ++i, ++entry)
+        for (long i = 0; i < (*range >> 9); ++i)
         {
             definition = *(byte **)(state + 0xc);
             long range_index = ((word const *)*(byte **)(definition + 0x50))[entry->parameter] & 0x1ff;
@@ -711,6 +711,7 @@ void __stdcall function_17960(byte *state, word const *range)
             else
                 function_1b790(state, entry->kind, out, entry->mode);
             *changed[entry->group] |= 1 << entry->output;
+            ++entry;
         }
     }
 }
