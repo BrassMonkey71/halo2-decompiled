@@ -12532,7 +12532,7 @@ va,size,owner,style,evidence,name,object,calls,source,status
 0030c190,7,third:havok,speed,a16 pad,,,,src/unknown_30c150.cpp,matched
 0030c1a0,81,third:havok,speed,a16 pad,,,00279740,src/unknown_30c1a0.cpp,matched
 0030c200,293,third:havok,speed,a16 pad,,,,src/unknown_30c200.cpp,matched
-0030c330,110,third:havok,speed,a16 pad,,,,,todo
+0030c330,110,third:havok,speed,a16 pad,,,,src/unknown_30c330.cpp,matched
 0030c3a0,6,third:havok,speed,a16 pad,,,,src/unknown_30c3a0.cpp,matched
 0030c3b0,40,third:havok,speed,a16 pad,,,00318970,src/unknown_30c3a0.cpp,matched
 0030c3e0,63,third:havok,speed,a16 pad,,,,src/unknown_30c3e0.cpp,matched
