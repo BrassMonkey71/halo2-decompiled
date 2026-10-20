@@ -2763,11 +2763,11 @@ void __stdcall function_273ac0(long ai_index, long target_ai_index)
 		long clump_object_index = actor->clump_object_index;
 		if (clump_object_index == NONE)
 			continue;
-		word clump_index = (word)clump_object_index;
-		if (bit_vector_test(clump_bits, clump_index))
+		long clump_index = clump_object_index;
+		if (bit_vector_test(clump_bits, clump_index & 0xffff))
 			continue;
-		bit_vector_set(clump_bits, clump_index, true);
-		long prop_index = ((s_ai_clump_273d30 *)g_502420->data)[clump_index].first_prop_index;
+		bit_vector_set(clump_bits, clump_index & 0xffff, true);
+		long prop_index = ((s_ai_clump_273d30 *)g_502420->data)[clump_index & 0xffff].first_prop_index;
 		while (prop_index != NONE)
 		{
 			s_ai_prop_273d30 *prop = &((s_ai_prop_273d30 *)g_50241c->data)[prop_index & 0xffff];
