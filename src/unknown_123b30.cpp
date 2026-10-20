@@ -392,7 +392,8 @@ void function_1241b0(s_saved_game_read *arg_0)
 	if (local_2)
 	{
 		memcpy((void *)local_2, game_state_globals.base_address, 0x3fe000);
-		if (function_217520(local_1, (void *)local_2, 0x1288, (void *)(local_2 + 0x1288), 0x3fcd78, arg_0))
+		void const *local_3 = buffer_after_header((void *)local_2, 0x1288);
+		if (function_217520(local_1, (void *)local_2, 0x1288, local_3, 0x3fcd78, arg_0))
 			function_19048c(local_0);
 	}
 	else if (function_124840(local_1, game_state_globals.base_address, 0x1288, 0x3fe000))
