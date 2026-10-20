@@ -435,7 +435,7 @@ void __stdcall function_23c110(void *state, void *input, s_observer_command *com
     {
         *(real *)((byte *)command + 0xa4) = 0.18f;
         *((byte *)command + 0x90) = 1;
-        *(real *)state = camera->field_of_view;
+        *(dword *)state = *(dword *)&camera->field_of_view;
     }
 }
 

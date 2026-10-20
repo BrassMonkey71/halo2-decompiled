@@ -66,10 +66,10 @@ long function_212380(long arg_0, long arg_1, byte *arg_2)
             *(dword *)(local_4 + 0x48) = (*(dword *)(local_4 + 0x48) & 0xffff8f9a) | 0xf9a;
             *(long *)(local_4 + 0x44) = 4;
             *(long *)(local_4 + 0x50) = 0x78;
-            *(long *)(local_4 + 0x80) = 0x10;
-            *(long *)(local_4 + 0x84) = 0x10;
-            *(long *)(local_4 + 0x8c) = 5;
-            *(long *)(local_4 + 0x90) = 5;
+            *(long *)(local_4 + 0x74) = 0x10;
+            *(long *)(local_4 + 0x78) = 0x10;
+            *(long *)(local_4 + 0x80) = 5;
+            *(long *)(local_4 + 0x84) = 5;
             *(long *)(local_4 + 0xac) = 0xa;
             *(dword *)(local_4 + 0xf0) &= 0xffffffe0;
             *(short *)(local_4 + 0xf4) = 0x3c;
@@ -80,10 +80,10 @@ long function_212380(long arg_0, long arg_1, byte *arg_2)
             *(dword *)(local_4 + 0x48) = (*(dword *)(local_4 + 0x48) & 0xffff8f9a) | 0xf9a;
             *(long *)(local_4 + 0x44) = 3;
             *(long *)(local_4 + 0x50) = 0x78;
-            *(long *)(local_4 + 0x80) = 0x10;
-            *(long *)(local_4 + 0x84) = 0x10;
-            *(long *)(local_4 + 0x8c) = 5;
-            *(long *)(local_4 + 0x90) = 5;
+            *(long *)(local_4 + 0x74) = 0x10;
+            *(long *)(local_4 + 0x78) = 0x10;
+            *(long *)(local_4 + 0x80) = 5;
+            *(long *)(local_4 + 0x84) = 5;
             *(long *)(local_4 + 0xac) = 0xa;
             *(dword *)(local_4 + 0xf0) &= 0xfffffff8;
             *(short *)(local_4 + 0xf4) = 1;
@@ -102,8 +102,8 @@ long function_212380(long arg_0, long arg_1, byte *arg_2)
             *(long *)(local_4 + 0x80) = 5;
             *(long *)(local_4 + 0x84) = 5;
             *(long *)(local_4 + 0xac) = 0xa;
-            *(long *)(local_4 + 0xb4) = 2;
-            *(short *)(local_4 + 0x100) = 2;
+            *(long *)(local_4 + 0xa8) = 2;
+            *(short *)(local_4 + 0xf4) = 2;
             *(dword *)(local_4 + 0xf0) = (*(dword *)(local_4 + 0xf0) & 0xffffffdb) | 0x1b;
             break;
         case 7:
