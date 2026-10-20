@@ -55,9 +55,14 @@ public:
 // @retail 0x31a750
 void class_31a750::function_31a750(__m128 *rows) const
 {
-	set_zero_31a750(rows);
+	__m128 zero = _mm_setzero_ps();
+	_mm_store_ps((float *)&rows[0], zero);
+	_mm_store_ps((float *)&rows[1], zero);
+	_mm_store_ps((float *)&rows[2], zero);
 }
 
+// score 5: retail stores the seven zero rows in the order 0x30, 0x10, 0x20,
+// 0x40, 0x50, 0x60, 0x70 and emits the byte store after the zeroing xorps.
 // @retail 0x31a770
 char *class_31a750::function_31a770(long a, long b, s_31a770 *out) const
 {
