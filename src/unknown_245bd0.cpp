@@ -312,10 +312,10 @@ bool function_2461a0(
 			if (discriminant >= g_45dbd8)
 			{
 				/* retail compares the unrounded root and divides the rounded one */
-				double root = b - sqrt(discriminant);
+				real root = b - sqrt(discriminant);
 				if (a >= root)
 				{
-					*t = (real)root / a;
+					*t = root / a;
 					result = true;
 				}
 			}
