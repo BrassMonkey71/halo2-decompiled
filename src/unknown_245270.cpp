@@ -262,13 +262,12 @@ void function_245400(long index, s_source_245400 const *source,
 	long field_04, s_line_list *list)
 {
 	s_vertex_245400 const *vertex = &source->field_3c[index];
-	long material_index = source->field_34[vertex->field_0c].field_08;
-	s_material_245400 const *material = &source->field_2c[material_index];
+	s_surface_245400 const *surface = &source->field_34[vertex->field_0c];
+	s_material_245400 const *material = &source->field_2c[surface->field_08];
 	point3f transformed;
-	point3f const *point = &vertex->field_00;
-	if (matrix)
-		point = function_245400_transform(matrix, point, &transformed);
-	function_244ca0(height, radius, list, field_00, field_04, material_index,
+	point3f const *point = matrix ?
+		function_245400_transform(matrix, &vertex->field_00, &transformed) : &vertex->field_00;
+	function_244ca0(height, radius, list, field_00, field_04, surface->field_08,
 		material->field_04, material->field_05, point, material->field_06);
 }
 
