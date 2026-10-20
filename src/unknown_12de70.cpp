@@ -505,8 +505,8 @@ bool __stdcall geometry_cache_block_busy(long block_index)
 {
 	s_cache_block *cache_block = &((s_cache_block *)g_4e648c->data)[block_index & 0xffff];
 	s_physical_block *physical_block = physical_block_get(block_index);
-	long age = physical_object_get()->time - physical_block->time;
 	bool result = false;
+	long age = physical_object_get()->time - physical_block->time;
 
 	if (age == 0)
 	{

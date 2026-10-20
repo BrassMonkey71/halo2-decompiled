@@ -1391,16 +1391,10 @@ long function_242210(point3f const *point)
 	long engine_type = ctf_options()->engine_type;
 	c_engine_peer *enabled = g_55e4d0[g_4e9ae8->engine_index];
 	definition_index = NONE;
-	if (engine_type == 9)
-	{
-		if (enabled)
-			definition_index = mp_globals_block()->bomb_definition_index;
-	}
-	else
-	{
-		if (enabled)
-			definition_index = mp_globals_block()->flag_definition_index;
-	}
+	if (engine_type == 9 && enabled)
+		definition_index = mp_globals_block()->bomb_definition_index;
+	else if (engine_type != 9 && enabled)
+		definition_index = mp_globals_block()->flag_definition_index;
 
 	function_b7930(&data, definition_index, NONE, 0);
 	data.position = *point;

@@ -1219,16 +1219,15 @@ bool __stdcall function_110ab0(long unit_index)
 {
 	// Retail keeps this argument on the stack.
 	long const *unit_reference = &unit_index;
-	unit_index = *unit_reference;
 	s_unit_animation_object *unit = UNIT_ANIMATION_OBJECT(unit_index);
 	s_unit_animation_control *control = UNIT_ANIMATION_CONTROL(unit);
 	s_animation_state *state = UNIT_ANIMATION_STATE(unit);
 	long overlay = control->channel_9c.unknown08;
 	long name = state->unknown7c;
 	long controlling = unit->field_13c;
-	volatile bool result = false;
+	bool result = false;
 	bool depleted = false;
-	volatile bool interruptible = false;
+	bool interruptible = false;
 	if (controlling != NONE)
 	{
 		long first = held_object_110ab0(unit_index, *(char *)((byte *)UNIT_ANIMATION_OBJECT(unit_index) + 0x212));

@@ -2444,6 +2444,7 @@ bool __stdcall function_14f2e0(long player_index);
 
 bool __stdcall function_cc170(long *);
 bool function_1ca670(void);
+bool function_13cb40(void);
 bool function_14e970(long, long, point3f const *);
 struct s_unknown_13bf00;
 extern s_unknown_13bf00 *g_510c50;
@@ -2474,12 +2475,11 @@ static inline bool player_datum_iterator_next(s_data_datum_iterator *iterator)
 // @retail 0x14cdd0
 void function_14cdd0(void)
 {
-    byte *game = (byte *)g_510c50;
     s_players_globals *globals = (s_players_globals *)g_4e8c20;
     globals->unknown9c = 0;
-    if (globals->unknowna0 > 0 && (!game || !game[5])) --globals->unknowna0;
+    if (globals->unknowna0 > 0 && !function_13cb40()) --globals->unknowna0;
     if (!globals->unknown9e) return;
-    if (game && game[5]) globals->unknown9c = 2;
+    if (function_13cb40()) globals->unknown9c = 2;
     else if (!globals->unknown9f)
     {
         if (globals->unknowna0 > 0) globals->unknown9c = 3;
@@ -2529,17 +2529,14 @@ void function_14cdd0(void)
         iterator.data = players;
         iterator.index = NONE;
         iterator.datum_index = NONE;
-        if (data_datum_iterator_next(&iterator))
+        while (data_datum_iterator_next(&iterator))
         {
-            do
+            s_player *player = (s_player *)iterator.datum;
+            if (!(player->flags_word & 2) && (player->flags_word & 1) && player->unit_index == NONE)
             {
-                s_player *player = (s_player *)iterator.datum;
-                if (!(player->flags_word & 2) && (player->flags_word & 1) && player->unit_index == NONE)
-                {
-                    long index = iterator.datum_index;
-                    if (!function_14f2e0(index) || !function_14e970(index, last_unit, &last_position)) failed = true;
-                }
-            } while (data_datum_iterator_next(&iterator));
+                long index = iterator.datum_index;
+                if (!function_14f2e0(index) || !function_14e970(index, last_unit, &last_position)) failed = true;
+            }
         }
         if (failed) return;
         ((s_players_globals *)g_4e8c20)->unknown9e = false;
