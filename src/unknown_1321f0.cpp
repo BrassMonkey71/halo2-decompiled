@@ -930,7 +930,7 @@ struct s_visibility_link
 };
 __forceinline long visibility_next(s_record_pool *pool, long *next)
 {
-	long result = NONE;
+	long result;
 	if (*next != NONE)
 	{
 		s_visibility_link *link = (s_visibility_link *)(pool->data + (*next & 0xffff) * pool->size);
@@ -939,6 +939,8 @@ __forceinline long visibility_next(s_record_pool *pool, long *next)
 			_mm_prefetch((char const *)(pool->data + (*next & 0xffff) * pool->size), _MM_HINT_T0);
 		result = link->object_index;
 	}
+	else
+		result = NONE;
 	return result;
 }
 

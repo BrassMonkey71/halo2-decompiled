@@ -96,16 +96,10 @@ void function_18f62b()
 		bool changed = false;
 		s_slot_update_view *slot = slot_update_get(index);
 		bool connected = slot_update_connected((short)index);
-		if (connected)
-		{
-			g_551ae0[index] = false;
-			slot->flags |= 1;
-		}
-		else
-		{
-			function_191234(index);
-			slot->flags &= ~1;
-		}
+		if (!connected) function_191234(index);
+		else g_551ae0[index] = false;
+		if (connected) slot->flags |= 1;
+		else slot->flags &= ~1;
 		if (connected)
 		{
 			char drive;
