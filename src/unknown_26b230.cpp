@@ -1459,8 +1459,6 @@ long function_26bc60(long clump_index)
 // @retail 0x269040
 long function_269040(point3f const *center, short team)
 {
-	point3f const *const *center_reference = &center;
-	short const *team_reference = &team;
 	long result = record_pool_allocate(g_502420);
 	if (result == NONE)
 	{
@@ -1494,8 +1492,8 @@ long function_269040(point3f const *center, short team)
 	if (result != NONE)
 	{
 		s_clump_activity_view *clump = (s_clump_activity_view *)(g_502420->data + (result & 0xffff) * sizeof(s_clump_activity_view));
-		clump->center = **center_reference;
-		clump->team = *team_reference;
+		clump->center = *center;
+		clump->team = team;
 		clump->count = 0;
 		clump->first_actor = NONE;
 		clump->first_prop = NONE;

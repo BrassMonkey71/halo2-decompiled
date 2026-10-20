@@ -837,20 +837,20 @@ void __stdcall function_1f5ab0(long actor_index, vector3f const *input, vector3f
     short *type_out, vector3f *movement_out, bool *blocked)
 {
     byte *actor = (byte *)actor_get(actor_index);
+    real distance = 3.402823466e38f;
     byte *entry = NULL;
     byte *surface = NULL;
     vector3f movement;
     vector3f facing = *(vector3f *)(actor + 0x290);
     movement = *g_4687a4;
-    point3f position = *(point3f *)(actor + 0x238);
-    real distance = 3.402823466e38f;
     actor[0x6d1] = false;
-    long const &unit_index = *(long *)(actor + 0x18);
-    if (unit_index != NONE)
+    point3f position = *(point3f *)(actor + 0x238);
+    if (*(long *)(actor + 0x18) != NONE)
     {
-        byte *unit = (byte *)object_get(unit_index);
+        byte *unit = (byte *)object_get(*(long *)(actor + 0x18));
         position.z = *(real *)(unit + *(short *)(unit + 0x116) + 0x30);
     }
+    long const &unit_index = *(long *)(actor + 0x18);
     if (actor[0x5d0] && !actor[0x5d2] && *(signed char *)(actor + 0x53a) >= 0 && *(signed char *)(actor + 0x53a) < *(signed char *)(actor + 0x539))
     {
         if (function_1f8660(actor_index))

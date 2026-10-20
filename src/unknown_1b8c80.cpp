@@ -1179,6 +1179,7 @@ struct s_seat_selection
 
 bool function_2676d0(long actor_index);
 bool function_1e2030(long actor_index);
+short __stdcall function_c8b80(long object_index, s_object_seat *seats, short maximum_count);
 
 // @retail 0x1b9e70
 bool function_1b9e70(long actor_index, s_seat_selection *selection, bool reserved,
@@ -1192,7 +1193,8 @@ bool function_1b9e70(long actor_index, s_seat_selection *selection, bool reserve
             result = true;
         else
         {
-            object_seat_unreserve(object_get(selection->object_index), selection->seat_index);
+            long seat_index = selection->seat_index;
+            object_seat_unreserve(object_get(selection->object_index), seat_index);
             search = ((selection->flags >> 3) & 1) != 0;
             selection->seat_index = NONE;
             selection->object_index = NONE;
@@ -1203,9 +1205,8 @@ bool function_1b9e70(long actor_index, s_seat_selection *selection, bool reserve
     if (selection->seat_index == NONE && search)
     {
         s_object_seat seats[0x40];
-        short count = 0;
+        short count = function_c8b80(element->object_index, seats, 0x40);
         long object_index;
-        function_c8a40(element->object_index, seats, &count, 0x40);
         bool reject_single = element->unknown85 && (!function_2676d0(actor_index) || !function_1e2030(actor_index));
         selection->seat_index = function_1bb1d0(actor_index, element->object_index, seats, count,
             reject_single, &object_index, out);

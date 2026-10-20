@@ -16,6 +16,7 @@ static __forceinline long real_to_long(real value);
 #include <float.h>
 #include "havok_reference.h"
 #include "unknown_122870.h"
+#include "normalize3d.h"
 
 void __cdecl function_2d91d0(void *array, long element_size);
 
@@ -449,7 +450,7 @@ struct s_havok_material
 };
 
 // @retail 0x1cf8b0
-void havok_component_friction_get(long component_index, s_havok_friction *result, s_havok_material const *material)
+void havok_component_friction_get(s_havok_friction *result, long component_index, s_havok_material const *material)
 {
 	s_havok_component *component = &((s_havok_component *)g_51e9b8->data)[component_index & 0xffff];
 	s_havok_component_object_header *header = &((s_havok_component_object_header *)g_4e0300->data)[component->object_index & 0xffff];
@@ -2781,7 +2782,6 @@ struct s_1cf531
 // @retail 0x1cf520
 void function_1cf520(s_1cf520 *arg_1, c_1cf520 *arg_0, bool arg_2, bool arg_3, long arg_4, long arg_5)
 {
- (void)&arg_2; (void)&arg_3; (void)&arg_4; (void)&arg_5;
  s_1cf521 *local_0 = arg_0->function_1cf526(arg_1->field_0);
  s_havok_friction *local_1 = arg_0->function_1cf525(arg_1->field_0);
  s_havok_component *local_2 = havok_component_get(arg_4);
@@ -2796,12 +2796,8 @@ void function_1cf520(s_1cf520 *arg_1, c_1cf520 *arg_0, bool arg_2, bool arg_3, l
  if ((*(dword *)&local_4 & 0x7f800000) == 0x7f800000) local_4 = 0.0f;
  arg_1->field_38 = local_4 / local_3;
  if (arg_3)
- {
-  arg_1->field_28.i *= -1.0f;
-  arg_1->field_28.j *= -1.0f;
-  arg_1->field_28.k *= -1.0f;
- }
- else havok_component_friction_get(arg_4, local_1, (s_havok_material *)arg_1);
+  vector3f_scale(&arg_1->field_28, -1.0f, &arg_1->field_28);
+ else havok_component_friction_get(local_1, arg_4, (s_havok_material *)arg_1);
  if (arg_1->field_38 > 0.4f || (arg_1->field_44 & 8) || function_1cf528(local_2))
  {
   byte *local_5 = *(byte **)(g_4e0300->data + (local_2->object_index & 0xffff) * 12 + 8);
@@ -2833,12 +2829,13 @@ void function_1cf520(s_1cf520 *arg_1, c_1cf520 *arg_0, bool arg_2, bool arg_3, l
     local_17 = _mm_mul_ss(_mm_mul_ss(_mm_set_ss(0.5f), local_16), local_17);
     __m128 local_18 = _mm_mul_ps(_mm_shuffle_ps(local_17, local_17, 0), local_7.m_quad);
     __m128 local_19 = _mm_mul_ps(local_14.m_quad, local_18);
-    _mm_store_ss(&local_12, function_1cf527(local_19));
-    __m128 along = _mm_set_ss(local_12);
-    local_13.m_quad = _mm_sub_ps(local_13.m_quad, _mm_mul_ps(_mm_shuffle_ps(along, along, 0), local_18));
+    real speed;
+    _mm_store_ss(&speed, function_1cf527(local_19));
+    __m128 along = _mm_set_ss(speed);
+    __m128 corrected = _mm_sub_ps(local_13.m_quad, _mm_mul_ps(_mm_shuffle_ps(along, along, 0), local_18));
     real local_20 = ((s_scale_owner *)local_9)->get_inverse_scale() * 0.2f;
     __m128 factor = _mm_set_ss(local_20);
-    local_13.m_quad = _mm_mul_ps(_mm_shuffle_ps(factor, factor, 0), local_13.m_quad);
+    local_13.m_quad = _mm_mul_ps(_mm_shuffle_ps(factor, factor, 0), corrected);
     ((s_1d8e40 *)local_9)->function_1d8ec0(local_13, local_0->field_0);
    }
   }
