@@ -130,8 +130,9 @@ long function_20f960(long index, s_audio_priority_table *table, bool *expired)
 		goto rejected;
 	{
 		real seconds = g_510c54->field_2_3 * *(real *)((byte *)definition + 0x20);
+		long start = *(long *)(record + 0x10);
 		long ticks = real_to_long(seconds);
-		if (time - *(long *)(record + 0x10) > ticks)
+		if (time - start > ticks)
 			goto report_expiration;
 	}
 	{
