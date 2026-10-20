@@ -114,8 +114,7 @@ bool function_1368f0(s_type_acf665 *file);
 bool __stdcall function_19be00(s_content_item *item, s_map_package *package)
 {
 	bool result = false;
-	s_map_package *const *package_reference = &package;
-	if ((*package_reference)->kind == 1)
+	if (package->kind == 1)
 	{
 		result = map_file_checksum_valid(&package->header);
 		if (result)
@@ -124,43 +123,50 @@ bool __stdcall function_19be00(s_content_item *item, s_map_package *package)
 			if (!entry)
 				entry = (s_loaded_map_view *)function_19c5f0(NONE);
 			if (!entry)
-				return false;
-			long tag_index = entry->tag_index;
-			volatile long bitmap_tag_index = entry->bitmap_tag_index;
-			memset(entry, 0, sizeof(*entry));
-			memcpy(entry->descriptions, package->descriptions, sizeof(entry->descriptions));
-			entry->flags = package->flags;
-			entry->map_id = package->map_id;
-			memcpy(entry->metadatac54, package->metadatac5c, sizeof(entry->metadatac54));
-			memcpy(entry->names, package->names, sizeof(entry->names));
-			memcpy(entry->path, package->path, sizeof(entry->path));
-			entry->valuec4c = package->valuec54;
-			entry->bitmap_tag_index = bitmap_tag_index;
-			entry->tag_index = tag_index;
-			s_bitmap_data *bitmap = *(s_bitmap_data **)(g_4e3b44[bitmap_tag_index & 0xffff].bytes + 0x48);
-			function_1cfb0((s_bitmap_view *)bitmap);
-			function_12cb80(bitmap);
-			long stride;
-			byte *pixels = (byte *)function_1d5e0((s_bitmap_view *)bitmap, false, &stride);
-			if (pixels)
-			{
-				for (long row = 0; row < 207; row++)
-				{
-					memcpy(pixels, package->images[row], sizeof(package->images[row]));
-					pixels += stride;
-				}
-				function_1cfb0((s_bitmap_view *)bitmap);
-			}
-			s_level_path path;
-			path.string[0] = 0;
-			char const *name = strrchr(package->path, '\\');
-			if (name)
-				name++;
+				result = false;
 			else
-				name = package->path;
-			level_path_print(&path, "%s\\%s", item->directory, name);
-			strncpy(entry->path, path.string, sizeof(entry->path));
-			entry->path[sizeof(entry->path) - 1] = 0;
+			{
+				long tag_index = entry->tag_index;
+				volatile long bitmap_tag_index = entry->bitmap_tag_index;
+				memset(entry, 0, sizeof(*entry));
+				memcpy(entry->descriptions, package->descriptions, sizeof(entry->descriptions));
+				entry->flags = package->flags;
+				entry->map_id = package->map_id;
+				memcpy(entry->metadatac54, package->metadatac5c, sizeof(entry->metadatac54));
+				memcpy(entry->names, package->names, sizeof(entry->names));
+				memcpy(entry->path, package->path, sizeof(entry->path));
+				entry->valuec4c = package->valuec54;
+				entry->bitmap_tag_index = bitmap_tag_index;
+				entry->tag_index = tag_index;
+				s_bitmap_data *bitmap = *(s_bitmap_data **)(g_4e3b44[bitmap_tag_index & 0xffff].bytes + 0x48);
+				function_1cfb0((s_bitmap_view *)bitmap);
+				function_12cb80(bitmap);
+				long stride;
+				void *bits = function_1d5e0((s_bitmap_view *)bitmap, false, &stride);
+				if (bits)
+				{
+					byte *pixels = (byte *)bits;
+					byte const *image = package->images[0];
+					for (long row = 0; row < 207; row++)
+					{
+						memcpy(pixels, image, sizeof(package->images[0]));
+						image += sizeof(package->images[0]);
+						pixels += stride;
+					}
+					function_1cfb0((s_bitmap_view *)bitmap);
+				}
+				s_level_path path;
+				path.string[0] = 0;
+				char const *name = strrchr(package->path, '\\');
+				if (name)
+					name++;
+				else
+					name = package->path;
+				level_path_print(&path, "%s\\%s", item->directory, name);
+				char *destination = entry->path;
+				strncpy(destination, path.string, sizeof(entry->path));
+				destination[sizeof(entry->path) - 1] = 0;
+			}
 		}
 	}
 	return result;
