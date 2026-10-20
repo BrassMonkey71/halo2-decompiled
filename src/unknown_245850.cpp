@@ -12,7 +12,7 @@ plane3f *bsp3d_get_plane(s_bsp3d const *bsp, short plane_index, plane3f *plane);
 void function_245270(real thickness, short count, point3f const *points, plane3f const *plane,
 	real height, long field_00, long field_04, long field_08, byte field_0c,
 	byte field_0d, short field_0e, s_collection_245270 *collection);
-void function_245400(long index, s_source_245400 const *source,
+void function_245400(s_source_245400 const *source, long index,
 	transform4x3f const *matrix, real height, real radius, long field_00,
 	long field_04, s_line_list *list);
 void function_245540(long arg_0, s_source_245400 const *arg_1,
@@ -86,7 +86,7 @@ void function_245aa0(s_245aa0 const *arg_0, s_source_245400 const *arg_1,
 	long arg_5, long arg_6, s_collection_245270 *arg_7)
 {
 	for (long local_0 = 0; local_0 < arg_0->field_808; ++local_0)
-		function_245400(arg_0->field_80c[local_0], arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, (s_line_list *)arg_7);
+		function_245400(arg_1, arg_0->field_80c[local_0], arg_2, arg_3, arg_4, arg_5, arg_6, (s_line_list *)arg_7);
 	for (long local_1 = 0; local_1 < arg_0->field_404; ++local_1)
 		function_245540(arg_0->field_408[local_1], arg_1, arg_2, arg_3, arg_4, arg_5, arg_6, arg_7);
 	for (long local_2 = 0; local_2 < arg_0->field_00; ++local_2)

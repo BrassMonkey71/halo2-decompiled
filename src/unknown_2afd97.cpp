@@ -340,22 +340,17 @@ void function_2afeae(s_widget_item *item, c_class_1a2c81 *widget)
 						break;
 					case 0x0b000698:
 					{
-						if (text_id == NONE)
+						if (text_id == NONE && !text && !text_address)
 						{
-							if (!text)
-							{
-								if (!text_address)
-								{
-									widget->value6e = false;
-									break;
-								}
-								widget->function_22f52e()->set_text((word *)text_address);
-							}
-							else
-								widget->function_22f52e()->set_text(text);
+							widget->value6e = false;
+							break;
 						}
-						else
+						if (text_id != NONE)
 							((c_text_widget_45a5e0 *)widget)->function_253b1a(text_id);
+						else if (text)
+							widget->function_22f52e()->set_text(text);
+						else
+							widget->function_22f52e()->set_text((word *)text_address);
 
 						color3f color;
 						if (TEST_FIELD_BIT(item->has_color))
