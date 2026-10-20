@@ -9,19 +9,19 @@ real function_30bf0(vector3f *v);
 
 // @retail 0x11eed0
 bool function_11eed0(
-	real *velocity,
 	real *position,
-	real dt,
-	bool wrap,
+	real *velocity,
 	real target,
-	real a,
-	real b,
+	real time_step,
+	real speed_limit,
+	real acceleration_limit,
+	bool wrap,
 	real lo,
 	real hi)
 {
 	real v0 = *velocity;
 	real p0 = *position;
-	real dt2 = dt * dt;
+	real speed_limit_squared = speed_limit * speed_limit;
 	real distance = target - p0;
 	bool reached = false;
 	real limit;
@@ -38,12 +38,12 @@ bool function_11eed0(
 			distance = half * 2.f + distance;
 	}
 
-	real local_0 = a * a * b;
-	limit = a * dt;
+	real local_0 = time_step * time_step * acceleration_limit;
+	limit = time_step * speed_limit;
 	if (!(local_0 > limit))
 		limit = local_0;
 
-	if (limit >= (real)fabs(distance - v0 * a))
+	if (limit >= (real)fabs(distance - v0 * time_step))
 	{
 		newv = 0.f;
 		newp = target;
@@ -55,23 +55,23 @@ bool function_11eed0(
 	}
 	else
 	{
-		double x = fabs(distance) * b;
+		double x = fabs(distance) * acceleration_limit;
 		x = x + x;
-		real speed = x >= dt2 ? dt : (real)sqrt(x);
+		real speed = x >= speed_limit_squared ? speed_limit : (real)sqrt(x);
 		if (0.f > distance)
 			speed = 0.f - speed;
 
-		accel = (speed - v0) / a;
-		if ((real)fabs(accel) > b)
+		accel = (speed - v0) / time_step;
+		if ((real)fabs(accel) > acceleration_limit)
 		{
 			long s = accel != 0.f ? (0.f > accel ? -1 : 1) : 0;
-			accel = (real)s * b;
+			accel = (real)s * acceleration_limit;
 		}
 
 		{
-			real dv = accel * a;
+			real dv = accel * time_step;
 			newv = dv + v0;
-			newp = (dv * 0.5f + newv) * a + p0;
+			newp = (dv * 0.5f + newv) * time_step + p0;
 		}
 		if (wrap)
 		{

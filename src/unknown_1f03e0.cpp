@@ -1057,7 +1057,8 @@ void function_1f19c0(byte const *request, s_shape_state *history, byte *out)
     byte *component = g_51e9b8->data + (*(long *)(request + 0x40) & 0xffff) * 0xa0;
     dword flags = *(dword *)(request + 0x18);
     bool preserve = (flags & 4) || ((flags & 1) && !(flags & 2)) || (flags & 0x18);
-    bool moving = sqrt(history->point.x * history->point.x + history->point.y * history->point.y + history->point.z * history->point.z) != 0.0f;
+    double movement = sqrt(history->point.x * history->point.x + history->point.y * history->point.y + history->point.z * history->point.z);
+    bool moving = movement != 0.0f;
     *(dword *)(out + 4) &= ~1;
     if (!preserve)
     {

@@ -668,9 +668,9 @@ PRIVATE inline void collision_location_reset_1696d0(s_collision_location *locati
 
 PRIVATE inline void point_along_vector_1696d0(point3f const *point, vector3f const *vector, real t, point3f *result)
 {
-	result->x = point->x + vector->i * t;
-	result->y = point->y + vector->j * t;
-	result->z = point->z + vector->k * t;
+	result->x = vector->i * t + point->x;
+	result->y = vector->j * t + point->y;
+	result->z = vector->k * t + point->z;
 }
 
 // @retail 0x1696d0
@@ -832,7 +832,6 @@ bool __stdcall function_1697c0(long flags, point3f const *point, vector3f const 
 	long *flags_reference = &flags;
 	s_1697c0_bsp *bsp;
 	bool result = false;
-	short bsp_index;
 	dword test_flags;
 	s_collision_bsp_test_vector_result bsp_result;
 	bsp = (s_1697c0_bsp *)g_4e0348;
@@ -841,20 +840,15 @@ bool __stdcall function_1697c0(long flags, point3f const *point, vector3f const 
 	{
 		(*flags_reference) |= 0x1800000;
 	}
-	bsp_index = g_4686c4;
 	collision->t = 1.0f;
 	collision->type = 0;
-	collision->start_location.leaf_index = NONE;
-	collision->start_location.cluster_index = NONE;
-	collision->start_location.bsp_index = bsp_index;
-	collision->end_location.leaf_index = NONE;
-	collision->end_location.cluster_index = NONE;
-	collision->end_location.bsp_index = bsp_index;
+	collision_location_reset_1696d0(&collision->start_location);
+	collision_location_reset_1696d0(&collision->end_location);
 	collision->instance_index = NONE;
 	collision->unknown3c = NONE;
 	collision->unknown40 = NONE;
 	test_flags = collision_flags_to_test_flags((*flags_reference));
-	if (function_1de630(test_flags, g_4e0340, &bsp_result, 3.4028235e38f, 0x100, g_4ed280 + bsp_index * 0x20 + 1, (*point_reference),
+	if (function_1de630(test_flags, g_4e0340, &bsp_result, 3.4028235e38f, 0x100, g_4ed280 + g_4686c4 * 0x20 + 1, (*point_reference),
 		(*vector_reference)) && ((*flags_reference) & 1))
 	{
 		short surface_index = bsp_result.surface_index;
@@ -901,11 +895,11 @@ bool __stdcall function_1697c0(long flags, point3f const *point, vector3f const 
 		leaf_index = bsp_result.leaves[0];
 		collision->start_location.leaf_index = leaf_index;
 		collision->start_location.cluster_index = (short)collision_leaf_cluster(leaf_index);
-		collision->start_location.bsp_index = bsp_index;
+		collision->start_location.bsp_index = g_4686c4;
 		leaf_index = bsp_result.leaves[bsp_result.leaf_count - 1];
 		collision->end_location.leaf_index = leaf_index;
 		collision->end_location.cluster_index = (short)collision_leaf_cluster(leaf_index);
-		collision->end_location.bsp_index = bsp_index;
+		collision->end_location.bsp_index = g_4686c4;
 
 		if (((*flags_reference) & 0xe) && (!result || !((*flags_reference) & 0x10000000)))
 		{
@@ -936,20 +930,27 @@ bool __stdcall function_1697c0(long flags, point3f const *point, vector3f const 
 					continue;
 				}
 				g_4e7418[(short)cluster_index] = g_4e7414;
+				s_1697c0_cluster *cluster = &bsp->clusters[cluster_index];
+
 				if ((*flags_reference) & 2)
 				{
-					long reference = bsp->clusters[cluster_index].instanced_plane_reference;
+					long reference = cluster->instanced_plane_reference;
 
 					if ((char)reference != NONE && (reference & 0x80))
 					{
-						long plane_index = reference & 0x7f;
+						long plane_index = cluster->instanced_plane_reference & 0x7f;
 						s_1697c0_instanced_plane *instanced_plane = &bsp->instanced_planes[plane_index];
 
 						if (instanced_plane->material_type != NONE)
 						{
 							plane3f const *plane = &instanced_plane->plane;
-							real point_distance = plane->i * (*point_reference)->x + plane->j * (*point_reference)->y + plane->k * (*point_reference)->z - plane->d;
-							real vector_distance = plane->i * (*vector_reference)->i + plane->j * (*vector_reference)->j + plane->k * (*vector_reference)->k;
+							real point_distance = plane->k * (*point_reference)->z;
+							point_distance += plane->j * (*point_reference)->y;
+							point_distance += plane->i * (*point_reference)->x;
+							point_distance -= plane->d;
+							real vector_distance = plane->k * (*vector_reference)->k;
+							vector_distance += plane->j * (*vector_reference)->j;
+							vector_distance += plane->i * (*vector_reference)->i;
 
 							if ((point_distance > 0.0f) != (vector_distance > 0.0f))
 							{
@@ -969,10 +970,7 @@ bool __stdcall function_1697c0(long flags, point3f const *point, vector3f const 
 										collision->plane = *plane;
 										if (behind)
 										{
-											collision->plane.i = 0.0f - collision->plane.i;
-											collision->plane.j = 0.0f - collision->plane.j;
-											collision->plane.k = 0.0f - collision->plane.k;
-											collision->plane.d = 0.0f - collision->plane.d;
+											plane_negate_168b40(&collision->plane, &collision->plane);
 										}
 										collision->instance_index = plane_index;
 										collision->unknown3c = NONE;
@@ -1001,20 +999,22 @@ bool __stdcall function_1697c0(long flags, point3f const *point, vector3f const 
 				}
 				if ((*flags_reference) & 8)
 				{
-					word object_flags = collision_flags_to_object_flags((*flags_reference));
-					word type_mask = (word)(((*flags_reference) >> 4) & 0x1fff);
 					s_object_cluster_reference *reference = NULL;
+					word object_flags = collision_flags_to_object_flags((*flags_reference));
+					word type_mask = (word)(((dword)(*flags_reference) >> 4) & 0x1fff);
 					s_object_cluster_iterator iterator;
 					long object_index;
 
 					for (object_index = function_b8940((short)cluster_index, &reference, &iterator); object_index != NONE;
 						object_index = function_b89b0(&reference, &iterator))
 					{
-						if (g_4de300[object_index & 0xffff] == g_4de2fc)
+						long object_mark_index = object_index & 0xffff;
+
+						if (g_4de300[object_mark_index] == g_4de2fc)
 						{
 							continue;
 						}
-						g_4de300[object_index & 0xffff] = g_4de2fc;
+						g_4de300[object_mark_index] = g_4de2fc;
 						if ((type_mask & (1 << reference->type)) && !(reference->flags & object_flags) &&
 							function_11e5e0((*point_reference), (*vector_reference), &reference->center, reference->radius) &&
 							object_index != ignore_object_index && object_index != ignore_unit_index &&
@@ -1046,9 +1046,7 @@ bool __stdcall function_1697c0(long flags, point3f const *point, vector3f const 
 		}
 	}
 
-	collision->point.x = (*vector_reference)->i * collision->t + (*point_reference)->x;
-	collision->point.y = collision->t * (*vector_reference)->j + (*point_reference)->y;
-	collision->point.z = collision->t * (*vector_reference)->k + (*point_reference)->z;
+	point_along_vector_1696d0((*point_reference), (*vector_reference), collision->t, &collision->point);
 	if (result && ((*flags_reference) & 0x20000000))
 	{
 		s_bsp3d *surface_bsp;
@@ -1066,15 +1064,14 @@ bool __stdcall function_1697c0(long flags, point3f const *point, vector3f const 
 			surface_bsp && collision->bsp_surface_reference[0] != NONE &&
 			function_14a280(surface_bsp, 0, &collision->point) != collision->bsp_surface_reference[0])
 		{
-			collision->point.x += collision->plane.i * 0.000244140625f;
-			collision->point.y += collision->plane.j * 0.000244140625f;
-			collision->point.z += collision->plane.k * 0.000244140625f;
+			point_along_vector_1696d0(&collision->point, (vector3f const *)&collision->plane, 0.000244140625f, &collision->point);
 			function_11bed0((s_location *)&collision->end_location, &collision->point);
 			if (collision->end_location.leaf_index == NONE ||
 				surface_bsp && function_14a280(surface_bsp, 0, &collision->point) == NONE)
 			{
-				real normal_speed = collision->plane.i * (*vector_reference)->i + collision->plane.j * (*vector_reference)->j +
-					collision->plane.k * (*vector_reference)->k;
+				real normal_speed = collision->plane.k * (*vector_reference)->k;
+				normal_speed += collision->plane.j * (*vector_reference)->j;
+				normal_speed += (*vector_reference)->i * collision->plane.i;
 				real step;
 
 				if (normal_speed != 0.0f)
@@ -1094,9 +1091,7 @@ bool __stdcall function_1697c0(long flags, point3f const *point, vector3f const 
 						t = 0.0f;
 					}
 					collision->t = t;
-					collision->point.x = (*vector_reference)->i * t + (*point_reference)->x;
-					collision->point.y = t * (*vector_reference)->j + (*point_reference)->y;
-					collision->point.z = t * (*vector_reference)->k + (*point_reference)->z;
+					point_along_vector_1696d0((*point_reference), (*vector_reference), t, &collision->point);
 					function_11bed0((s_location *)&collision->end_location, &collision->point);
 				}
 				while (0.0f < collision->t && (collision->end_location.leaf_index == NONE ||

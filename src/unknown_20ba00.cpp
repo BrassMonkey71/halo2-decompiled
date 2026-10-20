@@ -1,7 +1,7 @@
 #include "unknown_11c920.h"
 #include "globals.h"
 
-// @flags /O2 /Gr
+// @flags /O2 /arch:SSE /Gr
 
 struct s_audio_object_header
 {
