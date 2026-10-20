@@ -69,13 +69,11 @@ void class_2ecc80::function_2ecc80(description_2ecc80 const *description, long a
 	placement_2ecc80 placement;
 	placement.field_0 = description->placement->field_0;
 	placement.field_10 = description->placement->field_10;
-	placement.transform.compose(&description->placement->transform, &shape->transform);
-	description_2ecc80 child;
-	child.parent = description;
-	child.placement = &placement;
-	child.field_4 = description->field_4;
-	child.shape = (shape_2ecc80 const *)shape->child;
-	collector->slot4(&child, arg_1, arg_2, arg_3);
+	// Retail reloads the placement pointer for composition after the bounds copy.
+	placement.transform.compose(&(*(placement_2ecc80 const *const volatile *)&description->placement)->transform, &shape->transform);
+	collector_2ecc80 *target = collector;
+	description_2ecc80 child(description, &placement, shape);
+	target->slot4(&child, arg_1, arg_2, arg_3);
 }
 
 // @retail 0x2ecd00
@@ -85,13 +83,11 @@ void class_2ecc80::function_2ecd00(description_2ecc80 const *description, long a
 	placement_2ecc80 placement;
 	placement.field_0 = description->placement->field_0;
 	placement.field_10 = description->placement->field_10;
-	placement.transform.compose(&description->placement->transform, &shape->transform);
-	description_2ecc80 child;
-	child.parent = description;
-	child.placement = &placement;
-	child.field_4 = description->field_4;
-	child.shape = (shape_2ecc80 const *)shape->child;
-	collector->slot3(&child, arg_1, arg_2, arg_3, arg_4);
+	// Retail reloads the placement pointer for composition after the bounds copy.
+	placement.transform.compose(&(*(placement_2ecc80 const *const volatile *)&description->placement)->transform, &shape->transform);
+	collector_2ecc80 *target = collector;
+	description_2ecc80 child(description, &placement, shape);
+	target->slot3(&child, arg_1, arg_2, arg_3, arg_4);
 }
 
 class typed_2ecd80
