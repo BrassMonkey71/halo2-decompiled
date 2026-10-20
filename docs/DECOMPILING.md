@@ -150,6 +150,20 @@ a function whose source you changed since (only its unchanged callees are
 compared), and nothing at all after a header change until the next plain
 check.
 
+**The score.** Every `DIFF` line ends with a difference score: the
+function's differing instructions (the listing's `!!` lines) plus the
+difference in length, in bytes. A match scores 0. The score is stored in the
+report entry, and `python tools/check.py --scores` lists every unmatched
+function of the last full check with its score, as CSV. It only reports, and
+no status depends on it, but it shows progress that "near" and "todo" hide:
+a function that goes from 40 differing instructions to 3 is still `todo`.
+
+- Keep whichever version of a near miss scores lowest, even if it reads less
+  naturally, and note what still differs in a comment that starts
+  `// score N (was M):`.
+- Commit each improvement, not only finished matches, so a lower score is
+  never lost.
+
 ## Calling conventions under LTCG
 
 On this build, many near misses come down to how arguments travel rather

@@ -1,5 +1,6 @@
 // @flags /O2 /GL-
-// Havok (third-party physics library): starting a query of a tree of cells
+// Havok (third-party physics library): the walk of a tree's command stream
+// for a range of cells (0x2ff8b0), and starting a query of a tree of cells
 // for the keys of the cells a pair of bounds touches, the bounds taken into
 // the tree's fixed-point grid; 0x2fff90 first takes the bounds of a box
 // turned by a transform. The same for a sphere (0x3008d0), and the walk of the
@@ -47,19 +48,24 @@ struct tree_300150
 	unsigned char nodes[1];
 };
 
-// a range of cells, in whole cells, and the walk's state
-struct __declspec(align(16)) cell_range_2ff8b0
+// a range of cells, in whole cells of the current level, and the walk's
+// state: the corner of the current cell, the first key of the cell's subtree,
+// how many levels the walk went down, and values the commands set
+struct cell_box_2ff8b0
 {
 	long upper[3];
 	long unknownc;
 	long lower[3];
 	long unknown1c;
-	long field_20;
-	long field_24;
-	long field_28;
-	long field_2c;
-	long field_30;
-	long field_34;
+	long corner[3];
+	long key_base;
+	long depth;
+	long values[1];
+};
+
+// the same, as the queries build it
+struct __declspec(align(16)) cell_range_2ff8b0 : cell_box_2ff8b0
+{
 };
 
 class class_300150
@@ -83,6 +89,380 @@ class class_2fff90 : public class_300150
 public:
 	void function_2fff90(void const *tree, const c_query_transform *matrix, const __m128 *extent, float tolerance, s_surface_key_array *keys);
 };
+
+// what reports a stream's errors: its second slot gives the stream to write
+// the message to, which also ends the report (src/unknown_2fefd0.cpp)
+class reporter_2ff210
+{
+public:
+	virtual void slot_0() {}
+	virtual stream_holder_2d8e70 *slot_1() { return 0; }
+};
+
+extern reporter_2ff210 *g_48017c;
+
+struct class_2d9060
+{
+	long function_2d9060();
+};
+
+ELEMENTS_2D91D0(keys_300290, long);
+
+// a big-endian number of two, three or four bytes
+#define READ_2_300290(p) (((p)[0] << 8) + (p)[1])
+#define READ_3_300290(p) (((((p)[0] << 8) + (p)[1]) << 8) + (p)[2])
+#define READ_4_300290(p) (((((((p)[0] << 8) + (p)[1]) << 8) + (p)[2]) << 8) + (p)[3])
+
+// runs a tree's command stream for a range of cells: commands narrow the
+// range to a child cell, split the walk where the range spans both sides of a
+// plane (the first side by recursion), cut it off where the range misses a
+// slab, move the key base, or give a key to add to the list
+// @retail 0x2ff8b0
+void class_300150::function_2ff8b0(cell_range_2ff8b0 const *range, unsigned char const *node)
+{
+	cell_box_2ff8b0 copy;
+	long offset;
+	long value;
+	long below;
+	long above;
+	long low;
+	long high;
+	for (;;)
+	{
+		long const op = *node;
+		switch (op)
+		{
+		// planes across two axes or three
+		case 0x13:
+			low = node[1] * 2;
+			high = node[2] * 2;
+			below = range->lower[2] + range->lower[1];
+			above = range->upper[2] + range->upper[1];
+			goto split;
+		case 0x14:
+			low = node[1] * 2 - 0xff;
+			high = node[2] * 2 - 0xff;
+			below = range->lower[1] - range->upper[2];
+			above = range->upper[1] - range->lower[2];
+			goto split;
+		case 0x15:
+			low = node[1] * 2;
+			high = node[2] * 2;
+			below = range->lower[2] + range->lower[0];
+			above = range->upper[2] + range->upper[0];
+			goto split;
+		case 0x16:
+			low = node[1] * 2 - 0xff;
+			high = node[2] * 2 - 0xff;
+			below = range->lower[0] - range->upper[2];
+			above = range->upper[0] - range->lower[2];
+			goto split;
+		case 0x17:
+			low = node[1] * 2;
+			high = node[2] * 2;
+			below = range->lower[1] + range->lower[0];
+			above = range->upper[1] + range->upper[0];
+			goto split;
+		case 0x18:
+			low = node[1] * 2 - 0xff;
+			high = node[2] * 2 - 0xff;
+			below = range->lower[0] - range->upper[1];
+			above = range->upper[0] - range->lower[1];
+			goto split;
+		case 0x19:
+			low = node[1] * 3;
+			high = node[2] * 3;
+			below = range->lower[2] + range->lower[1] + range->lower[0];
+			above = range->upper[2] + range->upper[1] + range->upper[0];
+			goto split;
+		case 0x1a:
+			low = (node[1] - 0x55) * 3;
+			high = (node[2] - 0x55) * 3;
+			below = range->lower[1] - range->upper[2] + range->lower[0];
+			above = range->upper[1] - range->lower[2] + range->upper[0];
+			goto split;
+		case 0x1b:
+			low = (node[1] - 0x55) * 3;
+			high = (node[2] - 0x55) * 3;
+			below = range->lower[2] - range->upper[1] + range->lower[0];
+			above = range->upper[2] - range->lower[1] + range->upper[0];
+			goto split;
+		case 0x1c:
+			low = (node[1] - 0xaa) * 3;
+			high = (node[2] - 0xaa) * 3;
+			below = range->lower[0] - range->upper[2] - range->upper[1];
+			above = range->upper[0] - range->lower[2] - range->lower[1];
+		// the range below the plane's first value goes on to the first side,
+		// the range above its second value to the second side, the range
+		// across both to both, the first by recursion
+		split:
+			node += 4;
+			if (above <= high)
+			{
+				if (below >= low)
+				{
+					return;
+				}
+				break;
+			}
+			{
+				long const skip = node[-1];
+				if (below < low)
+				{
+					function_2ff8b0(range, node);
+				}
+				node += skip;
+			}
+			break;
+
+		// planes across one axis
+		case 0x10:
+		case 0x11:
+		case 0x12:
+		{
+			long const first_end = node[2];
+			long const second_start = node[1];
+			long const along_below = range->lower[op - 0x10];
+			node += 4;
+			if (range->upper[op - 0x10] <= first_end)
+			{
+				if (along_below >= second_start)
+				{
+					return;
+				}
+				break;
+			}
+			long const skip = node[-1];
+			node += skip;
+			if (along_below >= second_start)
+			{
+				break;
+			}
+			function_2ff8b0(range, node - skip);
+			break;
+		}
+
+		// one plane across an axis, the second side's start given
+		case 0x20:
+		case 0x21:
+		case 0x22:
+		{
+			long const plane = node[1];
+			node += 3;
+			if (range->upper[op - 0x20] <= plane)
+			{
+				break;
+			}
+			long const skip = node[-1];
+			long const along_below = range->lower[op - 0x20];
+			node += skip;
+			if (along_below > plane)
+			{
+				break;
+			}
+			function_2ff8b0(range, node - skip);
+			break;
+		}
+		// two planes across an axis, both sides' starts given
+		case 0x23:
+		case 0x24:
+		case 0x25:
+		{
+			low = node[1];
+			below = range->lower[op - 0x23];
+			long const first_skip = READ_2_300290(node + 3);
+			above = range->upper[op - 0x23];
+			high = node[2];
+			node += 7;
+			if (above <= high)
+			{
+				if (below >= low)
+				{
+					return;
+				}
+				node += first_skip;
+				break;
+			}
+			long const second_skip = READ_2_300290(node - 2);
+			node += second_skip;
+			if (below >= low)
+			{
+				break;
+			}
+			function_2ff8b0(range, node - second_skip + first_skip);
+			break;
+		}
+		// a slab across an axis the range must touch
+		case 0x26:
+		case 0x27:
+		case 0x28:
+			if (range->upper[op - 0x26] < node[1])
+			{
+				return;
+			}
+			if (range->lower[op - 0x26] >= node[2])
+			{
+				return;
+			}
+			node += 3;
+			break;
+		// the same in the whole grid
+		case 0x29:
+		case 0x2a:
+		case 0x2b:
+			if (upper[op - 0x29] < READ_3_300290(node + 1))
+			{
+				return;
+			}
+			if (lower[op - 0x29] > READ_3_300290(node + 4))
+			{
+				return;
+			}
+			node += 7;
+			break;
+		case 0x05:
+			node += node[1] + 2;
+			break;
+		case 0x06:
+			node += READ_2_300290(node + 1) + 3;
+			break;
+		case 0x07:
+			node += READ_3_300290(node + 1) + 4;
+			break;
+		case 0x01:
+		case 0x02:
+		case 0x03:
+		case 0x04:
+		{
+			long const step = op;
+			copy.corner[0] = (node[1] + range->corner[0]) << step;
+			copy.corner[1] = (node[2] + range->corner[1]) << step;
+			copy.corner[2] = (node[3] + range->corner[2]) << step;
+			copy.depth = range->depth + step;
+			long const shift = 0x10 - copy.depth;
+			copy.lower[0] = (lower[0] >> shift) - copy.corner[0];
+			copy.lower[1] = (lower[1] >> shift) - copy.corner[1];
+			copy.lower[2] = (lower[2] >> shift) - copy.corner[2];
+			copy.upper[0] = (upper[0] >> shift) + 1 - copy.corner[0];
+			copy.upper[1] = (upper[1] >> shift) + 1 - copy.corner[1];
+			copy.upper[2] = (upper[2] >> shift) + 1 - copy.corner[2];
+			copy.values[0] = range->values[0];
+			copy.key_base = range->key_base;
+			range = (cell_range_2ff8b0 const *)&copy;
+			node += 4;
+			break;
+		}
+		case 0x09:
+		{
+			long const delta = node[1];
+			if (range != &copy)
+			{
+				copy = *range;
+				range = (cell_range_2ff8b0 const *)&copy;
+			}
+			copy.key_base += delta;
+			node += 2;
+			break;
+		}
+		case 0x0a:
+		{
+			long const delta = READ_2_300290(node + 1);
+			if (range != &copy)
+			{
+				copy = *range;
+				range = (cell_range_2ff8b0 const *)&copy;
+			}
+			copy.key_base += delta;
+			node += 3;
+			break;
+		}
+		case 0x0b:
+		{
+			long const start = READ_4_300290(node + 1);
+			if (range != &copy)
+			{
+				copy = *range;
+				range = (cell_range_2ff8b0 const *)&copy;
+			}
+			copy.key_base = start;
+			node += 5;
+			break;
+		}
+
+		// the value in the first of four slots (retail writes the slot the
+		// command names, past the end for the other three)
+		case 0x60:
+		case 0x61:
+		case 0x62:
+		case 0x63:
+			copy.values[op - 0x60] = node[1];
+			node += 2;
+			value = copy.values[0];
+			if (range != &copy)
+			{
+				copy = *range;
+				range = (cell_range_2ff8b0 const *)&copy;
+			}
+			copy.values[0] = value;
+			break;
+		case 0x64:
+		case 0x65:
+		case 0x66:
+		case 0x67:
+			copy.values[op - 0x64] = READ_2_300290(node + 1);
+			node += 3;
+			value = copy.values[0];
+			if (range != &copy)
+			{
+				copy = *range;
+				range = (cell_range_2ff8b0 const *)&copy;
+			}
+			copy.values[0] = value;
+			break;
+		case 0x68:
+		case 0x69:
+		case 0x6a:
+		case 0x6b:
+			copy.values[op - 0x68] = READ_4_300290(node + 1);
+			node += 5;
+			value = copy.values[0];
+			if (range != &copy)
+			{
+				copy = *range;
+				range = (cell_range_2ff8b0 const *)&copy;
+			}
+			copy.values[0] = value;
+			break;
+		default:
+			g_48017c->slot_1()->function_2d9000("unknown command %i\n", op);
+			((class_2d9060 *)g_48017c->slot_1())->function_2d9060();
+			*(long *)0 = 0;
+			return;
+		case 0x00:
+			return;
+		case 0x50:
+			offset = node[1];
+			goto found;
+		case 0x51:
+			offset = READ_2_300290(node + 1);
+			goto found;
+		case 0x52:
+			offset = READ_3_300290(node + 1);
+			goto found;
+		case 0x53:
+			offset = READ_4_300290(node + 1);
+			goto found;
+		case 0x30: case 0x31: case 0x32: case 0x33: case 0x34: case 0x35: case 0x36: case 0x37:
+		case 0x38: case 0x39: case 0x3a: case 0x3b: case 0x3c: case 0x3d: case 0x3e: case 0x3f:
+		case 0x40: case 0x41: case 0x42: case 0x43: case 0x44: case 0x45: case 0x46: case 0x47:
+		case 0x48: case 0x49: case 0x4a: case 0x4b: case 0x4c: case 0x4d: case 0x4e: case 0x4f:
+			offset = op - 0x30;
+			goto found;
+		}
+	}
+found:
+	((keys_300290 *)keys)->append(range->key_base + offset);
+}
 
 // the box's bounds in the world, widened by the tolerance, in the tree's
 // fixed-point grid, and the walk of the tree from its root
@@ -116,12 +496,12 @@ void class_2fff90::function_2fff90(void const *tree_, const c_query_transform *m
 	range.upper[1] = (upper[1] >> 16) + 1;
 	range.lower[2] = lower[2] >> 16;
 	range.upper[2] = (upper[2] >> 16) + 1;
-	range.field_20 = 0;
-	range.field_24 = 0;
-	range.field_28 = 0;
-	range.field_2c = 0;
-	range.field_30 = 0;
-	range.field_34 = 0;
+	range.corner[0] = 0;
+	range.corner[1] = 0;
+	range.corner[2] = 0;
+	range.key_base = 0;
+	range.depth = 0;
+	range.values[0] = 0;
 	function_2ff8b0(&range, ((tree_300150 const *)tree_)->nodes);
 }
 
@@ -147,37 +527,14 @@ void class_300150::function_300150(void const *tree_, const s_query_bounds *boun
 	range.upper[1] = (upper[1] >> 16) + 1;
 	range.lower[2] = lower[2] >> 16;
 	range.upper[2] = (upper[2] >> 16) + 1;
-	range.field_20 = 0;
-	range.field_24 = 0;
-	range.field_28 = 0;
-	range.field_2c = 0;
-	range.field_30 = 0;
-	range.field_34 = 0;
+	range.corner[0] = 0;
+	range.corner[1] = 0;
+	range.corner[2] = 0;
+	range.key_base = 0;
+	range.depth = 0;
+	range.values[0] = 0;
 	function_2ff8b0(&range, ((tree_300150 const *)tree_)->nodes);
 }
-
-// what reports a stream's errors: its second slot gives the stream to write
-// the message to, which also ends the report (src/unknown_2fefd0.cpp)
-class reporter_2ff210
-{
-public:
-	virtual void slot_0() {}
-	virtual stream_holder_2d8e70 *slot_1() { return 0; }
-};
-
-extern reporter_2ff210 *g_48017c;
-
-struct class_2d9060
-{
-	long function_2d9060();
-};
-
-ELEMENTS_2D91D0(keys_300290, long);
-
-// a big-endian number of two, three or four bytes
-#define READ_2_300290(p) (((p)[0] << 8) + (p)[1])
-#define READ_3_300290(p) (((((p)[0] << 8) + (p)[1]) << 8) + (p)[2])
-#define READ_4_300290(p) (((((((p)[0] << 8) + (p)[1]) << 8) + (p)[2]) << 8) + (p)[3])
 
 // a box of cells around the sphere, in whole cells of the current level: the
 // sphere's centre from the cell's corner and its radius, the corner, the
