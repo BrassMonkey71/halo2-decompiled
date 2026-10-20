@@ -1447,9 +1447,10 @@ bool __stdcall function_16a440(dword flags, point3f const *position, real extent
                 if (flags & 4)
                 {
                     s_1697c0_cluster *entry = &bsp->clusters[cluster];
-                    for (long i = 0; i < entry->instance_count; ++i)
+                    long i = 0;
+                    while (i < entry->instance_count)
                     {
-                        short instance = entry->instances[i];
+                        short instance = entry->instances[i++];
                         if (g_4e7c20[instance] == g_4e7c1c) continue;
                         g_4e7c20[instance] = g_4e7c1c;
                         function_16a0a0(instance, flags, position, extent, height, radius,
