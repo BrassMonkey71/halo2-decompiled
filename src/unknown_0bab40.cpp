@@ -69,41 +69,41 @@ bool __stdcall function_bab40(long object_index, long name, real *value)
     *value = 0.0f;
     s_object_header const *headers = (s_object_header const *)g_4e0300->data;
     s_object *object = headers[object_index & 0xffff].object;
-    if ((bool)(((dword)object->flags_c0 >> 9) & 1))
-    {
-        if (function_10aac0(object_index, name, value, &index))
-            return true;
-    }
-    switch (name)
-    {
-    case 0:
-    case 0x030005a6:
-        *value = 1.0f;
+    if ((bool)(((dword)object->flags_c0 >> 9) & 1) && function_10aac0(object_index, name, value, &index))
         return true;
-    case 0x040005a7:
+    if (name == 0 || name == 0x030005a6)
+    {
+        *value = 1.0f;
+        enabled = true;
+    }
+    else if (name == 0x040005a7)
+    {
         *value = 0.0f;
         return false;
     }
-    if (object_index != NONE && !object_dispatch_query_function_value(object_index, name, value, &enabled))
+    else if (object_index != NONE)
     {
-        bool found = false;
-        object = ((s_object_header *)g_4e0300->data)[object_index & 0xffff].object;
-        s_object_functions_definition_ab *definition = (s_object_functions_definition_ab *)g_4e3b44[*(long *)object & 0xffff].bytes;
-        for (long i = 0; i < definition->count; ++i)
-        {
-            s_object_function_ab *function = &definition->functions[i];
-            if (function->output_name == name)
-            {
-                enabled = function_ba8c0(function, object_index, value);
-                found = true;
-            }
-        }
+        bool found = object_dispatch_query_function_value(object_index, name, value, &enabled);
         if (!found)
         {
-            if (TEST_FIELD_BIT(object->flag26) && object->parent_index != NONE)
-                return function_bab40(object->parent_index, name, value);
-            *value = 0.0f;
-            return false;
+            object = ((s_object_header *)g_4e0300->data)[object_index & 0xffff].object;
+            s_object_functions_definition_ab *definition = (s_object_functions_definition_ab *)g_4e3b44[*(long *)object & 0xffff].bytes;
+            for (long i = 0; i < definition->count; ++i)
+            {
+                s_object_function_ab *function = &definition->functions[i];
+                if (function->output_name == name)
+                {
+                    enabled = function_ba8c0(function, object_index, value);
+                    found = true;
+                }
+            }
+            if (!found)
+            {
+                if (TEST_FIELD_BIT(object->flag26) && object->parent_index != NONE)
+                    return function_bab40(object->parent_index, name, value);
+                *value = 0.0f;
+                return false;
+            }
         }
     }
     return enabled;
