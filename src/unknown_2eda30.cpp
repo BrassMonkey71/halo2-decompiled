@@ -3,6 +3,8 @@
 // query on to each child, with a description of the child (its key from the
 // parent's table, its index, and the parent's description).
 
+#include <stddef.h>
+
 struct key_entry_2eda30
 {
 	long key;
@@ -67,8 +69,13 @@ typedef child_2eda30 *(__cdecl *handler_2edbd0)(child_description_2eda30 const *
 struct dispatcher_2edbd0
 {
 	char unknown0[0x18c];
-	handler_2edbd0 handlers[1][32];
+	// Retail 0x2e5990 initializes 32 rows of 32 four-byte entries.
+	handler_2edbd0 handlers[32][32];
 };
+
+typedef char assert_dispatcher_2edbd0_offset[(offsetof(dispatcher_2edbd0, handlers) == 0x18c) ? 1 : -1];
+typedef char assert_dispatcher_2edbd0_row[(sizeof(((dispatcher_2edbd0 *)0)->handlers[0]) == 0x80) ? 1 : -1];
+typedef char assert_dispatcher_2edbd0_table[(sizeof(((dispatcher_2edbd0 *)0)->handlers) == 0x1000) ? 1 : -1];
 
 struct bool_result_2edbd0
 {
@@ -198,22 +205,27 @@ void list_2eda30::function_2edbd0(description_2eda30 const *description, typed_2
 			child_2eda30 *agent = children[i];
 			if ((object_4805a4 *)agent == function_301a40())
 			{
+				long arg_3 = field_8;
 				dispatcher_2edbd0 *table = context->dispatcher;
 				long first = ((typed_2edbd0 *)child.key)->type();
 				long second = (*other)->type();
 				handler_2edbd0 handler = table->handlers[first][second];
-				children[i] = handler(&child, other, context, field_8);
+				child_2eda30 **slot = &children[i];
+				*slot = handler(&child, other, context, arg_3);
 			}
 			else
 			{
 				agent->update(&child, other, context);
 			}
 		}
-		else if ((object_4805a4 *)children[i] != function_301a40())
+		else
 		{
+			child_2eda30 *agent = children[i];
+			if ((object_4805a4 *)agent != function_301a40())
 			{
-				children[i]->release();
-				children[i] = (child_2eda30 *)function_301a40();
+				agent->release();
+				child_2eda30 **slot = &children[i];
+				*slot = (child_2eda30 *)function_301a40();
 			}
 		}
 	}

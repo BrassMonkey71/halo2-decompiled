@@ -65,13 +65,13 @@ Analysis, documentation and review do not need it.
 
 ## Status
 
-Decompilation is under way, and 9315 retail functions now match byte for
+Decompilation is under way, and 9323 retail functions now match byte for
 byte. The checker reports:
 
 ```
-matched 9315 of 11321 game functions (1402183 of 2784283 bytes, 50.36%)
-matched 813 of 1041 Havok functions (87157 of 234536 bytes, 37.16%)
-matched 10158 of 17654 functions in scope (1491365 of 3904218 bytes, 38.20%)
+matched 9323 of 11321 game functions (1406285 of 2784283 bytes, 50.51%)
+matched 827 of 1041 Havok functions (88716 of 234536 bytes, 37.83%)
+matched 10180 of 17654 functions in scope (1497026 of 3904218 bytes, 38.34%)
 ```
 
 Matched code so far includes:
@@ -241,6 +241,9 @@ Thank you to everyone who has contributed to this project so far:
   near miss.
 - [@andrewnakas](https://github.com/andrewnakas): the inventory fix that took
   WMADEC's data tables out of the function list.
+- [@Roasted-Codes](https://github.com/Roasted-Codes): the first contributor
+  matches in Havok, the physics library: its collision-pair dispatch and
+  child-agent code.
 
 [@kirklandsig](https://github.com/kirklandsig) maintains the project: runs the
 build, reviews and merges every pull request, and keeps the

@@ -3753,7 +3753,7 @@ bool __stdcall function_063080(c_class_58d20 *session, const s_network_message_s
 
 inline long count_bits(dword value);
 
-bool function_619b0(const s_session_member *arg_0, long arg_1, long arg_2, long arg_3);
+bool function_619b0(const s_session_member *members, long first_index, long second_index, long player_count);
 
 struct s_session_host_choice
 {
@@ -3799,7 +3799,7 @@ void __stdcall function_61ac0(c_class_58d20 *session)
      (choice->leave || *(dword *)((byte *)&session->members[i] + 0x9c) == (1u << session->member_count) - 1))
     {
      eligible |= 1 << i;
-     if (selected == NONE || function_619b0(session->members, selected, i, session->member_count))
+     if (selected == NONE || function_619b0(session->members, i, selected, session->member_count))
       selected = i;
     }
    }
@@ -3835,25 +3835,33 @@ void __stdcall function_61ac0(c_class_58d20 *session)
   {
    long local_0 = choice->proposal_time;
    long elapsed = network_session_time_now() - local_0;
-   if (choice->acknowledged == (1u << session->member_count) - 1 || elapsed >= g_network_configuration.value1474)
+   bool commit = false;
+   if (choice->acknowledged == (1u << session->member_count) - 1)
+    commit = true;
+   else if (elapsed >= g_network_configuration.value1474)
    {
-    if (!(choice->acknowledged & (1 << choice->selected)))
-     network_session_clear_peer(session, choice->selected);
+    if (choice->acknowledged & (1 << choice->selected))
+     commit = true;
     else
-    {
-     s_session_id id = *(s_session_id *)&session->unknown1c;
-     s_network_session_member_state *member = &session->member_states[choice->selected];
-     if (member->flag1)
-      network_observer_send_message(session->observer, session->value10, member->unknown04, false, 17, sizeof(id), &id);
-     choice->committed = true;
-     choice->commit_time = network_session_time_now();
-     session->value44 = choice->selected;
-    }
+     network_session_clear_peer(session, choice->selected);
+   }
+   if (commit)
+   {
+    s_session_id id = *(s_session_id *)&session->unknown1c;
+    s_network_session_member_state *member = &session->member_states[choice->selected];
+    if (member->flag1)
+     network_observer_send_message(session->observer, session->value10, member->unknown04, false, 17, sizeof(id), &id);
+    choice->committed = true;
+    choice->commit_time = network_session_time_now();
+    session->value44 = choice->selected;
    }
   }
-  long local_1 = choice->commit_time;
-  if (choice->committed && network_session_time_now() - local_1 >= g_network_configuration.value147c)
-   network_session_clear_peer(session, choice->selected);
+  if (choice->committed)
+  {
+   long commit_time = choice->commit_time;
+   if (network_session_time_now() - commit_time >= g_network_configuration.value147c)
+    network_session_clear_peer(session, choice->selected);
+  }
  }
  else
  {

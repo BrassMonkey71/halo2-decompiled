@@ -21,14 +21,17 @@ struct rotation_2df520
 {
 	__m128 columns[3];
 
+	// the element in a row of a column
+	float &element(int row, int column) { return ((float *)columns)[column * 4 + row]; }
+
 	void load_unit_columns()
 	{
 		columns[0] = _mm_setzero_ps();
 		columns[1] = _mm_setzero_ps();
 		columns[2] = _mm_setzero_ps();
-		columns[0].m128_f32[0] = 1.0f;
-		columns[1].m128_f32[1] = 1.0f;
-		columns[2].m128_f32[2] = 1.0f;
+		element(0, 0) = 1.0f;
+		element(1, 1) = 1.0f;
+		element(2, 2) = 1.0f;
 	}
 };
 
