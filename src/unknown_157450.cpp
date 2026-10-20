@@ -461,21 +461,13 @@ static inline void input_counter_set_inlined(long c, long a, long b, long value)
 		long maximum = g_46ddc0[b].maximum;
 		if (a != NONE)
 		{
-			long clamped = value;
-			if (clamped < minimum)
-				clamped = minimum;
-			else if (clamped > maximum)
-				clamped = maximum;
-			g_511bf4.all[a * 0x1b5 + b].value = clamped;
+			s_input_counter *counter = &g_511bf4.all[a * 0x1b5 + b];
+			counter->value = value < minimum ? minimum : (value > maximum ? maximum : value);
 		}
 		if (c != NONE)
 		{
-			long clamped = value;
-			if (clamped < minimum)
-				clamped = minimum;
-			else if (clamped > maximum)
-				clamped = maximum;
-			g_511bf4.counters[0][c * 0x2d + b].value = clamped;
+			s_input_counter *counter = &g_511bf4.counters[0][c * 0x2d + b];
+			counter->value = value < minimum ? minimum : (value > maximum ? maximum : value);
 		}
 	}
 }
@@ -486,7 +478,8 @@ void function_158140(void)
 {
 	s_game_engine_globals *globals = function_xaee93d();
 	dword old_playing_teams = globals->playing_teams;
-	word old_team_mask = globals->team_mask;
+	word *team_mask = &globals->team_mask;
+	dword old_team_mask = *team_mask;
 	dword playing_teams = 0;
 	volatile dword present_teams = 0;
 	s_record_pool_iterator iterator;
@@ -503,7 +496,7 @@ void function_158140(void)
 			present_teams |= 1 << team;
 			if (!(player->flags & 2))
 			{
-				playing_teams |= 1 << team;
+				playing_teams |= 1 << player->team;
 			}
 		}
 	}
@@ -513,7 +506,7 @@ void function_158140(void)
 		long team;
 
 		globals->playing_teams = (word)playing_teams;
-		globals->team_mask = old_team_mask | (word)present_teams;
+		*team_mask = old_team_mask | (word)present_teams;
 		if (game_engine_get() && globals->index24 != NONE)
 		{
 			function_b58c0(globals->index24, 1);

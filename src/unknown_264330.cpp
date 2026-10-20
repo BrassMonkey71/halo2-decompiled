@@ -459,16 +459,12 @@ void function_262ba0(long actor_index)
 			}
 			else *(real *)(p + 0x10) = 0.0f;
 			break;
-		case 1:
-			if (!p[0x27] && function_25d610(node))
+		case 4:
+			if (!p[0x27]) { function_25c860(index); *(real *)(p + 0x10) = 0.0f; }
+			else
 			{
-				if (function_25da40(node))
-				{
-					tracking = function_25d740((s_prop_node *)node);
-					*(short *)(p + 0x24) = 2;
-					if (tracking) *(short *)((byte *)tracking + 0xa0) = (short)real_to_long((real)g_510c54->field_2_3 * 0.33f);
-				}
-				else goto release_tracking;
+				*(real *)(p + 0x10) += function_2683f0(actor_index, index, (char)p[0x26]);
+				if (*(real *)(p + 0x10) >= 1.0f) function_25c230(actor_index, index, NONE);
 			}
 			break;
 		case 2:
@@ -487,6 +483,18 @@ void function_262ba0(long actor_index)
 					if (y * y + x * x > 1.0f) break;
 				}
 				function_25c860(index);
+			}
+			break;
+		case 1:
+			if (!p[0x27] && function_25d610(node))
+			{
+				if (function_25da40(node))
+				{
+					tracking = function_25d740((s_prop_node *)node);
+					*(short *)(p + 0x24) = 2;
+					if (tracking) *(short *)((byte *)tracking + 0xa0) = (short)real_to_long((real)g_510c54->field_2_3 * 0.33f);
+				}
+				else goto release_tracking;
 			}
 			break;
 		case 3:
@@ -512,14 +520,6 @@ void function_262ba0(long actor_index)
 				long decrement = index == *(long *)(actor + 0x338) ? (view[0x69] ? 2 : 0) : (view[0x69] ? 3 : 1);
 				*(short *)(view + 0x8e) -= (short)decrement;
 				if (*(short *)(view + 0x8e) < 0) goto release_tracking;
-			}
-			break;
-		case 4:
-			if (!p[0x27]) { function_25c860(index); *(real *)(p + 0x10) = 0.0f; }
-			else
-			{
-				*(real *)(p + 0x10) += function_2683f0(actor_index, index, (char)p[0x26]);
-				if (*(real *)(p + 0x10) >= 1.0f) function_25c230(actor_index, index, NONE);
 			}
 			break;
 		}
