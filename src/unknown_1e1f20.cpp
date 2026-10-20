@@ -819,7 +819,7 @@ long __stdcall function_1e02f0(long squad_index, long entry_index, long unit_ind
 
 	
 	
-	long const volatile *unit_reference = &unit_index;
+	long const *unit_reference = &unit_index;
 	long const *perception_reference = &perception_index;
 	bool const *flag_reference = &flag;
 	byte *squad = NULL;
