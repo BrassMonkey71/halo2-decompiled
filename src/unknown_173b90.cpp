@@ -638,10 +638,11 @@ long function_173fd0(s_effect_particle_system_definition *definition, long effec
 					particle_system->flag6 = true;
 				else
 					particle_system->flag6 = false;
-				g_4e7408->seed = g_4e7408->seed * 1664525 + 1013904223;
-				particle_system->random_a = (real)(g_4e7408->seed >> 16) * (1.0f / 65535.0f);
-				g_4e7408->seed = g_4e7408->seed * 1664525 + 1013904223;
-				particle_system->random_b = (real)(g_4e7408->seed >> 16) * (1.0f / 65535.0f);
+				for (long i = 0; i < 2; i++)
+				{
+					g_4e7408->seed = g_4e7408->seed * 1664525 + 1013904223;
+					particle_system->random[i] = (real)(g_4e7408->seed >> 16) * (1.0f / 65535.0f);
+				}
 				particle_system->tag_index = tag_index;
 				particle_system->effect_index = effect_index;
 				particle_system->next_index = NONE;

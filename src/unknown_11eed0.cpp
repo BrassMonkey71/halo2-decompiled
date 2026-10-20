@@ -13,35 +13,30 @@ bool function_11eed0(
 	real *position,
 	real dt,
 	bool wrap,
-	real arg_4,
+	real target,
 	real a,
-	real arg_6,
+	real b,
 	real lo,
 	real hi)
 {
-	real volatile &target = arg_4;
-	real volatile &b = arg_6;
 	bool reached = false;
 	real v0 = *velocity;
 	real p0 = *position;
 	real dt2 = dt * dt;
 	real orig = target;
-	real d = orig - p0;
+	target = orig - p0;	/* from here on, the distance still to go */
 	real limit;
 	real accel;
-	real newv;
+	real newv = 0.f;
 	real newp;
-	real half;
 
-	target = d;
 	if (wrap)
 	{
-		half = (hi - lo) * 0.5f;
-		if (d > half)
-			d -= half * 2.f;
-		else if (0.f - half > d)
-			d = half * 2.f + d;
-		target = d;
+		real half = (hi - lo) * 0.5f;
+		if (target > half)
+			target -= half * 2.f;
+		else if (0.f - half > target)
+			target = half * 2.f + target;
 	}
 
 	real local_0 = a * a * b;
@@ -57,18 +52,17 @@ bool function_11eed0(
 		else if (c > hi)
 			c = hi;
 		reached = true;
-		*velocity = 0.f;
-		*position = c;
+		newp = c;
 	}
 	else
 	{
-		real x = (real)fabs(target) * b;
+		double x = fabs(target) * b;
 		x = x + x;
-		target = x >= dt2 ? dt : (real)sqrt(x);
-		if (0.f > d)
-			target = 0.f - target;
+		real speed = x >= dt2 ? dt : (real)sqrt(x);
+		if (0.f > target)
+			speed = 0.f - speed;
 
-		accel = (target - v0) / a;
+		accel = (speed - v0) / a;
 		if ((real)fabs(accel) > b)
 		{
 			long s = accel != 0.f ? (0.f > accel ? -1 : 1) : 0;
@@ -91,9 +85,9 @@ bool function_11eed0(
 			newp = lo;
 		else if (newp > hi)
 			newp = hi;
-		*velocity = newv;
-		*position = newp;
 	}
+	*velocity = newv;
+	*position = newp;
 	return reached;
 }
 

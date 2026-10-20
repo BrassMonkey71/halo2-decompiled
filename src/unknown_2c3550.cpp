@@ -245,7 +245,7 @@ short avoidance_add_node(s_avoidance_search *search, point2f const *point, bool 
 		node->cost = node->distance + cost;
 		node->parent = parent;
 		node->marked = false;
-		*(long *)node->children = NONE;
+		memset(node->children, NONE, sizeof(node->children));
 		if (reaches_goal_obstacle && search->best_distance > node->distance)
 		{
 			search->best_distance = node->distance;
