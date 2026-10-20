@@ -186,8 +186,6 @@ public:
 	void set(hkRotation const &rotation);
 };
 
-// @stub 0x2db880
-void __cdecl function_2db880(hkVector4 const *position, c_component_rotation const *rotation, real frequency, hkRigidBody *body) { }
 
 
 class c_contact_rule_fallback

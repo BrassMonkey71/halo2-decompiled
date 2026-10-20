@@ -5,9 +5,13 @@
 // destructors, which return it. An array
 // holds its storage, its size, and its capacity, whose top bit says the array
 // does not own the storage. (The array types are stamped out by macro: the
-// build compiles template bodies where they cannot be inlined.)
+// build compiles template bodies where they cannot be inlined.) And the
+// three-axis sweep's constructor.
 #include "reference_counted_2d88a0.h"
 #include <xmmintrin.h>
+#include <new>
+#include "tagged_objects_2e4ff0.h"
+#include "axis_sweep_2e1090.h"
 
 #define ARRAY_2E1850(name, T) 	struct name 	{ 		T *data; 		long size; 		unsigned long capacity_and_flags; 		name() : data(0), size(0), capacity_and_flags(0x80000000) {} 		~name() 		{ 			if ((capacity_and_flags & 0x80000000) == 0) 			{ 				g_memory_2d88a0->release_block(data, (capacity_and_flags & 0x7fffffff) * sizeof(T), 0x12); 			} 		} 	};
 
@@ -103,4 +107,118 @@ bytes_2e1be0::bytes_2e1be0(long capacity)
 bytes_2e1be0::~bytes_2e1be0()
 {
 	g_memory_2d88a0->release_stack(stack_block, (stack_capacity * sizeof(char) + 15) & ~15);
+}
+
+static __declspec(align(16)) const unsigned long sign_mask_2e1d10[4] = {0x80000000, 0x80000000, 0x80000000, 0x80000000};
+
+// the sweep over the box from the corner at `arg_0` to the corner at
+// `arg_1`, with a grid of 2 to the power `bits`, less one, cells: the
+// quantizing scale and offsets, the largest value that still quantizes below
+// 12 (found by halving), the first box and the axes' first endpoints, and a
+// box with two x endpoints for each cell, then the axes' last endpoints
+// @retail 0x2e1d10
+class_2e4ff0::class_2e4ff0(long arg_0, long arg_1, int bits)
+{
+	class_2e1090 *sweep = (class_2e1090 *)this;
+	sweep->elements.ensure_capacity(0x100);
+	__m128 const zero = _mm_setzero_ps();
+	sweep->lower_offset = zero;
+	sweep->upper_offset = zero;
+	sweep->scale = _mm_set_ps1(1.0f);
+	float low = 10.0f;
+	float high = 11.0f;
+	for (int step = 23; step != 0; step--)
+	{
+		float const middle = (high + low) * 0.5f;
+		union
+		{
+			__m128 vector;
+			unsigned long bits[4];
+		} quantized;
+		quantized.vector = _mm_add_ps(_mm_max_ps(_mm_min_ps(
+			_mm_mul_ps(_mm_add_ps(_mm_set_ps1(1.0f + middle), sweep->lower_offset), sweep->scale),
+			*(__m128 const *)g_4125d0), *(__m128 const *)g_4125e0), *(__m128 const *)g_4125c0);
+		unsigned long const upper = (unsigned short)(quantized.bits[0] >> 7) | 1;
+		if (upper < 12)
+		{
+			low = middle;
+		}
+		else
+		{
+			high = middle;
+		}
+	}
+	sweep->field_7c = (high + low) * 0.5f - 11.0f;
+	__m128 const minimum = *(__m128 const *)arg_0;
+	union
+	{
+		__m128 vector;
+		float lanes[4];
+	} extent;
+	extent.vector = _mm_sub_ps(*(__m128 const *)arg_1, minimum);
+	sweep->scale = _mm_set_ps1(65532.0f);
+	union
+	{
+		__m128 vector;
+		float lanes[4];
+	} inverse;
+	inverse.lanes[0] = 1.0f / extent.lanes[0];
+	inverse.lanes[1] = 1.0f / extent.lanes[1];
+	inverse.lanes[2] = 1.0f / extent.lanes[2];
+	inverse.lanes[3] = 0.0f;
+	sweep->scale = _mm_mul_ps(sweep->scale, inverse.vector);
+	sweep->lower_offset = _mm_xor_ps(minimum, *(__m128 const *)sign_mask_2e1d10);
+	sweep->upper_offset = _mm_add_ps(sweep->lower_offset, _mm_mul_ps(_mm_set_ps1(1.52597204e-05f), extent.vector));
+	sweep->scale.m128_f32[3] = 0.0f;
+	sweep->lower_offset.m128_f32[3] = 0.0f;
+	sweep->upper_offset.m128_f32[3] = 0.0f;
+	element_2e1090 &first = sweep->elements.next_slot();
+	first.slots[1] = 0;
+	first.slots[0] = 0;
+	first.slots[4] = 0;
+	sweep->axes[0].ensure_capacity(0x202);
+	sweep->axes[1].ensure_capacity(0x202);
+	sweep->axes[2].ensure_capacity(0x202);
+	endpoint_2e0f80 start;
+	start.id = 0;
+	start.value = 0;
+	sweep->axes[0].data[sweep->axes[0].size++] = start;
+	sweep->axes[1].data[sweep->axes[1].size++] = start;
+	sweep->axes[2].data[sweep->axes[2].size++] = start;
+	sweep->cells = 0;
+	sweep->cell_shift = bits;
+	sweep->cells_used = (1 << bits) - 1;
+	if (sweep->cells_used != 0)
+	{
+		sweep->cells = (cell_2e1090 *)g_memory_2d88a0->allocate(sweep->cells_used * sizeof(cell_2e1090), 0x1c);
+	}
+	for (long cell = 0; cell < sweep->cells_used; cell++)
+	{
+		entry_2e4ff0 *entry = new (&entries[cell]) entry_2e4ff0;
+		endpoint_2e0f80 endpoint;
+		endpoint.id = (unsigned short)sweep->elements.size;
+		((unsigned short *)&entry->field_0)[0] = endpoint.id;
+		endpoint.value = (unsigned short)((cell + 1) << (16 - sweep->cell_shift));
+		((unsigned short *)&entry->field_0)[1] = endpoint.value;
+		element_2e1090 &element = sweep->elements.next_slot();
+		element.slots[4] = (unsigned short)sweep->axes[0].size;
+		sweep->axes[0].data[sweep->axes[0].size++] = endpoint;
+		endpoint.value |= 1;
+		element.slots[5] = (unsigned short)sweep->axes[0].size;
+		sweep->axes[0].data[sweep->axes[0].size++] = endpoint;
+		element.owner = (cell * sizeof(cell_2e1090)) | 1;
+		element.slots[1] = 0;
+		element.slots[0] = 0;
+		element.slots[3] = 1;
+		element.slots[2] = 1;
+	}
+	first.slots[5] = (unsigned short)sweep->axes[0].size;
+	first.slots[2] = (unsigned short)sweep->axes[1].size;
+	first.slots[3] = (unsigned short)sweep->axes[2].size;
+	endpoint_2e0f80 end;
+	end.id = 0;
+	end.value = 0xfffd;
+	sweep->axes[0].data[sweep->axes[0].size++] = end;
+	sweep->axes[1].data[sweep->axes[1].size++] = end;
+	sweep->axes[2].data[sweep->axes[2].size++] = end;
 }

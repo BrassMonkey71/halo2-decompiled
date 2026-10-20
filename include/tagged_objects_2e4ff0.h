@@ -14,6 +14,7 @@
 		type *data; \
 		long size; \
 		long capacity_and_flags; \
+		name() : data(0), size(0), capacity_and_flags(0x80000000) {} \
 		~name() \
 		{ \
 			if ((capacity_and_flags & 0x80000000) == 0) \
@@ -26,7 +27,7 @@
 ARRAY_2E4FF0(shorts_2e4ff0, short)
 ARRAY_2E4FF0(words_2e4ff0, long)
 
-// an entry of the object's block: a word and an array of 2-byte values
+// an entry of the object's block: two 2-byte values and an array of them
 struct entry_2e4ff0
 {
 	long field_0;
@@ -37,7 +38,7 @@ ARRAY_2E4FF0(entries_2e4ff0, entry_2e4ff0)
 
 // an object of 0x80 bytes: two arrays of its own, three more of words, and
 // a block of entries it frees itself
-class class_2e4ff0 : public c_sized_reference
+class class_2e4ff0 : public referenced_2d88a0
 {
 public:
 	REFERENCED_NEW_2D88A0(0x1c)
