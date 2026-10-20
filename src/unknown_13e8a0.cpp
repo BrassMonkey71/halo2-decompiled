@@ -524,19 +524,12 @@ s_text_line_measurement function_13ef40(s_text_iterator *iterator, point2f const
 		if (iterator->token == _text_token_character)
 		{
 			s_font_cache_flags flags = { true, true };
-			long glyph_index = font_cache_get_character(iterator->font, iterator->character, flags);
-			s_font_character_header *header = NULL;
-			if (glyph_index != NONE && font_cache_character_load_pixels(glyph_index, flags))
-			{
-				s_text_cached_character *glyph = &((s_text_cached_character *)g_54d574->data)[glyph_index & 0xffff];
-				if (glyph->state == 4)
-					header = &glyph->header;
-			}
+			s_font_character_header *header = font_cache_get_character_header(iterator->font, iterator->character, flags);
 			if (header)
 			{
 				real kerning = function_122570(iterator->field_4_3, iterator->previous_character, iterator->character) * scale;
-				real advance = (short)header->unknown00 * scale;
 				real offset = *(short *)header->unknown08 * scale;
+				real advance = (short)header->unknown00 * scale;
 				if (iterator->can_break)
 				{
 					break_index = index;
