@@ -52,41 +52,16 @@ int class_3048a0::function_3048a0(convex_2fefd0 const *first, convex_2fefd0 cons
 
 
 
-// @stub 0x2f5960
-void __cdecl function_2f5960(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f6db0
-void __cdecl function_2f6db0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
 
 
 
 // Havok round 17: callees of matched functions not decompiled yet
 
-class class_30c330
-{
-public:
-	void function_30c330(void const *record);
-};
-
-// @stub 0x30c330
-void class_30c330::function_30c330(void const *record)
-{
-}
 
 
 
 
 
-
-// @stub 0x2f63d0
-void class_2f63d0::function_2f63d0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 // @stub 0x2e9d90
 void class_2e9d90::function_2e9d90(void const *a, void const *b, void const *input, pair_query_2e90f0 query)
@@ -195,11 +170,6 @@ public:
 
 
 
-
-// @stub 0x2f4f00
-void class_2f4f00::function_2f4f00(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 

@@ -78,6 +78,13 @@ ELEMENTS_2D91D0_ALIGNED(bounds_array_2e1020, bounds_2e0020);
 // three lists of endpoints and their storage (src/unknown_2e3370.cpp)
 struct overlap_endpoints_2e3370;
 
+// a box swept along a segment, and what takes the boxes it reaches
+// (src/unknown_2e3d40.cpp)
+struct ray_2e4660;
+class ray_collector_2e4660;
+// segments from one point (src/unknown_2e3d40.cpp)
+struct rays_2e3d40;
+
 class class_2e1090
 {
 public:
@@ -100,6 +107,9 @@ public:
 	void function_2e24b0(long *owner, bounds_2e0020 const *bounds, pairs_2e1090 *pairs);
 	void function_2e29b0(long *owner, pairs_2e1090 *pairs);
 	void function_2e3370(bounds_2e0020 const *bounds, overlap_endpoints_2e3370 *out);
+	void function_2e0350(long *const *owners, bounds_2e0020 const *bounds, long count, pairs_2e1090 *added, pairs_2e1090 *removed);
+	void function_2e3d40(rays_2e3d40 const *rays, ray_collector_2e4660 *collectors, long collector_stride);
+	void function_2e4660(ray_2e4660 const *ray, ray_collector_2e4660 *collector);
 };
 
 // the quantizing constants: the corner words' ceiling and floor, and the
