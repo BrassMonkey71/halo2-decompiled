@@ -68,7 +68,6 @@ bool actor_has_joint_invitation(long actor_index, short type);
 long function_25d810(long object_index, long actor_index, bool create);
 bool function_25d9b0(long prop_index);
 
-#pragma inline_depth(0)
 // @retail 0x1b7e40
 short __stdcall function_1b7e40(long actor_index)
 {
@@ -132,7 +131,6 @@ evaluate:
 		return priority;
 	return 0;
 }
-#pragma inline_depth()
 
 // @retail 0x1b81c0
 short __stdcall function_1b81c0(long actor_index, s_slot *slot, bool active)
