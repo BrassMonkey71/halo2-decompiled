@@ -5,6 +5,7 @@
 // settings into a description and back (0x312430, 0x3124c0); its derived
 // objects add their own fields after the base ones.
 #include "growable_array_2d91d0.h"
+#include "matrix_compare_2da7f0.h"
 
 struct pair_312430
 {
@@ -23,6 +24,9 @@ struct pairs_312430
 
 struct description_312430
 {
+	// no owner, an empty array that owns nothing, field_8 set (0x315b50)
+	description_312430();
+
 	long field_0;
 	void *field_4;
 	unsigned char field_8;
@@ -54,6 +58,9 @@ class query_3115a0;
 // an object that adds a byte and a word to the description
 struct description_30bd90 : description_312430
 {
+	// the byte set and the word -1 (0x315be0)
+	description_30bd90();
+
 	unsigned char field_18;
 	short field_1a;
 };
@@ -62,7 +69,9 @@ class class_30bd90 : public class_312430
 {
 public:
 	motion_3115a0 *motion;
-	char unknown40[0x48 - 0x40];
+	char unknown40[0x44 - 0x40];
+	// the group the object is simulated in, if any
+	void *group;
 	unsigned char field_48;
 	char unknown49[0x4c - 0x49];
 	long field_4c;
@@ -74,4 +83,29 @@ public:
 	void function_30bd90(description_30bd90 *description) const;
 	void function_30be80(description_30bd90 const *description);
 };
+
+// a description that adds nothing it sets when built (0x315b80)
+struct description_315b80 : description_312430
+{
+	description_315b80();
+};
+
+// a transform: three rotation columns and a translation
+struct transform_312630
+{
+	matrix_2da7f0 rotation;
+	__m128 translation;
+
+	// whether the two are the same within a tolerance (0x312630)
+	bool_result_2da7f0 equal_within(transform_312630 const &other, float tolerance) const;
+};
+
+// one that adds a transform, built as the identity (0x315ba0)
+struct description_315ba0 : description_315b80
+{
+	description_315ba0();
+
+	transform_312630 transform;
+};
+
 #endif
