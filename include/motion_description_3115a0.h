@@ -60,15 +60,15 @@ struct description_3115a0 : description_30bd90
 	__m128 field_30;
 	__m128 field_40;
 	__m128 field_50;
-	char field_60[0x90 - 0x60];
+	__m128 field_60[3];
 	__m128 field_90;
 	float field_a0;
 	long field_a4;
 	long field_a8;
 	long field_ac;
 	long field_b0;
-	bool field_b4;
-	unsigned char field_b5;
+	char field_b4;
+	char field_b5;
 };
 
 class class_3115a0 : public class_30bd90
@@ -79,6 +79,8 @@ public:
 	// sets the object from the description
 	void function_312260(description_3115a0 const *description);
 	void function_312150(description_3115a0 const *description);
+	// changes the motion's kind (not decompiled)
+	void function_311e40(int kind);
 };
 
 #endif
