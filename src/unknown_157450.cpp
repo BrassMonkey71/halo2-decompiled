@@ -2285,6 +2285,8 @@ void function_15ba00(void)
 void game_engine_format_time(long seconds, word *text);
 word *function_1630e0(word *buffer, word const *format, ...);
 
+__declspec(noinline) void function_159130(long value, word *text);
+
 // @retail 0x159130
 void function_159130(long value, word *text)
 {
