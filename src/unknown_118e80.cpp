@@ -132,6 +132,8 @@ struct s_orientation_request_118f90
 	vector3f up;
 };
 
+__declspec(noinline) void function_118f90(s_orientation_request_118f90 *request);
+
 // @retail 0x118f90
 void function_118f90(s_orientation_request_118f90 *request)
 {
@@ -594,38 +596,42 @@ bool __stdcall function_118510(long arg_0, void const *arg_1, bool *arg_2)
     *(short *)((byte *)local_0 + 0x206) = 0;
     function_118f90((s_orientation_request_118f90 *)((byte *)local_0 + 0x13c));
     s_forward_object *local_3 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
+    bool local_4 = false;
     if (local_3->animation_state_offset == NONE)
-        return false;
-    bool local_4 = true;
-    short local_5 = *(short const *)((byte const *)arg_1 + 0xb4);
-    if (local_5 != NONE)
+        goto done;
     {
-        *(long *)((byte *)local_0 + 0x134) = local_5;
-        local_4 = function_bc380(arg_0, 0x138, *(word const *)((byte const *)arg_1 + 0xb6), 0) != 0;
-        local_0 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
-    }
-    else
-        *(long *)((byte *)local_0 + 0x134) = NONE;
-    if (local_4)
-    {
-        short local_6 = *(short const *)((byte const *)arg_1 + 0x64);
-        *(short *)((byte *)local_0 + 0x12e) = local_6;
-        if (g_4e6948->state == 1 && (local_6 == 0 || local_6 == NONE))
-            *(short *)((byte *)local_0 + 0x12e) = *(short *)(local_1 + 0xc0);
-        s_forward_object *local_7 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
-        s_animation_state *local_8 = (s_animation_state *)((byte *)local_7 + local_7->animation_state_offset);
-        long local_9 = local_8->unknown70;
-        long local_10 = local_8->unknown7c;
-        if (local_8->animation_set(0x7000001, 0x7000101, 0x7000101, 0x7000001, 2, 0x3f))
+        local_4 = true;
+        short local_5 = *(short const *)((byte const *)arg_1 + 0xb4);
+        if (local_5 != NONE)
         {
-            bool local_11 = local_9 != 0x7000001;
-            bool local_12 = local_10 != 0x7000001;
-            if (local_11 || local_12)
-                function_ba350(arg_0, 0.267f);
+            *(long *)((byte *)local_0 + 0x134) = local_5;
+            local_4 = function_bc380(arg_0, 0x138, *(word const *)((byte const *)arg_1 + 0xb6), 0) != 0;
+            local_0 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
         }
+        else
+            *(long *)((byte *)local_0 + 0x134) = NONE;
+        if (local_4)
+        {
+            short local_6 = *(short const *)((byte const *)arg_1 + 0x64);
+            *(short *)((byte *)local_0 + 0x12e) = local_6;
+            if (g_4e6948->state == 1 && (local_6 == 0 || local_6 == NONE))
+                *(short *)((byte *)local_0 + 0x12e) = *(short *)(local_1 + 0xc0);
+            s_forward_object *local_7 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
+            s_animation_state *local_8 = (s_animation_state *)((byte *)local_7 + local_7->animation_state_offset);
+            long local_9 = local_8->unknown70;
+            long local_10 = local_8->unknown7c;
+            if (local_8->animation_set(0x7000001, 0x7000101, 0x7000101, 0x7000001, 2, 0x3f))
+            {
+                bool local_11 = local_9 != 0x7000001;
+                bool local_12 = local_10 != 0x7000001;
+                if (local_11 || local_12)
+                    function_ba350(arg_0, 0.267f);
+            }
+        }
+        else
+            *arg_2 = true;
     }
-    else
-        *arg_2 = true;
+done:
     return local_4;
 }
 
