@@ -129,7 +129,7 @@ long __stdcall function_180d80(s_180d84 const *arg_0, transform4x3f const *arg_1
             local_3.j *= 0.00390625f;
             local_3.k *= 0.00390625f;
         }
-        for (short local_5 = 0; local_5 < arg_5->field_5802; local_5++)
+        for (long local_5 = 0; local_5 < arg_5->field_5802; local_5++)
             local_4 += (arg_5->field_5002[local_5] - 1) / 2;
         long local_5 = function_13d370((s_physical_object *)g_509448, (short)local_4 * 0x40, 1);
         if (local_5 != NONE)

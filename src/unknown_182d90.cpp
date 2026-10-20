@@ -84,19 +84,14 @@ real __stdcall function_182d90(c_extent_shape *shape, real radius,
 	else
 	{
 		long type = shape->shape_kind();
-		if (type == 2 || (type > 9 && type <= 11))
+		if ((type <= 11 && type > 9) || type == 2)
 		{
-			long key = shape->first_key();
-			if (key == NONE) goto done;
-			do
+			for (long key = shape->first_key(); key != NONE; key = shape->next_key(key))
 			{
 				__m128 buffer[16];
 				c_extent_shape *child = shape->child(key, buffer);
-				volatile real local_0 = function_182d90(child, result, &local, minimum, maximum);
-				result = local_0;
-				key = shape->next_key(key);
-			} while (key != NONE);
-			goto done;
+				result = function_182d90(child, result, &local, minimum, maximum);
+			}
 		}
 		else if (shape->shape_kind() == 19)
 			result = function_182d90(data->field_c.nested, radius, &local, minimum, maximum);
@@ -173,7 +168,6 @@ real __stdcall function_182d90(c_extent_shape *shape, real radius,
 			}
 		}
 	}
-done:
 	return result;
 }
 

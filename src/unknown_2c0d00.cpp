@@ -784,20 +784,17 @@ void function_2c2910(point2f const *center, point2f const *points, point2f const
             return;
     }
     point2f direction;
+    point2f normal;
     vector2d_from_points2d(previous, points, &direction);
     real magnitude = (real)sqrt(length_sq2f(&direction));
     if (fabs(magnitude) < 0.0001f)
         magnitude = 0.0f;
     else
-    {
-        real inverse = 1.0f / magnitude;
-        direction.x = inverse * direction.x;
-        direction.y = direction.y * inverse;
-    }
+        scale_offset_direction_2c(1.0f / magnitude, &direction, &normal);
     if (magnitude == 0.0f)
-        direction = *g_46877c;
-    result->x = points[0].x + direction.x * radius;
-    result->y = points[0].y + direction.y * radius;
+        normal = *g_46877c;
+    result->x = points[0].x + normal.x * radius;
+    result->y = points[0].y + normal.y * radius;
 }
 
 // @retail 0x2c2740
@@ -824,8 +821,13 @@ void function_2c2740(point2f const *point, point2f const *center, real radius, b
     }
     else
     {
-        candidates[0] = direction;
-        if (normalize_offset_direction_2c(&candidates[0]) == 0.0f)
+        point2f offset = direction;
+        real magnitude = (real)sqrt(length_sq2f(&offset));
+        if (fabs(magnitude) < 0.0001f)
+            magnitude = 0.0f;
+        else
+            scale_offset_direction_2c(1.0f / magnitude, &offset, &candidates[0]);
+        if (magnitude == 0.0f)
             candidates[0] = *g_46877c;
         result->x = center->x + candidates[0].x * radius;
         result->y = center->y + candidates[0].y * radius;
