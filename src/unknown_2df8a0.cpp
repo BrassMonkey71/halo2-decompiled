@@ -4,7 +4,7 @@
 // pair is enabled by bit (second & 31) of word (first & 31) of a 32-word
 // table. The filter answers through four interfaces: for two keys, and for
 // two objects whose keys it reads.
-#include "reference_counted_2d88a0.h"
+#include <stddef.h>
 
 class hkBool
 {
@@ -92,14 +92,12 @@ class c_contact_rule_filter
 {
 public:
 	virtual hkBool function_2dfa20(kinds_2dfa20 const *const *kinds, chain_2dfa20 const *chain, long arg_2, keyed_2df8f0 const *other, long index) = 0;
-	virtual class c_2dfbf0 *destroy(unsigned long flags) { return 0; }
 };
 
 class c_2df8f0
 {
 public:
 	virtual hkBool function_2df8f0(void const *arg_0, void const *arg_1, long arg_2) = 0;
-	virtual class c_2dfbf0 *destroy(unsigned long flags) { return 0; }
 };
 
 class c_2dfae0
@@ -115,22 +113,11 @@ public:
 	{
 		reference_count = 1;
 	}
-	// the deleting destructor, slot 0 of each vtable that has one
-	virtual class c_2dfbf0 *destroy(unsigned long flags) { return 0; }
+	virtual ~c_contact_rule_fallback() {}
 	unsigned short memory_size;
 	unsigned short reference_count;
 
 	hkBool accepts(long a, long b);
-};
-
-class c_1c3450;
-void function_1c3440(c_1c3450 *object);
-
-// a filter's settings: the value at +0x18 and the table of enabled pairs
-struct table_2dfb30
-{
-	long field_18;
-	unsigned long enabled[32];
 };
 
 class c_2dfbf0 : public c_contact_rule_fallback, public c_2df9d0,
@@ -141,8 +128,6 @@ public:
 	unsigned long enabled[32];
 
 	c_2dfbf0();
-	c_2dfbf0(table_2dfb30 const &table);
-	virtual c_2dfbf0 *destroy(unsigned long flags);
 
 	virtual hkBool function_2df9d0(void const *arg_0, void const *arg_1);
 	virtual hkBool function_2df8f0(void const *arg_0, void const *arg_1, long arg_2);
@@ -161,6 +146,15 @@ public:
 		return result;
 	}
 };
+
+// Retail 0x2dfbf0 installs four interface vptrs before field_18; its
+// 32-word table ends at +0x9c. These assert storage only, not vtable identity.
+typedef char assert_pair_filter_size[(sizeof(c_2dfbf0) == 0x9c) ? 1 : -1];
+typedef char assert_pair_filter_field[(offsetof(c_2dfbf0, field_18) == 0x18) ? 1 : -1];
+typedef char assert_pair_filter_table[(offsetof(c_2dfbf0, enabled) == 0x1c) ? 1 : -1];
+typedef char assert_pair_reference_size[(sizeof(c_contact_rule_fallback) == 8) ? 1 : -1];
+typedef char assert_pair_allocation_size[(offsetof(c_contact_rule_fallback, memory_size) == 4) ? 1 : -1];
+typedef char assert_pair_reference_count[(offsetof(c_contact_rule_fallback, reference_count) == 6) ? 1 : -1];
 
 // @retail 0x2df8a0
 hkBool c_contact_rule_fallback::accepts(long a, long b)
@@ -222,33 +216,3 @@ c_2dfbf0::c_2dfbf0()
 	}
 	field_18 = 0;
 }
-
-// the filter with the given settings
-// @retail 0x2dfb30
-c_2dfbf0::c_2dfbf0(table_2dfb30 const &table)
-{
-	for (long i = 0; i < 32; i++)
-	{
-		enabled[i] = table.enabled[i];
-	}
-	field_18 = table.field_18;
-}
-
-// the deleting destructor, written as the method the vtables hold (as
-// 0x1c3410 is): the destructor proper (0x1c3440), then the block goes back to
-// the allocator when flags bit 0 is set
-// @retail 0x2dfbc0
-c_2dfbf0 *c_2dfbf0::destroy(unsigned long flags)
-{
-	function_1c3440((c_1c3450 *)this);
-	if (flags & 1)
-	{
-		g_memory_2d88a0->release_block(this, memory_size, 0x22);
-	}
-	return this;
-}
-
-// the bases at +0xc and +0x10 reach it through the compiler's this-adjustor
-// thunks
-// @retail 0x2dfba0 adjustor c_2dfbf0::destroy 0xc
-// @retail 0x2dfbb0 adjustor c_2dfbf0::destroy 0x10
