@@ -2214,6 +2214,7 @@ long function_20e580(long ai_index, s_audio_priority_table *table, byte const *r
 
 #include "units.h"
 #include "slot_handler.h"
+#include "slot_owner.h"
 long function_1b8c80(long object_index);
 bool function_277790(long actor_index, long other_actor_index);
 
@@ -2291,7 +2292,7 @@ long function_20ec80(long target_index, s_audio_priority_table *table, byte cons
     real best = 0.0f;
     real chosen_weight = 0.0f;
     real chosen_distance = 0.0f;
-    long chosen_type = NONE;
+    short chosen_type = NONE;
     long chosen_tag = NONE;
     if (target_index != NONE)
     {
@@ -2299,26 +2300,29 @@ long function_20ec80(long target_index, s_audio_priority_table *table, byte cons
         long actor_index = *(long *)(object + 0x12c);
         if (actor_index != NONE)
         {
-            byte *actor = g_4f55f0->data + (actor_index & 0xffff) * 0x888;
-            short slot = *(short *)(actor + 0x190);
-            while (slot >= 0)
+            s_slot_owner_entry *owner = (s_slot_owner_entry *)(g_4f55f0->data + (actor_index & 0xffff) * sizeof(s_slot_owner_entry));
+            /* the highest slot whose handler is of kind 1 or 2 and enabled */
+            short slot = NONE;
+            for (short i = owner->current; i >= 0; i--)
             {
-                short handler_type = *(short *)(actor + 0x90 + slot * 0x40);
-                if (handler_type != NONE)
+                s_slot *candidate_slot = &owner->slots[i];
+                if (candidate_slot->type != NONE)
                 {
-                    s_slot_handler *handler = g_46eeb8[handler_type];
+                    s_slot_handler *handler = g_46eeb8[candidate_slot->type];
                     if ((handler->kind == 2 || handler->kind == 1) && *(byte *)&handler->unknown3c)
+                    {
+                        slot = i;
                         break;
+                    }
                 }
-                --slot;
             }
-            if (slot >= 0)
+            if (slot != NONE)
             {
-                long action_index = *(long *)(actor + 0xa0 + slot * 0x40);
-                byte *entry = g_502424->data + (action_index & 0xffff) * 0xbc + 4;
-                long remaining = 10;
-                do
+                long action_index = *(long *)((byte *)&owner->slots[slot] + 0x10);
+                byte *element = (byte *)element_502424_get(action_index);
+                for (long i = 0; i < 10; i++)
                 {
+                    byte *entry = element + 4 + i * 0xc;
                     long index = *(long *)entry;
                     if (index != NONE && *(short *)(entry + 4) == 3 && index != *(long *)(object + 0x12c) &&
                         (!require_related || function_277790(*(long *)(object + 0x12c), index)))
@@ -2347,8 +2351,7 @@ long function_20ec80(long target_index, s_audio_priority_table *table, byte cons
                             }
                         }
                     }
-                    entry += 0xc;
-                } while (--remaining);
+                }
             }
         }
     }

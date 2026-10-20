@@ -6,6 +6,7 @@
 #include "globals.h"
 #include "unknown_0a58d0.h"
 #include "object_types_21_2.h"
+#include "unknown_xa19f52.h"
 #include <string.h>
 
 #define OBJECT_HEADER(index) (&((s_object_header *)g_4e0300->data)[(index) & 0xFFFF])
@@ -1347,22 +1348,16 @@ long c_projectile_type::v29(long a, s_entity_info *info, long *flags, long size,
     byte creation[0xc4];
     function_a5d90(creation, info, flags, state);
     byte *fields = (byte *)info;
-    long player = *(long *)(fields + 0x10);
-    if (player != NONE && player >= 0 && player < g_4e8c24->high_water_index)
+    byte *record = datum_get_absolute_inlined(g_4e8c24, *(long *)(fields + 0x10));
+    if (record)
     {
-        s_record_pool *players = g_4e8c24;
-        byte *records = players->data;
-        byte *record = records + player * players->size;
-        if (*(short *)record)
-        {
-            long player_index = player | (*(short volatile *)(records + player * players->size) << 16);
-            *(long *)(creation + 0x60) = *(long *)(record + 0x2c);
-            *(long *)(creation + 0x5c) = player_index;
-            *(long *)(creation + 0x64) = (signed char)record[0xc0];
-            *(long *)(creation + 0x6c) = *(long *)(record + 0x2c);
-            *(long *)(creation + 0x68) = player_index;
-            *(short *)(creation + 0x70) = (signed char)record[0xc0];
-        }
+        long player_index = data_datum_index(g_4e8c24, *(long *)(fields + 0x10));
+        *(long *)(creation + 0x60) = *(long *)(record + 0x2c);
+        *(long *)(creation + 0x5c) = player_index;
+        *(long *)(creation + 0x64) = (signed char)record[0xc0];
+        *(long *)(creation + 0x6c) = *(long *)(record + 0x2c);
+        *(long *)(creation + 0x68) = player_index;
+        *(short *)(creation + 0x70) = (signed char)record[0xc0];
     }
     long index;
     if (info->field0 != NONE) index = function_a73b0(info);
@@ -1381,11 +1376,12 @@ long c_projectile_type::v29(long a, s_entity_info *info, long *flags, long size,
         long target = *(long *)(fields + 0x14);
         if (target != NONE)
         {
-            byte *entry = *(byte **)((byte *)g_4cf77c + 4) + 0x2098 + (target & 0x3ff) * 0x20 + 0x14;
-            if (*(long *)entry == target && *(long *)(entry + 8) != NONE)
+            s_simulation_world_view *world = (s_simulation_world_view *)g_4cf77c;
+            s_simulation_entity *entity = simulation_entity_try_get(&world->database->table, target);
+            if (entity && entity->object_index != NONE)
             {
                 s_projectile_target request;
-                request.object_index = *(long *)(entry + 8);
+                request.object_index = entity->object_index;
                 request.node_index = *(short *)(fields + 0x18);
                 projectile_set_target(index, &request);
             }

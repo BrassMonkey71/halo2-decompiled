@@ -91,7 +91,7 @@ void __stdcall function_1c9f30(long arg_0)
     }
     function_205320(arg_0);
    }
-   else if (local_1 == 12)
+   else if ((short)local_1 == 12)
     function_211640(arg_0);
    function_210020(arg_0);
   }
@@ -100,7 +100,7 @@ void __stdcall function_1c9f30(long arg_0)
    function_2103d0(arg_0);
    joint_clear_references(arg_0);
   }
-  if (local_1 != 5 || (local_0->field_b2 & 2))
+  if ((short)local_1 != 5 || (local_0->field_b2 & 2))
   {
    s_actor_iterator local_9;
    function_x66da2b(&local_9, false);

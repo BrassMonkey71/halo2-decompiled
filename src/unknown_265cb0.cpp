@@ -194,11 +194,10 @@ real __stdcall function_265d30(long actor_index, long prop_index)
 			{
 				vector3d_from_points3d((point3f const *)((byte *)actor + 0x238), &state->position, &delta);
 			}
-			vector3f const volatile *velocity = (vector3f const volatile *)((byte *)rider + 0x150);
-			direction_bonus = 0.0f > (velocity->k * delta.k + velocity->j * delta.j + velocity->i * delta.i) * 6.0f ? 0.0f : (velocity->k * delta.k + velocity->j * delta.j + velocity->i * delta.i) * 6.0f;
+			direction_bonus = 0.0f > dot3f((vector3f const *)((byte *)rider + 0x150), &delta) * 6.0f ? 0.0f : dot3f((vector3f const *)((byte *)rider + 0x150), &delta) * 6.0f;
 		}
 	}
-	return (real)(range_score + state_score) + (real)special_score + direction_bonus + distance_bonus + view_bonus + current_bonus;
+	return ((real)(range_score + state_score) + (real)special_score + direction_bonus) + distance_bonus + view_bonus + current_bonus;
 }
 
 void *actor_get_character_situation_entry(long actor_index);
