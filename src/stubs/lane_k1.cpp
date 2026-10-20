@@ -20,10 +20,6 @@ void s_1c3a40::function_2e5a90(handlers_2e5d50 const *handlers, long first_type,
 
 // handlers of the pair table (0x2e5d50) not decompiled yet
 
-// @stub 0x2ead90
-void __cdecl function_2ead90(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 // @stub 0x2ece90
 void __cdecl function_2ece90(void const *a, void const *b, void const *input, void *collector)
@@ -87,10 +83,6 @@ public:
 
 // @stub 0x30c330
 void class_30c330::function_30c330(void const *record)
-{
-}
-// @stub 0x2eab70
-void class_2eab70::function_2eab70(void const *a, void const *b, void const *input, void *collector)
 {
 }
 
