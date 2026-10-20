@@ -19,24 +19,23 @@ bool function_11eed0(
 	real lo,
 	real hi)
 {
-	bool reached = false;
 	real v0 = *velocity;
 	real p0 = *position;
 	real dt2 = dt * dt;
-	real orig = target;
-	target = orig - p0;	/* from here on, the distance still to go */
+	real distance = target - p0;
+	bool reached = false;
 	real limit;
 	real accel;
-	real newv = 0.f;
+	real newv;
 	real newp;
 
 	if (wrap)
 	{
 		real half = (hi - lo) * 0.5f;
-		if (target > half)
-			target -= half * 2.f;
-		else if (0.f - half > target)
-			target = half * 2.f + target;
+		if (distance > half)
+			distance -= half * 2.f;
+		else if (0.f - half > distance)
+			distance = half * 2.f + distance;
 	}
 
 	real local_0 = a * a * b;
@@ -44,22 +43,22 @@ bool function_11eed0(
 	if (!(local_0 > limit))
 		limit = local_0;
 
-	if (limit >= (real)fabs(target - v0 * a))
+	if (limit >= (real)fabs(distance - v0 * a))
 	{
-		real c = orig;
-		if (lo > c)
-			c = lo;
-		else if (c > hi)
-			c = hi;
+		newv = 0.f;
+		newp = target;
+		if (lo > newp)
+			newp = lo;
+		else if (newp > hi)
+			newp = hi;
 		reached = true;
-		newp = c;
 	}
 	else
 	{
-		double x = fabs(target) * b;
+		double x = fabs(distance) * b;
 		x = x + x;
 		real speed = x >= dt2 ? dt : (real)sqrt(x);
-		if (0.f > target)
+		if (0.f > distance)
 			speed = 0.f - speed;
 
 		accel = (speed - v0) / a;
