@@ -450,7 +450,7 @@ void function_19f680(long tag, long group, long pass, long variant, void *contex
             point3f bottom = { vertices[index].x, vertices[index].y, center->z };
             point3f top = bottom;
             top.z += height;
-            D3DDevice_SetVertexData4f(3, color->x, color->y, color->z, alpha);
+            D3DDevice_SetVertexData4f(11, color->x, color->y, color->z, alpha);
             if (uv != NONE)
                 D3DDevice_SetVertexData2f(uv, texture_position, 1.0f);
             D3DDevice_SetVertexData4f(0, bottom.x, bottom.y, bottom.z, 1.0f);

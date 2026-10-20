@@ -9,17 +9,18 @@ struct transform_2de890
 {
 	__m128 columns[4];
 
+	// the element in a row of a column
+	float &element(int row, int column) { return ((float *)columns)[column * 4 + row]; }
+
 	void load_unit_columns()
 	{
-		__m128 zero = _mm_setzero_ps();
-		columns[0] = zero;
-		columns[1] = zero;
-		columns[2] = zero;
-		float *elements = (float *)columns;
-		elements[0] = 1.0f;
-		elements[5] = 1.0f;
-		elements[10] = 1.0f;
-		columns[3] = zero;
+		columns[0] = _mm_setzero_ps();
+		columns[1] = _mm_setzero_ps();
+		columns[2] = _mm_setzero_ps();
+		element(0, 0) = 1.0f;
+		element(1, 1) = 1.0f;
+		element(2, 2) = 1.0f;
+		columns[3] = _mm_setzero_ps();
 	}
 };
 
@@ -126,7 +127,7 @@ public:
 	virtual void slot_6() {}
 	virtual float slot_7(__m128 const *direction) { return 0.0f; }
 	// casts a segment in the child's own frame
-	virtual answer_2de9e0 slot_8(ray_2de9e0 const *ray, hit_2de9e0 *hit) { return answer_2de9e0(); }
+	virtual void slot_8(answer_2de9e0 *result, ray_2de9e0 const *ray, hit_2de9e0 *hit) {}
 	// casts a segment in the child's own frame, results going to a collector
 	virtual void slot_9(ray_2de9e0 const *ray, description_2deb20 const *description, void *collector) {}
 };
@@ -177,7 +178,8 @@ answer_2de9e0 c_child_transform::function_2de9e0(ray_2de9e0 const *ray, hit_2de9
 	local.field_24 = ray->field_24;
 	local.from = inverse_transform_2de9e0(transform, ray->from);
 	local.to = inverse_transform_2de9e0(transform, ray->to);
-	answer_2de9e0 result = ((child_slots_2de8e0 *)child)->slot_8(&local, hit);
+	answer_2de9e0 result;
+	((child_slots_2de8e0 *)child)->slot_8(&result, &local, hit);
 	if (result.value)
 	{
 		__m128 normal = hit->value;

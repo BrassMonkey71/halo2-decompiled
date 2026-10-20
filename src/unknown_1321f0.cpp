@@ -157,7 +157,9 @@ struct s_132a30_light
 	byte unknown10[8];
 	point3f center;
 	real radius;
-	byte unknown28[0x110 - 0x28];
+	byte unknown28[0x48 - 0x28];
+	short unknown48;
+	byte unknown4a[0x110 - 0x4a];
 };
 
 // @retail 0x132a30
@@ -948,33 +950,30 @@ __forceinline long visibility_next(s_record_pool *pool, long *next)
 // @retail 0x132220
 void __stdcall function_132220(s_bit_vector_pool *data)
 {
-	s_sort_context *context = (s_sort_context *)data->context;
 	short extra_cluster = NONE;
-	for (long i = 0; i < context->count; i++)
+	for (long i = 0; i < ((s_sort_context *)data->context)->count; i++)
 	{
-		long cluster = context->entries[i].value;
-		s_record_pool *pool = (s_record_pool *)g_4de2e4;
+		s_sort_context *context = (s_sort_context *)data->context;
+		s_sort_entry *entry = &context->entries[i];
+		long cluster = entry->value;
 		bool selected = function_16e210(cluster, g_4b9f8c);
 		long next;
 		long index;
 		if (!(data->flags2a60 & 0x40))
 		{
 			next = ((long *)g_4de2e0)[cluster];
-			for (index = visibility_next(pool, &next); index != NONE; index = visibility_next(pool, &next))
+			for (index = visibility_next((s_record_pool *)g_4de2e4, &next); index != NONE; index = visibility_next((s_record_pool *)g_4de2e4, &next))
 			{
 				if (!(data->flags2a60 & 0x400) || *((byte *)((s_visibility_object_header *)g_4e0300->data)[index & 0xffff].object + 0xaa) == 7)
-				{
 					function_133050(data, index, (short)i, selected, false);
-					pool = (s_record_pool *)g_4de2e4;
-				}
 			}
-			next = ((long *)g_4de2d4)[context->entries[i].value];
+			next = ((long *)g_4de2d4)[entry->value];
 			for (index = visibility_next((s_record_pool *)g_4de2d8, &next); index != NONE; index = visibility_next((s_record_pool *)g_4de2d8, &next))
 				function_133050(data, index, (short)i, selected, false);
 		}
 		if (data->mode == 0 && !(data->flags2a60 & 0x10))
 		{
-			next = ((long *)g_4e0310)[context->entries[i].value];
+			next = ((long *)g_4e0310)[entry->value];
 			for (index = visibility_next((s_record_pool *)g_4e0314, &next); index != NONE; index = visibility_next((s_record_pool *)g_4e0314, &next))
 				function_132a30(data, index, i, false);
 		}
@@ -984,7 +983,6 @@ void __stdcall function_132220(s_bit_vector_pool *data)
 			if (*(long *)(bsp + 0xac) > 0)
 				extra_cluster = (*(short **)(bsp + 0xb0))[g_4b9eec];
 		}
-		context = (s_sort_context *)data->context;
 	}
 	if (data->mode == 0 && !(data->flags2a60 & 0x10) && data->location.cluster_index != NONE)
 	{
@@ -994,7 +992,7 @@ void __stdcall function_132220(s_bit_vector_pool *data)
 		{
 			long index = indices[i];
 			s_132a30_light *light = &((s_132a30_light *)g_4e030c->data)[index & 0xffff];
-			if (*(short *)((byte *)light + 0x48) == NONE && function_c3140(index) && light->stamp != g_4e0308)
+			if (((s_132a30_light *)g_4e030c->data)[index & 0xffff].unknown48 == NONE && function_c3140(index) && light->stamp != g_4e0308)
 			{
 				if (data->lists[1]->add(index, 0, 0, NONE))
 					function_c3110(index);

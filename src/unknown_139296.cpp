@@ -720,7 +720,7 @@ struct s_condition_subject
 };
 
 // @retail 0x13ac87
-bool function_13ac87(s_condition_masks const *masks, word first, word second, word fourth, word third, s_condition_subject const *subject)
+bool function_13ac87(s_condition_masks const *masks, word first, word second, word fourth, s_condition_subject const *subject, word third)
 {
 	if (subject)
 	{
@@ -1045,7 +1045,7 @@ bool function_13a3c6(long arg_1, long arg_2, byte const *arg_3, long arg_4)
         {
             byte const *local_9 = local_2->field_24 + local_8;
             if (function_13ac87((s_condition_masks const *)(local_9 + 8), local_3, local_4,
-                local_6, local_5, (s_condition_subject const *)local_7))
+                local_6, (s_condition_subject const *)local_7, local_5))
             {
                 real local_10[4];
                 function_13ad48(arg_2, local_9 + 4, local_10, arg_3, local_7);
@@ -1064,7 +1064,7 @@ bool function_13a3c6(long arg_1, long arg_2, byte const *arg_3, long arg_4)
         {
             byte const *local_9 = local_2->field_c + local_8;
             if (function_13ac87((s_condition_masks const *)(local_9 + 8), local_3, local_4,
-                local_6, local_5, (s_condition_subject const *)local_7))
+                local_6, (s_condition_subject const *)local_7, local_5))
             {
                 real local_10[4];
                 function_13ad48(arg_2, local_9 + 4, local_10, arg_3, local_7);
@@ -1083,7 +1083,7 @@ bool function_13a3c6(long arg_1, long arg_2, byte const *arg_3, long arg_4)
         {
             byte const *local_9 = local_2->field_14 + local_8;
             if (function_13ac87((s_condition_masks const *)(local_9 + 8), local_3, local_4,
-                local_6, local_5, (s_condition_subject const *)local_7))
+                local_6, (s_condition_subject const *)local_7, local_5))
             {
                 real local_10[4];
                 function_13ad48(arg_2, local_9 + 4, local_10, arg_3, local_7);
@@ -1115,7 +1115,7 @@ void function_13a532(long arg_1, long arg_2, byte const *arg_3, long arg_4)
         {
             byte const *local_9 = local_2->field_24 + local_8;
             if (function_13ac87((s_condition_masks const *)(local_9 + 8), local_3, local_4,
-                local_6, local_5, (s_condition_subject const *)item))
+                local_6, (s_condition_subject const *)item, local_5))
             {
                 real local_10[4];
                 function_13ad48(arg_2, local_9 + 4, local_10, arg_3, item);
@@ -1133,7 +1133,7 @@ void function_13a532(long arg_1, long arg_2, byte const *arg_3, long arg_4)
         {
             byte const *local_9 = local_2->field_c + local_8;
             if (function_13ac87((s_condition_masks const *)(local_9 + 8), local_3, local_4,
-                local_6, local_5, (s_condition_subject const *)item))
+                local_6, (s_condition_subject const *)item, local_5))
             {
                 real local_10[4];
                 function_13ad48(arg_2, local_9 + 4, local_10, arg_3, item);
@@ -1151,7 +1151,7 @@ void function_13a532(long arg_1, long arg_2, byte const *arg_3, long arg_4)
         {
             byte const *local_9 = local_2->field_14 + local_8;
             if (function_13ac87((s_condition_masks const *)(local_9 + 8), local_3, local_4,
-                local_6, local_5, (s_condition_subject const *)item))
+                local_6, (s_condition_subject const *)item, local_5))
             {
                 real local_10[4];
                 function_13ad48(arg_2, local_9 + 4, local_10, arg_3, item);
