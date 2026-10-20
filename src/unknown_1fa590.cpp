@@ -9,7 +9,7 @@
 #include <math.h>
 #include "slot_handler.h"
 
-void function_11d180(vector3f *left, vector3f const *in, vector3f *out, vector3f const *up, vector3f *forward);
+void function_11d180(vector3f const *in, vector3f const *up, vector3f *forward, vector3f *left, vector3f *out);
 
 struct s_motion_adjustment
 {
@@ -36,7 +36,7 @@ void __stdcall function_1fa810(long *ticks, s_motion_adjustment_result *out, s_m
 	vector3f left;
 	vector3f up;
 	vector3f forward;
-	function_11d180(&left, &state->forward, &up, g_4687b0, &forward);
+	function_11d180(&state->forward, g_4687b0, &forward, &left, &up);
 	vector3f target;
 	target.i = state->target.i * state->scale;
 	target.j = state->target.j * state->scale;
