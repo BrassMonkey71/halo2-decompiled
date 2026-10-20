@@ -728,9 +728,9 @@ bool __stdcall function_bdef0(long object_index)
 {
     byte *object = (byte *)OBJECT_GET(object_index);
     byte const *definition = g_4e3b44[(word)*(long *)object].bytes;
-    bool active = (*(dword *)(object + 4) & 0x100) != 0;
-    bool from_physics = false;
     long component_index = *(long *)(object + 0xb4);
+    bool active = (*(word *)(object + 4) & 0x100) != 0;
+    bool from_physics = false;
     if (component_index != NONE && ((1 << object[0xaa]) & 0x800) && (object[0xc0] & 0x40))
     {
         s_havok_component *component = (s_havok_component *)(g_51e9b8->data +
