@@ -828,7 +828,7 @@ void function_b73b0(long object_index)
 void function_1cae40(s_cluster_partition *partition, long data_index, long *first_cluster_reference);
 
 // @retail 0xb87b0
-void __stdcall function_b87b0(volatile long object_index)
+void __stdcall function_b87b0(long object_index)
 {
     s_object_header_view *header = OBJECT_HEADER_GET(object_index);
     s_object_view *object = header->object;
