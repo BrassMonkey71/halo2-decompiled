@@ -1,7 +1,6 @@
 // @flags /O2 /GL-
 // Havok (third-party physics library): a descriptor accessor, vectors
 // cleared and a bounding box around a centre.
-#include <string.h>
 #include <xmmintrin.h>
 
 struct descriptor_2decd0
@@ -54,11 +53,10 @@ void class_2decd0::function_2decf0(long a, __m128 *out) const
 // @retail 0x2ded10
 void class_2decd0::function_2ded10(long a, int count, __m128 *out) const
 {
-	int rest = count - 1;
-	if (rest >= 0)
+	for (int i = count - 1; i >= 0; i--)
 	{
-		out[0] = _mm_setzero_ps();
-		memcpy(out + 1, out, rest * 4 * sizeof(float));
+		*out = _mm_setzero_ps();
+		out++;
 	}
 }
 
