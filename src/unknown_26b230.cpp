@@ -481,51 +481,54 @@ bool function_26ba60(long prop_index, long actor_index, long clump_index)
 	bool result = false;
 	s_clump_prop *prop = (s_clump_prop *)(g_50241c->data + (prop_index & 0xffff) * sizeof(s_clump_prop));
 
-	if (!prop->unknown34
-		&& !TEST_FIELD_BIT(((s_clump_prop_object_header *)g_4e0300->data)[prop->type & 0xffff].object->flag10a_2)
-		&& clump_index != NONE)
+	if (!prop->unknown34)
 	{
-		s_clump *clump = (s_clump *)(g_502420->data + (clump_index & 0xffff) * sizeof(s_clump));
-		if (!team_is_enemy(clump->team, 1))
+		if (TEST_FIELD_BIT(((s_clump_prop_object_header *)g_4e0300->data)[prop->type & 0xffff].object->flag10a_2))
+			result = false;
+		else if (clump_index != NONE)
 		{
-			s_game_time_globals *game_time_globals = g_510c54;
-			long game_time = game_time_globals->game_time;
-			s_data_datum_iterator players;
-			bool ready = true;
-
-			players.data = g_4e8c24;
-			players.index = NONE;
-			players.datum_index = NONE;
-			while (data_datum_iterator_next(&players))
+			s_clump *clump = (s_clump *)(g_502420->data + (clump_index & 0xffff) * sizeof(s_clump));
+			if (!team_is_enemy(clump->team, 1))
 			{
-				s_ai_player *player = ai_player_get(players.datum_index);
-				if (player && game_time - player->unknown0c < game_time_globals->field_2_3)
-					ready = false;
-			}
+				s_game_time_globals *game_time_globals = g_510c54;
+				long game_time = game_time_globals->game_time;
+				s_data_datum_iterator players;
 
-			if (ready)
-			{
-				s_iterator actors;
-				s_actor_view *actor;
-
-				function_26bda0(clump_index, &actors);
-				while ((actor = clump_next_actor(&actors)) != NULL)
+				/* true unless a player's time stamp is too recent or an actor's prop node is in state 1 or 2 */
+				result = true;
+				players.data = g_4e8c24;
+				players.index = NONE;
+				players.datum_index = NONE;
+				while (data_datum_iterator_next(&players))
 				{
-					if (actor->prop_index != NONE)
-					{
-						s_clump_node *node = (s_clump_node *)(g_502418->data + (actor->prop_index & 0xffff) * sizeof(s_clump_node));
-						if (node->state < 1 || node->state > 2)
-							continue;
+					s_ai_player *player = ai_player_get(players.datum_index);
+					if (player && game_time - player->unknown0c < game_time_globals->field_2_3)
+						result = false;
+				}
 
-						return false;
+				if (result)
+				{
+					s_iterator actors;
+					s_actor_view *actor;
+
+					function_26bda0(clump_index, &actors);
+					while ((actor = clump_next_actor(&actors)) != NULL)
+					{
+						if (actor->prop_index != NONE)
+						{
+							s_clump_node *node = (s_clump_node *)(g_502418->data + (actor->prop_index & 0xffff) * sizeof(s_clump_node));
+							if (node->state < 1 || node->state > 2)
+								continue;
+
+							result = false;
+							break;
+						}
 					}
 				}
 			}
-
-			result = ready;
+			else
+				result = !function_26b900(prop_index, actor_index, clump_index);
 		}
-		else
-			result = !function_26b900(prop_index, actor_index, clump_index);
 	}
 
 	return result;

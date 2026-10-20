@@ -231,8 +231,9 @@ void function_a8ee0(long first, long second);
 void function_1c55e0(real const *bounds);
 
 // @retail 0x184060
-void function_184060(long index, byte bit_index, s_type_1e6529 *input_data, long surface_index)
+void function_184060(long index, byte bit, s_type_1e6529 *input_data, long surface_index)
 {
+	long bit_index = bit;
 	s_184061 const *input = (s_184061 const *)input_data;
 	if (!*g_4ed280 || input->definition_index == NONE || !((bool)(byte)function_184000(index, bit_index)))
 		return;
@@ -261,11 +262,9 @@ void function_184060(long index, byte bit_index, s_type_1e6529 *input_data, long
 		function_a87a0(index, bit_index, surface_index, (byte const *)input_data);
 		function_a8ee0(bit_index, index);
 
-		globals = (s_184067 *)g_4e0348;
-		long count = globals->bounds_count;
-		for (long i = 0; i < count; ++i)
+		for (long i = 0; i < ((s_184067 *)g_4e0348)->bounds_count; ++i)
 		{
-			s_184255 *bounds = &globals->bounds[i];
+			s_184255 *bounds = &((s_184067 *)g_4e0348)->bounds[i];
 			if (bounds->field_0 == index && bounds->field_2 == bit_index)
 			{
 				function_1c55e0((real const *)((byte *)bounds + 8));
