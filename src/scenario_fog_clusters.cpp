@@ -64,7 +64,7 @@ long scenario_fog_clusters_find(long cluster_index, point3f const *point, s_fog_
 	s_fog_structure_bsp *local_9e9b6e = (s_fog_structure_bsp *)g_4e0348;
 	dword visited[MAXIMUM_CLUSTERS / 32];
 	short indices[MAXIMUM_CLUSTERS];
-	long count;
+	long count = 1;
 	long current = 0;
 
 	memset(visited, 0, sizeof(visited));
@@ -73,7 +73,6 @@ long scenario_fog_clusters_find(long cluster_index, point3f const *point, s_fog_
 	clusters[0].cluster_index = cluster_index;
 	clusters[0].distance = 0.0f;
 	clusters[0].previous_index = NONE;
-	count = 1;
 	do
 	{
 		s_fog_cluster_distance *entry = &clusters[current];

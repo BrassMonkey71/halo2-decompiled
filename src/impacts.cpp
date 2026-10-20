@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "data_array.h"
 #include "unknown_0259d0.h"
+#include "vector_products.h"
 #include "unknown_1cec30.h"
 #include "impacts.h"
 #include "unknown_1428b0.h"
@@ -610,13 +611,6 @@ bool impact_matches_data(
 			return true;
 	}
 	return false;
-}
-
-PRIVATE inline void cross3f(vector3f const *a, vector3f const *b, vector3f *result)
-{
-	result->i = a->j * b->k - a->k * b->j;
-	result->j = a->k * b->i - a->i * b->k;
-	result->k = a->i * b->j - a->j * b->i;
 }
 
 PRIVATE __forceinline real function_227811(vector3f const *arg_0, vector3f const *arg_1)
