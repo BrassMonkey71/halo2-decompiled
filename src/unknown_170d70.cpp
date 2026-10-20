@@ -1178,7 +1178,7 @@ s_projected_polygon_173520 *function_173520(long polygon_index, s_polygon_cache_
 				point3f const *local_cb4759 = clipped;
 				long remaining = count;
 				if (remaining > 0)
-				do
+				for (; remaining != 0; --remaining)
 				{
 					point2f *point = result->points + index;
 					real inverse = -1.0f / local_cb4759->z;
@@ -1196,7 +1196,7 @@ s_projected_polygon_173520 *function_173520(long polygon_index, s_polygon_cache_
 					result->distance = result->distance > distance ? distance : result->distance;
 					index += step;
 					++local_cb4759;
-				} while (--remaining != 0);
+				}
 				if (result->state == 3)
 				{
 					if (inside)
