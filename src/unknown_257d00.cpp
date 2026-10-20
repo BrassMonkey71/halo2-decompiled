@@ -485,7 +485,6 @@ bool function_2580c0(short squad_index, short script_index, long *actor_indices,
 // @retail 0x258230
 bool function_258230(long cs_index, short mode, long actor_index, long new_actor_index)
 {
-	long local_0 = false;
 	s_cs_datum *new_cs;
 	s_cs_datum *cs = cs_get(cs_index);
 	long new_cs_index;
@@ -503,39 +502,36 @@ bool function_258230(long cs_index, short mode, long actor_index, long new_actor
 		new_cs_index = function_258040(new_actor_index, (short)cs->script_index, thread_index);
 		break;
 	default:
-		goto local_9;
+		return false;
 	}
 
-	if (new_cs_index == NONE)
+	if (new_cs_index != NONE)
 	{
-		goto local_9;
-	}
+		new_cs = cs_get(new_cs_index);
 
-	new_cs = cs_get(new_cs_index);
-
-	if (cs->joint_index != NONE)
-	{
-		s_joint_cs_datum *joint = joint_cs_get(cs->joint_index);
-
-		for (short i = 0; i < joint->participant_count; i++)
+		if (cs->joint_index != NONE)
 		{
-			if (joint->participants[i].actor_index == actor_index)
+			s_joint_cs_datum *joint = joint_cs_get(cs->joint_index);
+
+			for (short i = 0; i < joint->participant_count; i++)
 			{
-				joint->participants[i].actor_index = new_actor_index;
-				joint->participants[i].cs_index = new_cs_index;
-				break;
+				if (joint->participants[i].actor_index == actor_index)
+				{
+					joint->participants[i].actor_index = new_actor_index;
+					joint->participants[i].cs_index = new_cs_index;
+					break;
+				}
 			}
 		}
-	}
 
-	new_cs->state = 1;
-	new_cs->unknown44 = cs->unknown44;
-	cs->joint_index = NONE;
-	cs->thread_index = NONE;
-	cs->type = 0x17;
-	local_0 = true;
-local_9:
-	return (bool)local_0;
+		new_cs->state = 1;
+		new_cs->unknown44 = cs->unknown44;
+		cs->joint_index = NONE;
+		cs->thread_index = NONE;
+		cs->type = 0x17;
+		return true;
+	}
+	return false;
 }
 
 PRIVATE __forceinline s_joint_cs_datum *function_258341(long arg_0)
@@ -1862,8 +1858,7 @@ void function_25aba0(long actor_index)
 // @retail 0x258b60
 short function_258b60(long actor_index, cs_iterate_proc proc, long cs_index)
 {
-	long const *local_0 = &actor_index;
-	s_actor_view *actor = actor_get(*local_0);
+	s_actor_view *actor = actor_get(actor_index);
 	short result = 2;
 
 	if (actor->unknown007)
@@ -1884,6 +1879,7 @@ short function_258b60(long actor_index, cs_iterate_proc proc, long cs_index)
 				byte *data;
 				if (!object->flags134 && (data = (byte *)object + object->ai_offset) != NULL)
 				{
+					count++;
 					short outcome = proc(actor_index, iterator.index, (s_cs_state *)(data + 0x28), cs_index);
 					*(short *)(data + 0x2c) = outcome;
 					if (outcome == 2)
@@ -1894,7 +1890,6 @@ short function_258b60(long actor_index, cs_iterate_proc proc, long cs_index)
 					{
 						failed++;
 					}
-					count++;
 				}
 			}
 

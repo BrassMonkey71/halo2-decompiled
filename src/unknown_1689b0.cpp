@@ -758,10 +758,11 @@ bool __stdcall function_168f40(long flags, s_vehicle_ray const *ray,
 		long cluster_index = bsp->leaves[leaf].cluster_index;
 		if (flags & 2)
 		{
-			long reference = bsp->clusters[cluster_index].instanced_plane_reference;
-			if ((char)reference != NONE)
+			s_1697c0_cluster *cluster = &bsp->clusters[cluster_index];
+			if (cluster->instanced_plane_reference != NONE)
 			{
-				if ((char)reference < 0)
+				char reference = cluster->instanced_plane_reference;
+				if (reference & 0x80)
 				{
 					s_1697c0_instanced_plane *entry = &bsp->instanced_planes[reference & 0x7f];
 					if (entry->material_type != NONE)
@@ -783,7 +784,8 @@ bool __stdcall function_168f40(long flags, s_vehicle_ray const *ray,
 			s_1697c0_cluster *cluster = &bsp->clusters[cluster_index];
 			for (long i = 0; i < cluster->instance_count; ++i)
 			{
-				if (collision_point_inside_instance(cluster->instances[i], point, flags))
+				long instance_index = cluster->instances[i];
+				if (collision_point_inside_instance(instance_index, point, flags))
 				{
 					result = true;
 					break;

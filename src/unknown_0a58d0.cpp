@@ -1071,7 +1071,8 @@ PRIVATE inline void z_orientation_matrix(vector3f const *forward, vector3f const
 void function_a9b40(long index, s_z_copy_state *state)
 {
  byte *object = (byte *)((s_object_header *)g_4e0300->data)[index & 0xffff].object;
- struct { real a, b; } local_saved_angle_current_angle_record = { 0.0f, 0.0f };
+ real saved_angle = 0.0f;
+ real current_angle = 0.0f;
  matrix3x3 saved_matrix, current_matrix;
  quaternionf saved_rotation, current_rotation, blended;
  vector3f axis;
@@ -1083,13 +1084,13 @@ void function_a9b40(long index, s_z_copy_state *state)
  z_orientation_matrix(current_forward, current_up, &current_matrix);
  function_141f60(&saved_matrix, &saved_rotation);
  function_141f60(&current_matrix, &current_rotation);
- function_11d790(&saved_rotation, &axis, &local_saved_angle_current_angle_record.a);
- function_11d790(&current_rotation, &axis, &local_saved_angle_current_angle_record.b);
- if (local_saved_angle_current_angle_record.b - local_saved_angle_current_angle_record.a > 0.0001f)
+ function_11d790(&saved_rotation, &axis, &saved_angle);
+ function_11d790(&current_rotation, &axis, &current_angle);
+ if (current_angle - saved_angle > 0.0001f)
  {
   real weight = 0.35f;
-  real dot = current_rotation.w * saved_rotation.w + current_rotation.k * saved_rotation.k +
-   current_rotation.j * saved_rotation.j + current_rotation.i * saved_rotation.i;
+  real dot = saved_rotation.i * current_rotation.i + saved_rotation.j * current_rotation.j +
+   saved_rotation.k * current_rotation.k + saved_rotation.w * current_rotation.w;
   if (dot < 0.0f) weight = -0.35f;
   blended.i = current_rotation.i * weight + saved_rotation.i * 0.65f;
   blended.j = current_rotation.j * weight + saved_rotation.j * 0.65f;

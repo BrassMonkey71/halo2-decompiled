@@ -8,36 +8,13 @@
 #include "globals.h"
 #include "bitstream.h"
 #include "unknown_1946f0.h"
+#include "normalize3d.h"
 #include <math.h>
 #include <string.h>
 
 // @flags /O2 /Gr /arch:SSE
 
 s_direction_face g_475480[32];
-
-/* the vector helpers retail expands inline here */
-static __inline real vector3f_dot(vector3f const *a, vector3f const *b)
-{
-	return a->i * b->i + a->j * b->j + a->k * b->k;
-}
-
-static __inline vector3f *vector3f_scale(vector3f const *v, real s, vector3f *result)
-{
-	result->i = s * v->i;
-	result->j = s * v->j;
-	result->k = s * v->k;
-	return result;
-}
-
-static __inline real normalize3d(vector3f *v)
-{
-	real m = (real)sqrt(vector3f_dot(v, v));
-	if (!(fabs(m) < k_real_epsilon))
-		vector3f_scale(v, 1.f / m, v);
-	else
-		m = 0.f;
-	return m;
-}
 
 /* the decode path's normalization: the length of the stored components,
    then each component scaled by its inverse */

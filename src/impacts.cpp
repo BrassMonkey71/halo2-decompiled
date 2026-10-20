@@ -2092,19 +2092,10 @@ void function_226ce0(void)
 					s_impact_data data;
 					long impact_index;
 
-					data.unknown00 = false;
-					data.component_a = g_5021bc.iterator.datum_index;
-					data.unknown08 = constraint->rigid_body_index_a;
-					data.material_a.m_index = constraint->material_a;
-					data.component_b = constraint->component_b;
-					data.unknown14 = constraint->rigid_body_index_b;
-					data.material_b.m_index = constraint->material_b;
-					data.position = constraint->position;
-					data.normal = constraint->normal;
-					data.type = NONE;
-					data.unknown38 = false;
-					data.shape.type = NONE;
-					data.shape.index = NONE;
+					impact_data_set(&data, false, g_5021bc.iterator.datum_index, constraint->rigid_body_index_a,
+						c_type_47f957(constraint->material_a), constraint->component_b,
+						constraint->rigid_body_index_b, c_type_47f957(constraint->material_b),
+						&constraint->position, &constraint->normal, NONE, NULL);
 					impact_index = havok_component_impact_find(component, (s_havok_impact_contact const *)&data, true);
 					if (impact_index == NONE)
 					{

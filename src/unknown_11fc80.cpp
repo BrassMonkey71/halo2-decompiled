@@ -178,6 +178,8 @@ void function_120220(
 		lift.j = e.j * height;
 		lift.k = e.k * height;
 
+		vector3f *root_left = &root->left;
+		vector3f *mid_left = &mid->left;
 		vector3f *root_forward = &root->forward;
 		vector3f *root_up = &root->up;
 
@@ -186,10 +188,10 @@ void function_120220(
 		root_forward->k = along * u.k + lift.k;
 		function_30bf0(root_forward);
 
-		function_2922b1(root_forward, &root->left, root_up);
+		function_2922b1(root_forward, root_left, root_up);
 		function_30bf0(root_up);
 
-		function_2922b1(root_up, root_forward, &root->left);
+		function_2922b1(root_up, root_forward, root_left);
 
 		point3f new_mid;
 		new_mid.x = mid_root * root_forward->i + root->position.x;
@@ -204,10 +206,10 @@ void function_120220(
 		mid_forward->k = remaining * u.k - lift.k;
 		function_30bf0(mid_forward);
 
-		function_2922b1(mid_forward, &mid->left, mid_up);
+		function_2922b1(mid_forward, mid_left, mid_up);
 		function_30bf0(mid_up);
 
-		function_2922b1(mid_up, mid_forward, &mid->left);
+		function_2922b1(mid_up, mid_forward, mid_left);
 
 		mid->position = new_mid;
 		*end = *target;

@@ -105,17 +105,18 @@ void function_402b0(long cache_index, long mode)
     g_4c1a48[2].first = 0;
     g_4c1a48[2].flags = 0;
     g_4c1a80 = 0;
-    if (g_4c6b00[cache_index].count > 0)
+    s_render_index_cache_block const *block = &g_4c62f8.records.blocks[cache_index + 1];
+    if (block->count > 0)
     {
-        g_4c0b78.current = g_4c0b78.previous;
-        long first = g_4c0b78.current;
-        s_44940_entry const *entries = g_4c62f8.records.blocks[cache_index + 1].entries;
-        memcpy(g_4ba138 + first, entries, g_4c6b00[cache_index].count * sizeof(s_44940_entry));
-        g_4c0b78.current += g_4c6b00[cache_index].count;
+        long first = g_4c0b78.previous;
+        g_4c0b78.current = first;
+        s_44940_entry const *entries = block->entries;
+        memcpy(g_4ba138 + first, entries, block->count * sizeof(s_44940_entry));
+        g_4c0b78.current += block->count;
         dword selection = !mode ? ~0UL : mode == 2 ? 0x10 : 0x20;
         long n = 0;
         long index = first;
-        for (; n < g_4c6b00[cache_index].count; ++n)
+        while (n < block->count)
         {
             s_44940_entry const *entry = entries;
             if (entry->unknown00 & selection & 0x1fffff &&
@@ -145,6 +146,7 @@ void function_402b0(long cache_index, long mode)
                     }
                 }
             }
+            ++n;
             ++index;
             ++entries;
         }
