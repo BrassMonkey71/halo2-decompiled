@@ -4,6 +4,6 @@
 #include "unknown_0259d0.h"
 #include "unknown_146a20.h"
 
-// @stub 0x22c3e0
-c_havok_page_pool_allocator::c_havok_page_pool_allocator() { }
+// @stub 0x2d6fc0
+void c_havok_abstract_allocator::function_2d6fc0(void *buffer, long size) { }
 
