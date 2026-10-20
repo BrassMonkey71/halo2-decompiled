@@ -1341,7 +1341,7 @@ void function_79850(s_network_observer *observer, long index)
 	long local_0 = intervals + 1;
 	long local_1 = delay * budget / (intervals * 8000);
 	long limited_burst = local_0 * local_1;
-	long local_2 = *(volatile long *)((byte *)observer->configuration + 0xe0);
+	long local_2 = *(long *)((byte *)observer->configuration + 0xe0);
 	limited_burst = local_2 > limited_burst ? local_2 : limited_burst;
 	if (burst > limited_burst) burst = limited_burst;
 	function_79600(observer, index, budget, burst, rate);
