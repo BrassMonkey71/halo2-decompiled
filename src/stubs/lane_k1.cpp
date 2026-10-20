@@ -20,11 +20,6 @@ void s_1c3a40::function_2e5a90(handlers_2e5d50 const *handlers, long first_type,
 
 // handlers of the pair table (0x2e5d50) not decompiled yet
 
-// @stub 0x2ea640
-void __cdecl function_2ea640(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
-
 // @stub 0x2ead90
 void __cdecl function_2ead90(void const *a, void const *b, void const *input, void *collector)
 {
@@ -76,11 +71,6 @@ void __cdecl function_2ee8b0(void const *a, void const *b, void const *input, vo
 
 // @stub 0x2f3d00
 void __cdecl function_2f3d00(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f40e0
-void __cdecl function_2f40e0(void const *a, void const *b, void const *input, void *collector)
 {
 }
 
@@ -324,10 +314,6 @@ void class_2f4f00::function_2f4f00(void const *a, void const *b, void const *inp
 {
 }
 
-// @stub 0x2f7f10
-void class_2f7f10::function_2f7f10(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
