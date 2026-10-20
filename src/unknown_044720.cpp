@@ -46,16 +46,20 @@ PRIVATE __forceinline byte *visible_entry_geometry(s_44940_entry *entry)
 		return *(byte **)(sections + ((entry->flags >> 9) & 0x1ff) * 0x5c + 0x34);
 	}
 	byte *structure = (byte *)g_4e0348;
-	byte *section;
-	if (!((entry->unknown00 >> 12) & 1))
-		section = *(byte **)(structure + 0xa0) + ((entry->flags >> 9) & 0x1ff) * 0xb0;
+	byte *data;
+	if (!((byte)(entry->unknown00 >> 12) & 1))
+	{
+		byte *section = *(byte **)(structure + 0xa0) + ((entry->flags >> 9) & 0x1ff) * 0xb0;
+		data = *(byte **)(section + 0x50);
+	}
 	else
 	{
 		byte *instances = *(byte **)(structure + 0x144);
 		short index = *(short *)(instances + ((entry->flags >> 18) & 0x7ff) * 0x58 + 0x34);
-		section = *(byte **)(structure + 0x13c) + index * 0xc8;
+		byte *section = *(byte **)(structure + 0x13c) + index * 0xc8;
+		data = *(byte **)(section + 0x50);
 	}
-	return *(byte **)(section + 0x50);
+	return data;
 }
 
 struct s_render_part_context;
@@ -78,7 +82,7 @@ template<long N> struct s_visibility_query_storage
 
 PRIVATE __forceinline void release_visibility_list(s_visibility_query_list *list)
 {
-    if (list->capacity >= 0)
+    if (!(list->capacity & 0x80000000))
         g_480118->allocate((long)list->indices, (list->capacity & 0x7fffffff) * 4, 0x12);
 }
 
@@ -195,7 +199,6 @@ void __stdcall function_44c90(long group, dword selection_mask, long level,
 void function_45560(short entry_index, point3f const *center, real radius)
 {
     __declspec(align(16)) s_visibility_sphere_query query;
-    long selected_entry = entry_index;
     s_44940_entry *entry = &g_4ba138[entry_index];
     byte *geometry = visible_entry_geometry(entry);
     query.center = *center;
@@ -210,10 +213,12 @@ void function_45560(short entry_index, point3f const *center, real radius)
             second.list.indices = second.indices;
             second.list.count = 0;
             second.list.capacity = (long)0x80000200;
-            query.center = *center;
+            query.center.x = center->x;
+            query.center.y = center->y;
+            query.center.z = center->z;
             query.radius = radius;
             function_2ddbd0(*(void **)(geometry + 0x2c), &query, &first.list, &second.list);
-            function_458d0((short)selected_entry, true, (s_geometry_visibility_list *)&second.list,
+            function_458d0(entry_index, true, (s_geometry_visibility_list *)&second.list,
                 (s_geometry_visibility_list *)&first.list);
             release_visibility_list(&first.list);
             release_visibility_list(&second.list);

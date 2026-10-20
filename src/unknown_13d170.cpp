@@ -203,11 +203,12 @@ long __stdcall function_13d370(s_physical_object *physical, long size, long type
 				tail = next_tail;
 			}
 			long segment_pages;
-			dword segment_time = 0;
+			dword segment_time;
 			bool busy = false;
 			if (current == NONE)
 			{
 				segment_pages = physical->page_count - offset;
+				segment_time = 0;
 				offset = physical->page_count;
 			}
 			else
@@ -233,6 +234,7 @@ long __stdcall function_13d370(s_physical_object *physical, long size, long type
 				else
 				{
 					segment_pages = block->offset - offset;
+					segment_time = 0;
 					offset = block->offset;
 				}
 			}
@@ -265,6 +267,8 @@ long __stdcall function_13d370(s_physical_object *physical, long size, long type
 								{
 									dword age = physical->time - candidate->time;
 									dword best_age = physical->time - best.time;
+									age = age > 0 ? age : 0;
+									best_age = best_age > 0 ? best_age : 0;
 									better = (long)(best.pages * age) > (long)(candidate->pages * best_age);
 								}
 								break;

@@ -436,12 +436,12 @@ point3f *function_b9dd0(long object_index, point3f *result);
 // @retail 0x1bbf40
 short __stdcall function_1bbf40(long actor_index, s_slot *slot)
 {
-    s_actor_view *actor = actor_get(actor_index);
     bool allow_exit = false;
+    s_actor_view *actor = actor_get(actor_index);
     if (actor->unknown858 == NONE && actor->unknown26c != NONE && !actor->unknown269)
     {
         byte *tag = g_4e3b44[object_get(actor->unknown26c)->tag_index & 0xffff].bytes;
-        bool special = *(short *)(tag + 0x1f0) == 6 && actor->unknown268;
+        long special = *(short *)(tag + 0x1f0) == 6 && actor->unknown268;
         if (!special)
         {
             if (function_1b8d40(actor->unknown26c) != NONE)
