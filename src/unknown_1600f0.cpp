@@ -1497,15 +1497,15 @@ score_background_161420(data + 0x270, 0x60);
         connection_widget_draw((s_text_widget_c const *)(row + 0x184));
         if (row[0x1c4]) function_15ff80((s_engine_border_state const *)row);
     }
-    s_33a0b_default const *shadow_color = g_4686d4;
-    color4f const *text_color = g_4686cc;
+    s_33a0b_default const *backdrop_tint = g_4686d4;
+    color4f const *label_tint = g_4686cc;
     font_get(g_4e28f4[6]);
     g_4e73a0.font = 6;
-    function_13ec70(text_color);
-    if (shadow_color)
+    function_13ec70(label_tint);
+    if (backdrop_tint)
     {
         g_4e73a0.shadow = true;
-        g_4e73a0.field_24 = *(color4f const *)shadow_color;
+        g_4e73a0.field_24 = *(color4f const *)backdrop_tint;
     }
     else g_4e73a0.shadow = false;
     g_4e73a0.style = NONE;
