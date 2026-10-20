@@ -1387,7 +1387,7 @@ hkBool c_contact_rule_filter::accepts(void const *query, s_contact_body_view con
    long metadata = shape->metadata;
    if (metadata && contact_metadata_pin(shape->metadata, 1, 16) != metadata)
    {
-    byte flag = *(byte *)(metadata + 0x1f) & 1;
+    dword flag = *(byte *)(metadata + 0x1f) & 1;
     volatile byte saved_flag = flag;
     if (flag)
     {
