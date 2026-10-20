@@ -581,6 +581,11 @@ void __stdcall function_2b9060(s_particle_properties_2ba const *definition, void
     dword remaining = definition->constant_mask;
     long next;
     real coefficients[2];
+    union
+    {
+        s_collision_result_1697c0 value;
+        byte storage[0x5c];
+    } collision;
     s_particle_cache_2ba cache;
     cache.valid = 0;
     cache.current_system = 0;
@@ -643,22 +648,17 @@ void __stdcall function_2b9060(s_particle_properties_2ba const *definition, void
                 continue;
             }
             vector3f displacement;
+            vector3f sweep;
             displacement.i = particle->velocity.i * scale;
             point3f start = particle->position;
-            displacement.j = particle->velocity.j * scale;
-            displacement.k = particle->velocity.k * scale;
-            vector3f sweep;
             sweep.i = displacement.i * 12.0f;
+            displacement.j = particle->velocity.j * scale;
             sweep.j = displacement.j * 12.0f;
+            displacement.k = particle->velocity.k * scale;
             sweep.k = displacement.k * 12.0f;
             start.x -= displacement.i;
             start.y -= displacement.j;
             start.z -= displacement.k;
-            union
-            {
-                s_collision_result_1697c0 value;
-                byte storage[0x5c];
-            } collision;
             collision.value.unknown24 = NONE;
             if (function_1697c0(collision_flags, &start, &sweep, NONE, NONE, &collision.value))
             {

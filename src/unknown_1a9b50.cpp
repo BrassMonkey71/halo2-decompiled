@@ -574,9 +574,10 @@ static __forceinline long real_to_long(real value);
 bool __stdcall function_1aab50(long arg_0, s_slot *arg_1)
 {
 	s_1aa0d0 *local_0 = (s_1aa0d0 *)arg_1;
-	bool local_2 = false;
+	bool local_2;
 	if (!local_0->field_13 && !local_0->field_14 && !local_0->field_2d)
 	{
+		local_2 = true;
 		s_actor_view *local_1 = actor_get(arg_0);
 		s_1aab50 *local_3 = (s_1aab50 *)function_1e4f90(arg_0);
 		s_prop_node_view *local_4 = NULL;
@@ -742,8 +743,9 @@ bool __stdcall function_1aab50(long arg_0, s_slot *arg_1)
 			function_1f4280(arg_0);
 		if (!local_0->field_17 && !local_0->field_18 && !local_0->field_12)
 			function_1a9e00(arg_0, local_0->field_34, local_0->field_2d);
-		local_2 = true;
 	}
+	else
+		local_2 = false;
 	return local_2;
 }
 
