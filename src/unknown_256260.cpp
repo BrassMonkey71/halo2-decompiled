@@ -438,7 +438,7 @@ short __stdcall function_256810(long actor_index, s_slot *slot)
 	if (g_4f55d0->active && ((s_ai_globals_256810_view *)g_4f55d0)->unknown36a <= 0xd)
 	{
 		long best_prop_ref_index = NONE;
-		short front;
+		bool front;
 		s_actor_view *actor = actor_get(actor_index);
 		real best_distance = 3.4028235e38f;
 		s_prop_ref_iterator_256810 prop_iterator;
