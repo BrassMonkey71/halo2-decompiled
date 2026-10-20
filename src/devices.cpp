@@ -1198,8 +1198,8 @@ bool function_107cc0(long device_index, s_device_motion *motion, c_animation_cha
 
 bool function_107cc0(long device_index, s_device_motion *motion, c_animation_channel *channel,
 	s_animation_state *state, real position, real *out_position);
-bool function_11eed0(real *velocity, real *position, real dt, bool wrap, real target,
-	real speed, real acceleration, real lower, real upper);
+bool function_11eed0(real *position, real *velocity, real target, real time_step, real speed,
+	real acceleration, bool wrap, real lower, real upper);
 void __stdcall function_bd020(long object_index);
 void machine_keyframe_rigid_bodies(long object_index, bool value);
 struct s_index_pair
@@ -1277,9 +1277,9 @@ bool __stdcall function_106790(long volatile device_index)
 				real previous = device->power;
 				if (fabs(local_c01284_2) > speed)
 					device->power_velocity = increasing ? speed : 0.0f - speed;
-				bool reached = function_11eed0(&device->power_velocity, &device->power,
-					g_510c54->rate, (*(byte const *)(definition + 0xbc) & 1) != 0,
-					group->value, speed, acceleration, 0.0f, 1.0f);
+				bool reached = function_11eed0(&device->power, &device->power_velocity,
+					group->value, g_510c54->rate, speed, acceleration,
+					(*(byte const *)(definition + 0xbc) & 1) != 0, 0.0f, 1.0f);
 				if (reached)
 					function_107980(device_index, *(long const *)(definition + (increasing ? 0xf0 : 0xf8)));
 				else if (device->power_velocity != 0.0f && device->power_velocity * local_c01284_2 <= 0.0f)
@@ -1319,8 +1319,8 @@ bool __stdcall function_106790(long volatile device_index)
 				device->channels[1].set_frame_ratio(device->position);
 			byte const *definition = saved_definition;
 			real previous = device->position;
-			function_11eed0(&device->position_velocity, &device->position, g_510c54->rate, false,
-				group->value, *(real const *)(definition + 0xc0), *(real const *)(definition + 0xc4), 0.0f, 1.0f);
+			function_11eed0(&device->position, &device->position_velocity, group->value, g_510c54->rate,
+				*(real const *)(definition + 0xc0), *(real const *)(definition + 0xc4), false, 0.0f, 1.0f);
 			if (previous != device->position)
 			{
 				function_107520(device_index);
