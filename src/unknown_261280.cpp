@@ -527,7 +527,7 @@ struct s_candidate_range_list
 bool __stdcall function_261ec0(long actor_index, long squad_index, s_261d20_entry *entries,
     short *count, long maximum_count, s_prop_search *search)
 {
-    bool volatile result = false;
+    bool result = false;
     long const *actor_reference = &actor_index;
     long const *squad_reference = &squad_index;
     s_261d20_entry *const *entries_reference = &entries;
@@ -551,37 +551,45 @@ bool __stdcall function_261ec0(long actor_index, long squad_index, s_261d20_entr
         byte *definition = *(byte **)((byte *)g_4e0350 + 0x244) + *(short *)(squad + 0x2a) * 0x7c;
         if ((*(byte *)(definition + 0x24) & 0x20) && *(short *)(definition + 0x4e) != NONE)
         {
-            bool recursive_result = function_261ec0(*actor_reference, *(short *)(definition + 0x4e),
+            result = function_261ec0(*actor_reference, *(short *)(definition + 0x4e),
                 *entries_reference, *count_reference, *maximum_reference, *search_reference);
-            result = recursive_result;
-            return recursive_result;
         }
-        s_actor_view *actor = actor_get(*actor_reference);
-        s_candidate_range_list *list = *(volatile byte *)(squad + 0x60) ? (s_candidate_range_list *)(definition + 0x5c) : (s_candidate_range_list *)(definition + 0x54);
-        result = true;
-        short flags = 4;
-        flags |= *((bool *)actor + 0x3f2) ? 2 : 0;
-        if (!*search_reference || !*((bool *)*search_reference + 0x69c)) flags |= 1;
-        if (!(flags & 1) && (flags & 4))
+        else
         {
-            short index;
-            for (index = 0; index < list->count; ++index)
+            s_actor_view *actor = actor_get(*actor_reference);
+            s_candidate_range_list *list = *(byte *)(squad + 0x60) ? (s_candidate_range_list *)(definition + 0x5c) :
+                (s_candidate_range_list *)(definition + 0x54);
+            result = true;
+            short flags = 4;
+            if (*((bool *)actor + 0x3f2)) flags |= 2;
+            if (!*search_reference || !*((bool *)*search_reference + 0x69c)) flags |= 1;
+            if ((flags & 4) && !(flags & 1))
             {
-                s_candidate_range_reference *reference = &(*(volatile byte *)(squad + 0x60) ? (s_candidate_range_list *)(definition + 0x5c) :
-                    (s_candidate_range_list *)(definition + 0x54))->entries[index];
-                if (reference->type == 2) break;
+                bool found = false;
+                for (short index = 0; index < list->count; ++index)
+                {
+                    s_candidate_range_reference *reference = !*(byte *)(squad + 0x60) ?
+                        &((s_candidate_range_list *)(definition + 0x54))->entries[index] :
+                        &((s_candidate_range_list *)(definition + 0x5c))->entries[index];
+                    if (reference->type == 2)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) flags |= 1;
             }
-            if (index >= list->count) flags |= 1;
-        }
-        if (*search_reference) *(short *)((byte *)*search_reference + 0x69e) = flags;
-        for (short index = 0; index < list->count; ++index)
-        {
-            s_candidate_range_reference *reference = &(*(volatile byte *)(squad + 0x60) ? (s_candidate_range_list *)(definition + 0x5c) :
-                (s_candidate_range_list *)(definition + 0x54))->entries[index];
-            word type = reference->type;
-            if (flags & (1 << type))
-                function_262180(*actor_reference, reference->block_index, reference->range_index,
-                    *entries_reference, *count_reference, *maximum_reference, *search_reference, (short)type);
+            if (*search_reference) *(short *)((byte *)*search_reference + 0x69e) = flags;
+            for (short index = 0; index < list->count; ++index)
+            {
+                s_candidate_range_reference *reference = !*(byte *)(squad + 0x60) ?
+                    &((s_candidate_range_list *)(definition + 0x54))->entries[index] :
+                    &((s_candidate_range_list *)(definition + 0x5c))->entries[index];
+                word type = reference->type;
+                if (flags & (1 << type))
+                    function_262180(*actor_reference, reference->block_index, reference->range_index,
+                        *entries_reference, *count_reference, *maximum_reference, *search_reference, (short)type);
+            }
         }
     }
     else

@@ -2086,11 +2086,11 @@ struct s_34a90_parameters
     long count;
 };
 
-PRIVATE __forceinline void configure_34a90_state(long target, short blend,
+PRIVATE __forceinline void configure_34a90_state(long target, long blend,
     dword color_write, bool use_depth, bool depth_write, real depth)
 {
     if (target != NONE) function_14bc0((short)target, 0, use_depth);
-    if (blend != NONE) function_142f0(blend);
+    if (blend != NONE) function_142f0((short)blend);
     g_4b8308 = color_write;
     D3DDevice_SetRenderState(D3DRS_COLORWRITEENABLE, color_write);
     g_4b8438 = use_depth ? 2 : 0;
@@ -2115,49 +2115,58 @@ PRIVATE __forceinline void configure_34a90_state(long target, short blend,
 }
 
 // @retail 0x34a90
-void __stdcall function_34a90(long target, short blend, dword color_write,
+void __stdcall function_34a90(long target, long blend, dword color_write,
     bool use_depth, bool depth_write, real depth, real distortion, real scale,
     long count, bool full_surface, bool viewport_textures)
 {
-    struct { long width; long height; } dimensions = { 0, 0 };
-    long selected_target = target;
-    if (selected_target == NONE) selected_target = g_4858b8;
-    function_01dd60(selected_target, &dimensions.width, &dimensions.height);
+    long width = 0;
+    long height = 0;
+    if (target != NONE)
+        function_01dd60(target, &width, &height);
+    else
+        function_01dd60(g_4858b8, &width, &height);
     real bounds[4];
-    if (!(full_surface)) {
-        bounds[0] = (real)g_4b9dd2;
-        bounds[1] = (real)g_4b9dd6;
-        bounds[2] = (real)g_4b9dd0;
-        bounds[3] = (real)g_4b9dd4;
-    } else {
+    if (full_surface)
+    {
         bounds[0] = 0.0f;
-        bounds[1] = (real)dimensions.width;
         bounds[2] = 0.0f;
-        bounds[3] = (real)dimensions.height;
+        bounds[1] = (real)width;
+        bounds[3] = (real)height;
     }
-    real inverse_x = 1.0f / dimensions.width;
-    real inverse_y = 1.0f / dimensions.height;
+    else
+    {
+        bounds[0] = (real)g_4b9dd2;
+        bounds[2] = (real)g_4b9dd0;
+        bounds[1] = (real)g_4b9dd6;
+        bounds[3] = (real)g_4b9dd4;
+    }
+    real inverse_x = 1.0f / width;
+    real inverse_y = 1.0f / height;
     s_34a90_parameters parameters;
     parameters.depth = depth >= 0.0f ? depth : 0.0f - depth;
     parameters.distortion = distortion;
     for (long i = 0; i < count; ++i)
     {
+        long texture_width, texture_height;
         if (viewport_textures)
         {
+            texture_width = g_4b9dd6 - g_4b9dd2;
+            texture_height = g_4b9dd4 - g_4b9dd0;
             parameters.offsets[i].x = (real)g_4b9dd2;
             parameters.offsets[i].y = (real)g_4b9dd0;
-            parameters.scales[i].x = (g_4b9dd6 - g_4b9dd2) * inverse_x;
-            parameters.scales[i].y = (g_4b9dd4 - g_4b9dd0) * inverse_y;
         }
         else
         {
             parameters.offsets[i].x = 0.0f;
             parameters.offsets[i].y = 0.0f;
-            parameters.scales[i].x = g_485af4[i] * inverse_x;
-            parameters.scales[i].y = g_485b04[i] * inverse_y;
+            texture_width = g_485af4[i];
+            texture_height = g_485b04[i];
         }
+        parameters.scales[i].x = texture_width * inverse_x;
+        parameters.scales[i].y = texture_height * inverse_y;
         parameters.weights[i] = 0.0f;
     }
+
     parameters.low = 0.0f;
     parameters.high = 0.0f;
     parameters.scale = scale;
@@ -2167,64 +2176,45 @@ void __stdcall function_34a90(long target, short blend, dword color_write,
 }
 
 // @retail 0x34d90
-void function_34d90(long target, real const *weights, short blend, dword color_write,
+void function_34d90(long target, real const *weights, long blend, dword color_write,
     bool use_depth, bool depth_write, real depth, real low, real high,
     bool full_surface, t_34770_vertex vertex)
 {
     long width = 0, height = 0;
-    function_01dd60(target != NONE ? target : g_4858b8, &width, &height);
-    real bounds[4];
-    if (!(full_surface))
-    {
-        bounds[0] = (real)g_4b9dd2;
-        bounds[2] = (real)g_4b9dd0;
-        bounds[1] = (real)g_4b9dd6;
-        bounds[3] = (real)g_4b9dd4;
-    }
+    if (target != NONE)
+        function_01dd60(target, &width, &height);
     else
+        function_01dd60(g_4858b8, &width, &height);
+    real bounds[4];
+    if (full_surface)
     {
         bounds[0] = 0.0f;
         bounds[2] = 0.0f;
         bounds[1] = (real)width;
         bounds[3] = (real)height;
     }
+    else
+    {
+        bounds[0] = (real)g_4b9dd2;
+        bounds[2] = (real)g_4b9dd0;
+        bounds[1] = (real)g_4b9dd6;
+        bounds[3] = (real)g_4b9dd4;
+    }
+
     real inverse_x = 1.0f / width;
     real inverse_y = 1.0f / height;
     s_34a90_parameters parameters;
     parameters.depth = depth >= 0.0f ? depth : 0.0f - depth;
     parameters.distortion = 0.0f;
+    for (long i = 0; i < 4; ++i)
     {
-        long i = 0;
-        parameters.scales[i].x = g_485af4[i] * inverse_x;
-        parameters.scales[i].y = g_485b04[i] * inverse_y;
         parameters.offsets[i].x = 0.0f;
         parameters.offsets[i].y = 0.0f;
-        parameters.weights[i] = weights[i];
-    }
-    {
-        long i = 1;
         parameters.scales[i].x = g_485af4[i] * inverse_x;
         parameters.scales[i].y = g_485b04[i] * inverse_y;
-        parameters.offsets[i].x = 0.0f;
-        parameters.offsets[i].y = 0.0f;
         parameters.weights[i] = weights[i];
     }
-    {
-        long i = 2;
-        parameters.scales[i].x = g_485af4[i] * inverse_x;
-        parameters.scales[i].y = g_485b04[i] * inverse_y;
-        parameters.offsets[i].x = 0.0f;
-        parameters.offsets[i].y = 0.0f;
-        parameters.weights[i] = weights[i];
-    }
-    {
-        long i = 3;
-        parameters.scales[i].x = g_485af4[i] * inverse_x;
-        parameters.scales[i].y = g_485b04[i] * inverse_y;
-        parameters.offsets[i].x = 0.0f;
-        parameters.offsets[i].y = 0.0f;
-        parameters.weights[i] = weights[i];
-    }
+
     parameters.low = low;
     parameters.high = high;
     parameters.scale = 1.0f;
