@@ -1064,11 +1064,11 @@ bool function_1baae0(long actor_index, long object_index, short seat_index, bool
 			if (normalize2d((point2f *)&direction) == 0.0f)
 				direction = actor->unknown290;
 			real distance;
-			double dx = (double)position.x - actor->position.x;
-			double dy = (double)position.y - actor->position.y;
+			real dx = position.x - actor->position.x;
+			real dy = position.y - actor->position.y;
 			if (vertical)
 			{
-				double dz = (double)position.z - actor->position.z;
+				real dz = position.z - actor->position.z;
 				distance = (real)sqrt(dx * dx + dy * dy + dz * dz);
 			}
 			else
@@ -1076,8 +1076,8 @@ bool function_1baae0(long actor_index, long object_index, short seat_index, bool
 				real mx = marker.x - actor->position.x;
 				real my = marker.y - actor->position.y;
 				point3f const *nearest = sqrt(dx * dx + dy * dy) > sqrt(mx * mx + my * my) ? &marker : &position;
-				double nx = (double)nearest->x - actor->position.x;
-				double ny = (double)nearest->y - actor->position.y;
+				real nx = nearest->x - actor->position.x;
+				real ny = nearest->y - actor->position.y;
 				distance = (real)sqrt(nx * nx + ny * ny);
 			}
 			s_slot_object_view *object = object_get(object_index);
