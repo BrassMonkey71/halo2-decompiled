@@ -7,7 +7,7 @@ extern s_record_pool *g_509434;
 extern dword g_4ba034;
 extern bool g_467464;
 long function_d1850(long object_index, bool value, s_effect_color_query *query);
-void function_d4080(s_effect_color_query const *query, long type, s_lighting_record *record, bool flag);
+void function_d4080(long type, s_effect_color_query const *query, s_lighting_record *record, long flag);
 void function_ba1d0(long object_index, vector3f *linear_velocity, vector3f *angular_velocity);
 real magnitude3d(vector3f const *vector);
 real distance3d(point3f const *first, point3f const *second);
@@ -87,8 +87,8 @@ void function_3dfe0(long cache_index, long object_index, real priority)
         byte *parent = ((s_3dd10_object_header *)g_4e0300->data)[cache->parent & 0xffff].object;
         byte *definition = g_4e3b44[*(long *)parent & 0xffff].bytes;
         type = *(short *)definition;
-        special = (bool)(((*(dword *)(parent + 4)) >> 13) & 1) || (bool)((definition[2] >> 1) & 1);
+        special = (bool)(((*(dword *)(parent + 4)) >> 13) & 1) || (bool)((*(word *)(definition + 2) >> 1) & 1);
     }
-    function_d4080(&(*current), type, &cache->lighting, special);
+    function_d4080(type, &(*current), &cache->lighting, special);
     cache->initialized = true;
 }

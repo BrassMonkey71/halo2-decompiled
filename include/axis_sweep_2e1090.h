@@ -88,6 +88,7 @@ public:
 	long cells_used;
 	long cell_shift;
 	cell_2e1090 *cells;
+	float field_7c;
 
 	void function_2e0020(element_2e1090 const *element, bounds_2e0020 *bounds);
 	void function_2e1020(bounds_array_2e1020 *out);

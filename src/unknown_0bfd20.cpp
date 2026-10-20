@@ -65,7 +65,7 @@ void function_0bfd20(long object_index)
 }
 
 // @retail 0xbfe20
-void function_0bfe20(dword *flags, long bit, bool value)
+inline void function_0bfe20(dword *flags, long bit, bool value)
 {
 	if (value)
 		*flags |= 1 << bit;
