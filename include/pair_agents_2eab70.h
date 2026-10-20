@@ -7,6 +7,8 @@
 // of the shape that wraps it.
 #include <xmmintrin.h>
 
+class collector_2ecc80;
+
 class pair_agent_2ea410;
 
 // a part's key, and the agent that runs queries against that part
@@ -80,6 +82,9 @@ public:
 class class_2ecf20
 {
 public:
+	char field_0[0xc];
+	collector_2ecc80 *collector;
+
 	void function_2ecf20(void const *a, void const *b, void const *input, void *collector);
 	void function_2ed3a0(void const *a, void const *b, void const *input, void *collector);
 };
@@ -122,6 +127,9 @@ public:
 class class_2ed030
 {
 public:
+	char field_0[0xc];
+	collector_2ecc80 *collector;
+
 	void function_2ed030(void const *a, void const *b, void *collector);
 	void function_2ed4c0(void const *a, void const *b, void *collector);
 };
@@ -183,6 +191,9 @@ public:
 class class_2ece10
 {
 public:
+	char field_0[0xc];
+	collector_2ecc80 *collector;
+
 	void function_2ece10(void const *a, void const *b, void const *input, void *collector);
 	void function_2ed400(void const *a, void const *b, void const *input, void *collector);
 };

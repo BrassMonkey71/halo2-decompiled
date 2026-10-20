@@ -300,10 +300,6 @@ void narrow_phase_317c00::function_317950(void const *input)
 
 // Havok round havok18: callees of the queries passed on with their sides changed
 
-// @stub 0x2ece10
-void class_2ece10::function_2ece10(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 

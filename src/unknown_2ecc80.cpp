@@ -2,6 +2,7 @@
 // Havok (third-party physics library): passing queries on to a collector
 // with the child's transform composed into the description's transform.
 #include "unknown_182d90.h"
+#include "pair_agents_2eab70.h"
 
 struct shape_2ecc80
 {
@@ -46,10 +47,13 @@ class collector_2ecc80
 {
 public:
 	virtual void slot0() = 0;
-	virtual void slot1() = 0;
-	virtual void slot2() = 0;
+	virtual void slot1(description_2ecc80 const *description, long a, long b, long c) = 0;
+	virtual void slot2(description_2ecc80 const *description, long a, long b, long c) = 0;
 	virtual void slot3(description_2ecc80 const *description, long arg_1, long arg_2, long arg_3, long arg_4) = 0;
 	virtual void slot4(description_2ecc80 const *description, long arg_1, long arg_2, long arg_3) = 0;
+	virtual void slot5() = 0;
+	virtual void slot6() = 0;
+	virtual void slot7(description_2ecc80 const *description, long a, long b) = 0;
 };
 
 class class_2ecc80
@@ -124,4 +128,19 @@ void __cdecl function_2ecd80(description_2ecc80 const *description, typed_2ecd80
 	long first = ((typed_2ecd80 *)child.shape)->type();
 	long second = (*other)->type();
 	(*dispatcher)->handlers[first][second](&child, other, dispatcher, arg_3, arg_4);
+}
+
+// @retail 0x2ece10
+void class_2ece10::function_2ece10(void const *a, void const *b, void const *input, void *out)
+{
+	description_2ecc80 const *description = (description_2ecc80 const *)a;
+	shape_2ecc80 const *shape = description->shape;
+	placement_2ecc80 placement;
+	placement.field_0 = description->placement->field_0;
+	placement.field_10 = description->placement->field_10;
+	// Retail reloads the placement pointer for composition after the bounds copy.
+	placement.transform.compose(&(*(placement_2ecc80 const *const volatile *)&description->placement)->transform, &shape->transform);
+	collector_2ecc80 *target = collector;
+	description_2ecc80 child(description, &placement, shape);
+	target->slot2(&child, (long)b, (long)input, (long)out);
 }
