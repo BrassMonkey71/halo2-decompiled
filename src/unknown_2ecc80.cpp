@@ -211,3 +211,18 @@ void __cdecl function_2ecfa0(void const *a, void const *b, void const *input, vo
 	long second = (*other)->type();
 	(*dispatcher)->handlers[first][second](&child, other, input, out);
 }
+
+// @retail 0x2ed030
+void class_2ed030::function_2ed030(void const *a, void const *b, void *out)
+{
+	description_2ecc80 const *description = (description_2ecc80 const *)a;
+	shape_2ecc80 const *shape = description->shape;
+	placement_2ecc80 placement;
+	placement.field_0 = description->placement->field_0;
+	placement.field_10 = description->placement->field_10;
+	// Retail reloads the placement pointer for composition after the bounds copy.
+	placement.transform.compose(&(*(placement_2ecc80 const *const volatile *)&description->placement)->transform, &shape->transform);
+	collector_2ecc80 *target = collector;
+	description_2ecc80 child(description, &placement, shape);
+	target->slot7(&child, (long)b, (long)out);
+}

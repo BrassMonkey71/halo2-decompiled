@@ -216,10 +216,6 @@ void class_2e1090::function_2e0020(element_2e1090 const *element, bounds_2e0020 
 {
 }
 
-// @stub 0x2ed030
-void class_2ed030::function_2ed030(void const *a, void const *b, void *collector)
-{
-}
 
 // @stub 0x2f7c40
 void class_2f7c40::function_2f7c40(void const *a, void const *b, void const *input, void *collector)
