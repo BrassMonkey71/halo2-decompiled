@@ -27,7 +27,7 @@ static __forceinline bool session_member_score_order(const s_session_member *fir
  }
 
 // @retail 0x619b0
-bool function_619b0(const s_session_member *members, long second_index, long first_index, long player_count)
+bool function_619b0(const s_session_member *members, long first_index, long second_index, long player_count)
 {
  const s_session_member *first = &members[first_index];
  const s_session_member *second = &members[second_index];

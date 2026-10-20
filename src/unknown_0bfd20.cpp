@@ -158,10 +158,11 @@ bool function_bfc90(long object_index)
 	return result;
 }
 
-static __forceinline void object_short_set_ab(s_record_pool *objects, long index, short value)
+static __forceinline void object_short_set_ab(long object_index, short value)
 {
-    s_object_hdr *object = ((s_object_header *)objects->data)[index].object;
     long clamped = value;
+    s_record_pool *objects = g_4e0300;
+    s_object_hdr *object = ((s_object_header *)objects->data)[object_index & 0xffff].object;
     if (clamped < 0) clamped = 0;
     else if (clamped > 0x7ffe) clamped = 0x7ffe;
     object->value104 = (short)clamped;
@@ -171,9 +172,8 @@ static __forceinline void object_short_set_ab(s_record_pool *objects, long index
 void function_bf830(long object_index, real shield, short value)
 {
     s_record_pool *objects = g_4e0300;
-    object_index &= 0xffff;
-    ((s_object_header *)objects->data)[object_index].object->shield = shield;
-    object_short_set_ab(objects, object_index, value);
+    ((s_object_header *)objects->data)[object_index & 0xffff].object->shield = shield;
+    object_short_set_ab(object_index, value);
 }
 
 // @retail 0xbfcc0
