@@ -948,8 +948,8 @@ void __stdcall function_10b850(long object_index)
 {
     s_item *item = ITEM_GET(object_index);
     byte *definition = g_4e3b44[item->definition_index & 0xffff].bytes;
-    if (!(item->object_flags & 0x100)) return;
-    if (!(item->object_flags & 0x20000000) && object_index != NONE && *(short *)((byte *)item + 0x112) != NONE)
+    if (!(bool)((item->object_flags >> 8) & 1)) return;
+    if (!(bool)((item->object_flags >> 29) & 1) && object_index != NONE && *(short *)((byte *)item + 0x112) != NONE)
         item->object_flags |= 0x20000000;
     function_10b360(object_index);
     if (!(item->flags_c1 & 1))

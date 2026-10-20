@@ -123,9 +123,14 @@ short __stdcall function_2576c0(long actor_index, s_slot *slot, s_slot *next)
 	s_slot_7f_state *state = (s_slot_7f_state *)slot;
 	s_502424_element *joint = element_502424_get(state->joint_index);
 	long leader_index = joint->target.unknown0;
-	long target_index = joint->target.unknown4;
 
-	if (leader_index == NONE || target_index == NONE)
+	if (leader_index == NONE)
+	{
+		result = g_470c58;
+		goto local_9;
+	}
+	long target_index = joint->target.unknown4;
+	if (target_index == NONE)
 	{
 		result = g_470c58;
 		goto local_9;
