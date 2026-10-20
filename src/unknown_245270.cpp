@@ -257,7 +257,7 @@ PRIVATE inline point3f *function_245400_transform(transform4x3f const *matrix,
 }
 
 // @retail 0x245400
-void function_245400(long index, s_source_245400 const *source,
+void function_245400(s_source_245400 const *source, long index,
 	transform4x3f const *matrix, real height, real radius, long field_00,
 	long field_04, s_line_list *list)
 {
