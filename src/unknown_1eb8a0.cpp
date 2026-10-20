@@ -105,7 +105,8 @@ void function_1ecf50(vector3f *forward, vector3f *up, s_direction_rotation_input
 				axis.i = input->up.j * input->direction.k - input->up.k * input->direction.j;
 				axis.j = input->up.k * input->direction.i - input->up.i * input->direction.k;
 				axis.k = input->up.i * input->direction.j - input->up.j * input->direction.i;
-				if (function_30bf0(&axis) != 0.0f)
+				real length = function_30bf0(&axis);
+				if (length != 0.0f)
 				{
 					real sine = (real)sin(angle);
 					real cosine = (real)cos(angle);
