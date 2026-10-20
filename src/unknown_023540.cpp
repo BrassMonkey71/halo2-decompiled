@@ -2086,11 +2086,11 @@ struct s_34a90_parameters
     long count;
 };
 
-PRIVATE __forceinline void configure_34a90_state(long target, short blend,
+PRIVATE __forceinline void configure_34a90_state(long target, long blend,
     dword color_write, bool use_depth, bool depth_write, real depth)
 {
     if (target != NONE) function_14bc0((short)target, 0, use_depth);
-    if (blend != NONE) function_142f0(blend);
+    if (blend != NONE) function_142f0((short)blend);
     g_4b8308 = color_write;
     D3DDevice_SetRenderState(D3DRS_COLORWRITEENABLE, color_write);
     g_4b8438 = use_depth ? 2 : 0;
@@ -2115,22 +2115,23 @@ PRIVATE __forceinline void configure_34a90_state(long target, short blend,
 }
 
 // @retail 0x34a90
-void __stdcall function_34a90(long target, short blend, dword color_write,
+void __stdcall function_34a90(long target, long blend, dword color_write,
     bool use_depth, bool depth_write, real depth, real distortion, real scale,
     long count, bool full_surface, bool viewport_textures)
 {
-    struct { long width; long height; } dimensions = { 0, 0 };
+    long width = 0;
+    long height = 0;
     if (target == NONE)
-        function_01dd60(g_4858b8, &dimensions.width, &dimensions.height);
+        function_01dd60(g_4858b8, &width, &height);
     else
-        function_01dd60(target, &dimensions.width, &dimensions.height);
+        function_01dd60(target, &width, &height);
     real bounds[4];
     if (full_surface)
     {
         bounds[0] = 0.0f;
         bounds[2] = 0.0f;
-        bounds[1] = (real)dimensions.width;
-        bounds[3] = (real)dimensions.height;
+        bounds[1] = (real)width;
+        bounds[3] = (real)height;
     }
     else
     {
@@ -2139,30 +2140,30 @@ void __stdcall function_34a90(long target, short blend, dword color_write,
         bounds[1] = (real)g_4b9dd6;
         bounds[3] = (real)g_4b9dd4;
     }
-    real inverse_x = 1.0f / dimensions.width;
-    real inverse_y = 1.0f / dimensions.height;
+    real inverse_x = 1.0f / width;
+    real inverse_y = 1.0f / height;
     s_34a90_parameters parameters;
     parameters.depth = depth >= 0.0f ? depth : 0.0f - depth;
     parameters.distortion = distortion;
     for (long i = 0; i < count; ++i)
     {
-        long width, height;
+        long texture_width, texture_height;
         if (viewport_textures)
         {
             parameters.offsets[i].x = (real)g_4b9dd2;
             parameters.offsets[i].y = (real)g_4b9dd0;
-            width = g_4b9dd6 - g_4b9dd2;
-            height = g_4b9dd4 - g_4b9dd0;
+            texture_width = g_4b9dd6 - g_4b9dd2;
+            texture_height = g_4b9dd4 - g_4b9dd0;
         }
         else
         {
             parameters.offsets[i].x = 0.0f;
             parameters.offsets[i].y = 0.0f;
-            width = g_485af4[i];
-            height = g_485b04[i];
+            texture_width = g_485af4[i];
+            texture_height = g_485b04[i];
         }
-        parameters.scales[i].x = width * inverse_x;
-        parameters.scales[i].y = height * inverse_y;
+        parameters.scales[i].x = texture_width * inverse_x;
+        parameters.scales[i].y = texture_height * inverse_y;
         parameters.weights[i] = 0.0f;
     }
 
@@ -2175,7 +2176,7 @@ void __stdcall function_34a90(long target, short blend, dword color_write,
 }
 
 // @retail 0x34d90
-void function_34d90(long target, real const *weights, short blend, dword color_write,
+void function_34d90(long target, real const *weights, long blend, dword color_write,
     bool use_depth, bool depth_write, real depth, real low, real high,
     bool full_surface, t_34770_vertex vertex)
 {
