@@ -56,11 +56,6 @@ int class_3048a0::function_3048a0(convex_2fefd0 const *first, convex_2fefd0 cons
 	return 0;
 }
 
-// @stub 0x2ee8b0
-void __cdecl function_2ee8b0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
 
 
 
@@ -84,17 +79,7 @@ void __cdecl function_2f6db0(void const *a, void const *b, void const *input, vo
 {
 }
 
-// @stub 0x2f8110
-void __cdecl function_2f8110(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-
-
-// @stub 0x2fe830
-void __cdecl function_2fe830(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
 
 
 // Havok round 17: callees of matched functions not decompiled yet
@@ -167,17 +152,6 @@ void class_3008d0::function_300290(cell_box_300290 const *box, unsigned char con
 {
 }
 
-class class_2fff90
-{
-public:
-	class_2fff90(void const *tree, const c_query_transform *matrix, const __m128 *extent, float tolerance, s_surface_key_array *keys);
-};
-
-// @stub 0x2fff90
-class_2fff90::class_2fff90(void const *tree, const c_query_transform *matrix, const __m128 *extent, float tolerance, s_surface_key_array *keys)
-{
-}
-
 struct cell_range_2ff8b0;
 
 class class_300150
@@ -233,11 +207,6 @@ void class_2ed030::function_2ed030(void const *a, void const *b, void *collector
 {
 }
 
-// @stub 0x2f7c40
-void class_2f7c40::function_2f7c40(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
 
 // @stub 0x2fb150
 void class_2fb150::function_2fb150(void const *a, void const *b, void const *input, void *collector)
@@ -249,19 +218,6 @@ void __cdecl function_2fe350(void const *query, const __m128 *half_extents, floa
 {
 }
 
-struct member_30c8e0;
-
-class owner_30c8e0
-{
-public:
-	void function_30df80(member_30c8e0 *member);
-};
-
-// @stub 0x30df80
-void owner_30c8e0::function_30df80(member_30c8e0 *member)
-{
-}
-
 struct s_311100;
 
 class c_311100
@@ -270,11 +226,6 @@ public:
 	void function_30fcb0(s_311100 const *description);
 	void function_30fef0(s_311100 const *description);
 };
-
-// @stub 0x30fcb0
-void c_311100::function_30fcb0(s_311100 const *description)
-{
-}
 
 // @stub 0x30fef0
 void c_311100::function_30fef0(s_311100 const *description)
@@ -318,11 +269,6 @@ void class_2f4f00::function_2f4f00(void const *a, void const *b, void const *inp
 
 
 
-// @stub 0x2f1080
-void class_2f1080::function_2f1080(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
 
 // @stub 0x2f4440
 void class_2f4440::function_2f4440(void const *a, void const *b, void const *input, void *collector)
@@ -331,11 +277,6 @@ void class_2f4440::function_2f4440(void const *a, void const *b, void const *inp
 
 // @stub 0x2fa2f0
 void class_2fa2f0::function_2fa2f0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2fec10
-void class_2fec10::function_2fec10(void const *a, void const *b, void const *input, void *collector, void *second_collector)
 {
 }
 
