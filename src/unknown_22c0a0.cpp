@@ -242,6 +242,77 @@ void function_22c390(c_havok_abstract_allocator *memory, s_fixed_memory_statisti
     statistics->unknown0c = 0;
 }
 
+/* the size class of an allocation: 1 to 16, or NONE past 0x2000 */
+static __forceinline long pool_size_class(long size)
+{
+    if (size <= 8)
+        return 1;
+    if (size <= 16)
+        return 2;
+    if (size <= 32)
+        return 3;
+    if (size <= 48)
+        return 4;
+    if (size <= 64)
+        return 5;
+    if (size <= 96)
+        return 6;
+    if (size <= 128)
+        return 7;
+    if (size <= 160)
+        return 8;
+    if (size <= 192)
+        return 9;
+    if (size <= 256)
+        return 10;
+    if (size <= 320)
+        return 11;
+    if (size <= 512)
+        return 12;
+    if (size <= 1024)
+        return 13;
+    if (size <= 2048)
+        return 14;
+    if (size <= 4096)
+        return 15;
+    if (size <= 8192)
+        return 16;
+    return NONE;
+}
+
+// @retail 0x22c3e0
+c_havok_page_pool_allocator::c_havok_page_pool_allocator()
+{
+    unknown18 = 0;
+    unknown1c = 0;
+    unknown20 = 0;
+    page_count = 0;
+    memset(unknownf0344, 0, sizeof(unknownf0344));
+    memset(unknownf0388, 0, sizeof(unknownf0388));
+    for (long i = 16; i >= 0; i--)
+        unknown24[i] = 0;
+    for (long size = 0; size <= 0x200; size++)
+    {
+        long size_class = pool_size_class(size);
+        small_classes[size] = (byte)size_class;
+        class_sizes[size_class] = size;
+    }
+    for (long i = 0; i < 8; i++)
+    {
+        long size = (i + 1) * 0x400;
+        long size_class = pool_size_class(size);
+        large_classes[i] = size_class;
+        class_sizes[size_class] = size;
+    }
+    unknown2d0[0] = 0;
+    unknown2d0[1] = 0;
+    unknown2d0[2] = 0;
+    unknown2d0[3] = 0;
+    page_size = 0x2000;
+    unknown2e4 = 0x40;
+    function_2d6fc0((void *)(((dword)pages + 0xf) & ~0xf), 0x4000);
+}
+
 
 struct s_physics_pool_statistics
 {
