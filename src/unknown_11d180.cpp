@@ -14,11 +14,11 @@ vector3f *function_11d000(vector3f const *v, vector3f *out);
 
 // @retail 0x11d180
 void function_11d180(
-	vector3f *left,
 	vector3f const *in,
-	vector3f *out,
 	vector3f const *up,
-	vector3f *forward)
+	vector3f *forward,
+	vector3f *left,
+	vector3f *out)
 {
 	*forward = *in;
 	if (function_30bf0(forward) == 0.f)

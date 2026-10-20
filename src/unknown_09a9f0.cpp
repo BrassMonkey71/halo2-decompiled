@@ -1341,6 +1341,8 @@ struct s_projectile_target
 };
 void projectile_set_target(long index, s_projectile_target const *target);
 
+void function_0bfe20(dword *flags, long bit, bool value);
+
 // @retail 0xa0c50
 long c_projectile_type::v29(long a, s_entity_info *info, long *flags, long size, long state)
 {
@@ -1367,14 +1369,13 @@ long c_projectile_type::v29(long a, s_entity_info *info, long *flags, long size,
     else index = function_b7b40(creation);
     if (index != NONE)
     {
-        s_record_pool *objects = g_4e0300;
         long offset = (index & 0xffff) * 12;
-        byte *object = *(byte **)(objects->data + offset + 8);
+        byte *object = *(byte **)(g_4e0300->data + offset + 8);
         object[0xaf] = info->byte8;
         if (fields[0x1d])
         {
-            object = *(byte **)(objects->data + offset + 8);
-            *(dword *)(object + 0x12c) |= 0x100;
+            object = *(byte **)(g_4e0300->data + offset + 8);
+            function_0bfe20((dword *)(object + 0x12c), 8, true);
         }
         long target = *(long *)(fields + 0x14);
         if (target != NONE)
@@ -1391,8 +1392,8 @@ long c_projectile_type::v29(long a, s_entity_info *info, long *flags, long size,
         }
         if (!fields[0x1c])
         {
-            object = *(byte **)(objects->data + offset + 8);
-            *(dword *)(object + 0x12c) &= ~2;
+            object = *(byte **)(g_4e0300->data + offset + 8);
+            function_0bfe20((dword *)(object + 0x12c), 1, false);
         }
     }
     return index;

@@ -145,9 +145,8 @@ bool function_a5bd0(s_entity_info const *info, s_z_initial_state *state)
 s_simulation_entity *simulation_entity_try_get(s_simulation_entity_table *table, long entity_index)
 {
 	s_simulation_entity *result = 0;
-	long absolute_index = entity_index & 0x3ff;
-	if (table->entities[absolute_index].identifier == entity_index)
-		result = table->entities + absolute_index;
+	if (table->entities[entity_index & 0x3ff].identifier == entity_index)
+		result = &table->entities[entity_index & 0x3ff];
 	return result;
 }
 

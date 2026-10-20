@@ -142,11 +142,6 @@ public:
 	void function_300290(cell_box_300290 const *box, unsigned char const *node);
 };
 
-// @stub 0x300290
-void class_3008d0::function_300290(cell_box_300290 const *box, unsigned char const *node)
-{
-}
-
 struct cell_range_2ff8b0;
 
 class class_300150
@@ -202,11 +197,6 @@ void class_2ed030::function_2ed030(void const *a, void const *b, void *collector
 {
 }
 
-
-// @stub 0x2fb150
-void class_2fb150::function_2fb150(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 // @stub 0x2fe350
 void __cdecl function_2fe350(void const *query, const __m128 *half_extents, float tolerance, void *out)
@@ -295,12 +285,6 @@ class class_306580
 public:
 	answer_306580 function_306580();
 };
-
-// @stub 0x306580
-answer_306580 class_306580::function_306580()
-{
-	return answer_306580();
-}
 
 // @stub 0x307f90
 void query_2ef260::function_307f90(bool *found, contact_307f90 *contact)
@@ -429,5 +413,11 @@ void __cdecl function_31c100(void *step_10, void *step_20, void *step_50, void *
 // changes a body's motion to another kind (770 bytes, not decompiled)
 // @stub 0x311e40
 void class_3115a0::function_311e40(int kind)
+{
+}
+
+// frees a block too large for Havok's pool (library code, called through g_461ddc)
+// @stub 0x2d6fb0
+void __cdecl function_2d6fb0(void *address)
 {
 }

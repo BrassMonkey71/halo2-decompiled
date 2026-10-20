@@ -249,7 +249,7 @@ bool function_1f3610(long actor_index, short value)
 	return true;
 }
 
-void function_11d180(vector3f *left, vector3f const *in, vector3f *out, vector3f const *up, vector3f *forward);
+void function_11d180(vector3f const *in, vector3f const *up, vector3f *forward, vector3f *left, vector3f *out);
 
 // @retail 0x1f3e40
 void __stdcall function_1f3e40(long object_index, vector3f const *forward, vector3f *vector)
@@ -257,7 +257,7 @@ void __stdcall function_1f3e40(long object_index, vector3f const *forward, vecto
 	vector3f unused0;
 	vector3f left;
 	vector3f up;
-	function_11d180(&left, forward, &up, g_4687b0, &unused0);
+	function_11d180(forward, g_4687b0, &unused0, &left, &up);
 	vector3f object_forward;
 	s_slot_object_view *object = object_get(object_index);
 	if (object->parent_index == NONE)
@@ -275,7 +275,7 @@ void __stdcall function_1f3e40(long object_index, vector3f const *forward, vecto
 	vector3f unused1;
 	vector3f object_left;
 	vector3f object_up;
-	function_11d180(&object_left, &object_forward, &object_up, g_4687b0, &unused1);
+	function_11d180(&object_forward, g_4687b0, &unused1, &object_left, &object_up);
 	real input_i = vector->i;
 	real input_j = vector->j;
 	real input_k = vector->k;
