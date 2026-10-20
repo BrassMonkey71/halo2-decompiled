@@ -456,7 +456,6 @@ static __forceinline byte *function_9d952(long arg_0)
     return (byte *)((s_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
 }
 
-#pragma inline_depth(0)
 // @retail 0x9d950
 void c_unit_type::v31(long arg_0, long arg_1, long arg_2, long arg_3)
 {
@@ -467,15 +466,10 @@ void c_unit_type::v31(long arg_0, long arg_1, long arg_2, long arg_3)
         function_a6430(local_1 & 0x3ff, arg_0, arg_3);
     if (local_1 & 0x400)
     {
-        long local_3 = local_2->field_90;
         long local_4 = NONE;
-        if (local_3 != NONE && local_3 >= 0 && local_3 < g_4e8c24->high_water_index)
-        {
-            byte *local_5 = g_4e8c24->data + g_4e8c24->size * local_3;
-            if (*(short *)local_5)
-                local_4 = ((long)*(short *)local_5 << 16) | local_3;
-        }
-        byte *local_6 = ((byte *)((s_object_header *)g_4e0300->data)[arg_0 & 0xffff].object);
+        if (datum_get_absolute_inlined(g_4e8c24, local_2->field_90))
+            local_4 = data_datum_index(g_4e8c24, local_2->field_90);
+        byte *local_6 = function_9d952(arg_0);
         *(long *)(local_6 + 0x2a8) = local_4;
         *(long *)(local_6 + 0x2ac) = local_2->field_92;
         function_d0d20(arg_0);
@@ -496,7 +490,7 @@ void c_unit_type::v31(long arg_0, long arg_1, long arg_2, long arg_3)
         }
         else if (local_8 != -1)
             local_8 = -1;
-        byte *local_10 = ((byte *)((s_object_header *)g_4e0300->data)[arg_0 & 0xffff].object);
+        byte *local_10 = function_9d952(arg_0);
         *(long *)(local_10 + 0x2a0) = local_7;
         *(short *)(local_10 + 0x2a4) = local_8;
         function_d0c10(arg_0);
@@ -505,30 +499,28 @@ void c_unit_type::v31(long arg_0, long arg_1, long arg_2, long arg_3)
         function_d0930(arg_0, &local_2->field_9c);
     if (local_1 & 0x2000)
     {
-        byte *local_11 = ((byte *)((s_object_header *)g_4e0300->data)[arg_0 & 0xffff].object);
+        byte *local_11 = function_9d952(arg_0);
         long local_12 = *(long *)&local_2->field_a8;
         *(long *)(local_11 + 0x214) = local_12;
-        *(short *)(local_11 + 0x210) = (short)local_12;
+        *(short *)(local_11 + 0x210) = *(short *)(local_11 + 0x214);
     }
-    short *record = &local_2->field_ac[0].field_4;
     long local_13 = 0;
     do
     {
         dword local_14 = local_1 & (1 << (local_13 + 14));
         if (local_14)
         {
-            long local_15 = *(long *)(record - 2);
+            long local_15 = local_2->field_ac[local_13].field_0;
             if (local_15 == NONE || function_122c10(0x77656170, local_15))
-                function_d09c0(arg_0, local_13, local_15, record[0], (dword const *)&local_2->field_a8);
+                function_d09c0(arg_0, local_13, local_2->field_ac[local_13].field_0, local_2->field_ac[local_13].field_4, (dword const *)&local_2->field_a8);
         }
         if (local_14 || (local_1 & (1 << (local_13 + 18))))
-            function_d0b70(arg_0, record[1], record[2], *(real *)(record + 4), local_13);
-        record += 8;
+            function_d0b70(arg_0, local_2->field_ac[local_13].field_6, local_2->field_ac[local_13].field_8, local_2->field_ac[local_13].field_c, local_13);
         ++local_13;
     } while ((dword)local_13 < 4);
     if (local_1 & 0x400000)
     {
-        byte *local_16 = ((byte *)((s_object_header *)g_4e0300->data)[arg_0 & 0xffff].object);
+        byte *local_16 = function_9d952(arg_0);
         long local_17 = 0;
         do
         {
@@ -538,14 +530,14 @@ void c_unit_type::v31(long arg_0, long arg_1, long arg_2, long arg_3)
     }
     if (local_1 & 0x800000)
     {
-        byte *local_18 = ((byte *)((s_object_header *)g_4e0300->data)[arg_0 & 0xffff].object);
+        byte *local_18 = function_9d952(arg_0);
         *(real *)(local_18 + 0x2b0) = local_2->field_f0;
         if (local_2->field_ec[2])
         {
-            byte *local_19 = ((byte *)((s_object_header *)g_4e0300->data)[arg_0 & 0xffff].object);
+            byte *local_19 = function_9d952(arg_0);
             *(dword *)(local_19 + 0x134) |= 8;
-            *(real *)(local_19 + 0x2b8) = -1.0f;
-            long local_20 = *(long *)(((byte *)((s_object_header *)g_4e0300->data)[arg_0 & 0xffff].object) + 0xd4);
+            *(real *)(local_19 + 0x2b8) = 0.25f;
+            long local_20 = *(long *)(function_9d952(arg_0) + 0xd4);
             if (local_20 != NONE)
                 function_b58c0(local_20, 0x800000);
         }
@@ -554,4 +546,3 @@ void c_unit_type::v31(long arg_0, long arg_1, long arg_2, long arg_3)
         *(real *)(local_18 + 0x2b8) = local_2->field_f4;
     }
 }
-#pragma inline_depth(255)
