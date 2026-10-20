@@ -912,11 +912,11 @@ inline s_actor_view *actor_get(long actor_index)
 
 /* walks the actors of an element of 0x502420 from its first_actor_index
    through each actor's next_index; retail tests the next index at the loop
-   head (0x1bb3a0) */
+   head (0x1bb3a0) and keeps index below next_index on the stack (0x1b6740) */
 struct s_element_502420_member_iterator
 {
-	long next_index;
 	long index;
+	long next_index;
 };
 
 inline s_actor_view *element_502420_member_next(s_element_502420_member_iterator *iterator)

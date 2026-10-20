@@ -12,6 +12,7 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define PIN(x, lo, hi) ((x) < (lo) ? (lo) : (x) > (hi) ? (hi) : (x))
 
+#include "vector_products.h"
 // @retail 0x497a0
 void function_0497a0(
 	s_view_source *source,
@@ -48,11 +49,9 @@ void function_0497a0(
 	if (special)
 	{
 		vector3f c;
-		c.i = v4.j * v2.k - v4.k * v2.j;
+		cross3f(&v4, &v2, &c);
 		real s1 = (real)sin(g_4b9da0.x * 5.6f + g_4b9da0.y);
-		c.j = v4.k * v2.i - v4.i * v2.k;
 		real s0 = (real)((sin(g_4b9da0.x * 8.2f) * cos(g_4b9da0.y * 7.8f) * sin(g_4b9da0.x) + cos(g_4b9da0.y * 7.75f)) * 0.5f);
-		c.k = v4.i * v2.j - v4.j * v2.i;
 		real amp = s0 * 0.03f;
 		v1.x = (v4.i * amp) + v1.x;
 		v1.y += amp * v4.j;
@@ -61,9 +60,7 @@ void function_0497a0(
 		v1.x = (c.i * k) + v1.x;
 		v1.y += k * c.j;
 		v1.z = (k * c.k) + v1.z;
-		w.i = v2.j * v4.k - v2.k * v4.j;
-		w.j = v2.k * v4.i - v2.i * v4.k;
-		w.k = v2.i * v4.j - v2.j * v4.i;
+		cross3f(&v2, &v4, &w);
 	}
 	else
 	{
@@ -112,14 +109,10 @@ void function_0497a0(
 	default:
 	{
 		vector3f r;
-		r.i = v3.j * v4.k - v3.k * v4.j;
-		r.j = v3.k * v4.i - v3.i * v4.k;
 		vector3f s;
-		r.k = v4.j * v3.i - v3.j * v4.i;
-		s.i = v3.j * w.k - v3.k * w.j;
-		s.j = v3.k * w.i - w.k * v3.i;
+		cross3f(&v3, &v4, &r);
+		cross3f(&v3, &w, &s);
 		real sx = -1.0f / shape1->f14;
-		s.k = w.j * v3.i - v3.j * w.i;
 		real sy = -1.0f / shape1->f18;
 		real k = inv * 0.5f;
 		result->v20.i = k * (r.i * sx + v2.i);

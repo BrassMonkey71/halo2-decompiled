@@ -521,10 +521,14 @@ __declspec(noinline) bool function_99640(c_handle_table_450cd0 *self, long handl
 // @retail 0xa0e50
 bool c_projectile_type::v8(long a, long b)
 {
+ bool result = true;
  long identifier = *(long *)(*(long *)(a + 0x14) + 0x14);
- if (identifier == NONE) return true;
- byte *table = *(byte **)(*(long *)(*(long *)b + 4) + 8);
- return function_99640((c_handle_table_450cd0 *)(table + 0x30), identifier) != false;
+ if (identifier != NONE)
+ {
+  byte *table = *(byte **)(*(long *)(*(long *)b + 4) + 8);
+  if (!function_99640((c_handle_table_450cd0 *)(table + 0x30), identifier)) result = false;
+ }
+ return result;
 }
 
 // @retail 0xa3df0

@@ -77,8 +77,7 @@ void __stdcall function_29ab90(long arg_0, long arg_1, vector3f *arg_2,
 	vector3f local_6 = *g_4687a4;
 	point3f local_7;
 	function_b9dd0(arg_1, &local_7);
-	vector3f local_8 = *arg_2;
-	real local_9 = function_29ab91(&local_8);
+	real local_9 = function_29ab91(arg_2);
 	if (local_2)
 	{
 		if (!*(bool *)(local_0 + 0x5d0) || *arg_7)
