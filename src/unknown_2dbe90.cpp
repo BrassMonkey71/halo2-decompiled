@@ -60,6 +60,9 @@ s_2dbe90_result class_2dbe90::function_2dbe90(long a, long b)
 }
 
 // @retail 0x2dbeb0
+// Still differs: retail keeps the member target in edx and copies it into ecx for the
+// virtual call, and stores the range's low half after the argument setup; ours reloads
+// the member and stores the range low half early.
 void class_2dbe90::function_2dbeb0(long a, const s_2dbe90_input *input, long c)
 {
 	s_2dbe90_query query;

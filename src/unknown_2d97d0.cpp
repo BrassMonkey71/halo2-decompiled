@@ -18,7 +18,8 @@ error_handler_2d97d0 *g_480178;
 void __cdecl function_2d97d0(char const *message)
 {
 	char buffer[0x200];
-	stream_holder_2d8e70 stream(buffer, sizeof(buffer), flag_2d8e70(true));
+	flag_2d8e70 zero(true);
+	stream_holder_2d8e70 stream(buffer, sizeof(buffer), zero);
 	stream.function_2d8f10(message);
 	g_480178->report("Error", 0x2636fe25, buffer, ".\\error\\hkError.cpp", 27);
 }
