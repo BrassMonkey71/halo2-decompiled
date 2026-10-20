@@ -473,13 +473,11 @@ bool avoidance_search_step(s_avoidance_search *search, s_pathfinding_data const 
 					{
 						point2f offset;
 						point2f point;
-						point2f movement;
 
 						offset.x = search->goal.x - obstacle->center.x;
 						offset.y = search->goal.y - obstacle->center.y;
 						point = node->position;
-						avoidance_scale2d(direction, trace.distance, &movement);
-						avoidance_add2d(&point, &movement, &point);
+						avoidance_point_along2d(&point, direction, trace.distance, &point);
 						real dx = point.x - search->goal.x;
 						real dy = point.y - search->goal.y;
 						if (dy * dy + dx * dx < obstacle->radius * obstacle->radius &&
