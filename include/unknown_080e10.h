@@ -27,32 +27,36 @@ static __forceinline long function_80e14(long size, long user_data, long update,
 {
 	__int64 start = function_80e13();
 	long result = 0;
-	if (size > 0 && g_4e6464->page_count > 0)
+	if (size > 0)
 	{
-		long pumps = 0;
-		do
+		long page_count = g_4e6464->page_count;
+		if (page_count > 0)
 		{
-			result = function_12d2f0(size, user_data, update, release);
-			if (result == 0)
+			long pumps = 0;
+			do
 			{
-				if (pumps < maximum_pumps)
+				result = function_12d2f0(size, user_data, update, release);
+				if (result == 0)
 				{
-					pumps++;
-					function_12c600();
+					if (pumps < maximum_pumps)
+					{
+						pumps++;
+						function_12c600();
+					}
+					else
+					{
+						__int64 elapsed = function_80e13() - start;
+						if (elapsed < 0)
+							elapsed = 0;
+						if (!((real)timing_ticks_to_seconds(elapsed) < timeout))
+							break;
+						D3DDevice_KickPushBuffer();
+						D3DDevice_IsBusy();
+						SwitchToThread();
+					}
 				}
-				else
-				{
-					__int64 elapsed = function_80e13() - start;
-					if (elapsed < 0)
-						elapsed = 0;
-					if (!((real)timing_ticks_to_seconds(elapsed) < timeout))
-						break;
-					D3DDevice_KickPushBuffer();
-					D3DDevice_IsBusy();
-					SwitchToThread();
-				}
-			}
-		} while (result == 0);
+			} while (result == 0);
+		}
 	}
 	return result;
 }

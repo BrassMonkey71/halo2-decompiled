@@ -76,9 +76,8 @@ long scenario_fog_clusters_find(long cluster_index, point3f const *point, s_fog_
 	count = 1;
 	do
 	{
-		long local_0 = *(long volatile *)&current;
-		s_fog_cluster_distance *entry = &clusters[local_0];
-		current = local_0 + 1;
+		s_fog_cluster_distance *entry = &clusters[current];
+		current++;
 		s_fog_cluster *cluster = &local_9e9b6e->clusters[entry->cluster_index];
 
 		for (long portal_index = 0; portal_index < cluster->portal_count; portal_index++)
@@ -102,12 +101,11 @@ long scenario_fog_clusters_find(long cluster_index, point3f const *point, s_fog_
 				}
 				else if (k_fog_cluster_maximum_distance > distance)
 				{
-					s_fog_cluster_distance *added = &clusters[count];
-
-					indices[other] = (short)count++;
-					added->cluster_index = other;
-					added->distance = distance;
-					added->previous_index = NONE;
+					indices[other] = (short)count;
+					clusters[count].cluster_index = other;
+					clusters[count].distance = distance;
+					clusters[count].previous_index = NONE;
+					count++;
 					visited[other >> 5] |= 1 << (other & 31);
 				}
 			}

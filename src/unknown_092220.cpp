@@ -68,36 +68,12 @@ done:
 }
 
 /* retrieves the requested statistics */
-static __forceinline s_type_9df9da *function_92331(long arg_0)
-{
-    s_type_9df9da *local_0;
-    if (arg_0 != NONE)
-    {
-        s_record_pool *local_1 = g_4cf78c;
-        long local_2 = arg_0 & 0xffff;
-        if (local_2 < local_1->high_water_index)
-        {
-            byte *local_3 = local_1->data + local_1->size * local_2;
-            short local_4 = *(short *)local_3;
-            if (local_4 != 0 && local_4 == (arg_0 >> 16))
-                local_0 = (s_type_9df9da *)local_3;
-            else
-                local_0 = 0;
-        }
-        else
-            local_0 = 0;
-    }
-    else
-        local_0 = 0;
-    return local_0;
-}
-
 // @retail 0x92330
 bool online_stats_read_result(long task_index, XONLINE_STAT_SPEC *specs, word count, byte *extra_buffer, word extra_size)
 {
-	s_type_9df9da *task = function_92331(task_index);
+	s_type_9df9da *task = (s_type_9df9da *)datum_get_inlined(g_4cf78c, task_index);
 	bool result = false;
-	if (task && online_logon_connected() && (task->flags & 6))
+	if (task && online_logon_connected() && (task->flag_bits.running || task->flag_bits.finished))
 	{
 		if (SUCCEEDED(XOnlineStatReadGetResult((XONLINETASK_HANDLE)task->handle, count, specs, extra_size, extra_buffer)))
 			result = true;
