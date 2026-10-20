@@ -1365,7 +1365,7 @@ real function_0bff60(real a, real b);
 bool function_13cb40(void);
 real function_187420(long player_index);
 short function_187a40(long player_index);
-bool function_11eed0(real *velocity, real *position, real dt, bool wrap, real target, real a, real b, real lo, real hi);
+bool function_11eed0(real *position, real *velocity, real target, real time_step, real speed, real acceleration, bool wrap, real lower, real upper);
 bool function_c8a10(long unit_index);
 bool function_d03b0(long unit_index);
 void __stdcall function_16760c(long user_index, long field_x11c898);
@@ -1420,18 +1420,14 @@ void __stdcall function_166d75(long user_index)
 				spring_d = definition->unknown2ec;
 			}
 		}
-		function_11eed0((real *)&user->unknown2030[0x0], (real *)&user->unknown2030[0x8], g_510c54->rate, false,
-			unit->aiming_velocity.i, spring_a, spring_b, -1.0f, 1.0f);
-		function_11eed0((real *)&user->unknown2030[0x4], (real *)&user->unknown2030[0xc], g_510c54->rate, false,
-			unit->aiming_velocity.j, spring_a, spring_b, -1.0f, 1.0f);
+		function_11eed0((real *)&user->unknown2030[0x0], (real *)&user->unknown2030[0x8], unit->aiming_velocity.i, g_510c54->rate, spring_a, spring_b, false, -1.0f, 1.0f);
+		function_11eed0((real *)&user->unknown2030[0x4], (real *)&user->unknown2030[0xc], unit->aiming_velocity.j, g_510c54->rate, spring_a, spring_b, false, -1.0f, 1.0f);
 		look_yaw = *(real *)&user->unknown2030[0x28] / g_510c54->rate;
 		look_yaw = PIN(look_yaw, -1.0f, 1.0f);
 		look_pitch = -1.0f / g_510c54->rate * *(real *)&user->unknown2030[0x2c];
 		look_pitch = PIN(look_pitch, -1.0f, 1.0f);
-		function_11eed0((real *)&user->unknown2030[0x10], (real *)&user->unknown2030[0x18], g_510c54->rate, false,
-			look_yaw, spring_c, spring_d, -1.0f, 1.0f);
-		function_11eed0((real *)&user->unknown2030[0x14], (real *)&user->unknown2030[0x1c], g_510c54->rate, false,
-			look_pitch, spring_c, spring_d, -1.0f, 1.0f);
+		function_11eed0((real *)&user->unknown2030[0x10], (real *)&user->unknown2030[0x18], look_yaw, g_510c54->rate, spring_c, spring_d, false, -1.0f, 1.0f);
+		function_11eed0((real *)&user->unknown2030[0x14], (real *)&user->unknown2030[0x1c], look_pitch, g_510c54->rate, spring_c, spring_d, false, -1.0f, 1.0f);
 
 		look = (point2f *)&g_4ed284->entries[user_index].yaw;
 		flags = user->flags;
@@ -1577,8 +1573,7 @@ overlay:
 					}
 				}
 
-				function_11eed0(&weapon->indices.unknownc, &weapon->indices.unknown10, g_510c54->rate, false, 0.0f, 9.0f,
-					6.0f, 0.0f, 1.0f);
+				function_11eed0(&weapon->indices.unknownc, &weapon->indices.unknown10, 0.0f, g_510c54->rate, 9.0f, 6.0f, false, 0.0f, 1.0f);
 				if (weapon->indices.unknownc == 1.0f)
 				{
 					weapon->indices.unknown10 = 0.0f;
