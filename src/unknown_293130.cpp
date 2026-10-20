@@ -108,7 +108,6 @@ __forceinline void function_293133(real arg_0, vector3f const *arg_1, vector3f *
 long __stdcall function_293130(long arg_0)
 {
 	s_293134 local_13;
-	long const *local_1 = &arg_0;
 	s_293130 *local_2 = &((s_293130 *)g_51ecb4->data)[arg_0 & 0xffff];
 	s_293132 *local_3 = &((s_293133 *)g_4e0350)->field_354[local_2->field_2];
 	long local_0 = NONE;
@@ -131,7 +130,8 @@ long __stdcall function_293130(long arg_0)
 		}
 		if (local_4 > 0.0f)
 		{
-			local_4 *= (real)function_293131() * (1.0f / 65535.0f);
+			real random_fraction = (real)function_293131() * (1.0f / 65535.0f);
+			local_4 *= random_fraction;
 			for (local_16 = 0; local_16 < local_3->field_c; local_16++)
 			{
 				if (local_2->field_10 & (1 << local_16))
@@ -198,7 +198,7 @@ long __stdcall function_293130(long arg_0)
 					local_15->field_18 = NONE;
 					local_15->field_1a = 0;
 					local_15->field_28 = *g_468788;
-					function_2936b0(*local_1, local_0);
+					function_2936b0(arg_0, local_0);
 					if (local_3->field_14 > 0)
 					{
 						short count = (short)local_3->field_14;

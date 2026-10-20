@@ -431,10 +431,9 @@ bool function_1e83c0(long local_index, long type)
    case 30:
     if (g_4e6948->state == 2 && function_15eaf0())
     {
-     long gamepad = *(long *)((byte *)player + 0x24);
-     if (gamepad != NONE)
+     if (*(long *)((byte *)player + 0x24) != NONE)
      {
-      const s_type_ff3a2a *input = function_1249a0((short)gamepad);
+      const s_type_ff3a2a *input = function_1249a0(*(short *)((byte *)player + 0x24));
       if (input && (((const byte *)input)[0x15] > 0 || ((const byte *)input)[0x18] > 0)) result = true;
      }
     }
@@ -453,7 +452,7 @@ bool function_1e83c0(long local_index, long type)
     break;
    case 20: if (function_1e69d0(state->requests, 0x1f, g_510c54->field_2_3)) result = true; break;
    case 23:
-    if (function_cbd50(unit_index, *(signed char *)(unit + 0x212)) != NONE)
+    if (function_cbd50(player->unit_index, *(signed char *)(*(byte **)(g_4e0300->data + (player->unit_index & 0xffff) * 12 + 8) + 0x212)) != NONE)
     {
      s_weapon_status status;
      byte *current_unit = *(byte **)(g_4e0300->data + (player->unit_index & 0xffff) * 12 + 8);
@@ -476,7 +475,7 @@ bool function_1e83c0(long local_index, long type)
    case 5: if (state->field_195 > 0) result = true; break;
    case 6: if (function_1e69d0(state->requests, 0x1c, g_510c54->field_2_3)) result = true; break;
    case 7:
-    if (*(word *)(data + 0x140) == 1 && (data[0x14c] & 3) &&
+    if (*(word *)(data + 0x140) == 1 && ((*(word *)(data + 0x14c) & 1) || (*(word *)(data + 0x14c) & 2)) &&
      *(word *)(data + 0x148) >= 3 && (data[0xa4] & 2)) result = true;
     break;
    case 8:

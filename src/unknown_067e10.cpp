@@ -1853,8 +1853,7 @@ void function_67f60(void)
 // @retail 0x6ae20
 bool function_6ae20(c_class_6a600 *world)
 {
- bool alternate = world->state != 2;
- long mode = 2 + 2 * alternate;
+ long mode = 4 - 2 * (world->state == 2);
  s_simulation_world_owner *owner = world->owner;
  s_simulation_distribution *distribution = world->distribution;
  long local = *(long *)((byte *)world + 0x14);

@@ -20,6 +20,7 @@ it from callers optimized for size.
 #include "unknown_0820f0.h"
 #include "unknown_059ad0.h"
 #include "files.h"
+#include "unknown_080e10.h"
 #include <new>
 #include <string.h>
 
@@ -372,21 +373,11 @@ void function_124380(char const *arg_0)
 #include "physical_memory.h"
 #include "unknown_2b116a.h"
 #include <xtl.h>
-extern s_physical_object *g_4e6464;
 long player_slot_get_single_profile(void);
 long player_slot_get_single_profile_index(void);
 void function_19048c(long arg_0);
-long __stdcall function_12d2f0(long arg_0, long arg_1, long arg_2, long arg_3);
-void function_12c600(void);
-double timing_ticks_to_seconds(__int64 arg_0);
 bool __stdcall function_217520(long arg_0, void const *arg_1, long arg_2, void const *arg_3, long arg_4, s_saved_game_read *arg_5);
 bool function_124840(long arg_0, void const *arg_1, long arg_2, long arg_3);
-
-PRIVATE __int64 function_12421c(void)
-{
-	volatile __int64 local_0 = 0;
-	__asm rdtsc
-}
 
 // @retail 0x1241b0
 void function_1241b0(s_saved_game_read *arg_0)
@@ -396,35 +387,7 @@ void function_1241b0(s_saved_game_read *arg_0)
 	long local_0 = player_slot_get_single_profile();
 	long local_1 = player_slot_get_single_profile_index();
 	function_123f60(0);
-	long local_2 = 0;
-	__int64 local_3 = function_12421c();
-	long local_4 = 0;
-	if (g_4e6464->page_count > 0)
-	{
-		do
-		{
-			local_2 = function_12d2f0(0x3fe000, 0, 0, (long)game_state_cache_block_release);
-			if (!local_2)
-			{
-				if (local_4 >= 90)
-				{
-					__int64 local_5 = function_12421c() - local_3;
-					if (local_5 < 0) local_5 = 0;
-					if (!((real)timing_ticks_to_seconds(local_5) < 1.0f))
-						goto local_6;
-					D3DDevice_KickPushBuffer();
-					D3DDevice_IsBusy();
-					SwitchToThread();
-				}
-				else
-				{
-					local_4++;
-					function_12c600();
-				}
-			}
-		} while (!local_2);
-	}
-local_6:
+	long local_2 = function_80e14(0x3fe000, 0, 0, (long)game_state_cache_block_release, 90, 1.0f);
 	if (local_2)
 	{
 		memcpy((void *)local_2, game_state_globals.base_address, 0x3fe000);

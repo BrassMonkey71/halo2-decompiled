@@ -289,9 +289,9 @@ void __stdcall function_1f3e40(long object_index, vector3f const *forward, vecto
 	world.k += object_left.k * input_j;
 	world.k += object_up.k * input_k;
 	vector3f result;
-	result.i = forward->i * world.i + forward->j * world.j + forward->k * world.k;
-	result.j = left.i * world.i + left.j * world.j + left.k * world.k;
-	result.k = up.i * world.i + up.j * world.j + up.k * world.k;
+	result.i = forward->k * world.k + forward->j * world.j + forward->i * world.i;
+	result.j = left.k * world.k + left.j * world.j + left.i * world.i;
+	result.k = up.k * world.k + up.j * world.j + up.i * world.i;
 	*vector = result;
 }
 

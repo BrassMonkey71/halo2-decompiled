@@ -249,6 +249,7 @@ short __stdcall function_1c1160(long actor_index, s_slot *slot, bool active)
 
 	if (actor->unknown504 == 2)
 	{
+		s_unit_request action;
 		long unit_index = actor->unknown018;
 
 		if (actor->unknown22a)
@@ -256,8 +257,6 @@ short __stdcall function_1c1160(long actor_index, s_slot *slot, bool active)
 			if (!function_110ab0(unit_index) &&
 				(!state->unknown20 || dot3f((vector3f *)&state->unknown14, &actor->unknown290) > 0.9f))
 			{
-				s_unit_request action;
-
 				action.type = 0x35;
 				action.type35.has_vector = state->unknown20;
 				if (state->unknown20)
@@ -283,8 +282,6 @@ short __stdcall function_1c1160(long actor_index, s_slot *slot, bool active)
 					{
 						if (seat_index != NONE && function_c8f60(vehicle_index, seat_index) == NONE)
 						{
-							s_unit_request action;
-
 							action.type = 0x1c;
 							action.type1c.object_index = vehicle_index;
 							action.type1c.seat_index = seat_index;

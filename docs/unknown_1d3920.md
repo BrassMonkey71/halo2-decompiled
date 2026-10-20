@@ -37,7 +37,7 @@ It uses the names of:
   - `s_havok_component` (`flag9`, `transformed`, `object_index`, `transform`,
     `rigid_bodies`);
   - `s_havok_component_rigid_body` (`rigid_body`, `nodes`, `node_count`);
-  - `hkRigidBody` (`m_motion`), `c_havok_body_motion_state` (`getType`), `hkTransform` and
+  - `hkRigidBody` (`m_motion`), `c_havok_body_motion_state` (`kind_code`), `hkTransform` and
     `hkVector4`.
 - `src/unknown_1cec30.cpp`:
   - `s_component_transform_definition` (`model_index`),
@@ -160,7 +160,7 @@ range and then from inside it.
 | Component `+0x04` | `flag9` (bit 9) | When set, the function returns. Retail tests it with `shr eax, 9; test al, 1` (`0x1d3933`–`0x1d3936`), the form of a one-bit field. `0x1d6ad0` sets the bit when the component has exactly one rigid body and that body gives no node (no nodes, or a first link with node NONE), and clears it otherwise (`0x1d6b40`–`0x1d6b6b`) |
 | Component `+0x08` | `object_index` | The object (`0x1d394b`, `0x1d3b02`) |
 | Component `+0x70`, `+0x74` | `rigid_bodies.data`, `.size` | The outer loop (`0x1d3a20`, `0x1d3cd0`) |
-| Body `+0x40` | `rigid_body` | Its `m_motion` (`+0x3c`) for `getType` (`0x1d3a7d`–`0x1d3a86`), and its shape at `+0xc` for `get_frame` (`0x1d3b5d`–`0x1d3b73`) |
+| Body `+0x40` | `rigid_body` | Its `m_motion` (`+0x3c`) for `kind_code` (`0x1d3a7d`–`0x1d3a86`), and its shape at `+0xc` for `get_frame` (`0x1d3b5d`–`0x1d3b73`) |
 | Body `+0x48`, `+0x4c` | `nodes` (chars), `node_count` | The inner loop (`0x1d3a29`, `0x1d3a3b`, `0x1d3a60`, `0x1d3cb8`) |
 
 ### The object and its tags
@@ -218,11 +218,11 @@ above 0: `node_count` in `s_render_model_definition`
   - A third, `lea esp, [esp]` at `0x1d3c69`, runs: it falls into the ancestor
     loop.
 - **Stack depth.** A stack-depth walk finds the same depth at every join and
-  depth 0 at the `ret`, provided `getType` pops nothing and `get_frame` pops 8
+  depth 0 at the `ret`, provided `kind_code` pops nothing and `get_frame` pops 8
   (its two arguments).
   - With `get_frame` popping 0, 4 or 12, the depths disagree at the join
     `0x1d3c22`.
-  - With `getType` popping 4, they disagree at `0x1d3caa`.
+  - With `kind_code` popping 4, they disagree at `0x1d3caa`.
 
 ### Setup (`0x1d3920`–`0x1d3a17`)
 
@@ -251,7 +251,7 @@ For each body `i` (`L+0x1c`, with `L+0x24` = `i` × 0x60):
 **The skips.** It goes to the next entry (`0x1d3caa`) when:
 1. **No node.** The link `&bodies[nodes[j]]` (in `ebx`) has `node` NONE
    (`0x1d3a73`).
-2. **A keyframed body.** `rigid_body->m_motion->getType()` returns 6
+2. **A keyframed body.** `rigid_body->m_motion->kind_code()` returns 6
    (`0x1d3a86`–`0x1d3a8c`).
    - That is the body of the matched `havok_component_rigid_body_keyframed`
      (`0x1d0c00`, `src/unknown_1cec30.cpp:752`). Retail cannot tell whether
@@ -339,7 +339,7 @@ the recursive calls.
 | `0x142a60` | `int __fastcall function_142a60(transform4x3f const *a, transform4x3f const *b, transform4x3f *result)` | `src/unknown_1428b0.cpp:233` | `matched` | `a` in `ecx`, `b` in `edx`, `result` pushed |
 | `0x1d3d20` | `void function_1d3d20(s_havok_component *component, long node_index, dword *updated, dword const *restore, rigid_transform_scaled *orientations, long unknown)` | `src/unknown_1cec30.cpp:1665` | `todo` | The component in `ecx`, the other five pushed; it ends with `ret 0x14` |
 | `0x1d0c00`, inlined or written out | `bool havok_component_rigid_body_keyframed(long rigid_body_index, s_havok_component *component)` | `src/unknown_1cec30.cpp:752` | `matched` | Its body, at `0x1d3a7d`–`0x1d3a8c` |
-| `c_havok_body_motion_state` slot 6 | `virtual long getType(void) const { return 0; }` | `include/unknown_1cec30.h:127` | | `this` in `ecx`, nothing pushed |
+| `c_havok_body_motion_state` slot 6 | `virtual long kind_code(void) const { return 0; }` | `include/unknown_1cec30.h:127` | | `this` in `ecx`, nothing pushed |
 | shape slot 13 | `virtual s_component_child_frame *get_frame(long index, void *buffer) { return NULL; }`, in `c_component_child_frames` | `src/unknown_1cec30.cpp:2377` | | `this` in `ecx`, `index` and `buffer` pushed |
 
 `c_extent_shape` (`src/unknown_182d90.cpp:26`) names the same slot

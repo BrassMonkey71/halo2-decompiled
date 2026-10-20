@@ -71,7 +71,9 @@ __forceinline long part_key_2dfa20(kinds_2dfa20 const *const *kinds, chain_2dfa2
 	{
 		if ((bool)(((*kinds)->flags[link->object->slot_5()] >> 2) & 1))
 		{
-			return link->object->key(chain->part);
+			keyed_2df8f0 const *const object = link->object;
+			long const part = chain->part;
+			return object->key(part);
 		}
 		link = link->parent;
 	}
