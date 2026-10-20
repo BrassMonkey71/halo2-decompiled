@@ -41,7 +41,31 @@ class quantized_boxes_2dfcc0
 {
 public:
 	void function_2dfcc0(quantized_box_2dfcc0 *boxes, long count, unsigned short const *limits);
+	void function_2dfdc0(quantized_box_2dfcc0 *boxes, long count, unsigned short const *limits);
 };
+
+// takes two entries out of an axis's endpoints (src/unknown_2dffa0.cpp)
+class array_2dffa0
+{
+public:
+	long *data;
+	int size;
+
+	void remove_two(int first, int second);
+};
+
+// where `value` sits in the cell's list of boxes, or -1
+inline long find_box_2e29b0(cell_2e1090 const *cell, unsigned short value)
+{
+	for (long position = 0; position < cell->boxes.size; position++)
+	{
+		if (cell->boxes.data[position] == value)
+		{
+			return position;
+		}
+	}
+	return -1;
+}
 
 // @retail 0x2e24b0
 void class_2e1090::function_2e24b0(long *owner, bounds_2e0020 const *bounds, pairs_2e1090 *pairs)
@@ -184,4 +208,160 @@ void class_2e1090::function_2e24b0(long *owner, bounds_2e0020 const *bounds, pai
 			found >>= 1;
 		}
 	}
+}
+
+// takes a box out of the sweep: every box it overlaps loses its pair (or,
+// for a grid cell's box, the cell loses it), its endpoints leave each axis,
+// and the last box moves into its place
+// @retail 0x2e29b0
+void class_2e1090::function_2e29b0(long *owner, pairs_2e1090 *pairs)
+{
+	long const count = elements.size;
+	unsigned long const index = *owner;
+	element_2e1090 *box = &elements.data[index];
+	{
+		// one bit per box: set for the boxes whose x interval holds the
+		// box's lower x
+		longs_2e1ab0 overlaps((count >> 5) + 4);
+		long const x_high = box->slots[5];
+		long const x_low = box->slots[4];
+		long const x_low_value = axes[0].data[x_low].value;
+		long *bits = overlaps.data;
+		float *block = (float *)bits;
+		__m128 const zero = _mm_setzero_ps();
+		for (long blocks = count >> 7; blocks >= 0; blocks--)
+		{
+			_mm_store_ps(block, zero);
+			block += 4;
+		}
+		endpoint_2e0f80 *endpoint = axes[0].data + 1;
+		if (cells_used)
+		{
+			// start from the grid cell's box: the boxes it holds, less those
+			// that start inside it
+			long const grid_slot = x_low_value >> (16 - cell_shift);
+			if (grid_slot > 0)
+			{
+				cell_2e1090 *cell = &cells[grid_slot - 1];
+				toggle_bit_2e1090(bits, cell->box);
+				unsigned short *held = cell->boxes.data;
+				for (long remaining = cell->boxes.size - 1; remaining >= 0; remaining--)
+				{
+					toggle_bit_2e1090(bits, *held);
+					held++;
+				}
+				element_2e1090 *cell_box = &elements.data[cell->box];
+				for (endpoint_2e0f80 *inside = &axes[0].data[cell_box->slots[4] + 1]; inside < &axes[0].data[cell_box->slots[5]]; inside++)
+				{
+					if ((inside->value & 1) == 0)
+					{
+						clear_bit_2e1090(bits, inside->id);
+					}
+				}
+				endpoint = &axes[0].data[cell_box->slots[4] + 1];
+			}
+		}
+		for (endpoint_2e0f80 *end = &axes[0].data[x_low]; endpoint < end; endpoint++)
+		{
+			toggle_bit_2e1090(bits, endpoint->id);
+		}
+		endpoint++;
+		for (endpoint_2e0f80 *end = &axes[0].data[x_high]; endpoint < end; endpoint++)
+		{
+			if ((endpoint->value & 1) == 0)
+			{
+				toggle_bit_2e1090(bits, endpoint->id);
+			}
+		}
+
+		// of those, the ones whose y and z intervals overlap too
+		element_2e1090 *group = elements.data;
+		unsigned long *words_end = (unsigned long *)bits + (elements.size >> 5) + 1;
+		for (unsigned long *word = (unsigned long *)bits; word < words_end; word++, group += 32)
+		{
+			unsigned long found = *word;
+			element_2e1090 *other = group;
+			while (found)
+			{
+				if ((found & 0xff) == 0)
+				{
+					other += 8;
+					found >>= 8;
+					continue;
+				}
+				if (found & 1)
+				{
+					unsigned long const *box_pairs = (unsigned long const *)box->slots;
+					unsigned long const *other_pairs = (unsigned long const *)other->slots;
+					unsigned long const apart = ((box_pairs[1] - other_pairs[0]) | (other_pairs[1] - box_pairs[0])) & 0x80008000;
+					if (!apart)
+					{
+						long const other_owner = other->owner;
+						if ((other_owner & 1) == 0)
+						{
+							pair_2e1090 pair;
+							pair.first = owner;
+							pair.second = other_owner;
+							pairs->append(pair);
+						}
+						else
+						{
+							cell_2e1090 *cell = (cell_2e1090 *)((char *)cells + (other_owner & ~1));
+							long const position = find_box_2e29b0(cell, (unsigned short)index);
+							cell->boxes.size--;
+							cell->boxes.data[position] = cell->boxes.data[cell->boxes.size];
+						}
+					}
+				}
+				other++;
+				found >>= 1;
+			}
+		}
+	}
+
+	element_2e1090 *boxes = elements.data;
+	((array_2dffa0 *)&axes[0])->remove_two(box->slots[4], box->slots[5]);
+	((array_2dffa0 *)&axes[1])->remove_two(box->slots[0], box->slots[2]);
+	((array_2dffa0 *)&axes[2])->remove_two(box->slots[1], box->slots[3]);
+	((quantized_boxes_2dfcc0 *)this)->function_2dfdc0((quantized_box_2dfcc0 *)boxes, count, box->slots);
+
+	// the last box moves into the freed place
+	if (index < (unsigned long)(count - 1))
+	{
+		*box = elements.data[count - 1];
+		axes[0].data[box->slots[4]].id = (unsigned short)index;
+		axes[0].data[box->slots[5]].id = (unsigned short)index;
+		long const moved_owner = box->owner;
+		if ((moved_owner & 1) == 0)
+		{
+			axes[1].data[box->slots[0]].id = (unsigned short)index;
+			axes[1].data[box->slots[2]].id = (unsigned short)index;
+			axes[2].data[box->slots[1]].id = (unsigned short)index;
+			axes[2].data[box->slots[3]].id = (unsigned short)index;
+			*(long *)box->owner = index;
+		}
+		else
+		{
+			((cell_2e1090 *)((char *)cells + (moved_owner & ~1)))->box = (unsigned short)index;
+		}
+		if (cells_used && (box->owner & 1) == 0)
+		{
+			// the grid cells holding the moved box hold it under its new index
+			endpoint_2e0f80 *x_axis = axes[0].data;
+			unsigned short const x_low_slot = box->slots[4];
+			unsigned short const shift = (unsigned short)(16 - cell_shift);
+			long first_cell = x_axis[x_low_slot].value >> shift;
+			if (first_cell > 0 && elements.data[cells[first_cell - 1].box].slots[5] > x_low_slot)
+			{
+				first_cell--;
+			}
+			long const last_cell = (x_axis[box->slots[5]].value >> shift) - 1;
+			for (long cell_slot = first_cell; cell_slot <= last_cell; cell_slot++)
+			{
+				cell_2e1090 *cell = &cells[cell_slot];
+				cell->boxes.data[find_box_2e29b0(cell, (unsigned short)(count - 1))] = (unsigned short)index;
+			}
+		}
+	}
+	elements.resize(count - 1);
 }

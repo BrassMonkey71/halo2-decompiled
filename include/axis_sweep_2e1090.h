@@ -4,7 +4,7 @@
 // box's corners are quantized to 16 bits; each axis keeps the boxes'
 // endpoints sorted, and each box records where its endpoints sit. An
 // optional grid of cells, each standing for a box, holds the boxes inside it.
-// (src/unknown_2e1020.cpp, src/unknown_2e24b0.cpp)
+// (src/unknown_2e1020.cpp, src/unknown_2e24b0.cpp, which also removes a box)
 #include <xmmintrin.h>
 #include "growable_array_2d91d0.h"
 
@@ -88,12 +88,14 @@ public:
 	long cells_used;
 	long cell_shift;
 	cell_2e1090 *cells;
+	float field_7c;
 
 	void function_2e0020(element_2e1090 const *element, bounds_2e0020 *bounds);
 	void function_2e1020(bounds_array_2e1020 *out);
 	void function_2e1090(long const *index, bounds_2e0020 *bounds);
 	void function_2e10b0(bounds_2e0020 const *bounds, pairs_2e1090 *pairs);
 	void function_2e24b0(long *owner, bounds_2e0020 const *bounds, pairs_2e1090 *pairs);
+	void function_2e29b0(long *owner, pairs_2e1090 *pairs);
 };
 
 // the quantizing constants: the corner words' ceiling and floor, and the

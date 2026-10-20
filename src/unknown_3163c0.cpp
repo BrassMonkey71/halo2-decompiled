@@ -1,12 +1,16 @@
-// @flags /O2 /GL-
+// @flags /O2 /GL- /GX
 // Havok (third-party physics library): searching for the time at which two
 // moving bodies first come within a tolerance. Both bodies are moved to a
 // common time and their contacts collected again; the time is then halved
 // back and forth until the step falls below the world's smallest step. When
 // no time leaves them clear, the pair is marked and its contacts are
-// collected once more with a very low tolerance. (Its own file, not
-// src/unknown_3169c0.cpp beside it.)
+// collected once more with a very low tolerance. (Not in
+// src/unknown_3169c0.cpp beside it.) With it, the smallest distance among
+// collected contacts, and the narrow phase that runs the search for each pair
+// (src/unknown_317c00.cpp has the other).
 #include <math.h>
+#include "reference_counted_2d88a0.h"
+#include "timer_mark_2ebc80.h"
 
 // a body's motion: its time, and the slot that moves it to another time
 class motion_316460
@@ -84,6 +88,16 @@ struct output_316460
 	contacts_316460 *contacts;
 };
 
+// takes the contacts collected for a pair
+class handler_317950
+{
+public:
+	virtual void slot_0() {}
+	virtual void slot_1() {}
+	virtual void slot_2() {}
+	virtual void handle(void *first, void *second, input_316460 *input, output_316460 *output) {}
+};
+
 // collects a pair's contacts
 class collector_316460
 {
@@ -93,6 +107,9 @@ public:
 	virtual void slot_2() {}
 	virtual void slot_3() {}
 	virtual void collect(void *first, void *second, input_316460 *input, output_316460 *output) {}
+
+	long field_4;
+	handler_317950 *handler;
 };
 
 struct pair_316460
@@ -112,7 +129,10 @@ struct search_state_316460
 
 struct world_316460
 {
-	char unknown00[0x24c];
+	char unknown00[0x244];
+	// the time of a pair's first step, and the length of one step
+	float first_step_time;
+	float step_length;
 	float smallest_step;
 	char unknown250[4];
 	search_state_316460 *state;
@@ -146,6 +166,22 @@ public:
 	char unknown00[0x20];
 	world_316460 *world;
 };
+
+// the smallest distance among the collected contacts (the largest float when
+// there are none)
+// @retail 0x3163c0
+static float __cdecl function_3163c0(output_316460 const *output)
+{
+	float smallest = 3.40282347e+38f;
+	for (long index = 0; index < output->contacts->size; index++)
+	{
+		if (output->contacts->data[index].distance < smallest)
+		{
+			smallest = output->contacts->data[index].distance;
+		}
+	}
+	return smallest;
+}
 
 // @retail 0x316460
 void time_search_316460::function_316460(input_316460 *input, pair_316460 *pair, output_316460 *output, float tolerance)
@@ -242,4 +278,123 @@ void time_search_316460::function_316460(input_316460 *input, pair_316460 *pair,
 			pair->collector->collect((char *)pair->first - 0x10, (char *)pair->second - 0x10, input, output);
 		}
 	}
+}
+
+struct element_317060
+{
+	char bytes[0x30];
+};
+
+// an array of 48-byte elements whose storage comes from the allocator's
+// stack area (src/unknown_317060.cpp)
+struct array_317060
+{
+	element_317060 *data;
+	long size;
+	unsigned long capacity_and_flags;
+
+	array_317060() : data(0), size(0), capacity_and_flags(0x80000000) {}
+	~array_317060()
+	{
+		if ((capacity_and_flags & 0x80000000) == 0)
+		{
+			g_memory_2d88a0->release_block(data, (capacity_and_flags & 0x7fffffff) * sizeof(element_317060), 0x12);
+		}
+	}
+};
+
+struct stack_array_317060 : array_317060
+{
+	element_317060 *stack_block;
+	long stack_capacity;
+
+	stack_array_317060(long capacity);
+	~stack_array_317060();
+};
+
+// the narrow phase (src/unknown_317c00.cpp), seen here as the time search it
+// also is: its pairs follow at +0x68
+class narrow_phase_317c00 : public time_search_316460
+{
+public:
+	char unknown24[0x68 - 0x24];
+	pair_316460 *pairs;
+	long pair_count;
+
+	void function_317950(void const *input);
+};
+
+// the narrow phase that searches for each pair's time of contact: a pair's
+// result counts the steps it has advanced (negative once it has given up);
+// its contacts are collected at that step's time, and the search moves on a
+// step while one is too close, or back a step when every contact is clear of
+// the earlier step's time too; the contacts then go to the agent's handler
+// @retail 0x317950
+void narrow_phase_317c00::function_317950(void const *input)
+{
+	timer_mark_2ebc80 *mark = (timer_mark_2ebc80 *)g_480154;
+	bool const room = (char *)mark < g_480158;
+	if (room)
+	{
+		mark->label = "TtNarrowPhase";
+		unsigned long time;
+		__asm
+		{
+			rdtsc
+			mov time, eax
+		}
+		mark->time = time;
+		g_480154 = (char *)(mark + 1);
+	}
+	{
+		output_316460 output;
+		stack_array_317060 results(0x40);
+		pair_316460 *pair = pairs;
+		int const count = pair_count;
+		output.contacts = (contacts_316460 *)&results;
+		for (int index = count - 1; index >= 0; index--, pair++)
+		{
+			if (pair->collector != 0)
+			{
+				output.contacts->size = 0;
+				long steps = pair->result;
+				if (steps >= 0)
+				{
+					float step_time = steps * world->step_length + world->first_step_time;
+					world->state->mode = 2;
+					world->state->tolerance = step_time;
+					pair->collector->collect((char *)pair->first - 0x10, (char *)pair->second - 0x10, (input_316460 *)input, &output);
+					if (classify(&output, step_time) != 0)
+					{
+						if (pair->result > 0)
+						{
+							long earlier = pair->result - 1;
+							float earlier_time = earlier * world->step_length + world->first_step_time;
+							if (function_3163c0(&output) > earlier_time)
+							{
+								pair->result = earlier;
+							}
+						}
+					}
+					else
+					{
+						pair->result++;
+						function_316460((input_316460 *)input, pair, &output, step_time + world->step_length);
+					}
+				}
+				else
+				{
+					world->state->mode = 2;
+					world->state->tolerance = -1000.0f;
+					pair->collector->collect((char *)pair->first - 0x10, (char *)pair->second - 0x10, (input_316460 *)input, &output);
+					if (pair->result == -2 && classify(&output, 0.0f) != 0)
+					{
+						pair->result = 0;
+					}
+				}
+				pair->collector->handler->handle((char *)pair->first - 0x10, (char *)pair->second - 0x10, (input_316460 *)input, &output);
+			}
+		}
+	}
+	timer_add_2ebc80("Et");
 }
