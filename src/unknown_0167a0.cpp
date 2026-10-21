@@ -780,6 +780,15 @@ void function_17170(byte *state, word const *range)
 
 dword __cdecl pack_color4f(color4f const *color);
 
+static inline real unit_clamp_176a0(real value)
+{
+    if (0.0f > value)
+        value = 0.0f;
+    else if (value > 1.0f)
+        value = 1.0f;
+    return value;
+}
+
 // @retail 0x176a0
 void function_176a0(byte *state, s_packed_shader_range const *range)
 {
@@ -795,14 +804,14 @@ void function_176a0(byte *state, s_packed_shader_range const *range)
             real values[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
             function_1b580(parameter, entry[2] & 7, (long)state, (entry[2] >> 3) & 7, values);
             color4f color;
-            color.red = 0.0f > values[0] ? 0.0f : values[0] > 1.0f ? 1.0f : values[0];
-            color.green = 0.0f > values[1] ? 0.0f : values[1] > 1.0f ? 1.0f : values[1];
-            color.blue = 0.0f > values[2] ? 0.0f : values[2] > 1.0f ? 1.0f : values[2];
-            color.alpha = 0.0f > values[3] ? 0.0f : values[3] > 1.0f ? 1.0f : values[3];
+            color.red = unit_clamp_176a0(values[0]);
+            color.green = unit_clamp_176a0(values[1]);
+            color.blue = unit_clamp_176a0(values[2]);
+            color.alpha = unit_clamp_176a0(values[3]);
             dword value = pack_color4f(&color);
             word packed = *(word const *)entry;
             long slot = packed & 7;
-            word remapping = *(word *)(*(byte **)(state + 0x24) + 0xf6);
+            long remapping = *(word *)(*(byte **)(state + 0x24) + 0xf6);
             byte const *mapping = *(byte **)(*(byte **)(state + 0x20) + 0x24) + ((remapping & 0x1ff) + slot) * 4;
             short source = *(short const *)mapping;
             if (!(remapping & 0xfe00) || source == NONE || ((packed >> 3) & 7) == *(long *)(state + 0x300 + source * 4))
