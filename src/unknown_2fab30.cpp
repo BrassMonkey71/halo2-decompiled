@@ -25,13 +25,8 @@ void class_2eab70::function_2fab30(void const *a, void const *b, void const *inp
 // @retail 0x2fab70
 void __cdecl function_2fab70(void const *a, void const *b, void const *input, void *collector)
 {
-	wrapper_2f9950 const *wrapper = (wrapper_2f9950 const *)((body_2ea940 const *)b)->shape;
-	void const *placement = ((body_2ea940 const *)b)->placement;
-	body_2ea940 child;
-	child.placement = placement;
-	child.parent = (body_2ea940 const *)b;
-	child.shape = wrapper->child;
-	child.key = ((body_2ea940 const *)b)->key;
+	body_2ea940 const *side = (body_2ea940 const *)b;
+	body_2ea940 child(side, side->placement, (wrapper_2f9950 const *)side->shape);
 	function_2ead90(a, &child, input, collector);
 }
 

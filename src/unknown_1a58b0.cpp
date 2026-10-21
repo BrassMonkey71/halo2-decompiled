@@ -1597,9 +1597,7 @@ bool function_1a5e40(long object_index, bool alternate, long marker_index, s_tar
 	point3f const *origin, vector3f const *direction, s_sort_candidate_view *candidate)
 {
 	s_candidate_object_view *object = (s_candidate_object_view *)OBJECT_HEADER(object_index)->object;
-	/* the direction stays in its stack slot, as in retail */
-	vector3f const *const *local_0 = &direction;
-	volatile bool result = false;
+	bool result = false;
 	candidate->object_index = object_index;
 	candidate->marker_index = marker_index;
 	candidate->maximum_distance = 0.0f;
@@ -1650,8 +1648,11 @@ bool function_1a5e40(long object_index, bool alternate, long marker_index, s_tar
 	candidate->direction = candidate->offset;
 	candidate->distance = function_30bf0(&candidate->direction);
 	candidate->alternate = alternate;
-	real cosine = dot3f(&candidate->direction, *local_0);
-	candidate->angle = function_50650(-1.0f > cosine ? -1.0f : cosine > 1.0f ? 1.0f : cosine);
+	real cosine = dot3f(&candidate->direction, direction);
+	if (-1.0f > cosine)
+		candidate->angle = function_50650(-1.0f);
+	else
+		candidate->angle = function_50650(cosine > 1.0f ? 1.0f : cosine);
 	return true;
 }
 

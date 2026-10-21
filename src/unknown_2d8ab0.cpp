@@ -15,13 +15,25 @@ struct name_2d89d0
 ELEMENTS_2D91D0(names_2d89d0, name_2d89d0);
 ELEMENTS_2D91D0(bytes_2d89d0, char);
 
-// room for `count` more bytes at the end of the block, and where they start
-__forceinline char *expand_2d8ab0(bytes_2d89d0 &bytes, long count)
+// what comes before the saved stream
+struct stream_header_2d8ab0
+{
+	char const *label;
+	char const *field_20;
+	char const *field_24;
+	long field_18;
+	long field_1c;
+};
+
+// room for the header and the `length` bytes that follow it, and where they
+// start
+__forceinline char *expand_2d8ab0(bytes_2d89d0 &bytes, long length)
 {
 	long offset = bytes.size;
-	bytes.ensure_capacity(offset + count);
+	long needed = offset + length + (long)sizeof(stream_header_2d8ab0) + 4;
+	bytes.ensure_capacity(needed);
 	char *start = bytes.data + offset;
-	bytes.size = offset + count;
+	bytes.size = needed;
 	return start;
 }
 
@@ -37,16 +49,6 @@ public:
 // the labels that open and close a saved stream
 char const *g_461e14 = "Ii";
 char const *g_461e18 = "Fd";
-
-// what comes before the saved stream
-struct stream_header_2d8ab0
-{
-	char const *label;
-	char const *field_20;
-	char const *field_24;
-	long field_18;
-	long field_1c;
-};
 
 class c_2d8ab0 : public strings_2d89d0
 {
@@ -86,7 +88,8 @@ void c_2d8ab0::function_2d8ab0()
 		{
 			// two strings, one after the other
 			unsigned int first = string_length_2d8d80(label);
-			unsigned int second = string_length_2d8d80(*(char const **)mark + first + 1);
+			char const *text = *(char const **)mark;
+			unsigned int second = string_length_2d8d80(text + first + 1);
 			function_2d89d0(*(char const **)mark, first + second + 2);
 			mark += 12;
 			break;
@@ -118,7 +121,7 @@ void c_2d8ab0::function_2d8ab0()
 	{
 		return;
 	}
-	stream_header_2d8ab0 *header = (stream_header_2d8ab0 *)expand_2d8ab0(bytes, sizeof(stream_header_2d8ab0) + 4 + length);
+	stream_header_2d8ab0 *header = (stream_header_2d8ab0 *)expand_2d8ab0(bytes, length);
 	header->label = g_461e14;
 	header->field_20 = field_20;
 	header->field_24 = field_24;

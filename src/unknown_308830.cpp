@@ -177,6 +177,7 @@ struct matrix_308c20
 	vector_308c20 rows[4];
 };
 
+// score 6 (was 6): retail stores rows 0 and 1 in the middle of the third cross product; ours stores them after it.
 // @retail 0x308c20
 void __cdecl function_308c20(__m128 const *corners, weights_308c20 const *weights, matrix_308c20 *out, __m128 *normal)
 {

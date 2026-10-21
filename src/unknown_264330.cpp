@@ -494,7 +494,7 @@ void function_262ba0(long actor_index)
 					*(short *)(p + 0x24) = 2;
 					if (tracking) *(short *)((byte *)tracking + 0xa0) = (short)real_to_long((real)g_510c54->field_2_3 * 0.33f);
 				}
-				else goto release_tracking;
+				else function_25c820(index, actor_index);
 			}
 			break;
 		case 3:

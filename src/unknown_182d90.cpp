@@ -83,8 +83,7 @@ real __stdcall function_182d90(c_extent_shape *shape, real radius,
 	}
 	else
 	{
-		long type = shape->shape_kind();
-		if ((type <= 11 && type > 9) || type == 2)
+		if (shape_kind_is_list(shape->shape_kind()))
 		{
 			for (long key = shape->first_key(); key != NONE; key = shape->next_key(key))
 			{

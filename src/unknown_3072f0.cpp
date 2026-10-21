@@ -137,6 +137,8 @@ public:
 	void function_3072f0(class_308180 *manifold);
 };
 
+// not matched yet: retail keeps the manifold in ebx and the entry pointer in
+// edi, ours keeps the entry pointer in ebx and the manifold in edi
 // @retail 0x3072f0
 void box_pair_3072f0::function_3072f0(class_308180 *manifold)
 {

@@ -155,7 +155,7 @@ void function_1eb6f0(s_ease_input *input, s_ease_state *state, s_ease_output *ou
 	vector3f velocity = input->velocity;
 	vector3f reference = input->reference_velocity;
 	vector3f object_velocity;
-	bool relative = function_109fd0(input->object_index, &object_velocity);
+	long relative = function_109fd0(input->object_index, &object_velocity);
 	if (relative == true)
 	{
 		reference.i -= object_velocity.i;
