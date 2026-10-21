@@ -116,6 +116,7 @@ bool function_1f3230(long actor_index, real radius)
 	if (target->output_index == NONE)
 	{
 		vector3d_from_points3d(&target->point, position, &delta);
+		distance_squared = length_sq3f(&delta);
 	}
 	else
 	{
@@ -123,32 +124,28 @@ bool function_1f3230(long actor_index, real radius)
 
 		function_210850(target, &point);
 		vector3d_from_points3d(&point, position, &delta);
+		distance_squared = length_sq3f(&delta);
 	}
-	distance_squared = delta.k * delta.k + delta.j * delta.j + delta.i * delta.i;
 	bool result = false;
 
 	if (actor->unknown26c == NONE && actor->unknown4ae)
 	{
 		if (actor->path_index == actor->path_count - 1)
 		{
-			s_type_c3b527 *previous;
 			vector3f segment;
 			vector3f offset;
 
 			if (actor->path_index - 1 >= 0)
-				previous = &actor->path[actor->path_index - 1].node;
+				function_210be0(&actor->path[actor->path_index - 1].node, target, &segment);
 			else
-				previous = &actor->path_start;
-
-			function_210be0(previous, target, &segment);
+				function_210be0(&actor->path_start, target, &segment);
 			function_210c90(position, target, &offset);
-			if (dot3f(&offset, &segment) < 0.0f)
-				goto local_0;
+			result = dot3f(&offset, &segment) < 0.0f;
 		}
 	}
 	else if (radius * radius > distance_squared)
 	{
-		goto local_0;
+		result = true;
 	}
 	else if (actor->unknown4ae)
 	{
@@ -160,14 +157,10 @@ bool function_1f3230(long actor_index, real radius)
 
 			function_210c90(position, target, &offset);
 			if (dot3f(&unit->velocity, &offset) < 0.0f)
-				goto local_0;
+				result = true;
 		}
 	}
 
-	goto local_1;
-local_0:
-	result = true;
-local_1:
 	return result;
 }
 

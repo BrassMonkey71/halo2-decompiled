@@ -28,10 +28,11 @@ void class_3115a0::function_3115a0(description_3115a0 *description) const
 	description->field_a4 = motion->field_14;
 	description->field_a8 = motion->field_18;
 	description->field_b0 = field_50;
+	query_3115a0 *const asker = query;
 	int allowed;
-	if (query)
+	if (asker)
 	{
-		allowed = query->slot_7();
+		allowed = asker->slot_7();
 	}
 	else
 	{

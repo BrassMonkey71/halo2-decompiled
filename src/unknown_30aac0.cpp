@@ -67,6 +67,9 @@ void face_30aac0::function_30a9d0()
 	distance = d;
 }
 
+// score 28 (was 81): retail keeps the face in esi and the edge counter in edi
+// and the done flag in an aligned byte slot at [esp+0x18], ours keeps the face
+// in edi, the counter in esi and the flag in the padding at [esp+0x1b]
 // @retail 0x30aac0
 face_30aac0 *class_30a810::function_30aac0(face_30aac0 *start)
 {
@@ -106,10 +109,11 @@ face_30aac0 *class_30a810::function_30aac0(face_30aac0 *start)
 				}
 			}
 		}
-		if (i == 3)
+		if (i != 3)
 		{
-			break;
+			continue;
 		}
+		break;
 	}
 	return face;
 }

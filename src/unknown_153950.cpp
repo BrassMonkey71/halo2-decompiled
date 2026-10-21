@@ -344,21 +344,27 @@ void function_1544e0(transform4x3f *matrix, real distance, real angle)
 
 		real s = (real)sin(angle);
 		real c = (real)cos(angle);
-		real t = 1.0f - c;
-
 		real ii = axis.i * axis.i;
-		real jj = axis.j * axis.j;
 		real kk = axis.k * axis.k;
+		real ks = axis.k * s;
+		real jj = axis.j * axis.j;
 		matrix->scale = 1.0f;
+		real is = axis.i * s;
 		matrix->forward.i = (1.0f - ii) * c + ii;
-		matrix->forward.j = t * axis.i * axis.j + axis.k * s;
-		matrix->forward.k = t * axis.k * axis.i - axis.j * s;
-		matrix->left.i = t * axis.i * axis.j - axis.k * s;
+		real t = 1.0f - c;
+		real js = axis.j * s;
+		real tij = t * axis.i * axis.j;
+		matrix->forward.j = tij + ks;
+		matrix->left.i = tij - ks;
 		matrix->left.j = (1.0f - jj) * c + jj;
-		matrix->left.k = t * axis.k * axis.j + axis.i * s;
-		matrix->up.i = t * axis.k * axis.i + axis.j * s;
-		matrix->up.j = t * axis.k * axis.j - axis.i * s;
+		real tk = t * axis.k;
+		real tki = tk * axis.i;
+		matrix->forward.k = tki - js;
+		matrix->up.i = tki + js;
 		matrix->up.k = (1.0f - kk) * c + kk;
+		real tkj = tk * axis.j;
+		matrix->up.j = tkj - is;
+		matrix->left.k = tkj + is;
 		matrix->position.z = 0.0f;
 		matrix->position.y = 0.0f;
 		matrix->position.x = 0.0f;

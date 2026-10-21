@@ -382,8 +382,13 @@ void function_15c6f0()
 					if (!(player[2] & 2))
 					{
 						function_1968b0(i, NONE, 3, 1);
-						if (!preserve && function_23f260(g_4e6948->flag1128 != 0, index, NONE) / 2 == 0)
-							function_1968b0(i, NONE, 4, 1);
+						if (!preserve)
+						{
+							bool flag = g_4e6948->flag1128;
+
+							if (function_23f260(flag != 0, index, NONE) / 2 == 0)
+								function_1968b0(i, NONE, 4, 1);
+						}
 					}
 				}
 			}
