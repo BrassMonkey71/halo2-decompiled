@@ -341,12 +341,15 @@ public:
 	void function_30cb70(s_30cb70 arg_0);
 };
 
-// score 35 (was 372): the call to 0x30cb70 passes its one-byte argument
+// score 35 (was 35): the call to 0x30cb70 passes its one-byte argument
 // through a stack copy where retail pushes it zero-extended (retail's callee
 // takes a plain byte; the existing declaration takes s_30cb70), the 0.99 and
 // the reciprocal at 0x178 and 0x180 are copied on to 0x1a8 and 0x1ac from
 // the FPU and a register where retail reloads them, and the flag at 0x12c is
-// cleared after the last object is kept rather than before.
+// cleared after the last object is kept rather than before. Copying the two
+// through integer casts, one-float structs or memcpy gives retail's reloads but
+// lets the integer stores move ahead of them (score 52); a constructor on
+// s_30cb70 keeps the stack copy, and the permuter found nothing.
 // @retail 0x3101c0
 c_3101c0::c_3101c0(s_3111d0 const &description, long version)
 {
