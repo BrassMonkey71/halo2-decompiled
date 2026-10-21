@@ -87,12 +87,20 @@ void c_4way_signin_screen::v3()
         c_text_widget_45a5e0 *text = (c_text_widget_45a5e0 *)find_child(6, (short)connection, false);
         if (text)
         {
-            if (connected && signed_in)
-                text->value6e = false;
+            if (connected)
+            {
+                if (signed_in)
+                    text->value6e = false;
+                else
+                {
+                    text->value6e = true;
+                    text->function_253b1a(0xf00028a);
+                }
+            }
             else
             {
                 text->value6e = true;
-                text->function_253b1a(connected ? 0xf00028a : 0x1100028b);
+                text->function_253b1a(0x1100028b);
             }
         }
         text = (c_text_widget_45a5e0 *)find_child(6, (short)warning, false);
