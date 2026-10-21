@@ -29,6 +29,25 @@ struct array_2e9530
 	}
 };
 
+// an array of the same elements whose storage comes from the allocator's
+// stack area, given back when it goes
+struct stack_elements_2e93e0 : array_2e9530
+{
+	element_2e9530 *stack_block;
+	long stack_capacity;
+
+	stack_elements_2e93e0(long capacity);
+	~stack_elements_2e93e0();
+};
+
+// orders keys from low to high
+struct key_order_2e9360
+{
+};
+
+// sorts the keys from low to high (both included)
+void __cdecl function_2e9360(unsigned long *keys, int low, int high, key_order_2e9360 order);
+
 class counted_2e9530
 {
 public:
