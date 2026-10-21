@@ -332,13 +332,14 @@ void __stdcall function_2b0565(c_class_2b01eb *widget, long frame)
         real depth = widget->get_depth();
         word label[16];
         unicode_string_snprintf(label, 16, (word const *)L"%d", widget->value0a);
-        text.setup(label, 0, g_46873c, 0, NONE, 0, NONE);
+        c_class_22cc8e *label_text = &text;
+        label_text->setup(label, 0, g_46873c, 0, NONE, 0, NONE);
         s_widget_bounds outline;
         outline.left = widget->bounds.left;
         outline.right = widget->bounds.right;
         outline.top = widget->bounds.top;
         outline.bottom = widget->bounds.bottom;
-        function_22cd48(&text, (short_rectangle2d const *)&outline, (short_rectangle2d const *)&outline,
+        function_22cd48(label_text, (short_rectangle2d const *)&outline, (short_rectangle2d const *)&outline,
             depth, alpha, (short_rectangle2d const *)frame);
         outline.left += x;
         outline.right += x;
@@ -6070,12 +6071,12 @@ void c_class_2b0b5e::v4(long frame)
     {
         s_widget_bounds const *local_00ace5 = (s_widget_bounds const *)frame;
         short_rectangle2d const *screen = (short_rectangle2d const *)frame;
-        long half_width = (local_00ace5->right - local_00ace5->left) >> 1;
-        long half_height = (local_00ace5->bottom - local_00ace5->top) >> 1;
-        long left = half_width + ((s_model_render_definition_2b const *)definition)->bounds.left;
-        long top = half_height - ((s_model_render_definition_2b const *)definition)->bounds.top;
-        long right = half_width + ((s_model_render_definition_2b const *)definition)->bounds.right;
-        long bottom = half_height - ((s_model_render_definition_2b const *)definition)->bounds.bottom;
+        long width = local_00ace5->right - local_00ace5->left;
+        long height = local_00ace5->bottom - local_00ace5->top;
+        long left = (width >> 1) + ((s_model_render_definition_2b const *)definition)->bounds.left;
+        long top = (height >> 1) - ((s_model_render_definition_2b const *)definition)->bounds.top;
+        long right = (width >> 1) + ((s_model_render_definition_2b const *)definition)->bounds.right;
+        long bottom = (height >> 1) - ((s_model_render_definition_2b const *)definition)->bounds.bottom;
         real degrees = 1.0f > ((s_model_render_definition_2b const *)definition)->angle ? 1.0f :
             (((s_model_render_definition_2b const *)definition)->angle > 359.0f ? 359.0f : ((s_model_render_definition_2b const *)definition)->angle);
         real angle = degrees * 0.008726646192371845f;
@@ -6105,13 +6106,14 @@ void c_class_2b0b5e::v4(long frame)
             real alpha = animation.scale;
             word label[16];
             unicode_string_snprintf(label, 16, (word const *)L"%d", value0a);
-            text.setup(label, 0, g_46871c, 0, NONE, 0, NONE);
+            c_class_22cc8e *label_text = &text;
+            label_text->setup(label, 0, g_46871c, 0, NONE, 0, NONE);
             s_widget_bounds outline;
             outline.left = bounds.left;
             outline.right = bounds.right;
             outline.top = bounds.top;
             outline.bottom = bounds.bottom;
-            function_22cd48(&text, (short_rectangle2d const *)&outline, (short_rectangle2d const *)&outline,
+            function_22cd48(label_text, (short_rectangle2d const *)&outline, (short_rectangle2d const *)&outline,
                 depth, alpha, screen);
             outline.left += x;
             outline.right += x;
