@@ -2399,11 +2399,12 @@ void function_100520(long weapon_index, s_weapon_status *status)
 	{
 		bool active = false;
 		s_weapon_magazine_definition *magazine = &definition->magazines[i];
-		long state = WEAPON_GET(weapon_index)->magazines[i].state;
+		s_weapon *current = WEAPON_GET(weapon_index);
+		long state = current->magazines[i].state;
 		if (state > 0 && state <= 6)
 			active = true;
 		status->magazines[i].active = active;
-		status->magazines[i].idle = state == 0;
+		status->magazines[i].idle = current->magazines[i].state == 0;
 		status->magazines[i].loaded = WEAPON_GET(weapon_index)->magazines[i].rounds_loaded;
 		status->magazines[i].loaded_maximum = magazine->rounds_loaded_maximum;
 		status->magazines[i].unloaded = (short)function_1008f0(i, weapon_index, false);

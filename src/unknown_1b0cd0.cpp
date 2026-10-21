@@ -99,6 +99,11 @@ static inline real distance2d(point2f const *a, point2f const *b)
 	return (real)sqrt(distance);
 }
 
+static inline real dot_product2d(vector2f const *a, vector2f const *b)
+{
+	return a->i * b->i + a->j * b->j;
+}
+
 short __stdcall function_1b0cd0(long actor_index);
 bool __stdcall function_1b13b0(long actor_index, s_slot *slot, long index);
 
@@ -410,15 +415,10 @@ bool function_1b1970(long actor_index, short mode, vector2f const *forward,
 	return result;
 }
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
 // @retail 0x1b1a90
 void __stdcall function_1b1a90(long actor_index, s_slot *slot, s_slot_target_list *list)
 {
-	long actor_offset = (actor_index & 0xffff) * sizeof(s_actor_view);
-	byte *actor_base = g_4f55f0->data;
-	_ReadWriteBarrier();
-#define actor (*(s_actor_view *)(actor_base + actor_offset))
+	s_actor_view *actor = actor_get(actor_index);
 
 	if (list->entries[0].actor_index == NONE)
 		return;
@@ -437,71 +437,68 @@ void __stdcall function_1b1a90(long actor_index, s_slot *slot, s_slot_target_lis
 	{
 		if (!state->unknown0c)
 		{
-			if (actor.unknown50c)
+			if (actor->unknown50c)
 				function_1f4280(actor_index);
 			if (leader->unknown5d0)
 			{
-				point2f point;
+				point3f point;
 
-				if (function_1b0e40(state->position_index, (point2f *)&leader->position, &forward, &point,
+				if (function_1b0e40(state->position_index, (point2f *)&leader->position, &forward, (point2f *)&point,
 					list->mode, &left))
 				{
 					point2f direction;
 
-					direction.x = point.x - actor.position.x;
-					direction.y = point.y - actor.position.y;
+					direction.x = point.x - actor->position.x;
+					direction.y = point.y - actor->position.y;
 					normalize2d(&direction);
-					if (leader->unknown290.i * direction.x + leader->unknown290.j * direction.y < 0.5f)
+					if (dot_product2d((vector2f const *)&leader->unknown290, (vector2f const *)&direction) < 0.5f)
 					{
 						function_1f4280(actor_index);
 					}
 					else
 					{
-						actor.unknown456 = true;
-						actor.unknown458.i = direction.x;
-						actor.unknown458.j = direction.y;
-						actor.unknown458.k = 0.0f;
+						actor->unknown456 = true;
+						actor->unknown458.i = direction.x;
+						actor->unknown458.j = direction.y;
+						actor->unknown458.k = 0.0f;
 					}
 				}
 			}
 		}
-		if (actor.unknown086 >= 7)
+		if (actor->unknown086 >= 7)
 		{
 			if (state->position_index != NONE)
-				actor.unknown488 = function_1b1970(actor_index, list->mode, &forward, &left, state->position_index);
+				actor->unknown488 = function_1b1970(actor_index, list->mode, &forward, &left, state->position_index);
 			else
-				actor.unknown488 = false;
-			actor.unknown41c = 3;
-			actor.unknown420 = 2;
+				actor->unknown488 = false;
+			actor->unknown41c = 3;
+			actor->unknown420 = 2;
 		}
-		actor.unknown44a = true;
-		actor.unknown449 = true;
+		actor->unknown44a = true;
+		actor->unknown449 = true;
 	}
 	else
 	{
-		actor.unknown4cc = 0.2f;
-		if (actor.unknown504 == 2)
+		actor->unknown4cc = 0.2f;
+		if (actor_get(actor_index)->unknown504 == 2)
 		{
-			vector2f direction;
+			vector3f direction;
 
-			function_1b0f20(list, &direction);
-			actor.unknown420 = 4;
-			actor.unknown424.vector.i = direction.i;
-			actor.unknown424.vector.j = direction.j;
-			actor.unknown44d = true;
-			actor.unknown41c = 3;
-			actor.unknown424.vector.k = 0.0f;
+			function_1b0f20(list, (vector2f *)&direction);
+			direction.k = 0.0f;
+			actor->unknown420 = 4;
+			actor->unknown424.vector = direction;
+			actor->unknown44d = true;
+			actor->unknown41c = 3;
 		}
-		else if (actor.unknown086 >= 7)
+		else if (actor->unknown086 >= 7)
 		{
-			actor.unknown488 = false;
-			actor.unknown420 = 2;
-			actor.unknown41c = 3;
+			actor->unknown488 = false;
+			actor->unknown420 = 2;
+			actor->unknown41c = 3;
 		}
 	}
-#undef actor
 }
-#pragma function(_ReadWriteBarrier)
 
 /* invites the actors of the actor's group (or squad) of the same team */
 struct s_1b1d90_locals
@@ -665,8 +662,7 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
                     real local_22 = local_11->position.x - local_19.x;
                     real local_23 = local_11->position.y - local_19.y;
                     if (local_23 * local_23 + local_22 * local_22 > 0.2f ||
-                        1.0 - (local_13.j * local_11->unknown290.j +
-                            local_13.i * local_11->unknown290.i) > 0.05f)
+                        1.0 - dot_product2d(&local_13, (vector2f const *)&local_11->unknown290) > 0.05f)
                     {
                         local_21 = false;
                         if (local_0->unknown040 && !function_1f4460(arg_0, &local_12, local_14, NONE, false))
@@ -694,8 +690,7 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
                                 real local_29 = local_27->position.x - local_28.x;
                                 real local_30 = local_27->position.y - local_28.y;
                                 if (local_30 * local_30 + local_29 * local_29 > 0.2f ||
-                                    1.0 - (local_13.j * local_27->unknown290.j +
-                                        local_13.i * local_27->unknown290.i) > 0.05f)
+                                    1.0 - dot_product2d(&local_13, (vector2f const *)&local_27->unknown290) > 0.05f)
                                 {
                                     local_21 = false;
                                     break;

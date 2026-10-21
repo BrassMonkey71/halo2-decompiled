@@ -2,6 +2,36 @@
 
 The newest entry comes first.
 
+## 2026-10-20: 9357 functions match
+
+```
+matched 9357 of 11321 game functions (1420891 of 2784283 bytes, 51.03%)
+matched 844 of 1041 Havok functions (90588 of 234536 bytes, 38.62%)
+```
+
+11 new matches, none lost:
+- Machine 3's batch 95 (#644): `0x78580`, `0x119650`, `0x14a370`, `0x195370`, `0x19be00`, `0x1a6a80`, `0x1dea00`, `0x1ef070`, `0x2938c0`, `0x2b0eeb` and `0x2e4ff0` match.
+
+## 2026-10-20: 9347 functions match
+
+```
+matched 9347 of 11321 game functions (1416896 of 2784283 bytes, 50.89%)
+matched 843 of 1041 Havok functions (90374 of 234536 bytes, 38.53%)
+```
+
+1 new matches, none lost:
+- @Roasted-Codes's #634: `0x31b060` match.
+
+## 2026-10-20: 9347 functions match
+
+```
+matched 9347 of 11321 game functions (1416896 of 2784283 bytes, 50.89%)
+matched 842 of 1041 Havok functions (90023 of 234536 bytes, 38.38%)
+```
+
+10 new matches, none lost:
+- Machine 3's batch 94 (#635): `0x9aeb0`, `0x1228f0`, `0x133ab0`, `0x184250`, `0x18eb80`, `0x1b6740`, `0x1ff7d0`, `0x20f960`, `0x2768d0` and `0x293d30` match.
+
 ## 2026-10-20: 9337 functions match
 
 ```

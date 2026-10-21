@@ -643,13 +643,13 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
   s_path_step_view inserted[64];
   s_obstacle_list *obstacles = &local_obstacles;
   s_avoidance_search *search = &local_search;
-  s_path_step_view const *input = &steps[step];
   long ignored = NONE;
   if (*out_count >= 4)
   {
    *complete = false;
    goto done;
   }
+  s_path_step_view const *input = &steps[step];
   point3f const *start = step > 0 ? &previous_point : &state->source.point.point;
   long start_node = step > 0 ? previous_node : state->source.unknown24;
   previous_node = input->node_index;

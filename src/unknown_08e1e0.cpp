@@ -202,7 +202,7 @@ void function_8e5e0(long status, long task_index)
     result = 7;
    else
     result = pending_message_request_validate(message->header,
-     (const s_pending_payload_header *)message->data, size);
+     (const s_pending_payload_header *)message->data, transferred);
   }
   break;
  case 1: result = 2; break;

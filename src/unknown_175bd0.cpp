@@ -11,6 +11,7 @@
 #include "unknown_1765e0.h"
 #include "sound_sources.h"
 #include <string.h>
+#include "normalize3d.h"
 
 s_record_pool *g_51ec8c;
 s_record_pool *g_51ec88;
@@ -700,15 +701,7 @@ void function_1763a0(point3f const *point, vector3f const *direction, s_effect_m
 	markers[3].forward.j = incident->j - twice * surface->j;
 	markers[3].forward.k = incident->k - surface->k * twice;
 
-	real magnitude = (real)sqrt(incident->i * incident->i + incident->j * incident->j + incident->k * incident->k);
-	if (!(fabs(magnitude) < 0.0001f))
-	{
-		real inverse = 1.0f / magnitude;
-
-		incident->i = inverse * incident->i;
-		incident->j = inverse * incident->j;
-		incident->k = inverse * incident->k;
-	}
+	normalize3d(incident);
 	markers[0].forward = *normal;
 	markers[4].forward = *g_4687bc;
 	markers[5].forward = *g_4687b0;

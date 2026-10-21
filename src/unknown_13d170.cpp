@@ -218,7 +218,8 @@ long __stdcall function_13d370(s_physical_object *physical, long size, long type
 				{
 					segment_pages = block->pages;
 					segment_time = block->time;
-					busy = physical->busy_proc && physical->busy_proc(current);
+					if (physical->busy_proc)
+						busy = physical->busy_proc(current);
 					if ((dword)(block->time + type) >= (dword)physical->time)
 						busy = true;
 					else if (!busy && (oldest == NONE || (dword)block->time < oldest_time))

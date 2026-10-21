@@ -549,11 +549,9 @@ short function_17c040(long contrail_index, real dt)
 
 static inline real contrail_scale_if_17c0e0(word flags, word mask, real scale, real value)
 {
-	real result = value;
-
 	if (flags & mask)
-		result = scale * value;
-	return result;
+		value = scale * value;
+	return value;
 }
 
 // @retail 0x17c0e0
@@ -565,9 +563,8 @@ void function_17c0e0(long contrail_index, short count, bool force)
 	if (count)
 	{
 		s_object_marker markers[4];
-		short marker_count = function_b8d30(contrail->object_index,
-			((s_contrail_object_definition *)g_4e3b44[*((s_contrail_object_header *)g_4e0300->data)[contrail->object_index & 0xffff].object & 0xffff].bytes)->markers[contrail->marker_index].marker_name,
-			markers, 4, false);
+		long marker_name = ((s_contrail_object_definition *)g_4e3b44[*((s_contrail_object_header *)g_4e0300->data)[contrail->object_index & 0xffff].object & 0xffff].bytes)->markers[contrail->marker_index].marker_name;
+		short marker_count = function_b8d30(contrail->object_index, marker_name, markers, 4, false);
 
 		if (marker_count > 0)
 		{

@@ -401,24 +401,16 @@ void c_game_engine_player_entity_definition::v21(s_entity_slot *entity)
 	}
 }
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
 // @retail 0x9aeb0
 bool c_game_engine_player_entity_definition::v22(s_entity_slot *entity, long b, short *slot, long d, long e, long f)
 {
 	short index = *slot;
-	_ReadWriteBarrier();
-	s_mp_globals *local_0 = g_4e9ae8;
 
-	if (g_55e4d0[local_0->engine_index])
-	{
-		if (local_0->slots[index] != NONE)
-			local_0->slots[index] = NONE;
-	}
-	local_0->slots[index] = entity->id;
+	if (slot_identifier(index) != NONE)
+		g_4e9ae8->slots[index] = NONE;
+	g_4e9ae8->slots[index] = entity->id;
 	return true;
 }
-#pragma function(_ReadWriteBarrier)
 
 // @retail 0x9b180
 bool c_game_engine_player_entity_definition::v23(s_entity_slot *entity, long b, long c, long d)

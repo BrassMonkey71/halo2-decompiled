@@ -1478,16 +1478,8 @@ void __stdcall function_166d75(long user_index)
 					first_person_weapon_animation_finished(user_index, field_x11c898);
 				}
 				zoom = magnitude3d(&unit->aiming_velocity);
-				if (zoom > 0.1f)
-				{
-					zoomed = true;
-					scoped = function_c8a10(user->unit_index);
-				}
-				else
-				{
-					zoomed = false;
-					scoped = false;
-				}
+				zoomed = zoom > 0.1f;
+				scoped = zoomed && function_c8a10(user->unit_index);
 				if (function_d03b0(user->unit_index))
 				{
 					zoomed = false;
