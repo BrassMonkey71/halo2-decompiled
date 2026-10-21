@@ -1665,14 +1665,13 @@ void function_25bcf0(long arg_0, long arg_1, long arg_2)
 	s_actor_view *local_1 = NULL;
 	if (arg_2 != NONE)
 		local_1 = actor_get(arg_2);
-	long local_2;
+	s_slot_object_view *local_3;
 	if (local_0)
-		local_2 = local_0->object_index;
+		local_3 = object_get(local_0->object_index);
 	else if (local_1)
-		local_2 = local_1->unknown018;
+		local_3 = object_get(local_1->unknown018);
 	else
 		return;
-	s_slot_object_view *local_3 = object_get(local_2);
 	if (local_3)
 	{
 		if (local_3->player_index != NONE)
@@ -1682,9 +1681,13 @@ void function_25bcf0(long arg_0, long arg_1, long arg_2)
 				*(long *)(local_4 + 0x178) + props_ticks_round(g_510c54->field_2_3 * 3.f) >= g_510c54->game_time)
 			{
 				s_object_header_view *local_5 = object_header_get(*(long *)(local_4 + 0x174));
-				if (((1 << local_5->type) & 3) &&
-					function_1df560(actor_get(arg_0)->unknown024, ((s_slot_object_view *)local_5->object)->team))
-					function_25d020(arg_0, *(long *)(local_4 + 0x174), 2, NONE, NONE, NONE);
+				if ((1 << local_5->type) & 3)
+				{
+					s_slot_object_view *unit = (s_slot_object_view *)local_5->object;
+					s_actor_view *actor = actor_get(arg_0);
+					if (function_1df560(actor->unknown024, unit->team))
+						function_25d020(arg_0, *(long *)(local_4 + 0x174), 2, NONE, NONE, NONE);
+				}
 			}
 		}
 		else if (local_3->actor_index != NONE)

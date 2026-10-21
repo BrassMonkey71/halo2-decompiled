@@ -1956,7 +1956,7 @@ s_particle_system_datum *function_178eb0(long effect_index, long definition_inde
 						particle_system->unknown08 = 1.0f / delay;
 					else
 						particle_system->unknown08 = 1.0f;
-					particle_system_link(particle_system, &effect->last_particle_system_index, &effect->first_particle_system_index);
+					particle_system_link(particle_system, &effect->first_particle_system_index, &effect->last_particle_system_index);
 					particle_system->unknown24 = location_index;
 					function_178c80(0.0f, effect, particle_system, definition, 0.0f, definition->unknown0c != 0);
 					return particle_system;

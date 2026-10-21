@@ -108,12 +108,10 @@ void function_1ecf50(vector3f *forward, vector3f *up, s_direction_rotation_input
 				real length = function_30bf0(&axis);
 				if (length != 0.0f)
 				{
-					real sine = (real)sin(angle);
-					real cosine = (real)cos(angle);
 					*up = input->up;
 					*forward = input->forward;
-					rotate_direction(up, &axis, sine, cosine);
-					rotate_direction(forward, &axis, sine, cosine);
+					rotate_direction(up, &axis, (real)sin(angle), (real)cos(angle));
+					rotate_direction(forward, &axis, (real)sin(angle), (real)cos(angle));
 					function_30bf0(up);
 					function_30bf0(forward);
 				}
