@@ -110,6 +110,10 @@ struct s_18391a
  s_183919 field_20[8];
 };
 
+// score 27 (was 27): registers differ in the part loop: retail loads the part into edx and computes
+// the slot's address separately, copies the part to esi and takes the address of its shape from it
+// before the first call; ours reloads the part through the slot after that call. Taking that address
+// before the call, or reading the part straight from the array, scores 56 to 98.
 // @retail 0x183910
 bool function_183910(long arg_0, point3f const *arg_1, point3f *arg_2, vector3f *arg_3)
 {

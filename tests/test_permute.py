@@ -667,6 +667,7 @@ def test_function_context_reads_the_signature(tmp_path):
     ctx = permute.function_context(text, start, str(tmp_path))
     assert (ctx.params, ctx.returns) == ('s_thing *thing, long index', 'bool')
     assert ctx.field_type('s_thing', 'flags') == 'word'
+    assert ctx.field_type(None, 'flags') is None  # an expression of unknown type
 
 
 def test_mutate_survives_bodies_the_typed_mutations_cannot_parse():

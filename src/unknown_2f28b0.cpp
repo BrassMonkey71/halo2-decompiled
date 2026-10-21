@@ -400,10 +400,10 @@ void *__fastcall function_31bc70(void *arg_0);
 // second capsule's radius; each of the three contacts found keeps its id
 // from the owner while it lies within the tolerance and is added to the
 // results, and gives its id back when it no longer does
-// Near miss: same size as retail, 15 instructions differ: retail puts the
-// segment at esp+0x60 and the spilled 0.5 at esp+0x50 (ours the other way
-// round), schedules `mov esi, 2` one instruction earlier in the near-zero
-// normal block, and addresses one transform store as [ecx + eax].
+// score 6 (was 15): the segment in its own block puts it at esp+0x60 as in
+// retail; retail still schedules `mov esi, 2` one instruction earlier in the
+// near-zero normal block and `inc edx` before `mov eax, 5` at the end of the
+// parallel-ends loop, and addresses the capsule ends' store as [ecx + eax].
 // @retail 0x2f3030
 void indexed_2f28b0::function_2f3030(body_2f28f0 const *a, body_2f28f0 const *b, input_2f3030 const *input, results_2f3030 *results)
 {
@@ -414,20 +414,22 @@ void indexed_2f28b0::function_2f3030(body_2f28f0 const *a, body_2f28f0 const *b,
 	points[0].point.m128_f32[3] = tolerance;
 	points[1].point.m128_f32[3] = tolerance;
 	points[2].point.m128_f32[3] = tolerance;
-	__m128 segment[2];
-	vector_constructor_iterator(segment, sizeof(__m128), 2, function_31bc70);
 	{
-		frame_2f28f0 const *frame = &b->placement->frame;
-		__m128 const *end = capsule->ends;
-		__m128 *placed = segment;
-		for (int count = 2; count != 0; count--)
+		__m128 segment[2];
+		vector_constructor_iterator(segment, sizeof(__m128), 2, function_31bc70);
 		{
-			*placed = frame_point_2f28f0(frame, end);
-			placed++;
-			end++;
+			frame_2f28f0 const *frame = &b->placement->frame;
+			__m128 const *end = capsule->ends;
+			__m128 *placed = segment;
+			for (int count = 2; count != 0; count--)
+			{
+				*placed = frame_point_2f28f0(frame, end);
+				placed++;
+				end++;
+			}
 		}
+		capsule_segment_contacts_2f28f0(a, segment, capsule->radius, points);
 	}
-	capsule_segment_contacts_2f28f0(a, segment, capsule->radius, points);
 	contact_point_2f28f0 *point = points;
 	unsigned short *id = indices;
 	for (int count = 3; count != 0; count--)
