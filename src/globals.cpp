@@ -22,7 +22,6 @@ vector3f *g_4687b0;
 c_data_allocator *g_46875c;
 real g_5476c4;
 s_record_pool *g_4cf78c;
-long g_4eca60[8];
 s_record_pool *g_4e8c24;
 s_mp_globals *g_4e9ae8;
 c_engine_peer *g_55e4d0[256];
