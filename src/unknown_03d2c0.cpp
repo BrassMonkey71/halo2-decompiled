@@ -134,16 +134,20 @@ long __stdcall function_3ddd0(long object_index)
 {
     (void)&object_index;
     byte *object = ((s_3dd10_object_header *)g_4e0300->data)[object_index & 0xffff].object;
-    long volatile result = *(long *)(object + 0xcc);
+    long cache_index = *(long *)(object + 0xcc);
+    long result;
     bool initialize = false;
-    if (result == NONE || *(long *)(g_509434->data + (result & 0xffff) * 0x100 + 4) != object_index)
+    if (cache_index != NONE && *(long *)(g_509434->data + (cache_index & 0xffff) * 0x100 + 4) == object_index)
+    {
+        result = cache_index;
+    }
+    else
     {
         result = record_pool_allocate(g_509434);
         if (result == NONE)
         {
             real oldest = -3.402823466e+38f;
-            long absolute = function_16bc00(g_509434, 0);
-            long index = data_datum_index(g_509434, absolute);
+            long index = data_datum_index(g_509434, function_16bc00(g_509434, 0));
             while (index != NONE)
             {
                 byte *record = g_509434->data + (index & 0xffff) * 0x100;
@@ -154,32 +158,34 @@ long __stdcall function_3ddd0(long object_index)
                     oldest = age;
                     result = index;
                 }
-                absolute = function_16bc00(g_509434, (index & 0xffff) + 1);
-                index = data_datum_index(g_509434, absolute);
+                index = data_datum_index(g_509434, function_16bc00(g_509434, index == NONE ? 0 : (index & 0xffff) + 1));
             }
+            if (result == NONE) return result;
         }
-        if (result == NONE) return result;
         initialize = true;
     }
-    byte *record = g_509434->data + (result & 0xffff) * 0x100;
-    if (initialize)
+    if (result != NONE)
     {
-        *(long *)(record + 4) = object_index;
-        *(long *)(record + 8) = NONE;
-        *(long *)(record + 0xc) = NONE;
-        record[2] = 0;
-        record[3] = 0;
-        function_2c3b0((s_interface_function_context *)(record + 0x44));
-        *(long *)(record + 0x44) = object_index;
-        *(long *)(record + 0x48) = (long)function_be8b0;
-        *(long *)(record + 0xbc) = NONE;
-        byte *copy_object = ((s_3dd10_object_header *)g_4e0300->data)[object_index & 0xffff].object;
-        byte *data = copy_object + *(short *)(copy_object + 0x11a);
-        long bytes = *(short *)(copy_object + 0x118) / 10;
-        for (long i = 0; i < 4; ++i)
-            memcpy(record + 0xc0 + i * 16, data, bytes);
-        *(long *)(object + 0xcc) = result;
-        function_3dd10(object_index, true);
+        byte *record = g_509434->data + (result & 0xffff) * 0x100;
+        if (initialize)
+        {
+            *(long *)(record + 4) = object_index;
+            *(long *)(record + 8) = NONE;
+            *(long *)(record + 0xc) = NONE;
+            record[2] = 0;
+            record[3] = 0;
+            function_2c3b0((s_interface_function_context *)(record + 0x44));
+            *(long *)(record + 0x44) = object_index;
+            *(long *)(record + 0x48) = (long)function_be8b0;
+            *(long *)(record + 0xbc) = NONE;
+            byte *copy_object = ((s_3dd10_object_header *)g_4e0300->data)[object_index & 0xffff].object;
+            byte *data = copy_object + *(short *)(copy_object + 0x11a);
+            long bytes = *(short *)(copy_object + 0x118) / 10;
+            for (long i = 0; i < 4; ++i)
+                memcpy(record + 0xc0 + i * 16, data, bytes);
+            *(long *)(object + 0xcc) = result;
+            function_3dd10(object_index, true);
+        }
     }
     return result;
 }

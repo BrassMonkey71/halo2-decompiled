@@ -4,6 +4,7 @@
 #include "unknown_0259d0.h"
 #include "unknown_1cec30.h"
 #include "object_markers.h"
+#include "normalize3d.h"
 #include <string.h>
 
 struct s_vehicle_physics_state;
@@ -46,12 +47,13 @@ void function_1cfb90(s_havok_component *arg_0, transform4x3f const *arg_1, void 
 // @retail 0x205be0
 bool __stdcall function_205be0(s_vehicle_physics_state *arg_0, long arg_1)
 {
-    bool result = false;
+    bool result;
     {
         long local_0 = (arg_1 & 0xffff) * 12;
         byte *local_1 = *(byte **)(g_4e0300->data + local_0 + 8);
         byte *local_2 = g_4e3b44[*(long *)local_1 & 0xffff].bytes + 0x2ac;
         long local_3 = *(long *)(local_1 + 0xb4);
+        result = false;
         if (local_3 == NONE)
             goto done;
         s_havok_component *local_4 = havok_component_get(local_3);
@@ -63,9 +65,7 @@ bool __stdcall function_205be0(s_vehicle_physics_state *arg_0, long arg_1)
         havok_component_rigid_body_inertia_get(0, local_4, &local_6->field_3c);
         byte *local_7 = (byte *)local_4->rigid_bodies.data[0].rigid_body->m_motion;
         vector3f const *motion = (vector3f const *)(local_7 + 0x70);
-        local_6->field_60.i = motion->i;
-        local_6->field_60.j = motion->j;
-        local_6->field_60.k = motion->k;
+        real_point3d_set((point3f *)&local_6->field_60, motion->i, motion->j, motion->k);
         local_6->field_0 = arg_1;
         local_6->field_4 = local_2;
         local_6->field_6c = havok_component_rigid_body_mass_get(0, local_4);
@@ -75,9 +75,7 @@ bool __stdcall function_205be0(s_vehicle_physics_state *arg_0, long arg_1)
         if (local_8->scale != 1.0f)
         {
             real local_9 = 1.0f / local_8->scale;
-            local_5.i *= local_9;
-            local_5.j *= local_9;
-            local_5.k *= local_9;
+            vector3f_scale(&local_5, local_9, &local_5);
         }
         local_6->field_80.i = local_8->forward.k * local_5.k +
             local_8->forward.j * local_5.j + local_8->forward.i * local_5.i;

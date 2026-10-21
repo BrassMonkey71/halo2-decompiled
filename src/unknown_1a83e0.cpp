@@ -18,6 +18,7 @@ PRIVATE __forceinline real function_1a83e1(point3f const *arg_0, vector3f const 
     local_5.j = local_4->j;
     local_5.i = local_4->i;
     vector3f local_0;
+    real squared_distance;
     real local_1 = local_5.k * local_5.k + local_5.j * local_5.j + local_5.i * local_5.i;
     if (local_1 > 0.0001f)
     {
@@ -33,14 +34,16 @@ PRIVATE __forceinline real function_1a83e1(point3f const *arg_0, vector3f const 
         local_0.i += local_5.i * local_2;
         local_0.j += local_5.j * local_2;
         local_0.k += local_5.k * local_2;
+        squared_distance = local_0.k * local_0.k + local_0.j * local_0.j + local_0.i * local_0.i;
     }
     else
     {
         local_0.i = local_3->x - arg_2->x;
         local_0.j = local_3->y - arg_2->y;
         local_0.k = local_3->z - arg_2->z;
+        squared_distance = local_0.k * local_0.k + local_0.j * local_0.j + local_0.i * local_0.i;
     }
-    return (real)sqrt(local_0.k * local_0.k + local_0.j * local_0.j + local_0.i * local_0.i);
+    return (real)sqrt(squared_distance);
 }
 
 PRIVATE __forceinline real function_1a83e2(point2f *arg_0)
