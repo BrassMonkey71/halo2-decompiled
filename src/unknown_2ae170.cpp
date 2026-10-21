@@ -639,8 +639,8 @@ void c_sound_effects::add_effect_sends_direct(s_sound_send_parameters *parameter
 		real offset = parameters->level_offset + parameters->level;
 		if (!TEST_FLAG(parameters->flags, 3))
 		{
-			sound_mixbins_add(mixbins, m_buffers->mixbin00, parameters->gain0c + (send_level + parameters->level));
-			sound_mixbins_add(mixbins, m_buffers->mixbin04, parameters->gain10 + (parameters->level + send_level));
+			sound_stream_append_mixbin(mixbins, m_buffers->mixbin00, parameters->gain0c + (send_level + parameters->level));
+			sound_stream_append_mixbin(mixbins, m_buffers->mixbin04, parameters->gain10 + (parameters->level + send_level));
 			c_sound_effects::add_send(m_buffers->mixbin08, mode, offset, mixbins);
 		}
 		else
