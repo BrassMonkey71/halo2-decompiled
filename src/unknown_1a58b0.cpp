@@ -1604,22 +1604,24 @@ bool function_1a5e40(long object_index, bool alternate, long marker_index, s_tar
 	candidate->flags = 0;
 	if (marker_index == NONE)
 	{
-		if (!((1 << object->type) & 1))
-			return result;
-		if (!function_1a62e0(object_index, origin, direction, &candidate->point))
-			return false;
-		s_candidate_unit_definition *definition = (s_candidate_unit_definition *)g_4e3b44[object->definition_index & 0xffff].bytes;
-		if (definition->flags & 1)
-			candidate->flags |= 1;
-		else
-			candidate->flags &= ~1;
-		if (definition->flags & 6)
-			candidate->flags |= 2;
-		else
-			candidate->flags &= ~2;
-		candidate->maximum_distance = definition->maximum_distance;
-		candidate->radius = object->radius;
-		candidate->maximum_facing_angle = 0.0f;
+		if ((1 << object->type) & 1)
+		{
+			if (!function_1a62e0(object_index, origin, direction, &candidate->point))
+				return false;
+			s_candidate_unit_definition *definition = (s_candidate_unit_definition *)g_4e3b44[object->definition_index & 0xffff].bytes;
+			if (definition->flags & 1)
+				candidate->flags |= 1;
+			else
+				candidate->flags &= ~1;
+			if (definition->flags & 6)
+				candidate->flags |= 2;
+			else
+				candidate->flags &= ~2;
+			candidate->maximum_distance = definition->maximum_distance;
+			candidate->radius = object->radius;
+			candidate->maximum_facing_angle = 0.0f;
+			result = true;
+		}
 	}
 	else
 	{
@@ -1643,17 +1645,21 @@ bool function_1a5e40(long object_index, bool alternate, long marker_index, s_tar
 		candidate->radius = marker->radius;
 		candidate->maximum_facing_angle = marker->maximum_facing_angle;
 		candidate->facing = first->forward;
+		result = true;
 	}
-	vector3d_from_points3d(origin, &candidate->point, &candidate->offset);
-	candidate->direction = candidate->offset;
-	candidate->distance = function_30bf0(&candidate->direction);
-	candidate->alternate = alternate;
-	real cosine = dot3f(&candidate->direction, direction);
-	if (-1.0f > cosine)
-		candidate->angle = function_50650(-1.0f);
-	else
-		candidate->angle = function_50650(cosine > 1.0f ? 1.0f : cosine);
-	return true;
+	if (result)
+	{
+		vector3d_from_points3d(origin, &candidate->point, &candidate->offset);
+		candidate->direction = candidate->offset;
+		candidate->distance = function_30bf0(&candidate->direction);
+		candidate->alternate = alternate;
+		real cosine = dot3f(&candidate->direction, direction);
+		if (-1.0f > cosine)
+			candidate->angle = function_50650(-1.0f);
+		else
+			candidate->angle = function_50650(cosine > 1.0f ? 1.0f : cosine);
+	}
+	return result;
 }
 
 // @retail 0x1a60f0
@@ -1914,8 +1920,8 @@ byte function_1a67f0(point3f const *arg_0, point3f const *arg_1, long arg_2, lon
 {
 	s_1a67f0 local_0;
 	local_0.field_24 = NONE;
-	long local_1 = function_1a67f1(arg_2);
-	long local_2 = function_1a67f1(arg_3);
+	long local_1 = function_1a67f1(arg_3);
+	long local_2 = function_1a67f1(arg_2);
 	vector3f local_3;
 	vector3d_from_points3d(arg_0, arg_1, &local_3);
 	return !function_1697c0(0x16808c2d, arg_0, &local_3, local_2, local_1, (s_collision_result_1697c0 *)&local_0);
@@ -1959,7 +1965,7 @@ bool __stdcall function_1a5370(s_sort_weight_view const *arg_0, point3f const *a
 				for (long local_5 = 0; local_5 < local_4; local_5++)
 				{
 					s_sort_candidate_view *local_8 = &local_1[local_5];
-					if (function_1a67f0(arg_1, &local_8->point, local_8->object_index, arg_3))
+					if (function_1a67f0(arg_1, &local_8->point, arg_3, local_8->object_index))
 					{
 						*arg_5 = local_1[local_5];
 						local_0 = true;
@@ -2010,7 +2016,7 @@ bool function_1a6a80(s_object_marker_target const *target, point3f const *origin
 						candidate->secondary_score = 0.0f;
 					}
 					candidate->scaled_score = 0.0f;
-					if (function_1a67f0(origin, &candidate->point, candidate->object_index, excluded_index))
+					if (function_1a67f0(origin, &candidate->point, excluded_index, candidate->object_index))
 						result = true;
 				}
 			}

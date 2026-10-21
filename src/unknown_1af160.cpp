@@ -17,13 +17,10 @@ bool function_1f4a20(s_1f4a20_entry const *arg_2, long arg_0, s_reference arg_1,
 bool function_1af530(long arg_0, long *arg_1, long *arg_2);
 void function_265c30(long arg_0, long arg_1, bool arg_2);
 
-#pragma inline_depth(1)
 // @retail 0x1af160
 bool function_1af160(long arg_0, s_1af160 *arg_1)
 {
-    /* retail keeps arg_0 on the stack */
-    long const *arg_0_reference = &arg_0;
-    s_actor_view *local_0 = (s_actor_view *)(g_4f55f0->data + (*arg_0_reference & 0xffff) * sizeof(s_actor_view));
+    s_actor_view *local_0 = (s_actor_view *)(g_4f55f0->data + (arg_0 & 0xffff) * sizeof(s_actor_view));
     s_prop_node_view *local_1 = (s_prop_node_view *)(g_502418->data + (local_0->prop_index & 0xffff) * sizeof(s_prop_node_view));
     s_type_5cfb45 *local_2 = function_25d690((s_prop_datum *)local_1);
     s_reference local_3 = local_0->unknown418;
@@ -83,7 +80,7 @@ bool function_1af160(long arg_0, s_1af160 *arg_1)
             else if (local_17)
                 local_15 = g_470fa0;
         }
-        if (!local_18 && !local_17)
+        if (!local_17 && !local_18)
             local_15 = function_2626b0(arg_0, local_15, local_13, local_11, local_14, true);
         if (!REFERENCE_EQUAL(local_15, local_3))
         {
@@ -107,8 +104,7 @@ bool function_1af160(long arg_0, s_1af160 *arg_1)
             if (local_24)
             {
                 bool local_26 = true;
-                real local_27 = *(real *)(local_24 + 0xc);
-                if (local_27 > local_1->unknown28)
+                if (*(real *)(local_24 + 0xc) > local_1->unknown28)
                     local_26 = false;
                 else if (!REFERENCE_EQUAL(local_15, g_470fa0))
                 {
@@ -117,7 +113,7 @@ bool function_1af160(long arg_0, s_1af160 *arg_1)
                     local_29.i = local_28->x - local_12.point.x;
                     local_29.j = local_28->y - local_12.point.y;
                     local_29.k = local_28->z - local_12.point.z;
-                    if (local_27 * local_27 > local_29.k * local_29.k + local_29.i * local_29.i + local_29.j * local_29.j)
+                    if (*(real *)(local_24 + 0xc) * *(real *)(local_24 + 0xc) > local_29.k * local_29.k + local_29.i * local_29.i + local_29.j * local_29.j)
                         local_26 = false;
                 }
                 function_265c30(local_0->prop_index, arg_0, local_26);
@@ -127,4 +123,3 @@ bool function_1af160(long arg_0, s_1af160 *arg_1)
     ai_scratch_buffer_release(local_11);
     return local_5;
 }
-#pragma inline_depth(255)

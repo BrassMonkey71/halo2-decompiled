@@ -302,3 +302,231 @@ answer_306580 class_306580::function_306580()
 	result.value = 1;
 	return result;
 }
+
+// the rest of a box pair's query: the contact manifold kept up to date, and
+// the deepest contact found
+class class_308180
+{
+public:
+	char unknown0[0x58];
+	bool changed;
+	bool refresh;
+
+	class_308180();
+};
+
+struct key_305f60
+{
+	unsigned short index;
+	unsigned short field_2;
+	unsigned short id;
+};
+
+struct feature_305f60
+{
+	__m128 first_point;
+	__m128 second_point;
+	char unknown20[0x38 - 0x20];
+	unsigned short kind;
+	unsigned short field_3a;
+};
+
+class table_305f60;
+
+class pair_305f60
+{
+public:
+	int function_307c40(table_305f60 *table, key_305f60 *key, feature_305f60 *feature);
+	void function_305f60(table_305f60 *table, feature_305f60 const *feature, key_305f60 *key);
+	void function_307840(table_305f60 *table, key_305f60 key);
+};
+
+struct entry_305a60;
+
+struct bool_305a60
+{
+	bool value;
+};
+
+class class_305a60
+{
+public:
+	bool_305a60 function_305a60(entry_305a60 *entry);
+};
+
+class box_pair_3072f0
+{
+public:
+	void function_3072f0(class_308180 *manifold);
+};
+
+class class_307530
+{
+public:
+	void function_307530(class_308180 *contacts);
+};
+
+struct feature_3059e0;
+
+// a flag passed by value
+struct flag_3059e0
+{
+	flag_3059e0(bool value_) : value(value_) {}
+	flag_3059e0(flag_3059e0 const &other) : value(other.value) {}
+
+	bool value;
+};
+
+class box_3059e0
+{
+public:
+	void function_3059e0(__m128 *out, unsigned short const *index, feature_3059e0 const *feature, flag_3059e0 unused) const;
+};
+
+struct contact_305ca0
+{
+	__m128 point;
+	__m128 normal;
+	unsigned short id;
+};
+
+struct key_305ca0;
+struct feature_305ca0;
+
+class pair_305ca0
+{
+public:
+	void function_305ca0(contact_305ca0 *out, key_305ca0 const *key, feature_305ca0 const *feature) const;
+};
+
+struct contact_305e10;
+struct key_305e10;
+struct feature_305e10;
+
+class pair_305e10
+{
+public:
+	void function_305e10(contact_305e10 *out, key_305e10 const *key, feature_305e10 const *feature) const;
+};
+
+struct contact_305eb0;
+struct key_305eb0;
+struct feature_305eb0;
+
+class pair_305eb0
+{
+public:
+	void function_305eb0(contact_305eb0 *out, key_305eb0 const *key, feature_305eb0 const *feature) const;
+};
+
+struct contact_307f90
+{
+	__m128 point;
+	__m128 normal;
+};
+
+// whether a contact was found
+class answer_307f90
+{
+public:
+	answer_307f90() {}
+
+	char value;
+};
+
+class query_2ef260
+{
+public:
+	void function_3080a0(class_308180 *manifold);
+	void function_307f90(answer_307f90 *found, contact_307f90 *contact);
+};
+
+// the deepest contact between the boxes, when they overlap; here, in the file
+// that compiles 0x306400 first, so the call to 0x306580 reuses this in ecx as
+// retail's does
+// score 11 (was 69): retail stores the contact's normal before its point, and
+// writes the not-found answer from a fresh zero in cl instead of bl.
+// @retail 0x307f90
+void query_2ef260::function_307f90(answer_307f90 *found, contact_307f90 *contact)
+{
+	char result = 0;
+	class_308180 manifold;
+	key_305f60 key;
+	feature_305f60 feature;
+	key.id = 0;
+	((box_pair_306400 *)this)->function_306400();
+	if (((class_306580 *)this)->function_306580().value)
+	{
+		if (((pair_305f60 *)this)->function_307c40((table_305f60 *)&manifold, &key, &feature) == 2)
+		{
+		result = 1;
+		contact_305ca0 deepest;
+		int const kind = feature.kind;
+		if (kind <= 2)
+		{
+			((pair_305ca0 *)this)->function_305ca0(&deepest, (key_305ca0 const *)&key, (feature_305ca0 const *)&feature);
+		}
+		else if (kind <= 5)
+		{
+			((pair_305e10 *)this)->function_305e10((contact_305e10 *)&deepest, (key_305e10 const *)&key, (feature_305e10 const *)&feature);
+		}
+		else
+		{
+			((pair_305eb0 *)this)->function_305eb0((contact_305eb0 *)&deepest, (key_305eb0 const *)&key, (feature_305eb0 const *)&feature);
+		}
+		if (key.index > 2)
+		{
+			float const back = -deepest.point.m128_f32[3];
+			__m128 along = _mm_set_ss(back);
+			along = _mm_shuffle_ps(along, along, 0);
+			deepest.point = _mm_add_ps(deepest.point, _mm_mul_ps(along, deepest.normal));
+		}
+		contact->normal = deepest.normal;
+		contact->point = deepest.point;
+		contact->point.m128_f32[3] = deepest.point.m128_f32[3];
+		}
+		else
+		{
+			found->value = 0;
+			return;
+		}
+	}
+	found->value = result;
+}
+
+// the manifold of contacts between the boxes brought up to date
+// score 4 (was 52): only where two one-byte answers sit in the frame differs:
+// retail keeps 0x306580's at esp+0x13 and 0x305a60's at esp+0x14, ours are at
+// 0x17 and 0x16.
+// @retail 0x3080a0
+void query_2ef260::function_3080a0(class_308180 *manifold)
+{
+	((box_pair_306400 *)this)->function_306400();
+	((box_pair_3072f0 *)this)->function_3072f0(manifold);
+	bool_305a60 const unchanged = ((class_305a60 *)this)->function_305a60((entry_305a60 *)manifold);
+	if (manifold->changed && !unchanged.value)
+	{
+		return;
+	}
+	if (!((class_306580 *)this)->function_306580().value)
+	{
+		return;
+	}
+	key_305f60 key;
+	feature_305f60 feature;
+	key.id = 0;
+	int const found = ((pair_305f60 *)this)->function_307c40((table_305f60 *)manifold, &key, &feature);
+	if (unchanged.value && found)
+	{
+		((box_3059e0 *)this)->function_3059e0((__m128 *)manifold, &key.index, (feature_3059e0 const *)&feature, flag_3059e0(found == 2));
+		if (manifold->refresh)
+		{
+			((class_307530 *)this)->function_307530(manifold);
+		}
+	}
+	if (found == 2)
+	{
+		((pair_305f60 *)this)->function_305f60((table_305f60 *)manifold, &feature, &key);
+		((pair_305f60 *)this)->function_307840((table_305f60 *)manifold, key);
+	}
+}

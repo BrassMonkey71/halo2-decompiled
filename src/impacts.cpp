@@ -1449,7 +1449,7 @@ void impact_material_effects_get(
 		first_value04, second_value04, first_value, second_value, first_value0c, second_value0c);
 }
 
-PRIVATE inline real impact_level_get(s_impact const *impact, char type)
+PRIVATE __forceinline real impact_level_get(s_impact const *impact, char type)
 {
 	real level;
 

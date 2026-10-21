@@ -295,14 +295,13 @@ static __forceinline void network_memory_track(void *block, long size)
 // @retail 0x81780
 void __stdcall function_81780(long stage)
 {
-	long count;
+	long count = 15;
 	long size;
 	long i;
 
 	if (stage <= 1)
 	{
 		g_4d87f4 = g_4cf760;
-		count = 15;
 		g_4d87e4 = 1;
 	}
 	else

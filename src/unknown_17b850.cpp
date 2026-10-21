@@ -549,11 +549,9 @@ short function_17c040(long contrail_index, real dt)
 
 static inline real contrail_scale_if_17c0e0(word flags, word mask, real scale, real value)
 {
-	real result = value;
-
 	if (flags & mask)
-		result = scale * value;
-	return result;
+		value = scale * value;
+	return value;
 }
 
 // @retail 0x17c0e0
