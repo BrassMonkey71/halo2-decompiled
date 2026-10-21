@@ -551,6 +551,8 @@ bool c_breakable_surface_group_entity_definition::v24(s_entity_slot *entity)
 	return true;
 }
 
+// score 11 (was 23): ours holds -1 in a register for the compare and the
+// clear because of the two stores to one address; retail uses immediates.
 // @retail 0x9d1c0
 bool c_breakable_surface_group_entity_definition::v25(s_entity_slot *entity)
 {
@@ -558,10 +560,7 @@ bool c_breakable_surface_group_entity_definition::v25(s_entity_slot *entity)
 
 	if (slot >= 0 && slot < 8)
 	{
-		/* retail reads the slot into a register and folds -1 into both the
-		   compare and the clear; the volatile read stops the compiler
-		   materialising -1 in a register for the two stores */
-		long id = *(volatile long *)&g_4eca60[slot];
+		long id = g_4eca60[slot];
 
 		if (id != NONE)
 			g_4eca60[slot] = NONE;
