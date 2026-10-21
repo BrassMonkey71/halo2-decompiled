@@ -65,13 +65,13 @@ Analysis, documentation and review do not need it.
 
 ## Status
 
-Decompilation is under way, and 9383 retail functions now match byte for
+Decompilation is under way, and 9400 retail functions now match byte for
 byte. The checker reports:
 
 ```
-matched 9383 of 11321 game functions (1431971 of 2784283 bytes, 51.43%)
-matched 867 of 1041 Havok functions (97022 of 234536 bytes, 41.37%)
-matched 10284 of 17654 functions in scope (1531608 of 3904218 bytes, 39.23%)
+matched 9400 of 11321 game functions (1440089 of 2784283 bytes, 51.72%)
+matched 880 of 1041 Havok functions (103340 of 234536 bytes, 44.06%)
+matched 10314 of 17654 functions in scope (1546044 of 3904218 bytes, 39.60%)
 ```
 
 Matched code so far includes:
@@ -244,6 +244,10 @@ Thank you to everyone who has contributed to this project so far:
 - [@Roasted-Codes](https://github.com/Roasted-Codes): the first contributor
   matches in Havok, the physics library: its collision-pair dispatch and
   child-agent code.
+- [@ccgman123](https://github.com/ccgman123): a careful diagnosis of seven
+  near misses, and the cleanup that removed an in-body pragma from 0x9d1c0.
+- [@marioag0412](https://github.com/marioag0412): the match of 0x1e3480,
+  an object's actor index.
 
 [@kirklandsig](https://github.com/kirklandsig) maintains the project: runs the
 build, reviews and merges every pull request, and keeps the
