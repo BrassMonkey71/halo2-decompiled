@@ -11,6 +11,8 @@
 #include "point_triangle_308d90.h"
 #include "string_helpers_2d8c90.h"
 #include "placed_shape_312800.h"
+#include "joined_groups_3720a0.h"
+#include "slot_table_372a40.h"
 
 // @stub 0x2e5a90
 void s_1c3a40::function_2e5a90(handlers_2e5d50 const *handlers, long first_type, long second_type,
@@ -31,11 +33,6 @@ class class_301a60
 public:
 	void function_301a60(walk_3028c0 *walk, char const *cells, segment_3028c0 const *segment);
 };
-
-// @stub 0x301a60
-void class_301a60::function_301a60(walk_3028c0 *walk, char const *cells, segment_3028c0 const *segment)
-{
-}
 
 
 // @stub 0x3048a0
@@ -63,25 +60,11 @@ int class_3048a0::function_3048a0(convex_2fefd0 const *first, convex_2fefd0 cons
 
 
 
-// @stub 0x2e9d90
-void class_2e9d90::function_2e9d90(void const *a, void const *b, void const *input, pair_query_2e90f0 query)
-{
-}
-
-// @stub 0x2e96a0
-void class_2e96a0::function_2e96a0(void const *a, void const *b, void const *input, pair_query_2e90f0 query)
-{
-}
-
 // @stub 0x2e90f0
 void __cdecl function_2e90f0(void const *a, void const *b, void const *input, void *collector)
 {
 }
 
-// @stub 0x310a70
-class_310a70::~class_310a70()
-{
-}
 
 
 
@@ -136,10 +119,6 @@ void class_2e1090::function_2e0020(element_2e1090 const *element, bounds_2e0020 
 
 
 
-// @stub 0x2fe350
-void __cdecl function_2fe350(void const *query, const __m128 *half_extents, float tolerance, void *out)
-{
-}
 
 struct s_311100;
 
@@ -150,12 +129,6 @@ public:
 	void function_30fef0(s_311100 const *description);
 	void function_30e720();
 };
-
-// a part of a world's step (1563 bytes, not decompiled)
-// @stub 0x30e720
-void c_311100::function_30e720()
-{
-}
 
 class narrow_phase_317c00
 {
@@ -175,11 +148,6 @@ public:
 
 
 
-
-// @stub 0x2f4440
-void class_2f4440::function_2f4440(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 class class_308180;
 
@@ -216,15 +184,7 @@ public:
 	answer_306580 function_306580();
 };
 
-// @stub 0x307f90
-void query_2ef260::function_307f90(answer_307f90 *found, contact_307f90 *contact)
-{
-}
 
-// @stub 0x3080a0
-void query_2ef260::function_3080a0(class_308180 *manifold)
-{
-}
 
 struct pending_2ddbd0;
 
@@ -234,27 +194,11 @@ public:
 	void function_2dce60(pending_2ddbd0 *pending, void const *root, __m128 const *offset);
 };
 
-// @stub 0x2dce60
-void class_2dce60::function_2dce60(pending_2ddbd0 *pending, void const *root, __m128 const *offset)
-{
-}
-
-// @stub 0x3009e0
-void class_2df670::function_3009e0(pending_301800 *pending, void const *root, fixed_ray_301800 const *ray)
-{
-}
-
 class class_309b50
 {
 public:
 	long function_309b50(long arg_0);
 };
-
-// @stub 0x309b50
-long class_309b50::function_309b50(long arg_0)
-{
-	return 0;
-}
 
 class entity_316000;
 
@@ -264,10 +208,6 @@ public:
 	void function_30e140(entity_316000 *entity);
 };
 
-// @stub 0x30e140
-void class_30e140::function_30e140(entity_316000 *entity)
-{
-}
 
 class class_30f710
 {
@@ -275,10 +215,6 @@ public:
 	void function_30f710();
 };
 
-// @stub 0x30f710
-void class_30f710::function_30f710()
-{
-}
 
 // motion objects 0x311940 builds
 class class_31ad80 { public: class_31ad80(void const *position, void const *orientation); };
@@ -362,7 +298,41 @@ public:
 	void function_2dc220(pending_2ddbd0 *pending, void const *root, fixed_point_2dc220 const *fixed_point);
 };
 
-// @stub 0x2dc220
-void class_2dc220::function_2dc220(pending_2ddbd0 *pending, void const *root, fixed_point_2dc220 const *fixed_point)
+// Havok round 37: library callees of the island split (0x30e720)
+
+// the grouping set up over a parent table and a scratch table
+// @stub 0x3720a0
+grouping_3720a0::grouping_3720a0(array_2d91d0 *parents, array_2d91d0 *scratch)
+{
+}
+
+// starts each body in its own group, then joins the bodies of each pair
+// @stub 0x372200
+void grouping_3720a0::function_372200(array_2d91d0 const *pairs, long count)
+{
+}
+
+// lists the groups
+// @stub 0x372390
+void grouping_3720a0::function_372390(groups_372300 *groups)
+{
+}
+
+// Havok round 37: a library callee of the world's destructor (0x310a70)
+
+class helper_3728b0
+{
+public:
+	~helper_3728b0();
+};
+
+// resets the object the helper holds at +0x100
+// @stub 0x3728b0
+helper_3728b0::~helper_3728b0()
+{
+}
+
+// @stub 0x372a40
+slot_table_372a40::slot_table_372a40()
 {
 }

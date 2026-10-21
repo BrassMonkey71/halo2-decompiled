@@ -5389,9 +5389,9 @@ void function_2b0eeb(c_class_2b0b5e *widget, long mode)
     if (definition && definition->count > 0)
     {
         s_name_table_11c0b0 *table = (s_name_table_11c0b0 *)g_4e0350;
-        for (long i = 0; i < ((s_model_names_2b *)widget->definition)->count; ++i)
+        for (long i = 0; i < definition->count; ++i)
         {
-            char const *name = ((s_model_names_2b *)widget->definition)->names[i];
+            char const *name = definition->names[i];
             if (name[0])
             {
                 short index = function_11c0b0(name, table);
@@ -5402,6 +5402,8 @@ void function_2b0eeb(c_class_2b0b5e *widget, long mode)
                         function_10f5c0(object_index, 0.0f, 2, mode, 0x7000101);
                 }
             }
+            /* the calls above can change the widget's definition */
+            definition = (s_model_names_2b *)widget->definition;
         }
     }
 }

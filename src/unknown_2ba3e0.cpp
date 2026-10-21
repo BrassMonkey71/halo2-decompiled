@@ -442,9 +442,7 @@ void function_2b9b10(s_particle_properties_2ba const *definition, void const *or
         particle->velocity.i += change.i;
         particle->velocity.j += change.j;
         particle->velocity.k += change.k;
-        particle->velocity.i *= 0.25f;
-        particle->velocity.j *= 0.25f;
-        particle->velocity.k *= 0.25f;
+        scale_particle_vector_2b(0.25f, &particle->velocity);
         particle->velocity.i += local_c01284.i;
         particle->velocity.j += local_c01284.j;
         particle->velocity.k += local_c01284.k;
@@ -452,16 +450,12 @@ void function_2b9b10(s_particle_properties_2ba const *definition, void const *or
         if (squared > maximum_speed * maximum_speed)
         {
             normalize_particle_velocity_2b(&particle->velocity);
-            particle->velocity.i *= maximum_speed;
-            particle->velocity.j *= maximum_speed;
-            particle->velocity.k *= maximum_speed;
+            scale_particle_vector_2b(maximum_speed, &particle->velocity);
         }
         else if (minimum_speed * minimum_speed > squared)
         {
             normalize_particle_velocity_2b(&particle->velocity);
-            particle->velocity.i *= minimum_speed;
-            particle->velocity.j *= minimum_speed;
-            particle->velocity.k *= minimum_speed;
+            scale_particle_vector_2b(minimum_speed, &particle->velocity);
         }
     }
 }

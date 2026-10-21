@@ -101,6 +101,7 @@ void function_1c4b00(long object_index, void *linear, void *angular, long force)
 void __stdcall function_b9b90(long object_index, bool disable);
 void function_b7360(long object_index);
 void function_bba20(long object_index);
+void function_b9c60(long object_index, bool flag);
 
 static inline byte *attachment_object(long index)
 {
@@ -119,14 +120,7 @@ void function_14ee20(long player_index, long target_index)
         function_14cad0(player_index, NONE);
         function_152340();
         function_b7300(unit_index);
-        byte *current = attachment_object(unit_index);
-        if (!(current[4] & 1))
-        {
-            if (function_b9d20(unit_index))
-                function_bef30(unit_index, 1, 0, 0, false);
-            *(dword *)(current + 4) |= 1;
-            function_b8b70(unit_index);
-        }
+        function_b9c60(unit_index, true);
         if (target_index != NONE)
             *(long *)(player + 0x30) = target_index;
         byte *state = (byte *)g_4e8c20;

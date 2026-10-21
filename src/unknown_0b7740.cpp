@@ -611,10 +611,10 @@ static inline bool cluster_sphere_accept_ab(long object, s_object_cluster_refere
 // @retail 0xbb050
 short __stdcall function_bb050(long mask, dword type_mask, void const *location, point3f const *position, real radius, long *objects, short maximum_count)
 {
-    short volatile count = 0;
+    short count = 0;
     if (!type_mask) type_mask = 0xffffffff;
     if (!mask) mask = NONE;
-    long cluster = *(short *)((byte const *)location + 4);
+    short cluster = *(short *)((byte const *)location + 4);
     short cluster_count = 0;
     short clusters[0x200];
     if (cluster != NONE)
@@ -637,7 +637,7 @@ short __stdcall function_bb050(long mask, dword type_mask, void const *location,
     g_4de2f8 = true;
     for (short i = 0; i < cluster_count; ++i)
     {
-        long cluster = clusters[i];
+        short cluster = clusters[i];
         struct search_slots { s_object_cluster_reference *record; s_object_cluster_iterator second, first; } search;
         search.record = 0;
         if (mask & 1)

@@ -1643,8 +1643,7 @@ void __stdcall function_112070(long unit_index, dword const *node_mask, long nod
 					if (screen_a || screen_b)
 					{
 						project_112070((vector3f *)((byte *)unit + 0x168), &forward, &side, &up, &projected);
-						angles.i = (real)atan2(projected.j, projected.i);
-						angles.j = (real)atan2(projected.k, sqrt(projected.i * projected.i + projected.j * projected.j));
+						function_11df30(&angles, &projected);
 						control->flags |= 0x20;
 						if (screen_a) bounds_112070(screen_a, (real *)control->unknown04);
 						else if (screen_b) bounds_112070(screen_b, (real *)control->unknown04);

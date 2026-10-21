@@ -246,6 +246,7 @@ void __cdecl function_2f3d00(void const *a, void const *b, void const *input, vo
 {
 	capsule_contact_2f3920(a, b, input, collector);
 }
+// score 8 (was 8): the two arrays of placed ends trade stack slots (retail puts the second capsule's below the first's).
 // @retail 0x2f40e0
 void __cdecl function_2f40e0(void const *a, void const *b, void const *input, void *collector)
 {

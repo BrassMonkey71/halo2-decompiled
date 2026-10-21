@@ -766,9 +766,10 @@ c_child_transform *function_1ef070(dword key, void *storage)
   const transform4x3f *matrix = (const transform4x3f *)(object + *(short *)(object + 0x116));
   c_query_transform transform;
   query_transform(matrix, &transform);
+  c_query_transform *destination = &result->transform;
   for (long axis = 0; axis < 3; ++axis)
-   result->transform.axes[axis] = transform.axes[axis];
-  result->transform.position = transform.position;
+   destination->axes[axis] = transform.axes[axis];
+  destination->position = transform.position;
   result->user = key;
   return result;
  }
@@ -787,9 +788,10 @@ c_child_transform *function_1ef070(dword key, void *storage)
   const transform4x3f *matrix = node == NONE ? &info.root_matrix : &info.field_50[node];
   c_query_transform transform;
   query_transform(matrix, &transform);
+  c_query_transform *destination = &result->transform;
   for (long axis = 0; axis < 3; ++axis)
-   result->transform.axes[axis] = transform.axes[axis];
-  result->transform.position = transform.position;
+   destination->axes[axis] = transform.axes[axis];
+  destination->position = transform.position;
   result->user = key;
   return result;
  }
