@@ -147,6 +147,10 @@ void __cdecl function_302eb0(body_302eb0 const *a, body_302eb0 const *b, input_3
 	contact_302eb0 *contacts, int *count, world_contacts_302eb0 **out_list, id_owner_302eb0 *ids);
 void __cdecl function_3029d0(s_3029d0_entry *entries, int *count, class_3029d0_owner *owner);
 
+// score 14 (was 202): only the stack slots differ: retail keeps the kept
+// contact at esp+0x20 and the search's closest points at esp+0x70, here the
+// reverse; renaming either, a block scope around the search, and a pointer to
+// the contact do not move them.
 // the pair's kept contact points brought up to date: skipped, the points
 // given up, while the shapes' motion since the last query cannot have used
 // up the distance they were apart; else the search's contact, when within the
