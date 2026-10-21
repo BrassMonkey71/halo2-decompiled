@@ -269,7 +269,6 @@ void global_preferences_verify(s_global_preferences *preferences)
 // @retail 0x121350
 void global_preferences_initialize(void)
 {
-	bool signed_data = false;
 	if (!global_preferences_globals.initialized)
 	{
 		global_preferences_globals.initialized = true;
@@ -285,6 +284,7 @@ void global_preferences_initialize(void)
 			function_1a0f10(global_preferences_globals.file, &preferences, sizeof(preferences), 0, 8, 6, &bytes_read, &global_preferences_globals.done);
 			function_120d50(&global_preferences_globals.done, false);
 
+			bool signed_data = false;
 			g_470024 = XCalculateSignatureBegin(XCALCSIG_FLAG_NON_ROAMABLE);
 			if (g_470024 != INVALID_HANDLE_VALUE &&
 				XCalculateSignatureUpdate(g_470024, (BYTE const *)PREFERENCES_DATA(&preferences), k_preferences_data_size) == ERROR_SUCCESS)

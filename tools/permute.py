@@ -1017,6 +1017,8 @@ class Context:
 
     def field_type(self, struct, field, depth=0):
         """The type of a structure's field (looked up in its bases too), or None."""
+        if not struct:  # the expression's type is unknown, so there is no structure to look in
+            return None
         key = ('field', struct, field)
         if key in self._cache:
             return self._cache[key]
