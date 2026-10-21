@@ -660,8 +660,10 @@ long function_bf760(long const *unique_id)
 		function_bae80(&state.iterator, 1 << type, 0);
 		while ((state.object = (s_object_query_bbf40 *)function_baeb0(&state.iterator)) != 0)
 		{
-			bool match = (type == state.object->type) & (source == state.object->source) &
-				(identifier->unique_id == state.object->unique_id);
+			bool match = true;
+			match &= type == state.object->type;
+			match &= source == state.object->source;
+			match &= identifier->unique_id == state.object->unique_id;
 			if (match && source == 0)
 				match &= identifier->origin_bsp == state.object->origin_bsp;
 			if (match)

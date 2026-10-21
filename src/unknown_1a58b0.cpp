@@ -725,11 +725,11 @@ void function_1a7b30(s_flag_bits *result, long owner_index)
 	s_actor_view *owner = actor_get(owner_index);
 	s_tag_instance *tags = g_4e3b44;
 	s_flag_bits *source;
+	s_definition_view *definition;
 	long index = owner->unknown858;
 
-	if (index != NONE && ((s_definition_view *)(g_502408->data + (index & 0xffff) * sizeof(s_definition_view)))->unknown86)
+	if (index != NONE && (definition = (s_definition_view *)(g_502408->data + (index & 0xffff) * sizeof(s_definition_view)))->unknown86)
 	{
-		s_definition_view *definition = (s_definition_view *)(g_502408->data + (index & 0xffff) * sizeof(s_definition_view));
 
 		source = (s_flag_bits *)(tags[definition->tag_index88 & 0xffff].bytes + 0x38);
 		*result = *source;

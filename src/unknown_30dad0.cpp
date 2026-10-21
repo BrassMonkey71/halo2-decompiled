@@ -55,7 +55,8 @@ struct groups_30dad0
 
 	__forceinline long index_of(group_30dad0 *group) const
 	{
-		for (long i = 0; i < size; i++)
+		long const &count = size;
+		for (long i = 0; i < count; i++)
 		{
 			if (data[i] == group)
 			{
@@ -95,9 +96,6 @@ public:
 	void function_30dba0(pair_30dc30 const *pair);
 };
 
-// not matched yet: our search loop reloads the size on every iteration and
-// keeps it in edx, retail keeps the count in ecx for the whole loop, and
-// retail reads the size again at the append while ours reuses the loop's count
 // @retail 0x30dad0
 void class_30dad0::function_30dad0(pair_30dc30 const *pair)
 {
@@ -110,9 +108,6 @@ void class_30dad0::function_30dad0(pair_30dc30 const *pair)
 	}
 }
 
-// not matched yet: our search loop reloads the size on every iteration and
-// keeps it in ebx, retail keeps the count in ecx for the whole loop, and ours
-// has an extra `lea ecx, [ecx]` in the loop
 // @retail 0x30dba0
 void class_30dad0::function_30dba0(pair_30dc30 const *pair)
 {

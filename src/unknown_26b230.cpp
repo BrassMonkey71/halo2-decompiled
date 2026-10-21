@@ -1630,13 +1630,7 @@ void function_269580(long destination_index, long source_index)
 	while ((prop = clump_next_prop(&iterator)) != NULL)
 	{
 		long object_index = *(long *)((byte *)prop + 8);
-		byte *object = NULL;
-		if (object_index != NONE && (object_index & 0xffff) < g_4e0300->high_water_index)
-		{
-			s_object_header_view *header = (s_object_header_view *)(g_4e0300->data + g_4e0300->size * (object_index & 0xffff));
-			if (header->salt && header->salt == (object_index >> 16) && ((1 << header->type) & -1))
-				object = header->object;
-		}
+		byte *object = (byte *)function_badc0(object_index, (dword)NONE);
 		if (!object) continue;
 		if (*(char *)(object + 0xaa) == 12 && *(long *)(object + 0x134) == 0)
 		{
