@@ -556,6 +556,17 @@ extern s_allocator_globals *g_4d87f8;
    table (09a5e0, 183c60) */
 extern long g_4eca60[8];
 
+/* g_4ea958: the slot tables that map entries to those slots (183c60, 183ee0) */
+struct s_slot_table_globals
+{
+	long assigned_entry_count;
+	long active_slot_count;
+	byte entry_slots[0x100];
+	byte owner_entry_slots[0x400][8];
+};
+
+extern s_slot_table_globals g_4ea958;
+
 /* g_480118: another allocator (1efac0) */
 extern c_allocator *g_480118;
 
