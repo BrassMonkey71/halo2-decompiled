@@ -11,6 +11,7 @@ __forceinline void dot3_308260(float *result, __m128 const &a, __m128 const &b)
 	_mm_store_ss(result, _mm_add_ss(_mm_shuffle_ps(product, product, 0xaa), _mm_add_ss(_mm_shuffle_ps(product, product, 0x55), product)));
 }
 
+// score 2 (was 2): one x87 multiply in the second weight has its operands the other way round (retail loads the cross term first, then the distance along ab).
 // @retail 0x308260
 void __cdecl function_308260(__m128 const *point, __m128 const *a, __m128 const *b, __m128 const *c, float *weights)
 {
