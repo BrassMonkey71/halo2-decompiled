@@ -309,7 +309,7 @@ void __stdcall function_174990(real dt)
 }
 
 // @retail 0x175070
-void particle_system_link(s_particle_system_datum *particle_system, long *last_index, long *first_index)
+void particle_system_link(s_particle_system_datum *particle_system, long *first_index, long *last_index)
 {
 	s_record_pool *data = g_510c74;
 	long particle_system_index = ((dword)particle_system->salt << 16) | (particle_system - (s_particle_system_datum *)data->data);
