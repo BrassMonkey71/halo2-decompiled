@@ -58,14 +58,13 @@ struct owner_30d2b0
 	class_316c50 *fixed_group;
 };
 
-// score 14 (was 14): retail loads the second member's group (into ebx) before the
-// first's; it returns the link.
+// it returns the link
 // @retail 0x30d2b0
 void *s_1d1541::function_30d2b0(void *arg_0)
 {
 	link_30d2b0 *link = (link_30d2b0 *)arg_0;
-	class_316c50 *second_group = link->second->group;
 	class_316c50 *first_group = link->first->group;
+	class_316c50 *second_group = link->second->group;
 	if (first_group == ((owner_30d2b0 *)this)->fixed_group)
 	{
 		second_group->function_316cf0((member_316cf0 *)link);

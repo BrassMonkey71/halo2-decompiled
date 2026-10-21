@@ -47,12 +47,21 @@ class c_allocator;
 c_allocator *function_46220(void);
 void *__fastcall function_31bc70(void *arg_0);
 
+// whether the timing stream has room for another mark, as a flag built in a
+// temporary (a temporary's byte sits right under the frame's saved registers,
+// where retail keeps it; a named flag would sit 3 bytes lower)
+struct room_2eab70 : s_flag_byte
+{
+	room_2eab70()
+	{
+		set((char *)g_480154 < g_480158);
+	}
+};
+
 // adds a mark to the timing stream when there is room
 #define TIMER_ADD_2EAB70(text) \
 	{ \
-		byte room; \
-		((s_flag_byte *)&room)->set((char *)g_480154 < g_480158); \
-		if (((s_flag_byte *)&room)->is_set()) \
+		if (room_2eab70().is_set()) \
 		{ \
 			timer_mark_2ebc80 *mark = (timer_mark_2ebc80 *)g_480154; \
 			mark->label = text; \
@@ -140,7 +149,6 @@ struct agent_list_2eab70
 	entries_2eab70 entries;
 };
 
-// score 12 (was 12): each timing flag byte sits 3 bytes higher in retail (ebp-5, -0x11, -0x14a), which also moves the last mark's locals.
 // @retail 0x2eab70
 void class_2eab70::function_2eab70(void const *a, void const *b, void const *input, void *collector)
 {

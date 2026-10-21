@@ -207,7 +207,7 @@ hash_node *function_13e2d0(hash_table *table, void *key);
 PRIVATE inline bool reference_table_find(hash_table *table, void *key, void *data)
 {
 	hash_node *node = function_13e2d0(table, key);
-	if (node && data)
+	if (node && NULL != data)
 	{
 		memcpy(data, node->data, table->data_size);
 		return true;

@@ -1605,7 +1605,7 @@ static inline bool weapon_state_replaceable(long current, long state)
 bool function_1058b0(long weapon_index, long state, bool force)
 {
 	s_weapon *weapon = WEAPON_GET(weapon_index);
-	long result = false;
+	bool result = false;
 
 	function_b7360(weapon_index);
 	if (force || weapon_state_replaceable(weapon->state, state))
@@ -1675,9 +1675,9 @@ bool function_1058b0(long weapon_index, long state, bool force)
 			}
 		}
 		weapon = WEAPON_GET(weapon_index);
-		result = true;
 		if (TEST_FIELD_BIT(weapon->in_inventory) && weapon->unit_index != NONE)
 			function_c9d00(weapon->unit_index, weapon_index, state);
+		result = true;
 	}
 	return result;
 }

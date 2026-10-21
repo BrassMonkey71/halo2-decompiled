@@ -343,9 +343,11 @@ public:
 
 struct entry_305a60;
 
+// the answer of 0x305a60; the caller keeps it in a four-byte slot
 struct bool_305a60
 {
 	bool value;
+	char unknown1[3];
 };
 
 class class_305a60
@@ -495,9 +497,6 @@ void query_2ef260::function_307f90(answer_307f90 *found, contact_307f90 *contact
 }
 
 // the manifold of contacts between the boxes brought up to date
-// score 4 (was 52): only where two one-byte answers sit in the frame differs:
-// retail keeps 0x306580's at esp+0x13 and 0x305a60's at esp+0x14, ours are at
-// 0x17 and 0x16.
 // @retail 0x3080a0
 void query_2ef260::function_3080a0(class_308180 *manifold)
 {
