@@ -392,7 +392,8 @@ PRIVATE inline void contact_cross(vector3f const *a, vector3f const *b, vector3f
 void function_1f2a80(byte const *request, bool moving,
     vector3f const *desired, long const *indices, long count, vector3f *out, vector3f const *velocity)
 {
-    byte *component = g_51e9b8->data + (*(long *)(request + 0x40) & 0xffff) * 0xa0;
+    long component_index = *(long *)(request + 0x40) & 0xffff;
+    byte *component = g_51e9b8->data + component_index * 0xa0;
     long selected = NONE;
     real lowest = 0.0f;
     for (long i = 0; i < count; i++)

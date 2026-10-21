@@ -1629,8 +1629,9 @@ bool function_71480(c_session_state_matchmaking *state)
 						network_session_host_set_summary(other, (const s_session_summary *)((byte *)state + 0x630));
 						network_session_parameters_set_value4dac(other, value);
 						network_session_parameters_set_data4db0(other, (const s_session_data4db0 *)settings);
-						transport_get_random_bytes(8, (byte *)&original);
-						other->set_values_4da0(original.a, original.b);
+						s_session_id random_id;
+						transport_get_random_bytes(8, (byte *)&random_id);
+						other->set_values_4da0(random_id.a, random_id.b);
 						if (*(long *)(manager + 8)) *(long *)(manager + 8) = 0;
 						network_session_set_mode(session, 11);
 						result = true;

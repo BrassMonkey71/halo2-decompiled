@@ -2624,13 +2624,14 @@ bool __stdcall function_1295e0(short voice_index)
 				system->streaming_bits[channel >> 5] |= 1 << (channel & 31);
 				channel = voice->channel_index;
 				system->free_bits[channel >> 5] &= ~(1 << (channel & 31));
-				return result;
+				goto channel_done;
 			}
 		}
 		result = false;
 		function_127320(voice->sound_index, 7);
 		sound_voice_free(voice_index);
 	}
+channel_done:
 	return result;
 }
 

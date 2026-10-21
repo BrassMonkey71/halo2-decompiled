@@ -153,9 +153,10 @@ void function_22beb5(long local_player_index, dword state, s_interface_sound_blo
 void function_13a720(long user_index, s_13a720_status const *status)
 {
 	s_new_hud_user *user = &((s_new_hud_globals *)g_510c4c)->users[user_index];
-	dword flags = 0;
+	dword flags;
 	if (!(status->low_flags & 4) && !(0.0f >= status->value28) && !function_13cb40())
 	{
+		flags = 0;
 		if (user->value00 != -1.0f && function_15eb20(function_14de70(user_index)))
 		{
 			flags = (status->flags >> 9) & 1;
@@ -183,6 +184,8 @@ void function_13a720(long user_index, s_13a720_status const *status)
 		if (g_4e6948->state == 2 && status->value2c >= 1.0f)
 			flags &= ~2;
 	}
+	else
+		flags = 0;
 	function_22beb5(user_index, flags, (s_interface_sound_block *)((byte *)g_510c94 + 0x418),
 		user->unknown50, (word *)&user->unknown68);
 }

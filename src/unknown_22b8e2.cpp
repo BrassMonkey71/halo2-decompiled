@@ -63,56 +63,35 @@ void function_22b8e2(s_22b8e2 const *arg_0, long arg_1, color4f const *arg_2)
 	if (arg_0->field_24 != NONE)
 	{
 		byte const *local_5 = g_4e3b44[arg_0->field_24 & 0xffff].bytes;
-		if (local_3 >= 0)
+		if (local_3 >= 0 && local_3 < *(long const *)(local_5 + 0x3c))
 		{
-			if (local_3 < *(long const *)(local_5 + 0x3c))
+			byte const *local_7 = *(byte const *const *)(local_5 + 0x40) + local_3 * 0x3c;
+			long local_8 = *(long const *)(local_7 + 0x34);
+			long local_9 = 0;
+			if (local_8 > 0)
 			{
-				byte const *local_7 = *(byte const *const *)(local_5 + 0x40) + local_3 * 0x3c;
-				long local_8 = *(long const *)(local_7 + 0x34);
-				long local_9 = 0;
-				if (local_8 > 0)
+				if (local_8 > 1 && function_22acb4(arg_1))
+					local_9 = 1;
+				local_2 = *(short const *)(*(byte const *const *)(local_7 + 0x38) + local_9 * 0x20);
+			}
+			else
+			{
+				short local_10 = *(short const *)(local_7 + 0x22);
+				if (local_10 > 0)
 				{
-					if (local_8 > 1 && function_22acb4(arg_1))
+					if (local_10 > 1 && function_22acb4(arg_1))
 						local_9 = 1;
-					local_2 = *(short const *)(*(byte const *const *)(local_7 + 0x38) + local_9 * 0x20);
-				}
-				else
-				{
-					short local_10 = *(short const *)(local_7 + 0x22);
-					if (local_10 > 0)
-					{
-						if (local_10 > 1 && function_22acb4(arg_1))
-							local_9 = 1;
-						local_2 = *(short const *)(local_7 + 0x20) + local_9;
-					}
+					local_2 = *(short const *)(local_7 + 0x20) + local_9;
 				}
 			}
-			else if (local_3 == 0 && *(long const *)(local_5 + 0x3c) == 0 && *(long const *)(local_5 + 0x44) > 0)
-				local_2 = 0;
 		}
+		else if (local_3 == 0 && *(long const *)(local_5 + 0x3c) == 0 && *(long const *)(local_5 + 0x44) > 0)
+			local_2 = 0;
 	}
 	function_1396c7(arg_0->field_1c, &local_4);
-	real local_26;
-	real local_27;
-	switch (local_0)
-	{
-	case 0:
-		local_26 = (real)arg_0->field_44[0] + local_4.x;
-		local_27 = (real)arg_0->field_44[1] + local_4.y;
-		break;
-	case 1:
-		local_26 = (real)arg_0->field_44[2] + local_4.x;
-		local_27 = (real)arg_0->field_44[3] + local_4.y;
-		break;
-	case 2:
-		local_26 = (real)arg_0->field_44[4] + local_4.x;
-		local_27 = (real)arg_0->field_44[5] + local_4.y;
-		break;
-	default:
-		local_26 = local_4.x;
-		local_27 = local_4.y;
-		break;
-	}
+	short const *offsets = arg_0->field_44 + local_0 * 2;
+	real local_26 = (real)offsets[0] + local_4.x;
+	real local_27 = (real)offsets[1] + local_4.y;
 	real local_11 = (real)g_4b9dd2;
 	real local_12 = (real)g_4b9dd0;
 	real local_13 = (real)g_4b9dd6;
