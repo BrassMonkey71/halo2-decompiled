@@ -246,6 +246,8 @@ Thank you to everyone who has contributed to this project so far:
   child-agent code.
 - [@ccgman123](https://github.com/ccgman123): a careful diagnosis of seven
   near misses, and the cleanup that removed an in-body pragma from 0x9d1c0.
+- [@marioag0412](https://github.com/marioag0412): the match of 0x1e3480,
+  an object's actor index.
 
 [@kirklandsig](https://github.com/kirklandsig) maintains the project: runs the
 build, reviews and merges every pull request, and keeps the
