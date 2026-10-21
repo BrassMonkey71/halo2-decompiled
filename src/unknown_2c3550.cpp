@@ -724,7 +724,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
    {
     bool found = avoidance_search(pathfinding, search, (s_avoidance_limits const *)state, state->source.unknown04,
      obstacles, radius, (point2f const *)start, start_node, (point2f const *)&input->point.point,
-     input->node_index, false, last);
+     input->node_index, last, false);
     if (!found)
     {
      long retry = obstacles->flag0_count > 0;
@@ -749,7 +749,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
      }
      if (!retry || !avoidance_search(pathfinding, search, (s_avoidance_limits const *)state, state->source.unknown04,
       obstacles, radius, (point2f const *)start, start_node, (point2f const *)&input->point.point,
-      input->node_index, true, last))
+      input->node_index, last, true))
      {
       if (step == count - 1 && flag)
        for (short i = 0; i < obstacles->count; ++i) if (obstacles->obstacles[i].flags & 2) *flag = true;
