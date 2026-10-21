@@ -798,8 +798,7 @@ short __stdcall function_1b9640(long actor_index, s_slot *slot)
 		iterator.data = g_4e8c24;
 		iterator.index = NONE;
 		iterator.datum_index = NONE;
-		if (data_datum_iterator_next(&iterator))
-		do
+		while (data_datum_iterator_next(&iterator))
 		{
 			s_player_unit_view *player = (s_player_unit_view *)iterator.datum;
 
@@ -828,7 +827,6 @@ short __stdcall function_1b9640(long actor_index, s_slot *slot)
 				}
 			}
 		}
-		while (data_datum_iterator_next(&iterator));
 
 		if (vehicle_index != NONE)
 		{
@@ -838,7 +836,8 @@ short __stdcall function_1b9640(long actor_index, s_slot *slot)
 			if (prop_index != NONE && prop_node_get(prop_index)->unknown24 < 1)
 				function_25c230(actor_index, prop_index, 3);
 			slot_index = actor_behavior_find_level(actor_index, 0x4c);
-			if (slot_index == NONE || function_1b8c80(((s_slot_4c *)&actor->slots[slot_index])->unknown1c) != vehicle_index)
+			bool already_assigned = slot_index != NONE && function_1b8c80(((s_slot_4c *)&actor->slots[slot_index])->unknown1c) == vehicle_index;
+			if (!already_assigned)
 			{
 				s_slot_4c *state = (s_slot_4c *)slot;
 
@@ -1064,11 +1063,11 @@ bool function_1baae0(long actor_index, long object_index, short seat_index, bool
 			if (normalize2d((point2f *)&direction) == 0.0f)
 				direction = actor->unknown290;
 			real distance;
-			double dx = (double)position.x - actor->position.x;
-			double dy = (double)position.y - actor->position.y;
+			real dx = position.x - actor->position.x;
+			real dy = position.y - actor->position.y;
 			if (vertical)
 			{
-				double dz = (double)position.z - actor->position.z;
+				real dz = position.z - actor->position.z;
 				distance = (real)sqrt(dx * dx + dy * dy + dz * dz);
 			}
 			else
@@ -1076,8 +1075,8 @@ bool function_1baae0(long actor_index, long object_index, short seat_index, bool
 				real mx = marker.x - actor->position.x;
 				real my = marker.y - actor->position.y;
 				point3f const *nearest = sqrt(dx * dx + dy * dy) > sqrt(mx * mx + my * my) ? &marker : &position;
-				double nx = (double)nearest->x - actor->position.x;
-				double ny = (double)nearest->y - actor->position.y;
+				real nx = nearest->x - actor->position.x;
+				real ny = nearest->y - actor->position.y;
 				distance = (real)sqrt(nx * nx + ny * ny);
 			}
 			s_slot_object_view *object = object_get(object_index);
@@ -1180,6 +1179,7 @@ struct s_seat_selection
 
 bool function_2676d0(long actor_index);
 bool function_1e2030(long actor_index);
+short __stdcall function_c8b80(long object_index, s_object_seat *seats, short maximum_count);
 
 // @retail 0x1b9e70
 bool function_1b9e70(long actor_index, s_seat_selection *selection, bool reserved,
@@ -1193,7 +1193,8 @@ bool function_1b9e70(long actor_index, s_seat_selection *selection, bool reserve
             result = true;
         else
         {
-            object_seat_unreserve(object_get(selection->object_index), selection->seat_index);
+            long seat_index = selection->seat_index;
+            object_seat_unreserve(object_get(selection->object_index), seat_index);
             search = ((selection->flags >> 3) & 1) != 0;
             selection->seat_index = NONE;
             selection->object_index = NONE;
@@ -1204,9 +1205,8 @@ bool function_1b9e70(long actor_index, s_seat_selection *selection, bool reserve
     if (selection->seat_index == NONE && search)
     {
         s_object_seat seats[0x40];
-        short count = 0;
+        short count = function_c8b80(element->object_index, seats, 0x40);
         long object_index;
-        function_c8a40(element->object_index, seats, &count, 0x40);
         bool reject_single = element->unknown85 && (!function_2676d0(actor_index) || !function_1e2030(actor_index));
         selection->seat_index = function_1bb1d0(actor_index, element->object_index, seats, count,
             reject_single, &object_index, out);

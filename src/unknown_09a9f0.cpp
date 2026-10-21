@@ -6,6 +6,7 @@
 #include "globals.h"
 #include "unknown_0a58d0.h"
 #include "object_types_21_2.h"
+#include "unknown_xa19f52.h"
 #include <string.h>
 
 #define OBJECT_HEADER(index) (&((s_object_header *)g_4e0300->data)[(index) & 0xFFFF])
@@ -520,10 +521,14 @@ __declspec(noinline) bool function_99640(c_handle_table_450cd0 *self, long handl
 // @retail 0xa0e50
 bool c_projectile_type::v8(long a, long b)
 {
+ bool result = true;
  long identifier = *(long *)(*(long *)(a + 0x14) + 0x14);
- if (identifier == NONE) return true;
- byte *table = *(byte **)(*(long *)(*(long *)b + 4) + 8);
- return function_99640((c_handle_table_450cd0 *)(table + 0x30), identifier) != false;
+ if (identifier != NONE)
+ {
+  byte *table = *(byte **)(*(long *)(*(long *)b + 4) + 8);
+  if (!function_99640((c_handle_table_450cd0 *)(table + 0x30), identifier)) result = false;
+ }
+ return result;
 }
 
 // @retail 0xa3df0
@@ -558,7 +563,7 @@ long c_device_type::v27(long a, long b, long c, long d)
 #include "unknown_1946f0.h"
 #include "slot_handler.h"
 static __forceinline long real_to_long(real value);
-void simulation_write_position(long bits, s_bitstream *stream, real const *position, bool keep_inside);
+void simulation_write_position(s_bitstream *stream, real const *position, long bits, bool keep_inside);
 void simulation_read_position(s_bitstream *stream, real *position, long bits);
 void scenario_object_name_encode(long object_name, s_bitstream *stream);
 
@@ -621,7 +626,7 @@ void c_projectile_impact_effect_event::v9(long a, void const *data, s_bitstream 
  z_write_impact_scale(stream, event->scale_a);
  z_write_impact_scale(stream, event->scale_b);
  function_194bc0(stream, &event->direction);
- simulation_write_position(12, stream, (real const *)&event->position, true);
+ simulation_write_position(stream, (real const *)&event->position, 12, true);
  function_194bc0(stream, &event->normal);
  function_1955d0(stream, &event->field_30, 16);
 }
@@ -634,7 +639,7 @@ void c_projectile_object_impact_effect_event::v9(long a, void const *data, s_bit
  z_write_impact_scale(stream, event->scale_a);
  z_write_impact_scale(stream, event->scale_b);
  function_194bc0(stream, &event->direction);
- simulation_write_position(12, stream, (real const *)&event->position, true);
+ simulation_write_position(stream, (real const *)&event->position, 12, true);
  function_194bc0(stream, &event->normal);
  function_1955d0(stream, &event->field_30, 16);
  stream_write_checked(stream, event->field_38, 8);
@@ -717,9 +722,8 @@ bool c_projectile_impact_effect_event::v11(long a, long const *entities, long c,
  if (event->object_name != NONE && function_122c10(0x70726f6a, event->object_name) &&
   !(event->scale_a < 0.0f || event->scale_a > 1.0f || event->scale_b < 0.0f || event->scale_b > 1.0f))
  {
-  volatile word node = event->field_30;
   function_fd0e0(event->object_name, event->scale_a, event->scale_b, &event->direction,
-   (point3f const *)&event->position, &event->normal, node, false, NONE, NONE, false);
+   (point3f const *)&event->position, &event->normal, event->field_30, false, NONE, NONE, false);
  }
  return true;
 }
@@ -1341,6 +1345,8 @@ struct s_projectile_target
 };
 void projectile_set_target(long index, s_projectile_target const *target);
 
+void function_0bfe20(dword *flags, long bit, bool value);
+
 // @retail 0xa0c50
 long c_projectile_type::v29(long a, s_entity_info *info, long *flags, long size, long state)
 {
@@ -1348,15 +1354,12 @@ long c_projectile_type::v29(long a, s_entity_info *info, long *flags, long size,
     byte creation[0xc4];
     function_a5d90(creation, info, flags, state);
     byte *fields = (byte *)info;
-    long player = *(long *)(fields + 0x10);
-    if (player != NONE && player >= 0 && player < g_4e8c24->high_water_index)
+    if (*(long *)(fields + 0x10) != NONE)
     {
-        s_record_pool *players = g_4e8c24;
-        byte *records = players->data;
-        byte *record = records + player * players->size;
-        if (*(short *)record)
+        byte *record = datum_get_absolute_inlined(g_4e8c24, *(long *)(fields + 0x10));
+        if (record)
         {
-            long player_index = player | (*(short volatile *)(records + player * players->size) << 16);
+            long player_index = data_datum_index(g_4e8c24, *(long *)(fields + 0x10));
             *(long *)(creation + 0x60) = *(long *)(record + 0x2c);
             *(long *)(creation + 0x5c) = player_index;
             *(long *)(creation + 0x64) = (signed char)record[0xc0];
@@ -1370,31 +1373,31 @@ long c_projectile_type::v29(long a, s_entity_info *info, long *flags, long size,
     else index = function_b7b40(creation);
     if (index != NONE)
     {
-        s_record_pool *objects = g_4e0300;
         long offset = (index & 0xffff) * 12;
-        byte *object = *(byte **)(objects->data + offset + 8);
+        byte *object = *(byte **)(g_4e0300->data + offset + 8);
         object[0xaf] = info->byte8;
         if (fields[0x1d])
         {
-            object = *(byte **)(objects->data + offset + 8);
-            *(dword *)(object + 0x12c) |= 0x100;
+            object = *(byte **)(g_4e0300->data + offset + 8);
+            function_0bfe20((dword *)(object + 0x12c), 8, true);
         }
         long target = *(long *)(fields + 0x14);
         if (target != NONE)
         {
-            byte *entry = *(byte **)((byte *)g_4cf77c + 4) + 0x2098 + (target & 0x3ff) * 0x20 + 0x14;
-            if (*(long *)entry == target && *(long *)(entry + 8) != NONE)
+            s_simulation_world_view *world = (s_simulation_world_view *)g_4cf77c;
+            s_simulation_entity *entity = simulation_entity_try_get(&world->database->table, target);
+            if (entity && entity->object_index != NONE)
             {
                 s_projectile_target request;
-                request.object_index = *(long *)(entry + 8);
+                request.object_index = entity->object_index;
                 request.node_index = *(short *)(fields + 0x18);
                 projectile_set_target(index, &request);
             }
         }
         if (!fields[0x1c])
         {
-            object = *(byte **)(objects->data + offset + 8);
-            *(dword *)(object + 0x12c) &= ~2;
+            object = *(byte **)(g_4e0300->data + offset + 8);
+            function_0bfe20((dword *)(object + 0x12c), 1, false);
         }
     }
     return index;

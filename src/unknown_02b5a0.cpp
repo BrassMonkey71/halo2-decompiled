@@ -120,7 +120,6 @@ long __stdcall function_3ddd0(long object_index);
 // @retail 0x3d430
 signed char *function_3d430(long object_index)
 {
-    (void)&object_index;
     signed char *result = NULL;
     if (g_4ba050 >= 0 && g_4ba050 < 4)
     {
@@ -197,7 +196,7 @@ void function_3e420(long tag, long object_index, signed char *output, byte level
 
 bool g_467464 = true;
 long function_d1850(long object_index, bool value, s_effect_color_query *query);
-void function_d4080(s_effect_color_query const *query, long type, s_lighting_record *record, bool flag);
+void function_d4080(long type, s_effect_color_query const *query, s_lighting_record *record, long flag);
 void function_ba1d0(long object_index, vector3f *linear_velocity, vector3f *angular_velocity);
 real magnitude3d(vector3f const *vector);
 real distance3d(point3f const *first, point3f const *second);

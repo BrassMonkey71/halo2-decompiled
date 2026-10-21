@@ -5,13 +5,16 @@
 #pragma once
 
 #include "globals.h"
+#include <xmmintrin.h>
 
 class c_sized_reference
 {
 public:
+    /* built with one reference */
+    c_sized_reference() { reference_count = 1; }
     virtual ~c_sized_reference() {}
     word flags;
-    word unknown06;
+    word reference_count;
 
     static void operator delete(void *block)
     {
@@ -25,11 +28,22 @@ public:
     virtual ~c_reference_a9f20();
 };
 
+/* the reference object with a value of its own, zero when built */
+class c_valued_reference : public c_reference_a9f20
+{
+public:
+    c_valued_reference() : field_8(0) {}
+    long field_8;
+};
+
 /* a capsule between two points; destroying one runs only the reference
    object's destructor (0xdc370) */
-class __declspec(align(16)) c_z_capsule_temp : public c_reference_a9f20
+class __declspec(align(16)) c_z_capsule_temp : public c_valued_reference
 {
 public:
     c_z_capsule_temp(void const *first, void const *second, real radius);
-    byte unknown08[0x28];
+    real radius;
+    /* the two points, the radius in the last lane of each */
+    __m128 first_point;
+    __m128 second_point;
 };

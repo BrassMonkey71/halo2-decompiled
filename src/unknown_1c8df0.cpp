@@ -20,6 +20,7 @@ bool function_16a040(long flags, point3f const *point0, point3f const *point1, l
  long ignore_unit_index, s_collision_result_1697c0 *result);
 bool function_11c010(short row, short column);
 real function_30bf0(vector3f *v);
+real magnitude3d(vector3f const *v);
 extern vector3f *g_4687bc;
 
 // @retail 0x1c8df0
@@ -27,25 +28,24 @@ short __stdcall function_1c8df0(long arg_0, point3f const *arg_4, short arg_3, s
  void const *arg_1, long arg_5, bool arg_6, bool arg_7, bool arg_8, long *arg_9)
 {
  short local_0;
- (void)&arg_1;
  real local_1;
  long local_2 = NONE;
- point3f const *local_3 = (point3f const *)*(void const *const volatile *)&arg_1;
+ point3f const *local_3 = (point3f const *)arg_1;
  if (arg_9)
   *arg_9 = NONE;
  if (arg_2 != NONE && arg_3 != NONE && !(char)function_11c010(arg_2, arg_3))
  {
-  local_1 = 0.0f;
   local_0 = 4;
+  local_1 = 0.0f;
  }
  else
  {
   s_collision_result_1697c0 local_6;
   local_6.field_24 = NONE;
-  long local_4 = *(volatile bool *)&arg_7 ? 0x15808c2f : 0x5808c2f;
+  long local_4 = arg_8 ? 0x15808c2f : 0x5808c2f;
   if (arg_6)
    local_4 |= 0x8000000;
-  if (*(volatile bool *)&arg_7)
+  if (arg_7)
    local_4 &= ~0x20;
   bool local_7;
   {
@@ -75,12 +75,13 @@ short __stdcall function_1c8df0(long arg_0, point3f const *arg_4, short arg_3, s
    {
     point3f local_9;
     point3f local_10;
-    local_9.x = local_3->x + local_8.i * 0.25f;
-    local_9.y = local_3->y + local_8.j * 0.25f;
-    local_9.z = local_3->z + local_8.k * 0.25f;
-    local_10.x = local_3->x - local_8.i * 0.25f;
-    local_10.y = local_3->y - local_8.j * 0.25f;
-    local_10.z = local_3->z - local_8.k * 0.25f;
+    real const spacing = 0.25f;
+    local_9.x = local_3->x + local_8.i * spacing;
+    local_9.y = local_3->y + local_8.j * spacing;
+    local_9.z = local_3->z + local_8.k * spacing;
+    local_10.x = local_3->x - local_8.i * spacing;
+    local_10.y = local_3->y - local_8.j * spacing;
+    local_10.z = local_3->z - local_8.k * spacing;
     if (local_7)
     {
      if (function_16a040(local_4, &local_9, arg_4, arg_0, NONE, &local_6) ||
@@ -129,7 +130,9 @@ short __stdcall function_1c8df0(long arg_0, point3f const *arg_4, short arg_3, s
    local_0 = 0;
   else
   {
-   real local_12 = distance3d(local_3, arg_4);
+   vector3f local_13;
+   vector3d_from_points3d(local_3, arg_4, &local_13);
+   real local_12 = magnitude3d(&local_13);
    if (local_12 < 1.0f)
     local_0 = 4;
    else if (local_12 * local_1 < 1.0f)
@@ -141,7 +144,12 @@ short __stdcall function_1c8df0(long arg_0, point3f const *arg_4, short arg_3, s
   }
  }
 local_14:
- if (arg_9 && !arg_8 && local_0 >= 1 && (1.0f - local_1) * distance3d(local_3, arg_4) < 4.0f)
-  *arg_9 = local_2;
+ if (arg_9 && !arg_8 && local_0 >= 1)
+ {
+  vector3f local_15;
+  vector3d_from_points3d(local_3, arg_4, &local_15);
+  if ((1.0f - local_1) * magnitude3d(&local_15) < 4.0f)
+   *arg_9 = local_2;
+ }
  return local_0;
 }

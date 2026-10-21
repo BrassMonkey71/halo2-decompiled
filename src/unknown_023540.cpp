@@ -62,11 +62,9 @@ inline void function_2c3b0(s_interface_function_context *context)
     initialization->field_30.k = 0.12f;
     initialization->field_28 = 0.4f;
     initialization->field_2c = 0.4f;
-    double pitch = -1.2566370964050293;
-    double yaw = 0.0;
-    context->field_3c.i = (real)(cos(yaw) * cos(pitch));
-    context->field_3c.j = (real)(sin(yaw) * cos(pitch));
-    context->field_3c.k = (real)sin(pitch);
+    context->field_3c.i = (real)(cos(0.0) * cos(-1.2566370964050293));
+    context->field_3c.j = (real)(sin(0.0) * cos(-1.2566370964050293));
+    context->field_3c.k = (real)sin(-1.2566370964050293);
     vector3f const *direction = &context->field_3c;
     vector3f volatile *negative = &context->field_54;
     negative->i = 0.0f - direction->i;
@@ -1203,13 +1201,9 @@ bool __stdcall function_27520(long mode, real const *bounds, real const *t, real
         if (!g_4b9d9c) goto scaled;
     case 3:
         {
-            real minimum = 0.0001f;
             real end = g_4857e0;
             real begin = g_4857dc;
-            real span = end - begin;
-            real const *divisor_reference = minimum > span ? &minimum : &span;
-            real divisor = *divisor_reference;
-            real scale = 1.0f / divisor;
+            real scale = 1.0f / (0.0001f > end - begin ? 0.0001f : g_4857e0 - g_4857dc);
             out[0] = g_48565c * scale;
             out[1] = 0.0f;
             out[2] = 0.0f - g_4857dc * scale;
@@ -1699,10 +1693,10 @@ void function_34770(t_34770_begin begin, real const *bounds,
     if (!vertex) vertex = function_0254c0;
     if (!begin || begin(user))
     {
-        D3DDevice_SetTextureStageState(0, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(1, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(2, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(3, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(0, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(1, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(2, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(3, D3DTSS_ALPHAKILL, 0);
         function_1cf50();
         function_1c710(g_51f0f0);
         for (long row = 0; row < rows; ++row)
@@ -1710,16 +1704,14 @@ void function_34770(t_34770_begin begin, real const *bounds,
             D3DDevice_Begin(D3DPT_TRIANGLESTRIP);
             for (long column = 0; column <= columns; ++column)
             {
-                real fraction_x = (real)column / columns;
                 for (long side = 0; side < 2; ++side)
                 {
-                    real fraction_y = (real)(row + side) / rows;
-                    real t[2] = { fraction_x, fraction_y };
                     for (long attribute = 15; attribute >= 0; --attribute)
                     {
                         real out[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+                        real t[2] = { (real)column / columns, (real)(row + side) / rows };
                         if (vertex(attribute, bounds, t, out, user))
-                            D3DDevice_SetVertexData4f(attribute ? attribute : D3DVSDE_VERTEX,
+                            D3DDevice_SetVertexData4f(!attribute ? D3DVSDE_VERTEX : attribute,
                                 out[0], out[1], out[2], out[3]);
                     }
                 }
@@ -1764,10 +1756,10 @@ void function_34420(t_34770_begin begin, real const *bounds,
     if (!begin || begin(user))
     {
         real corners[8] = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
-        D3DDevice_SetTextureStageState(0, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(1, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(2, D3DTSS_ALPHAKILL, 0);
-        D3DDevice_SetTextureStageState(3, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(0, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(1, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(2, D3DTSS_ALPHAKILL, 0);
+        sampler_state_write(3, D3DTSS_ALPHAKILL, 0);
         function_1cf50();
         function_1c710(g_51f0f0);
         D3DDevice_Begin(D3DPT_TRIANGLEFAN);
@@ -1775,18 +1767,13 @@ void function_34420(t_34770_begin begin, real const *bounds,
         long remaining = 4;
         do
         {
-            { long attribute = 15; if (attribute >= 0) do {
-                real out[4];
-                out[3] = 1.0f;
-                out[0] = 0.0f;
-                out[1] = 0.0f;
-                out[2] = 0.0f;
+            for (long attribute = 15; attribute >= 0; --attribute)
+            {
+                real out[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
                 if (vertex(attribute, bounds, t, out, user))
-                    D3DDevice_SetVertexData4f(attribute ? attribute : D3DVSDE_VERTEX,
+                    D3DDevice_SetVertexData4f(!attribute ? D3DVSDE_VERTEX : attribute,
                         out[0], out[1], out[2], out[3]);
-            
---attribute;
-} while (attribute >= 0); }
+            }
             t += 2;
         } while (--remaining);
         D3DDevice_End();
@@ -2099,11 +2086,11 @@ struct s_34a90_parameters
     long count;
 };
 
-PRIVATE __forceinline void configure_34a90_state(long target, short blend,
+PRIVATE __forceinline void configure_34a90_state(long target, long blend,
     dword color_write, bool use_depth, bool depth_write, real depth)
 {
     if (target != NONE) function_14bc0((short)target, 0, use_depth);
-    if (blend != NONE) function_142f0(blend);
+    if (blend != NONE) function_142f0((short)blend);
     g_4b8308 = color_write;
     D3DDevice_SetRenderState(D3DRS_COLORWRITEENABLE, color_write);
     g_4b8438 = use_depth ? 2 : 0;
@@ -2128,49 +2115,58 @@ PRIVATE __forceinline void configure_34a90_state(long target, short blend,
 }
 
 // @retail 0x34a90
-void __stdcall function_34a90(long target, short blend, dword color_write,
+void __stdcall function_34a90(long target, long blend, dword color_write,
     bool use_depth, bool depth_write, real depth, real distortion, real scale,
     long count, bool full_surface, bool viewport_textures)
 {
-    struct { long width; long height; } dimensions = { 0, 0 };
-    long selected_target = target;
-    if (selected_target == NONE) selected_target = g_4858b8;
-    function_01dd60(selected_target, &dimensions.width, &dimensions.height);
+    long width = 0;
+    long height = 0;
+    if (target != NONE)
+        function_01dd60(target, &width, &height);
+    else
+        function_01dd60(g_4858b8, &width, &height);
     real bounds[4];
-    if (!(full_surface)) {
-        bounds[0] = (real)g_4b9dd2;
-        bounds[1] = (real)g_4b9dd6;
-        bounds[2] = (real)g_4b9dd0;
-        bounds[3] = (real)g_4b9dd4;
-    } else {
+    if (full_surface)
+    {
         bounds[0] = 0.0f;
-        bounds[1] = (real)dimensions.width;
         bounds[2] = 0.0f;
-        bounds[3] = (real)dimensions.height;
+        bounds[1] = (real)width;
+        bounds[3] = (real)height;
     }
-    real inverse_x = 1.0f / dimensions.width;
-    real inverse_y = 1.0f / dimensions.height;
+    else
+    {
+        bounds[0] = (real)g_4b9dd2;
+        bounds[2] = (real)g_4b9dd0;
+        bounds[1] = (real)g_4b9dd6;
+        bounds[3] = (real)g_4b9dd4;
+    }
+    real inverse_x = 1.0f / width;
+    real inverse_y = 1.0f / height;
     s_34a90_parameters parameters;
     parameters.depth = depth >= 0.0f ? depth : 0.0f - depth;
     parameters.distortion = distortion;
     for (long i = 0; i < count; ++i)
     {
+        long texture_width, texture_height;
         if (viewport_textures)
         {
+            texture_width = g_4b9dd6 - g_4b9dd2;
+            texture_height = g_4b9dd4 - g_4b9dd0;
             parameters.offsets[i].x = (real)g_4b9dd2;
             parameters.offsets[i].y = (real)g_4b9dd0;
-            parameters.scales[i].x = (g_4b9dd6 - g_4b9dd2) * inverse_x;
-            parameters.scales[i].y = (g_4b9dd4 - g_4b9dd0) * inverse_y;
         }
         else
         {
             parameters.offsets[i].x = 0.0f;
             parameters.offsets[i].y = 0.0f;
-            parameters.scales[i].x = g_485af4[i] * inverse_x;
-            parameters.scales[i].y = g_485b04[i] * inverse_y;
+            texture_width = g_485af4[i];
+            texture_height = g_485b04[i];
         }
+        parameters.scales[i].x = texture_width * inverse_x;
+        parameters.scales[i].y = texture_height * inverse_y;
         parameters.weights[i] = 0.0f;
     }
+
     parameters.low = 0.0f;
     parameters.high = 0.0f;
     parameters.scale = scale;
@@ -2180,64 +2176,45 @@ void __stdcall function_34a90(long target, short blend, dword color_write,
 }
 
 // @retail 0x34d90
-void function_34d90(long target, real const *weights, short blend, dword color_write,
+void function_34d90(long target, real const *weights, long blend, dword color_write,
     bool use_depth, bool depth_write, real depth, real low, real high,
     bool full_surface, t_34770_vertex vertex)
 {
     long width = 0, height = 0;
-    function_01dd60(target != NONE ? target : g_4858b8, &width, &height);
-    real bounds[4];
-    if (!(full_surface))
-    {
-        bounds[0] = (real)g_4b9dd2;
-        bounds[2] = (real)g_4b9dd0;
-        bounds[1] = (real)g_4b9dd6;
-        bounds[3] = (real)g_4b9dd4;
-    }
+    if (target != NONE)
+        function_01dd60(target, &width, &height);
     else
+        function_01dd60(g_4858b8, &width, &height);
+    real bounds[4];
+    if (full_surface)
     {
         bounds[0] = 0.0f;
         bounds[2] = 0.0f;
         bounds[1] = (real)width;
         bounds[3] = (real)height;
     }
+    else
+    {
+        bounds[0] = (real)g_4b9dd2;
+        bounds[2] = (real)g_4b9dd0;
+        bounds[1] = (real)g_4b9dd6;
+        bounds[3] = (real)g_4b9dd4;
+    }
+
     real inverse_x = 1.0f / width;
     real inverse_y = 1.0f / height;
     s_34a90_parameters parameters;
     parameters.depth = depth >= 0.0f ? depth : 0.0f - depth;
     parameters.distortion = 0.0f;
+    for (long i = 0; i < 4; ++i)
     {
-        long i = 0;
-        parameters.scales[i].x = g_485af4[i] * inverse_x;
-        parameters.scales[i].y = g_485b04[i] * inverse_y;
         parameters.offsets[i].x = 0.0f;
         parameters.offsets[i].y = 0.0f;
-        parameters.weights[i] = weights[i];
-    }
-    {
-        long i = 1;
         parameters.scales[i].x = g_485af4[i] * inverse_x;
         parameters.scales[i].y = g_485b04[i] * inverse_y;
-        parameters.offsets[i].x = 0.0f;
-        parameters.offsets[i].y = 0.0f;
         parameters.weights[i] = weights[i];
     }
-    {
-        long i = 2;
-        parameters.scales[i].x = g_485af4[i] * inverse_x;
-        parameters.scales[i].y = g_485b04[i] * inverse_y;
-        parameters.offsets[i].x = 0.0f;
-        parameters.offsets[i].y = 0.0f;
-        parameters.weights[i] = weights[i];
-    }
-    {
-        long i = 3;
-        parameters.scales[i].x = g_485af4[i] * inverse_x;
-        parameters.scales[i].y = g_485b04[i] * inverse_y;
-        parameters.offsets[i].x = 0.0f;
-        parameters.offsets[i].y = 0.0f;
-        parameters.weights[i] = weights[i];
-    }
+
     parameters.low = low;
     parameters.high = high;
     parameters.scale = 1.0f;
@@ -2441,10 +2418,10 @@ void __stdcall function_2a8d0(long tag, long bitmap_index, real const *source,
     sampler_state_write(0, D3DTSS_MAGFILTER, 2);
     sampler_state_write(0, D3DTSS_MINFILTER, 2);
     sampler_state_write(0, D3DTSS_MIPFILTER, 2);
-    sampler_state_write(0, D3DTSS_MAXMIPLEVEL, 0);
+    sampler_state_write(0, D3DTSS_MAXANISOTROPY, 0);
 #pragma inline_depth(0)
-    function_0224f0(0, D3DTSS_MAXANISOTROPY, 0);
     function_0224f0(0, D3DTSS_MIPMAPLODBIAS, 0);
+    function_0224f0(0, D3DTSS_MAXMIPLEVEL, 0);
     function_0224f0(0, D3DTSS_COLORSIGN, 0);
     function_0224f0(0, D3DTSS_ALPHAKILL, 0);
 #pragma inline_depth(255)
@@ -2905,6 +2882,12 @@ PRIVATE __forceinline dword filter_output_shift(long exponent, long threshold)
     return ((exponent > threshold + 1 ? 0x20 : exponent > threshold ? 0x10 : 0) << 12) | 0xd00;
 }
 
+PRIVATE __forceinline dword filter_output_first_shift(long exponent)
+{
+    // retail only ever halves here; no 0x20 step for large exponents
+    return ((exponent > 0 ? 0x10 : 0) << 12) | 0xd00;
+}
+
 PRIVATE __forceinline long filter_quantized_byte(real value, bool direct)
 {
     if ((long)(direct ? floor((double)value) : function_2b480(value)) < 0) return 0;
@@ -3067,7 +3050,7 @@ bool __stdcall function_3a5c0(byte const *configuration, real low, real high, lo
         g_484f68.PSRGBInputs[7] = 0x20 | (small ? 0x2000 : 0);
         g_484f68.PSRGBOutputs[7] = 0x4500;
         g_484f68.PSAlphaInputs[7] = 0xd120c02;
-        g_484f68.PSAlphaOutputs[7] = filter_output_shift(exponent, 0);
+        g_484f68.PSAlphaOutputs[7] = filter_output_first_shift(exponent);
         g_484f68.PSFinalCombinerConstant1 = function_131fc0(offset);
         g_484f68.PSFinalCombinerInputsABCD = 0x41d1105;
         g_484f68.PSFinalCombinerInputsEFG = (extra_texture ? 25 : 32) << 8;
@@ -3101,7 +3084,7 @@ bool __stdcall function_3a5c0(byte const *configuration, real low, real high, lo
         g_484f68.PSRGBInputs[6] = 0x1341134;
         g_484f68.PSRGBOutputs[6] = 0x45;
         g_484f68.PSAlphaInputs[6] = 0x1d120c02;
-        g_484f68.PSAlphaOutputs[6] = filter_output_shift(exponent, 0);
+        g_484f68.PSAlphaOutputs[6] = filter_output_first_shift(exponent);
         g_484f68.PSConstant0[7] = pack_color4f(&second);
         g_484f68.PSAlphaInputs[7] = 0x11141d05;
         g_484f68.PSAlphaOutputs[7] = 0xc00;
@@ -3128,7 +3111,7 @@ bool __stdcall function_3a5c0(byte const *configuration, real low, real high, lo
         long lower = filter_quantized_byte(inverse_span * 0.5f, false);
         g_484f68.PSConstant1[6] = ((dword)upper << 24) | lower;
         g_484f68.PSAlphaInputs[6] = 0x1d120c02;
-        g_484f68.PSAlphaOutputs[6] = filter_output_shift(exponent, 0);
+        g_484f68.PSAlphaOutputs[6] = filter_output_first_shift(exponent);
         g_484f68.PSAlphaInputs[7] = 0x1d0d0d20;
         g_484f68.PSAlphaOutputs[7] = 0x4d00;
         if (configuration[0x14])
@@ -3170,7 +3153,7 @@ bool __stdcall function_3a5c0(byte const *configuration, real low, real high, lo
         g_484f68.PSRGBInputs[6] = 0x4250000;
         g_484f68.PSRGBOutputs[6] = 0xd0;
         g_484f68.PSAlphaInputs[6] = 0x1d120c02;
-        g_484f68.PSAlphaOutputs[6] = filter_output_shift(exponent, 0);
+        g_484f68.PSAlphaOutputs[6] = filter_output_first_shift(exponent);
         g_484f68.PSAlphaInputs[7] = 0x1d2d0000;
         g_484f68.PSAlphaOutputs[7] = 0xd0;
         g_484f68.PSFinalCombinerConstant1 = pack_color3f((color3f const *)(configuration + 0x28));

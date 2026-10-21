@@ -132,6 +132,8 @@ struct s_orientation_request_118f90
 	vector3f up;
 };
 
+__declspec(noinline) void function_118f90(s_orientation_request_118f90 *request);
+
 // @retail 0x118f90
 void function_118f90(s_orientation_request_118f90 *request)
 {
@@ -179,7 +181,7 @@ void function_118e80(long object_index, vector3f *forward);
 bool function_1faf80(vector3f *facing, long object_index, void const *settings_pointer,
 	vector3f const *control, real threshold, real *turn);
 void function_11f0d0(vector3f *position, vector3f *forward, vector3f const *target, real rate, real max_angle, real scale);
-void function_11d180(vector3f *left, vector3f const *in, vector3f *out, vector3f const *up, vector3f *forward);
+void function_11d180(vector3f const *in, vector3f const *up, vector3f *forward, vector3f *left, vector3f *out);
 real function_11ce20(vector3f const *a, vector3f const *b);
 void object_dispatch_moved(long object_index, long a, long b, long c);
 
@@ -245,12 +247,12 @@ void function_1197b0(long object_index)
 	vector3f up;
 	world_up_1197b0(object_index, &up);
 	vector3f new_forward, target_up, left1, left2, forward2;
-	function_11d180(&left1, &forward, &target_up, &object->requested_up, &new_forward);
-	function_11d180(&left2, &forward, &up, &up, &forward2);
+	function_11d180(&forward, &object->requested_up, &new_forward, &left1, &target_up);
+	function_11d180(&forward, &up, &forward2, &left2, &up);
 	if (function_11ce20(&up, &target_up) > max_angle * g_510c54->rate)
 	{
 		function_11f0d0(&temporary_velocity, &up, &target_up, g_510c54->rate, max_angle, acceleration * 2.0f);
-		function_11d180(&left2, &forward, &up, &up, &forward2);
+		function_11d180(&forward, &up, &forward2, &left2, &up);
 	}
 	else
 		up = target_up;
@@ -509,6 +511,7 @@ void function_2116c0(long arg_0, long arg_1, long arg_2);
 // @retail 0x119380
 bool function_119380(long arg_0, s_119380 *arg_1)
 {
+    bool local_2 = false;
     (void)&arg_0;
     (void)&arg_1;
     s_forward_object *local_0 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
@@ -516,7 +519,6 @@ bool function_119380(long arg_0, s_119380 *arg_1)
     memset(arg_1, 0, sizeof(*arg_1));
     arg_1->field_0 = 0x7000101;
     arg_1->field_4 = 0x7000101;
-    bool local_2 = false;
     if (local_1->channels[0].graph_tag_index != NONE && local_1->channels[0].animation_id.index != NONE)
     {
         s_forward_object *local_3 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
@@ -594,38 +596,42 @@ bool __stdcall function_118510(long arg_0, void const *arg_1, bool *arg_2)
     *(short *)((byte *)local_0 + 0x206) = 0;
     function_118f90((s_orientation_request_118f90 *)((byte *)local_0 + 0x13c));
     s_forward_object *local_3 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
+    bool local_4 = false;
     if (local_3->animation_state_offset == NONE)
-        return false;
-    bool local_4 = true;
-    short local_5 = *(short const *)((byte const *)arg_1 + 0xb4);
-    if (local_5 != NONE)
+        goto done;
     {
-        *(long *)((byte *)local_0 + 0x134) = local_5;
-        local_4 = function_bc380(arg_0, 0x138, *(word const *)((byte const *)arg_1 + 0xb6), 0) != 0;
-        local_0 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
-    }
-    else
-        *(long *)((byte *)local_0 + 0x134) = NONE;
-    if (local_4)
-    {
-        short local_6 = *(short const *)((byte const *)arg_1 + 0x64);
-        *(short *)((byte *)local_0 + 0x12e) = local_6;
-        if (g_4e6948->state == 1 && (local_6 == 0 || local_6 == NONE))
-            *(short *)((byte *)local_0 + 0x12e) = *(short *)(local_1 + 0xc0);
-        s_forward_object *local_7 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
-        s_animation_state *local_8 = (s_animation_state *)((byte *)local_7 + local_7->animation_state_offset);
-        long local_9 = local_8->unknown70;
-        long local_10 = local_8->unknown7c;
-        if (local_8->animation_set(0x7000001, 0x7000101, 0x7000101, 0x7000001, 2, 0x3f))
+        local_4 = true;
+        short local_5 = *(short const *)((byte const *)arg_1 + 0xb4);
+        if (local_5 != NONE)
         {
-            bool local_11 = local_9 != 0x7000001;
-            bool local_12 = local_10 != 0x7000001;
-            if (local_11 || local_12)
-                function_ba350(arg_0, 0.267f);
+            *(long *)((byte *)local_0 + 0x134) = local_5;
+            local_4 = function_bc380(arg_0, 0x138, *(word const *)((byte const *)arg_1 + 0xb6), 0) != 0;
+            local_0 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
         }
+        else
+            *(long *)((byte *)local_0 + 0x134) = NONE;
+        if (local_4)
+        {
+            short local_6 = *(short const *)((byte const *)arg_1 + 0x64);
+            *(short *)((byte *)local_0 + 0x12e) = local_6;
+            if (g_4e6948->state == 1 && (local_6 == 0 || local_6 == NONE))
+                *(short *)((byte *)local_0 + 0x12e) = *(short *)(local_1 + 0xc0);
+            s_forward_object *local_7 = ((s_forward_object_header *)g_4e0300->data)[arg_0 & 0xffff].object;
+            s_animation_state *local_8 = (s_animation_state *)((byte *)local_7 + local_7->animation_state_offset);
+            long local_9 = local_8->unknown70;
+            long local_10 = local_8->unknown7c;
+            if (local_8->animation_set(0x7000001, 0x7000101, 0x7000101, 0x7000001, 2, 0x3f))
+            {
+                bool local_11 = local_9 != 0x7000001;
+                bool local_12 = local_10 != 0x7000001;
+                if (local_11 || local_12)
+                    function_ba350(arg_0, 0.267f);
+            }
+        }
+        else
+            *arg_2 = true;
     }
-    else
-        *arg_2 = true;
+done:
     return local_4;
 }
 
@@ -872,7 +878,7 @@ long function_119c10(long arg_0)
                 local_2.j = 0.0f - local_14.j;
                 local_2.k = 0.0f - local_14.k;
                 vector3f local_26;
-                function_11d180(&local_26, &local_2, &local_6, &local_0->up, &local_2);
+                function_11d180(&local_2, &local_0->up, &local_2, &local_26, &local_6);
                 function_b75a0(arg_0, &local_13, &local_2, &local_6, &local_15, false);
                 function_b93b0(local_1, arg_0, (short)(local_11));
                 real local_27 = g_510c54->field_2_3 * 0.2f;

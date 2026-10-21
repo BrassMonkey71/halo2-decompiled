@@ -9,6 +9,7 @@
 #include "unknown_1cec30.h"
 #include "object_markers.h"
 #include "unknown_16d180.h"
+#include "matrix_transform.h"
 #include <math.h>
 #include <xmmintrin.h>
 #include <string.h>
@@ -272,7 +273,7 @@ struct s_object_node_orientation
 
 struct s_animation_state;
 struct s_blend_orientation;
-bool function_1cb5f0(long node_count, s_animation_state *state, real seconds, s_blend_orientation *orientations,
+bool function_1cb5f0(s_animation_state *state, real seconds, long node_count, s_blend_orientation *orientations,
 	s_blend_orientation const *targets);
 
 /* blends an object's node orientations toward their targets over the given
@@ -285,8 +286,8 @@ void function_ba350(long object_index, real seconds)
 	if (OBJECT_GET(object_index)->unknown112 != NONE &&
 		TAG_DATA(s_object_definition_view, object->definition_index)->model_index != NONE)
 	{
-		function_1cb5f0(object->unknown110 / sizeof(s_object_node_orientation),
-			(s_animation_state *)((byte *)object + object->animation_state_offset), seconds,
+		function_1cb5f0((s_animation_state *)((byte *)object + object->animation_state_offset), seconds,
+			object->unknown110 / sizeof(s_object_node_orientation),
 			(s_blend_orientation *)((byte *)object + object->root_node_offset),
 			(s_blend_orientation *)((byte *)object + object->unknown112));
 		function_b7360(object_index);
@@ -727,9 +728,9 @@ bool __stdcall function_bdef0(long object_index)
 {
     byte *object = (byte *)OBJECT_GET(object_index);
     byte const *definition = g_4e3b44[(word)*(long *)object].bytes;
-    bool active = (*(dword *)(object + 4) & 0x100) != 0;
-    bool from_physics = false;
     long component_index = *(long *)(object + 0xb4);
+    bool active = (*(word *)(object + 4) & 0x100) != 0;
+    bool from_physics = false;
     if (component_index != NONE && ((1 << object[0xaa]) & 0x800) && (object[0xc0] & 0x40))
     {
         s_havok_component *component = (s_havok_component *)(g_51e9b8->data +
@@ -828,7 +829,7 @@ void function_b73b0(long object_index)
 void function_1cae40(s_cluster_partition *partition, long data_index, long *first_cluster_reference);
 
 // @retail 0xb87b0
-void __stdcall function_b87b0(volatile long object_index)
+void __stdcall function_b87b0(long object_index)
 {
     s_object_header_view *header = OBJECT_HEADER_GET(object_index);
     s_object_view *object = header->object;
@@ -1539,26 +1540,22 @@ void __stdcall function_bc5e0(long index)
     else object[0xc1] &= ~1;
 }
 
-PRIVATE inline vector3f object_attachment_vector_r18(transform4x3f const &matrix, vector3f const &value)
+PRIVATE __forceinline void object_attachment_point(transform4x3f const *matrix, point3f const *point, point3f *result)
 {
-    real const *m = (real const *)&matrix;
-    vector3f result;
-    result.i = value.k * m[7] + value.j * m[4] + value.i * m[1];
-    result.j = value.k * m[8] + value.j * m[5] + value.i * m[2];
-    result.k = value.k * m[9] + value.j * m[6] + value.i * m[3];
-    return result;
-}
-PRIVATE inline point3f object_attachment_point_r18(transform4x3f const &matrix, point3f const &value)
-{
-    vector3f scaled = *(vector3f const *)&value;
-    if (matrix.scale != 1.0f)
+    real x = point->x;
+    real y = point->y;
+    real z = point->z;
+
+    real scale = matrix->scale;
+    if (scale != 1.0f)
     {
-        scaled.i *= matrix.scale; scaled.j *= matrix.scale; scaled.k *= matrix.scale;
+        x *= scale;
+        y *= scale;
+        z *= scale;
     }
-    vector3f result = object_attachment_vector_r18(matrix, scaled);
-    point3f point;
-    point.x = result.i + matrix.position.x; point.y = result.j + matrix.position.y; point.z = result.k + matrix.position.z;
-    return point;
+    result->x = matrix->forward.i * x + matrix->left.i * y + matrix->up.i * z + matrix->position.x;
+    result->y = matrix->forward.j * x + matrix->left.j * y + matrix->up.j * z + matrix->position.y;
+    result->z = matrix->forward.k * x + matrix->left.k * y + matrix->up.k * z + matrix->position.z;
 }
 void function_b8840(long index);
 long function_baf80(long index);
@@ -1575,8 +1572,7 @@ void __stdcall function_b93b0(volatile long parent_index, volatile long index, v
     for (long ancestor = parent_index; ancestor != NONE; ancestor = *(long *)(*(byte **)(pool->data + (ancestor & 0xffff) * 12 + 8) + 0x14))
         if (ancestor == index) return;
     if (!allowed) return;
-    // Read the pool's data field again after the ancestry guard.
-    s_object_header_view *header = (s_object_header_view *)(*(byte *volatile *)&pool->data + offset);
+    s_object_header_view *header = (s_object_header_view *)(pool->data + offset);
     volatile bool was_active = (bool)((header->flags >> 2) & 1);
     byte *parent = (byte *)OBJECT_GET(parent_index);
     if (*(dword *)(object + 4) & 0x80)
@@ -1599,9 +1595,11 @@ void __stdcall function_b93b0(volatile long parent_index, volatile long index, v
     *(short *)(object + 0x2e) = g_4686c4;
     transform4x3f inverse;
     function_141590(&nodes[(short)node], &inverse);
-    point3f position = object_attachment_point_r18(inverse, *(point3f *)(object + 0x64));
-    vector3f forward = object_attachment_vector_r18(inverse, *(vector3f *)(object + 0x70));
-    vector3f up = object_attachment_vector_r18(inverse, *(vector3f *)(object + 0x7c));
+    point3f position;
+    vector3f forward, up;
+    object_attachment_point(&inverse, (point3f *)(object + 0x64), &position);
+    matrix_transform_vector(&inverse, (vector3f *)(object + 0x70), &forward);
+    matrix_transform_vector(&inverse, (vector3f *)(object + 0x7c), &up);
     function_b91d0(index, &forward, &up);
     function_b7430(index, &position, &forward, &up, 0, true, true, false, false);
     function_b9b90(index, true);
@@ -1639,10 +1637,11 @@ void __stdcall function_b8ee0(long parent_index, long parent_marker_name, long i
     {
         transform4x3f inverse;
         function_141590(&name_9ae4a2.node_matrix, &inverse);
-        transform4x3f const &source_matrix = inverse;
-        point3f position = object_attachment_point_r18(source_matrix, parent_marker.matrix.position);
-        vector3f forward = object_attachment_vector_r18(source_matrix, parent_marker.matrix.forward);
-        vector3f up = object_attachment_vector_r18(source_matrix, parent_marker.matrix.up);
+        point3f position;
+        vector3f forward, up;
+        object_attachment_point(&inverse, &parent_marker.matrix.position, &position);
+        matrix_transform_vector(&inverse, &parent_marker.matrix.forward, &forward);
+        matrix_transform_vector(&inverse, &parent_marker.matrix.up, &up);
         function_b91d0(index, &forward, &up);
         function_b7430(index, &position, &forward, &up, 0, true, true, false, false);
     }

@@ -5,6 +5,7 @@
 // offset between the shapes, and the second simplex point taken from the
 // first.
 // (Its own file: in 0x309300's file the compiler inlines that callee.)
+#include <math.h>
 #include <xmmintrin.h>
 
 static __declspec(align(16)) const unsigned long g_4124a0[4] = {0x80000000, 0x80000000, 0x80000000, 0x80000000};
@@ -112,6 +113,7 @@ public:
 	void function_3093e0(__m128 const *direction, __m128 const *origin, scored_support_3093e0 *out);
 	answer_3094d0 function_3094d0(first_step_3094d0 *out);
 	void function_309610();
+	void function_309700();
 };
 
 // the support points along a direction and against it, keeping in out the
@@ -157,7 +159,8 @@ answer_3094d0 search_3093e0::function_3094d0(first_step_3094d0 *out)
 	__m128 const *difference = differences;
 	if (dot3_3093e0(*difference, *difference) <= 0.001f * 0.001f)
 	{
-		out->distance = length3_3094d0(*difference);
+		__m128 const offset = *difference;
+		out->distance = length3_3094d0(offset);
 		out->direction = direction;
 		out->point = support.first;
 		out->field_24 = 0.5f;
@@ -188,5 +191,63 @@ void search_3093e0::function_309610()
 	else
 	{
 		((class_309200 *)this)->add((vertex_309200 const *)&against);
+	}
+}
+
+// a vector scaled to unit length, by the reciprocal square root refined once
+__forceinline void normalize_309700(__m128 &v)
+{
+	__m128 const squares = _mm_mul_ps(v, v);
+	__m128 const sum = _mm_add_ss(_mm_shuffle_ps(squares, squares, 0xaa), _mm_add_ss(_mm_shuffle_ps(squares, squares, 0x55), squares));
+	__m128 const inverse = _mm_rsqrt_ss(sum);
+	__m128 const correction = _mm_sub_ss(_mm_set_ss(3.0f), _mm_mul_ss(_mm_mul_ss(sum, inverse), inverse));
+	__m128 const scale = _mm_mul_ss(_mm_mul_ss(_mm_set_ss(0.5f), inverse), correction);
+	v = _mm_mul_ps(_mm_shuffle_ps(scale, scale, 0), v);
+}
+
+// two directions square to the edge between the first two simplex points
+// (one in the plane of the edge's smallest term, one square to both), and
+// the support point along either that lies further out added to the simplex
+// @retail 0x309700
+void search_3093e0::function_309700()
+{
+	__m128 const edge = _mm_sub_ps(differences[0], differences[1]);
+	int smallest = 0;
+	int second = 1;
+	int third = 2;
+	float least = (float)fabs(edge.m128_f32[0]);
+	float const size_1 = (float)fabs(edge.m128_f32[1]);
+	float const size_2 = (float)fabs(edge.m128_f32[2]);
+	if (size_1 < least)
+	{
+		second = 0;
+		least = size_1;
+		smallest = 1;
+	}
+	if (size_2 < least)
+	{
+		third = smallest;
+		smallest = 2;
+	}
+	__m128 square;
+	square.m128_f32[smallest] = 0.0f;
+	square.m128_f32[second] = edge.m128_f32[third];
+	square.m128_f32[third] = -edge.m128_f32[second];
+	__m128 cross = _mm_sub_ps(
+		_mm_mul_ps(_mm_shuffle_ps(edge, edge, 0xc9), _mm_shuffle_ps(square, square, 0xd2)),
+		_mm_mul_ps(_mm_shuffle_ps(edge, edge, 0xd2), _mm_shuffle_ps(square, square, 0xc9)));
+	normalize_309700(square);
+	normalize_309700(cross);
+	scored_support_3093e0 first;
+	function_3093e0(&square, differences, &first);
+	scored_support_3093e0 second_support;
+	function_3093e0(&cross, differences, &second_support);
+	if (first.distance > second_support.distance)
+	{
+		((class_309200 *)this)->add((vertex_309200 const *)&first);
+	}
+	else
+	{
+		((class_309200 *)this)->add((vertex_309200 const *)&second_support);
 	}
 }

@@ -1575,10 +1575,10 @@ bool network_session_parameters_set_data4db0(c_class_58d20 *session, const s_ses
 // @retail 0x71480
 bool function_71480(c_session_state_matchmaking *state)
 {
+	bool result = false;
 	s_session_owner *owner = state->owner;
 	c_class_58d20 *session = owner->session_a;
 	c_class_58d20 *other = owner->session_b;
-	bool result = false;
 	if (session->type == 10)
 	{
 		function_70b70(state);
@@ -1904,6 +1904,7 @@ bool c_session_state_start_match::update()
 #pragma inline_depth(255)
 
 long function_66050(c_class_58d20 *session, long variant_index);
+bool network_session_members_ready(c_class_58d20 *session, dword *unready_mask);
 
 // @retail 0x6e410
 bool c_session_state_pre_game::function_06e410()
@@ -1929,15 +1930,7 @@ bool c_session_state_pre_game::function_06e410()
   }
   else
   {
-   bool ready = true;
-   dword mask = 0;
-   for (long i = 0; i < session->member_count; i++)
-    if (session->members[i].unknown88 <= 2)
-    {
-     mask |= 1 << i;
-     ready = mask == 0;
-    }
-   if (ready)
+   if (network_session_members_ready(session, NULL))
     network_session_set_mode(session, 2);
    else
     network_session_start_countdown(session, true, 1, 2, 0);

@@ -625,10 +625,7 @@ bool function_2440a0(s_marker_list *list, long object_index, point3f const *poin
 	if (list->count < 2 && object->slot != NONE)
 	{
 		s_game_options_view *options = g_4e6948;
-		long divisor = 1;
-
-		if (options->divisor)
-			divisor = options->divisor;
+		long divisor = options->divisor == 0 ? 1 : options->divisor;
 		long scale = options->scale_b == 0 ? 5 : options->scale_b;
 		long value = NONE;
 
@@ -642,23 +639,9 @@ bool function_2440a0(s_marker_list *list, long object_index, point3f const *poin
 			value = g_51ec80->d[slot];
 
 		if (options->mode_180 == 9 && (g_51ec80->flags[slot] & 2))
-		{
-			if (value == NONE)
-				list->items[list->count].r = 0.0f;
-			else
-			{
-				real *local_1 = &list->items[list->count].r;
-				real volatile local_0 = (real)value / (real)scale;
-				*local_1 = local_0;
-			}
-		}
+			list->items[list->count].r = value == NONE ? 0.0f : (real)value / (real)scale;
 		else
-		{
-			if (value == NONE)
-				list->items[list->count].r = 0.0f;
-			else
-				list->items[list->count].r = (real)value / (real)divisor;
-		}
+			list->items[list->count].r = value == NONE ? 0.0f : (real)value / (real)divisor;
 
 		list->b0 = 1;
 		list->count++;
@@ -1391,16 +1374,10 @@ long function_242210(point3f const *point)
 	long engine_type = ctf_options()->engine_type;
 	c_engine_peer *enabled = g_55e4d0[g_4e9ae8->engine_index];
 	definition_index = NONE;
-	if (engine_type == 9)
-	{
-		if (enabled)
-			definition_index = mp_globals_block()->bomb_definition_index;
-	}
-	else
-	{
-		if (enabled)
-			definition_index = mp_globals_block()->flag_definition_index;
-	}
+	if (engine_type == 9 && enabled)
+		definition_index = mp_globals_block()->bomb_definition_index;
+	else if (engine_type != 9 && enabled)
+		definition_index = mp_globals_block()->flag_definition_index;
 
 	function_b7930(&data, definition_index, NONE, 0);
 	data.position = *point;
@@ -1447,7 +1424,7 @@ bool function_2423f0()
 	long others[8];
 	long slot_objects[9];
 	bool result = true;
-	long count = 0;
+	byte count = 0;
 	long i;
 
 	memset(slot_objects, NONE, sizeof(slot_objects));

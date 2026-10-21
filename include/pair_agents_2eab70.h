@@ -7,6 +7,8 @@
 // of the shape that wraps it.
 #include <xmmintrin.h>
 
+class collector_2ecc80;
+
 class pair_agent_2ea410;
 
 // a part's key, and the agent that runs queries against that part
@@ -62,6 +64,8 @@ public:
 	void function_2eb3f0(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 	void function_2eb9f0(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 	void function_2f9740(void const *a, void const *b, void const *input, void *collector, void *second_collector);
+	void function_2f9f20(void const *a, void const *b, void const *input, void *collector, void *second_collector);
+	void function_2fb790(void const *a, void const *b, void const *input, void *collector, void *second_collector);
 };
 
 class class_2ea830 : public agent_list_2ea410
@@ -78,6 +82,9 @@ public:
 class class_2ecf20
 {
 public:
+	char field_0[0xc];
+	collector_2ecc80 *collector;
+
 	void function_2ecf20(void const *a, void const *b, void const *input, void *collector);
 	void function_2ed3a0(void const *a, void const *b, void const *input, void *collector);
 };
@@ -100,9 +107,13 @@ public:
 	void function_2f7790(void const *a, void const *b, void const *input, void *collector);
 };
 
+// holds the terms that solve for a point's weights in a triangle's plane
 class class_2f8330
 {
 public:
+	char unknown0[0xc];
+	float terms[4];
+
 	void function_2f8330(void const *a, void const *b, void const *input, void *collector);
 	void function_2f8620(void const *a, void const *b, void const *input, void *collector);
 };
@@ -116,6 +127,9 @@ public:
 class class_2ed030
 {
 public:
+	char field_0[0xc];
+	collector_2ecc80 *collector;
+
 	void function_2ed030(void const *a, void const *b, void *collector);
 	void function_2ed4c0(void const *a, void const *b, void *collector);
 };
@@ -139,16 +153,39 @@ struct hit_collector_2f88a0
 	hits_2f88a0 *hits;
 };
 
+class contact_owner_2f7c40;
+
+// keeps the ids its owner hands out for each sphere of a shape of several, and
+// the terms that solve for a point's weights in a triangle's plane
 class class_2f7c40
 {
 public:
+	char unknown0[8];
+	contact_owner_2f7c40 *owner;
+	float terms[4];
+	unsigned short ids[8];
+
 	void function_2f7c40(void const *a, void const *b, void const *input, void *collector);
 	void function_2f88a0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
+};
+
+class contact_manager_2f90a0;
+
+// whether a ray of the pair has a contact point, and its id
+struct contact_entry_2f90a0
+{
+	bool valid;
+	char unknown1;
+	unsigned short id;
 };
 
 class class_2f90a0
 {
 public:
+	char unknown0[8];
+	contact_manager_2f90a0 *manager;
+	contact_entry_2f90a0 *entries;
+
 	void function_2f90a0(void const *a, void const *b, void const *input, void *collector);
 	void function_2f94a0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
@@ -163,6 +200,9 @@ public:
 class class_2ece10
 {
 public:
+	char field_0[0xc];
+	collector_2ecc80 *collector;
+
 	void function_2ece10(void const *a, void const *b, void const *input, void *collector);
 	void function_2ed400(void const *a, void const *b, void const *input, void *collector);
 };
@@ -174,9 +214,13 @@ public:
 	void function_2f0be0(void const *a, void const *b, void const *input, void *collector);
 };
 
+// holds the terms that solve for a point's weights in a triangle's plane
 class class_2f1270
 {
 public:
+	char unknown0[0x10];
+	float terms[4];
+
 	void function_2f1270(void const *a, void const *b, void const *input, void *collector);
 	void function_2f1890(void const *a, void const *b, void const *input, void *collector);
 };
@@ -216,16 +260,31 @@ public:
 	void function_2f0da0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
 
+class contact_owner_2f1080;
+
+// keeps a contact id its owner hands out, and the terms that solve for a
+// point's weights in a triangle's plane
 class class_2f1080
 {
 public:
+	char unknown0[8];
+	contact_owner_2f1080 *owner;
+	unsigned short id;
+	float terms[4];
+
 	void function_2f1080(void const *a, void const *b, void const *input, void *collector);
 	void function_2f1a50(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };
 
+class contact_owner_2f1b80;
+
 class class_2f1b80
 {
 public:
+	char unknown0[8];
+	contact_owner_2f1b80 *owner;
+	unsigned short id;
+
 	void function_2f1b80(void const *a, void const *b, void const *input, void *collector);
 	void function_2f27a0(void const *a, void const *b, void const *input, hit_collector_2f88a0 *collector);
 };

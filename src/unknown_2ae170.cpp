@@ -420,11 +420,11 @@ bool c_pcm_codec::get_packet(s_sound_stream *stream, XMEDIAPACKET *packet)
 
 	long offset = MIN(stream->offset, MAX((long)SOUND_CHUNK_SIZE(chunk) - 0x48, 0));
 
-	packet->hCompletionEvent = (HANDLE)chunk;
-	packet->pvBuffer = data + offset;
 	packet->pdwCompletedSize = NULL;
 	packet->pdwStatus = NULL;
 	packet->prtTimestamp = NULL;
+	packet->pvBuffer = data + offset;
+	packet->hCompletionEvent = (HANDLE)chunk;
 	packet->dwMaxSize = SOUND_CHUNK_SIZE(chunk) - offset;
 
 	return true;
@@ -747,10 +747,10 @@ __forceinline void c_sound_effects::add_send(long mixbin, long mode, real gain, 
 			long bits;
 		};
 		long gain_bits = *(long *)&gain;
-		volatile s_send_level first;
+		s_send_level first;
 		first.bits = gain_bits;
 		sound_stream_append_mixbin(mixbins, mixbin, m_settings.gain + first.value);
-		volatile s_send_level second;
+		s_send_level second;
 		second.bits = gain_bits;
 		sound_stream_append_mixbin(mixbins, mixbin, m_settings.gain + second.value);
 		break;

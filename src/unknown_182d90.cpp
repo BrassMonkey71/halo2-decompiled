@@ -83,29 +83,32 @@ real __stdcall function_182d90(c_extent_shape *shape, real radius,
 	}
 	else
 	{
-		long type = shape->shape_kind();
-		if (type == 2 || (type > 9 && type <= 11))
+		if (shape_kind_is_list(shape->shape_kind()))
 		{
-			long key = shape->first_key();
-			if (key == NONE) goto done;
-			do
+			for (long key = shape->first_key(); key != NONE; key = shape->next_key(key))
 			{
 				__m128 buffer[16];
 				c_extent_shape *child = shape->child(key, buffer);
-				volatile real local_0 = function_182d90(child, result, &local, minimum, maximum);
-				result = local_0;
-				key = shape->next_key(key);
-			} while (key != NONE);
-			goto done;
+				result = function_182d90(child, result, &local, minimum, maximum);
+			}
 		}
 		else if (shape->shape_kind() == 19)
-			result = function_182d90(data->field_c.nested, radius, &local, minimum, maximum);
+		{
+			c_extent_shape *child = data->field_c.nested;
+			result = function_182d90(child, radius, &local, minimum, maximum);
+		}
 		else if (shape->shape_kind() == 17)
-			result = function_182d90(data->field_c.nested, radius, &local, minimum, maximum);
+		{
+			c_extent_shape *child = data->field_c.nested;
+			result = function_182d90(child, radius, &local, minimum, maximum);
+		}
 		else if (shape->shape_kind() == 20)
 			result = function_182d90(data->field_c.nested, radius, &local, minimum, maximum);
 		else if (shape->shape_kind() == 23)
-			result = function_182d90(*(c_extent_shape **)((byte *)shape + 0x30), radius, &local, minimum, maximum);
+		{
+			c_extent_shape *child = *(c_extent_shape **)((byte *)shape + 0x30);
+			result = function_182d90(child, radius, &local, minimum, maximum);
+		}
 		else
 		{
 			switch (shape->shape_kind())
@@ -121,8 +124,9 @@ real __stdcall function_182d90(c_extent_shape *shape, real radius,
 					for (long i = 0; i < shape->vertex_count(); i++)
 						{ real length = extent_length(data->vectors[i]); extent = EXTENT_MAX(extent, length); }
 					result = extent_length(local.rows[3]) + extent;
-					*minimum = EXTENT_MIN(*minimum, 0.0f);
-					*maximum = EXTENT_MAX(*maximum, 0.0f);
+					real width = 0.0f;
+					*minimum = EXTENT_MIN(*minimum, width);
+					*maximum = EXTENT_MAX(*maximum, width);
 				}
 				break;
 			case 6:
@@ -137,19 +141,21 @@ real __stdcall function_182d90(c_extent_shape *shape, real radius,
 				break;
 			case 7:
 				{
+					real shape_radius = data->field_c.radius;
 					real extent = extent_length(_mm_sub_ps(data->vectors[0], data->vectors[1]));
 					real offset = extent_length(local.rows[3]);
-					result = extent * 0.5f + offset + data->field_c.radius;
-					real width = data->field_c.radius * 2.0f;
+					result = extent * 0.5f + offset + shape_radius;
+					real width = shape_radius * 2.0f;
 					*minimum = EXTENT_MIN(*minimum, width);
 					*maximum = EXTENT_MAX(*maximum, width);
 				}
 				break;
 			case 8:
 				{
+					__m128 center = data->vectors[1];
 					real width = EXTENT_MIN(data->vectors[0].m128_f32[0], EXTENT_MIN(data->vectors[0].m128_f32[1], data->vectors[0].m128_f32[2])) * 2.0f;
 					real extent = extent_length(data->vectors[0]);
-					real offset = extent_length(_mm_add_ps(data->vectors[1], local.rows[3]));
+					real offset = extent_length(_mm_add_ps(center, local.rows[3]));
 					result = offset + extent;
 					*minimum = EXTENT_MIN(*minimum, width);
 					*maximum = EXTENT_MAX(*maximum, width);
@@ -158,8 +164,13 @@ real __stdcall function_182d90(c_extent_shape *shape, real radius,
 			case 24:
 				{
 					s_extent_transform identity;
-					identity.rows[0] = identity.rows[1] = identity.rows[2] = identity.rows[3] = _mm_setzero_ps();
-					identity.rows[0].m128_f32[0] = identity.rows[1].m128_f32[1] = identity.rows[2].m128_f32[2] = 1.0f;
+					identity.rows[0] = _mm_setzero_ps();
+					identity.rows[1] = _mm_setzero_ps();
+					identity.rows[2] = _mm_setzero_ps();
+					identity.rows[0].m128_f32[0] = 1.0f;
+					identity.rows[1].m128_f32[1] = 1.0f;
+					identity.rows[2].m128_f32[2] = 1.0f;
+					identity.rows[3] = _mm_setzero_ps();
 					s_extent_bounds bounds;
 					shape->bounds(&identity, 0.0f, &bounds);
 					bounds.lower = _mm_sub_ps(bounds.upper, bounds.lower);
@@ -173,7 +184,6 @@ real __stdcall function_182d90(c_extent_shape *shape, real radius,
 			}
 		}
 	}
-done:
 	return result;
 }
 

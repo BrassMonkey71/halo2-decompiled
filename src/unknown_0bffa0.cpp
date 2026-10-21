@@ -266,6 +266,8 @@ real function_c18e0()
 	return result;
 }
 
+__declspec(noinline) bool function_c3110(long index);
+
 // @retail 0xc3110
 bool function_c3110(long index)
 {
@@ -1571,6 +1573,13 @@ long __stdcall function_c1720(long object_index, long remove_from_partition, lon
 }
 
 
+struct s_c0230_flags
+{
+    word low : 4;
+    word bit4 : 1;
+    word high : 11;
+};
+
 // @retail 0xc0230
 long __stdcall function_c0230(long tag_index, long object_index, short node_index, long name, short value)
 {
@@ -1588,7 +1597,8 @@ long __stdcall function_c0230(long tag_index, long object_index, short node_inde
         byte *light = g_4e030c->data + (result & 0xffff) * 0x110;
         *(long *)(light + 4) = tag_index;
         *(long *)(light + 0x4c) = object_index;
-        *(word *)(light + 2) = 0;
+        word *flags = (word *)(light + 2);
+        *flags = 0;
         *(short *)(light + 0x54) = node_index;
         *(long *)(light + 0x50) = name;
         *(long *)(light + 0x14) = NONE;
@@ -1599,8 +1609,8 @@ long __stdcall function_c0230(long tag_index, long object_index, short node_inde
         *(real *)(light + 0xd0) = 1.0f;
         *(real *)(light + 0xcc) = 1.0f;
         byte flag = (byte)((~definition[0]) & 1);
-        *(word *)(light + 2) = (word)flag;
-        *(word *)(light + 2) &= ~0x10;
+        *flags = (word)flag;
+        ((s_c0230_flags *)(light + 2))->bit4 = 0;
         *(long *)(light + 0x10) = NONE;
         function_c0c80(result);
         *(long *)(light + 0xc) = g_4e0308 - 1;

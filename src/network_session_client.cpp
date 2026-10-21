@@ -222,7 +222,7 @@ inline void function_06df60(s_session_owner *o, long a, long b, long c)
 }
 
 // @retail 0x6e0f0
-bool network_session_members_ready(c_class_58d20 *session, dword *unready_mask)
+inline bool network_session_members_ready(c_class_58d20 *session, dword *unready_mask)
 {
 	dword mask = 0;
 	bool ready = true;

@@ -645,7 +645,10 @@ void friends_player_set(s_friend_player *player, s_online_player const *source, 
 	string_copy(player->gamertag, source->gamertag, 16);
 	player->flags20 = 0;
 	player->name[0] = 0;
-	player->flags20 = source->flags_0 << 10;
+	if (TEST_FIELD_BIT(source->flags_0))
+		player->flags20 = 0x400;
+	else
+		player->flags20 = 0;
 	if (TEST_FIELD_BIT(source->flags_2))
 		player->flags21_3 = true;
 	else
@@ -660,6 +663,13 @@ void friends_player_set(s_friend_player *player, s_online_player const *source, 
 }
 
 void function_23620d(long string_handle, word *buffer);
+
+/* a buffer that strings of the user interface globals' string list load into */
+struct s_global_string_buffer
+{
+	word text[256];
+	void load(long string_handle) { function_23620d(string_handle, text); }
+};
 
 /* the text of a friend's state */
 // @retail 0x1a4714
@@ -1022,13 +1032,13 @@ void friends_list_update()
 				}
 				else if (friend_name_get((XUID const *)&friend_->details, name))
 				{
-					word format[256];
+					s_global_string_buffer format;
 					word gamertag[48];
 	
-					format[0] = 0;
+					format.text[0] = 0;
 					ascii_string_to_unicode(friend_->gamertag, gamertag, NUMBEROF(gamertag));
-					function_23620d(0x220006bd, format);
-					unicode_string_snprintf(friend_->name, NUMBEROF(friend_->name), format, gamertag, name);
+					format.load(0x220006bd);
+					unicode_string_snprintf(friend_->name, NUMBEROF(friend_->name), format.text, gamertag, name);
 				}
 			}
 			if (friend_count != previous_count)
@@ -1294,7 +1304,6 @@ void clan_members_update()
 		if (status == 1 || status == 2)
 		{
 			XONLINE_USER user;
-			long i;
 			XUID members[100];
 			DWORD member_count = NUMBEROF(members);
 			long added_count;
@@ -1307,45 +1316,42 @@ void clan_members_update()
 			added_count = players_list_add_message_senders(members, member_count);
 			if ((long)member_count > 0)
 			{
-			i = 0;
-			do
-			{
-				s_friend_request request;
-				bool valid = friend_request_get(&request);
-				XONLINE_TEAM_MEMBER member;
-
-				online_team_member_get_details(g_global_4acf62.clan_members_task_index, &members[i], &member);
-				if (!xuid_equal(&member.xuidTeamMember, &user.xuid, false))
+				for (long i = 0; i < (long)member_count; i++)
 				{
-					long player_index = record_pool_allocate(g_global_4acf62.field_8_2);
-					s_friend_player *player = (s_friend_player *)(g_global_4acf62.field_8_2->data + (player_index & 0xffff) * sizeof(s_friend_player));
-					long reference_index = record_pool_allocate(g_global_4acf62.clan_member_reference_data);
+					s_friend_request request;
+					bool valid = friend_request_get(&request);
+					XONLINE_TEAM_MEMBER member;
 
-					((s_friend_player_reference *)(g_global_4acf62.clan_member_reference_data->data + (reference_index & 0xffff) * sizeof(s_friend_player_reference)))->player_index = player_index;
-					friends_player_set(player, (s_online_player const *)&member, i + added_count);
-					if (valid && !(player->flags20 & 0xc00))
+					online_team_member_get_details(g_global_4acf62.clan_members_task_index, &members[i], &member);
+					if (!xuid_equal(&member.xuidTeamMember, &user.xuid, false))
 					{
-						word state[256];
-						word format[256];
-						word gamertag[48];
+						long player_index = record_pool_allocate(g_global_4acf62.field_8_2);
+						s_friend_player *player = (s_friend_player *)(g_global_4acf62.field_8_2->data + (player_index & 0xffff) * sizeof(s_friend_player));
+						long reference_index = record_pool_allocate(g_global_4acf62.clan_member_reference_data);
 
-						state[0] = 0;
-						format[0] = 0;
-						*(XUID *)&player->details = *(XUID *)&request;
-						ascii_string_to_unicode(player->gamertag, gamertag, NUMBEROF(gamertag));
-						function_1a4714(player->state, state);
-						function_23620d(0x280006be, format);
-						unicode_string_snprintf(player->name, NUMBEROF(player->name), format, gamertag, state);
-					}
-					else
-					{
-						ascii_string_to_unicode(player->gamertag, player->name, NUMBEROF(player->name));
-						memset(&player->details, 0, sizeof(player->details));
+						((s_friend_player_reference *)(g_global_4acf62.clan_member_reference_data->data + (reference_index & 0xffff) * sizeof(s_friend_player_reference)))->player_index = player_index;
+						friends_player_set(player, (s_online_player const *)&member, i + added_count);
+						if (valid && !(player->flags20 & 0xc00))
+						{
+							word state[256];
+							s_global_string_buffer format;
+							word gamertag[48];
+
+							state[0] = 0;
+							format.text[0] = 0;
+							*(XUID *)&player->details = *(XUID *)&request;
+							ascii_string_to_unicode(player->gamertag, gamertag, NUMBEROF(gamertag));
+							function_1a4714(player->state, state);
+							format.load(0x280006be);
+							unicode_string_snprintf(player->name, NUMBEROF(player->name), format.text, gamertag, state);
+						}
+						else
+						{
+							ascii_string_to_unicode(player->gamertag, player->name, NUMBEROF(player->name));
+							memset(&player->details, 0, sizeof(player->details));
+						}
 					}
 				}
-				i++;
-			}
-			while (i < (long)member_count);
 			}
 			g_global_4acf62.friend_request.unknown6a3 = true;
 			friends_player_new();

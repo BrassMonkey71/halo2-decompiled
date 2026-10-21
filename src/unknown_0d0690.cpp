@@ -1198,10 +1198,10 @@ real g_467494 = 5.0f;
 real function_30bf0(vector3f *vector);
 
 // @retail 0xd4080
-void function_d4080(s_effect_color_query const *query, long type, s_lighting_record *record, bool flag)
+void function_d4080(long type, s_effect_color_query const *query, s_lighting_record *record, long flag)
 {
-	bool const *const flag_reference = &flag;
-	bool flag_value = *flag_reference;
+	long const *const flag_reference = &flag;
+	long flag_value = *flag_reference;
 	(void)flag_value;
 	byte *context = (byte *)g_4e0350;
 	vector3f const *input_normal = (vector3f const *)query;
@@ -1344,10 +1344,13 @@ long function_d2f90(long flags, short bitmap_index, long palette_index, real u, 
             {
                 if (!function_d15e0(bitmap, 0.0f))
                 {
-                    if (*(void **)((byte *)bitmap + 0x54))
-                        result = 0;
-                    else
+                    if (!*(void **)((byte *)bitmap + 0x54))
+                    {
                         function_12360((s_bitmap_view *)bitmap, 0.0f);
+                        result = 1;
+                    }
+                    else
+                        result = 0;
                 }
                 else if (function_d1680(bitmap))
                     result = 0;
@@ -1369,7 +1372,7 @@ long function_d2f90(long flags, short bitmap_index, long palette_index, real u, 
                     if (*(short *)((byte *)bitmap + 0xc) == 0x12)
                         pixel = function_015cd0(palette_index, pixel);
                     unpack_color3f(pixel, out);
-                    return result;
+                    goto done;
                 }
             }
             out->blue = 0.0f;
@@ -1377,6 +1380,7 @@ long function_d2f90(long flags, short bitmap_index, long palette_index, real u, 
             out->red = 0.0f;
         }
     }
+done:
     return result;
 }
 
@@ -1430,10 +1434,21 @@ struct s_33a0b_default
 extern s_33a0b_default *g_4686d4;
 extern color3f *g_468714;
 
+/* an instance's or cluster's lightmap bitmap (4 bytes) */
+struct s_d16d0_bitmap_entry
+{
+    short bitmap_index;
+    char palette_index;
+    byte unknown3;
+};
+
 // @retail 0xd16d0
 bool function_d16d0(s_structure_lightmap_triangle const *triangle, color3f *out, real *weight)
 {
     bool result = false;
+    /* never assigned: retail hands back whatever this slot holds (the one
+       caller ignores it) */
+    real sample_weight;
     if (*(long const *)triangle->unknown08 == NONE)
     {
         s_mesh *mesh = NULL;
@@ -1441,24 +1456,40 @@ bool function_d16d0(s_structure_lightmap_triangle const *triangle, color3f *out,
         {
             byte *bsp = (byte *)g_4e0344->locations;
             long index = triangle->instance_index;
-            real u = 0.0f, v = 0.0f;
-            byte *entry;
+            real v = 0.0f, u = 0.0f;
+            long palette_index;
+            long bitmap_index;
             if (index != NONE)
-                entry = *(byte **)(bsp + 0x4c) + index * 4;
+            {
+                s_d16d0_bitmap_entry const *entry = &(*(s_d16d0_bitmap_entry const **)(bsp + 0x4c))[index];
+                palette_index = entry->palette_index;
+                bitmap_index = entry->bitmap_index;
+            }
             else
-                entry = *(byte **)(bsp + 0x2c) + triangle->cluster_index * 4;
-            short bitmap_index = *(short *)entry;
-            long palette_index = (signed char)entry[2];
+            {
+                s_d16d0_bitmap_entry const *entry = &(*(s_d16d0_bitmap_entry const **)(bsp + 0x2c))[triangle->cluster_index];
+                palette_index = entry->palette_index;
+                bitmap_index = entry->bitmap_index;
+            }
 
             color3f color = *(color3f *)g_468714;
             function_d2bf0(mesh, triangle->lightmap_part_index, triangle->u, triangle->v, &u, &v);
             if (function_d2f90(0, bitmap_index, palette_index, u, v, &color) == 0)
             {
                 result = true;
-                *weight = *(real const *)&triangle->unknown18;
-                color.red = pin_real(color.red, 0.0f, 1.0f);
-                color.green = pin_real(color.green, 0.0f, 1.0f);
-                color.blue = pin_real(color.blue, 0.0f, 1.0f);
+                *weight = sample_weight;
+                if (0.0f > color.red)
+                    color.red = 0.0f;
+                else if (color.red > 1.0f)
+                    color.red = 1.0f;
+                if (0.0f > color.green)
+                    color.green = 0.0f;
+                else if (color.green > 1.0f)
+                    color.green = 1.0f;
+                if (0.0f > color.blue)
+                    color.blue = 0.0f;
+                else if (color.blue > 1.0f)
+                    color.blue = 1.0f;
                 *out = color;
             }
         }

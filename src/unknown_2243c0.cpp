@@ -48,14 +48,13 @@ extern transform4x3f *g_4687d0;
 void function_2c3b0(s_interface_function_context *);
 void function_1bd50(void *);
 real __stdcall function_173c30(s_particle_system_datum const *, long);
-bool function_23ea80(long, transform4x3f const *, long, long, long);
+bool function_23ea80(long tag, transform4x3f const *matrix, long variant, long stage, long pass);
 void __stdcall function_173ba0(dword, void *, void *, void const *, real *);
 void function_175610(s_particle_value_cache *, s_particle_system_datum *, s_particle_location_datum *,
 	particle_callback_175610, void *);
 void __stdcall function_224550(s_draw_sprite_seed const *, s_draw_value_cache *,
 	point3f *, point3f *, real, color4f const *, s_draw_sprite_context *);
 
-#pragma optimize("s", on)
 // @retail 0x2243c0
 void __stdcall function_2243c0(s_interface_definition *arg_0, long arg_1, long arg_2,
 	long arg_3, long arg_4, long arg_5)
@@ -69,17 +68,17 @@ void __stdcall function_2243c0(s_interface_definition *arg_0, long arg_1, long a
 		g_55edd8.field_0 = (s_particle_system_datum const *)arg_1;
 		g_55edd8.field_4 = function_173c30;
 		function_1bd50(&g_55edd8);
-		if (function_23ea80(arg_3, g_4687d0, arg_5, *(word const *)(local_2 + 4), arg_4))
+		if (function_23ea80(arg_3, g_4687d0, *(word const *)(local_2 + 4), arg_4, arg_5))
 		{
+			byte const *local_3 = *(byte const *const *)(local_2 + 0x90);
 			local_1.field_44 = 0;
 			local_1.field_48 = 0;
 			local_1.field_4c = 0;
 			local_1.field_50 = 0;
 			local_0.field_0 = arg_0;
+			local_0.field_c = 1.0f;
 			local_0.field_4 = 0;
 			local_0.field_8 = 0;
-			local_0.field_c = 1.0f;
-			byte const *local_3 = *(byte const *const *)(local_2 + 0x90);
 			long local_4 = **(short const *const *)(local_3 + 0x60);
 			if (local_4 != NONE)
 			{
@@ -94,8 +93,8 @@ void __stdcall function_2243c0(s_interface_definition *arg_0, long arg_1, long a
 					if (*(long const *)(local_0.field_4 + 0x44) <= 0)
 						goto local_7;
 					byte const *local_8 = *(byte const *const *)(local_0.field_4 + 0x48);
-					long local_9 = *(short const *)(local_8 + 4);
-					long local_10 = *(short const *)(local_8 + 6);
+					short local_9 = *(short const *)(local_8 + 4);
+					short local_10 = *(short const *)(local_8 + 6);
 					if (local_9 != local_10)
 						local_0.field_c = (real)local_9 / (real)local_10;
 				}
@@ -124,7 +123,6 @@ void __stdcall function_2243c0(s_interface_definition *arg_0, long arg_1, long a
 		}
 	}
 }
-#pragma optimize("", on)
 
 struct s_224db0
 {

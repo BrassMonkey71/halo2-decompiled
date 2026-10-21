@@ -207,7 +207,7 @@ struct s_weapon_magazine
 	byte unknown04[2];
 	short rounds_unloaded;
 	short rounds_loaded;
-	byte unknown0a[2];
+	short rounds_fraction;
 	short ticks_0c;
 	short ticks_0e;
 };
@@ -1914,8 +1914,9 @@ bool __stdcall function_100130(long weapon_index, bool immediate)
 		if (TEST_FIELD_BIT(put_away->in_inventory) && put_away->unit_index != NONE)
 		{
 			s_weapon_unit *unit = WEAPON_UNIT_GET(put_away->unit_index);
+			short slot = unit->current_weapon_slot;
 			volatile bool is_current = weapon_index ==
-				(unit->current_weapon_slot != NONE ? unit->weapon_indices[unit->current_weapon_slot] : NONE);
+				(slot != NONE ? unit->weapon_indices[slot] : NONE);
 		}
 		weapon->state_ticks = first_person_weapon_animation_ticks(weapon_index, 0x8000025, 1);
 		result = true;
@@ -2396,9 +2397,9 @@ void function_100520(long weapon_index, s_weapon_status *status)
 	status->magazine_count = (short)definition->magazine_count;
 	for (short i = 0; i < definition->magazine_count; i++)
 	{
+		bool active = false;
 		s_weapon_magazine_definition *magazine = &definition->magazines[i];
 		long state = WEAPON_GET(weapon_index)->magazines[i].state;
-		bool active = false;
 		if (state > 0 && state <= 6)
 			active = true;
 		status->magazines[i].active = active;
@@ -2604,18 +2605,15 @@ bool __stdcall function_fdd50(long weapon_index, long magazine_index)
     bool result = false;
     if (*(short *)((byte *)definition + 4) > 0 && magazine->rounds_loaded < definition->rounds_loaded_maximum)
     {
-        short loaded = magazine->rounds_loaded;
         long recharge_divisor = g_510c54->field_2_3;
-        short *fraction = (short *)((byte *)magazine + 0xa);
         long rounds = *(short *)((byte *)definition + 4) / recharge_divisor;
         long remainder = *(short *)((byte *)definition + 4) % recharge_divisor;
-        *fraction += (short)remainder;
-        loaded += rounds;
-        magazine->rounds_loaded = loaded;
-        if (*fraction >= g_510c54->field_2_3)
+        magazine->rounds_loaded += (short)rounds;
+        magazine->rounds_fraction += (short)remainder;
+        if (magazine->rounds_fraction >= g_510c54->field_2_3)
         {
-            *fraction -= g_510c54->field_2_3;
             magazine->rounds_loaded++;
+            magazine->rounds_fraction -= g_510c54->field_2_3;
         }
         if (magazine->rounds_loaded > definition->rounds_loaded_maximum)
             magazine->rounds_loaded = definition->rounds_loaded_maximum;

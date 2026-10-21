@@ -121,11 +121,10 @@ collision:
 				{
 					c_z_capsule_temp capsule((byte *)shape + 0x10, (byte *)shape + 0x20, radius);
 					transform4x3f matrix_storage;
-					typedef transform4x3f *(__fastcall *matrix_query_proc)(long, transform4x3f *);
-					matrix_query_proc volatile matrix_query = function_ba160;
-					transform4x3f *matrix = matrix_query(object_index, &matrix_storage);
-					matrix->position = *position;
-					hit = function_1c5210(matrix, &capsule, *(long *)(object + 0xb4), 9);
+					// retail: index in eax, matrix pushed; the returned pointer is unused
+					function_ba160(object_index, &matrix_storage);
+					matrix_storage.position = *position;
+					hit = function_1c5210(&matrix_storage, &capsule, *(long *)(object + 0xb4), 9);
 				}
 				if (hit) selection = 2;
 			}
@@ -184,11 +183,12 @@ void function_aa260(long selection, long object_index, vector3f const *linear, l
 				vector3f adjusted_linear, adjusted_angular;
 				function_aaca0(object_index, &local_010335, &local_de61cc, &local_523673,
 					&desired_linear, &desired_angular, &adjusted_linear, &adjusted_angular);
+				if (!change_linear && !change_angular)
+					return;
 				if (change_linear)
 					function_aa9e0(object_index, NULL, &adjusted_linear);
-				if (change_linear || change_angular)
-					function_b77d0(object_index, change_linear ? &adjusted_linear : NULL,
-						change_angular ? &adjusted_angular : NULL);
+				function_b77d0(object_index, change_linear ? &adjusted_linear : NULL,
+					change_angular ? &adjusted_angular : NULL);
 			}
 		}
 		break;

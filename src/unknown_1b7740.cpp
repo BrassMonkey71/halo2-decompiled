@@ -48,16 +48,10 @@ bool __stdcall function_1b7770(long actor_index, s_slot *slot)
 		if (bounds->upper > 0.0f)
 		{
 			s_slot_80 *state = (s_slot_80 *)slot;
-			double local_0 = (double)bounds->upper - bounds->lower;
-			real local_1 = slot_random();
-			double local_2 = local_0 * local_1;
-			real local_3 = (real)(bounds->lower + local_2 * actor->unknown3bc);
-			real ticks = local_3 * g_510c54->field_2_3;
-			long rounded = real_to_long(ticks);
-			state->ticks = (short)rounded;
-			state->vector.i = actor->unknown3c0.i;
-			state->vector.j = actor->unknown3c0.j;
-			state->vector.k = actor->unknown3c0.k;
+			real offset = function_259d0(&g_4e7408->unknown0, __FILE__, __LINE__, 0.0f, bounds->upper - bounds->lower);
+			real seconds = bounds->lower + offset * actor->unknown3bc;
+			state->ticks = (short)real_to_long(seconds * g_510c54->field_2_3);
+			state->vector = actor->unknown3c0;
 			result = true;
 		}
 	}

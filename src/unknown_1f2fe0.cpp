@@ -174,11 +174,12 @@ local_1:
 // @retail 0x1f3430
 bool function_1f3430(long actor_index)
 {
-	s_actor_moving *actor = actor_moving_get(actor_index);
 	bool result = false;
 
-	if (actor->unknown50c && actor->unknown504 == 1)
+	if (actor_moving_get(actor_index)->unknown50c && actor_moving_get(actor_index)->unknown504 == 1)
 	{
+		s_actor_moving *actor = actor_moving_get(actor_index);
+
 		if (actor->path_index >= actor->path_count)
 		{
 			result = true;
@@ -248,7 +249,7 @@ bool function_1f3610(long actor_index, short value)
 	return true;
 }
 
-void function_11d180(vector3f *left, vector3f const *in, vector3f *out, vector3f const *up, vector3f *forward);
+void function_11d180(vector3f const *in, vector3f const *up, vector3f *forward, vector3f *left, vector3f *out);
 
 // @retail 0x1f3e40
 void __stdcall function_1f3e40(long object_index, vector3f const *forward, vector3f *vector)
@@ -256,7 +257,7 @@ void __stdcall function_1f3e40(long object_index, vector3f const *forward, vecto
 	vector3f unused0;
 	vector3f left;
 	vector3f up;
-	function_11d180(&left, forward, &up, g_4687b0, &unused0);
+	function_11d180(forward, g_4687b0, &unused0, &left, &up);
 	vector3f object_forward;
 	s_slot_object_view *object = object_get(object_index);
 	if (object->parent_index == NONE)
@@ -274,7 +275,7 @@ void __stdcall function_1f3e40(long object_index, vector3f const *forward, vecto
 	vector3f unused1;
 	vector3f object_left;
 	vector3f object_up;
-	function_11d180(&object_left, &object_forward, &object_up, g_4687b0, &unused1);
+	function_11d180(&object_forward, g_4687b0, &unused1, &object_left, &object_up);
 	real input_i = vector->i;
 	real input_j = vector->j;
 	real input_k = vector->k;
@@ -289,9 +290,9 @@ void __stdcall function_1f3e40(long object_index, vector3f const *forward, vecto
 	world.k += object_left.k * input_j;
 	world.k += object_up.k * input_k;
 	vector3f result;
-	result.i = forward->i * world.i + forward->j * world.j + forward->k * world.k;
-	result.j = left.i * world.i + left.j * world.j + left.k * world.k;
-	result.k = up.i * world.i + up.j * world.j + up.k * world.k;
+	result.i = forward->k * world.k + forward->j * world.j + forward->i * world.i;
+	result.j = left.k * world.k + left.j * world.j + left.i * world.i;
+	result.k = up.k * world.k + up.j * world.j + up.i * world.i;
 	*vector = result;
 }
 

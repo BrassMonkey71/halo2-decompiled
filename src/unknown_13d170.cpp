@@ -34,14 +34,8 @@ void function_13d170(s_physical_object *manager, const char *name, long page_cou
 	manager->allocator = allocator;
 	manager->first = NONE;
 	manager->last = NONE;
-	manager->limits[0] = 0x7fffffff;
-	manager->limits[1] = 0x7fffffff;
-	manager->limits[2] = 0x7fffffff;
-	manager->limits[3] = 0x7fffffff;
-	manager->limits[4] = 0x7fffffff;
-	manager->limits[5] = 0x7fffffff;
-	manager->limits[6] = 0x7fffffff;
-	manager->limits[7] = 0x7fffffff;
+	for (long i = 0; i < 8; i++)
+		manager->limits[i] = 0x7fffffff;
 }
 
 // @retail 0x13d230
@@ -209,11 +203,12 @@ long __stdcall function_13d370(s_physical_object *physical, long size, long type
 				tail = next_tail;
 			}
 			long segment_pages;
-			dword segment_time = 0;
+			dword segment_time;
 			bool busy = false;
 			if (current == NONE)
 			{
 				segment_pages = physical->page_count - offset;
+				segment_time = 0;
 				offset = physical->page_count;
 			}
 			else
@@ -239,6 +234,7 @@ long __stdcall function_13d370(s_physical_object *physical, long size, long type
 				else
 				{
 					segment_pages = block->offset - offset;
+					segment_time = 0;
 					offset = block->offset;
 				}
 			}
@@ -271,6 +267,8 @@ long __stdcall function_13d370(s_physical_object *physical, long size, long type
 								{
 									dword age = physical->time - candidate->time;
 									dword best_age = physical->time - best.time;
+									age = age > 0 ? age : 0;
+									best_age = best_age > 0 ? best_age : 0;
 									better = (long)(best.pages * age) > (long)(candidate->pages * best_age);
 								}
 								break;
@@ -340,12 +338,13 @@ long __stdcall function_13d370(s_physical_object *physical, long size, long type
 				entry->offset = best.offset;
 				entry->pages = pages;
 				entry->time = physical->time;
-				return result;
+				goto done;
 			}
 		}
 		if (type == limit_index)
 			physical->limits[limit_index] = physical->limits[limit_index] > pages ? pages : physical->limits[limit_index];
 	}
+done:
 	return result;
 }
 

@@ -197,9 +197,10 @@ void __stdcall function_25dd50(
 	s_actor_firing_view *actor = (s_actor_firing_view *)actor_get(actor_index);
 	short i;
 
-	for (i = 0; i < count; i++)
 	{
-		s_type_b36ac5 *position = &positions[i];
+	s_type_b36ac5 *position = positions;
+	for (i = 0; i < count; i++, ++position)
+	{
 
 		if (!position->unknown4c)
 		{
@@ -319,6 +320,7 @@ void __stdcall function_25dd50(
 		}
 	}
 
+	}
 	for (i = 0; i < count; i++)
 	{
 		s_type_b36ac5 *position = &positions[i];
@@ -825,9 +827,8 @@ void __stdcall function_25ec90(
 
 			if (position->unknown4c)
 			{
-				short local_0 = position->reference.unknown2;
-				if ((local_0 & 0x8000) ||
-					local_0 != context->unknown68e ||
+				if ((position->reference.unknown2 & 0x8000) ||
+					position->reference.unknown2 != context->unknown68e ||
 					position->definition->unknown10 != context->unknown690)
 				{
 					position->unknown4d = true;

@@ -228,30 +228,6 @@ void function_258540(long actor_index, long cs_index);
 void function_258480(long joint_index, long actor_index);
 void function_2583e0(long joint_index);
 
-/* a copy of swarm_creature_iterator_next (swarm.cpp), which retail inlines here */
-static inline s_handler_object_view *ai_object_iterator_next(s_ai_object_iterator *iterator)
-{
-	s_handler_object_view *object = NULL;
-
-	if (iterator->next_index != NONE)
-	{
-		object = handler_object_get(iterator->next_index);
-		iterator->index = iterator->next_index;
-
-		byte *data;
-		if (!object->flags134 && (data = (byte *)object + object->ai_offset) != NULL)
-		{
-			iterator->next_index = *(long *)(data + 0xc);
-		}
-		else
-		{
-			iterator->next_index = NONE;
-		}
-	}
-
-	return object;
-}
-
 inline s_cs_datum *cs_get(long cs_index)
 {
 	return (s_cs_datum *)(g_502408->data + (cs_index & 0xffff) * sizeof(s_cs_datum));
@@ -509,7 +485,6 @@ bool function_2580c0(short squad_index, short script_index, long *actor_indices,
 // @retail 0x258230
 bool function_258230(long cs_index, short mode, long actor_index, long new_actor_index)
 {
-	long local_0 = false;
 	s_cs_datum *new_cs;
 	s_cs_datum *cs = cs_get(cs_index);
 	long new_cs_index;
@@ -527,39 +502,36 @@ bool function_258230(long cs_index, short mode, long actor_index, long new_actor
 		new_cs_index = function_258040(new_actor_index, (short)cs->script_index, thread_index);
 		break;
 	default:
-		goto local_9;
+		return false;
 	}
 
-	if (new_cs_index == NONE)
+	if (new_cs_index != NONE)
 	{
-		goto local_9;
-	}
+		new_cs = cs_get(new_cs_index);
 
-	new_cs = cs_get(new_cs_index);
-
-	if (cs->joint_index != NONE)
-	{
-		s_joint_cs_datum *joint = joint_cs_get(cs->joint_index);
-
-		for (short i = 0; i < joint->participant_count; i++)
+		if (cs->joint_index != NONE)
 		{
-			if (joint->participants[i].actor_index == actor_index)
+			s_joint_cs_datum *joint = joint_cs_get(cs->joint_index);
+
+			for (short i = 0; i < joint->participant_count; i++)
 			{
-				joint->participants[i].actor_index = new_actor_index;
-				joint->participants[i].cs_index = new_cs_index;
-				break;
+				if (joint->participants[i].actor_index == actor_index)
+				{
+					joint->participants[i].actor_index = new_actor_index;
+					joint->participants[i].cs_index = new_cs_index;
+					break;
+				}
 			}
 		}
-	}
 
-	new_cs->state = 1;
-	new_cs->unknown44 = cs->unknown44;
-	cs->joint_index = NONE;
-	cs->thread_index = NONE;
-	cs->type = 0x17;
-	local_0 = true;
-local_9:
-	return (bool)local_0;
+		new_cs->state = 1;
+		new_cs->unknown44 = cs->unknown44;
+		cs->joint_index = NONE;
+		cs->thread_index = NONE;
+		cs->type = 0x17;
+		return true;
+	}
+	return false;
 }
 
 PRIVATE __forceinline s_joint_cs_datum *function_258341(long arg_0)
@@ -1401,12 +1373,14 @@ void function_25a380(long arg_0)
 	}
 	if (local_2->unknown46)
 	{
+		bool target_set = false;
 		switch (local_2->unknown48)
 		{
 		case 1:
 			local_0->unknown430 = 2;
 			local_0->unknown434 = 6;
 			local_0->unknown438.object_index = local_2->unknown4c;
+			target_set = true;
 			break;
 		case 2:
 			if (function_25ab50(local_2->unknown4c))
@@ -1416,13 +1390,15 @@ void function_25a380(long arg_0)
 				local_0->unknown434 = 3;
 				local_0->unknown438.point = local_3;
 				local_0->unknown430 = 2;
-				break;
+				target_set = true;
 			}
-		default:
+			break;
+		}
+		if (!target_set)
+		{
 			local_0->unknown438.vector = local_0->unknown290;
 			local_0->unknown434 = 4;
 			local_0->unknown430 = 2;
-			break;
 		}
 		local_0->unknown444 = NONE;
 	}
@@ -1882,56 +1858,57 @@ void function_25aba0(long actor_index)
 // @retail 0x258b60
 short function_258b60(long actor_index, cs_iterate_proc proc, long cs_index)
 {
-	long const *local_0 = &actor_index;
-	s_actor_view *actor = actor_get(*local_0);
+	s_actor_view *actor = actor_get(actor_index);
+	short result = 2;
 
 	if (actor->unknown007)
 	{
 		long perception_index = ((s_handler_actor_view *)actor)->perception_index;
-		if (perception_index == NONE)
+		if (perception_index != NONE)
 		{
-			return 2;
-		}
+			short succeeded = 0;
+			short failed = 0;
+			short count = 0;
+			s_ai_object_iterator iterator;
+			s_handler_object_view *object;
 
-		short succeeded = 0;
-		short failed = 0;
-		short count = 0;
-		s_ai_object_iterator iterator;
-		s_handler_object_view *object;
-
-		iterator.next_index = perception_get(perception_index)->object_index;
-		iterator.index = NONE;
-		while ((object = ai_object_iterator_next(&iterator)) != NULL)
-		{
-			byte *data;
-			if (!object->flags134 && (data = (byte *)object + object->ai_offset) != NULL)
+			iterator.next_index = perception_get(perception_index)->object_index;
+			iterator.index = NONE;
+			while ((object = swarm_creature_iterator_next(&iterator)) != NULL)
 			{
-				short result = proc(actor_index, iterator.index, (s_cs_state *)(data + 0x28), cs_index);
-				*(short *)(data + 0x2c) = result;
-				if (result == 2)
+				byte *data;
+				if (!object->flags134 && (data = (byte *)object + object->ai_offset) != NULL)
 				{
-					succeeded++;
+					count++;
+					short outcome = proc(actor_index, iterator.index, (s_cs_state *)(data + 0x28), cs_index);
+					*(short *)(data + 0x2c) = outcome;
+					if (outcome == 2)
+					{
+						succeeded++;
+					}
+					else if (outcome == 1)
+					{
+						failed++;
+					}
 				}
-				else if (result == 1)
-				{
-					failed++;
-				}
-				count++;
+			}
+
+			if ((real)(failed + succeeded) >= (real)count * 0.8f)
+			{
+				result = (succeeded > failed) + 1;
+			}
+			else
+			{
+				result = 0;
 			}
 		}
-
-		if ((real)(failed + succeeded) >= (real)count * 0.8f)
-		{
-			return (succeeded > failed) + 1;
-		}
-		return 0;
 	}
 	else
 	{
-		short result = proc(actor_index, actor->unknown018, (s_cs_state *)((byte *)actor + 0x864), cs_index);
+		result = proc(actor_index, actor->unknown018, (s_cs_state *)((byte *)actor + 0x864), cs_index);
 		*(short *)((byte *)actor + 0x868) = result;
-		return result;
 	}
+	return result;
 }
 
 // @retail 0x259d90

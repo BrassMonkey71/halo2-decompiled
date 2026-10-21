@@ -188,7 +188,7 @@ void c_y_menu_tab_bar::v1()
 // @retail 0x2b41ea
 bool c_y_menu_tab_bar::v10(s_widget_event *event)
 {
-	bool result;
+	bool result = false;
 
 	switch (event->type)
 	{
@@ -248,10 +248,9 @@ bool c_y_menu_tab_bar::v10(s_widget_event *event)
 		function_236299(9);
 		result = true;
 		break;
-	default:
-		result = c_class_1a2c81::v10(event);
-		break;
 	}
+	if (!result)
+		result = c_class_1a2c81::v10(event);
 	return result;
 }
 

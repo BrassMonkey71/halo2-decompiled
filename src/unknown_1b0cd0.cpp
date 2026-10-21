@@ -48,11 +48,24 @@ struct s_4e0350_point_view
 	s_point_globals *points;
 };
 
-__forceinline point2f *point_get(long reference)
+struct s_point_entry
+{
+	byte unknown00[0x20];
+	s_type_c3b527 location;
+	long unknown30;
+	byte unknown34[0x3c - 0x34];
+};
+
+__forceinline s_point_entry *point_entry_get(long reference)
 {
 	s_point_block *block = &((s_4e0350_point_view *)g_4e0350)->points->blocks[(reference >> 16) & 0xffff];
 
-	return (point2f *)(block->points + (reference & 0xffff) * 0x3c + 0x20);
+	return (s_point_entry *)block->points + (reference & 0xffff);
+}
+
+__forceinline point2f *point_get(long reference)
+{
+	return (point2f *)&point_entry_get(reference)->location;
 }
 
 vector2f *g_468778;
@@ -76,13 +89,14 @@ inline real normalize2d_fast(vector2f *v)
 	return magnitude;
 }
 
-inline real distance2d(point2f const *a, point2f const *b)
+static inline real distance2d(point2f const *a, point2f const *b)
 {
-	vector2f d;
+	real dx = a->x - b->x;
+	real dy = a->y - b->y;
+	real distance = dx * dx;
 
-	d.i = a->x - b->x;
-	d.j = a->y - b->y;
-	return magnitude2d(&d);
+	distance += dy * dy;
+	return (real)sqrt(distance);
 }
 
 short __stdcall function_1b0cd0(long actor_index);
@@ -171,7 +185,7 @@ PRIVATE __forceinline void function_1b0e41(short arg_0, vector2f const *arg_1,
 	arg_4->x = arg_2->i * distance + arg_3->x;
 	arg_4->y = arg_2->j * distance + arg_3->y;
 
-	double side = (arg_0 % 2 - 0.5) * (row * 0.9f);
+	real side = (arg_0 % 2 - 0.5) * (row * 0.9f);
 
 	arg_4->x += side * arg_1->i;
 	arg_4->y += side * arg_1->j;
@@ -180,7 +194,7 @@ PRIVATE __forceinline void function_1b0e41(short arg_0, vector2f const *arg_1,
 /* the position of a formation slot: in a line behind the leader, or (mode 5)
    in two staggered lines */
 // @retail 0x1b0e40
-bool function_1b0e40(point2f *point, point2f const *origin, vector2f const *forward, short index,
+bool function_1b0e40(short index, point2f const *origin, vector2f const *forward, point2f *point,
 	short mode, vector2f const *left)
 {
 	switch (mode)
@@ -257,79 +271,99 @@ short function_1b10e0(short index, s_slot_target_list *list)
 
 /* chooses the free formation position nearest the actor */
 // @retail 0x1b1100
-short function_1b1100(long actor_index, vector2f const *forward, s_slot_7e *state, s_slot_target_list *list,
-	point2f const *origin, vector2f const *left, point2f *position)
+short function_1b1100(long actor_index, s_slot_7e *state, s_slot_target_list *list, point2f const *origin,
+	vector2f const *forward, vector2f const *left, point2f *position)
 {
-	s_actor_view *actors = (s_actor_view *)g_4f55f0->data;
-	long actor_number = actor_index & 0xffff;
+	s_actor_view *actor = actor_get(actor_index);
+	short result;
 
 	if (state->unknown0c)
-		return 0;
-
-	real distances[10];
-	point2f points[10];
-	short best_index = NONE;
-	real best_distance = 3.4028235e38f;
-	short count = list->entry_count;
-
-	for (short i = 1; i < count; i++)
 	{
-		if (function_1b0e40(&points[i], origin, forward, i, list->mode, left))
-		{
-			real distance = distance2d((point2f *)&actors[actor_number].position, &points[i]);
-
-			distances[i] = distance;
-			if (best_distance > distance)
-			{
-				best_index = i;
-				best_distance = distance;
-			}
-		}
-		else
-		{
-			distances[i] = 3.4028235e38f;
-		}
+		result = 0;
 	}
-	while (best_index != NONE)
+	else
 	{
-		short other_index = NONE;
+		real distances[10];
+		point2f points[10];
+		real best_distance = 3.4028235e38f;
+		short best_index = NONE;
+		short count = list->entry_count;
 
-		for (short j = 0; j < 10; j++)
+		for (short i = 1; i < count; i++)
 		{
-			s_slot_7e *other = (s_slot_7e *)function_1b1080(j, list);
-
-			if (other && other->position_index == best_index)
+			if (function_1b0e40(i, origin, forward, &points[i], list->mode, left))
 			{
-				other_index = j;
-				break;
+				vector2f delta;
+
+				delta.i = actor->position.x - points[i].x;
+				delta.j = actor->position.y - points[i].y;
+
+				real distance = magnitude2d(&delta);
+
+				distances[i] = distance;
+				if (best_distance > distance)
+				{
+					best_index = i;
+					best_distance = distance;
+				}
+			}
+			else
+			{
+				distances[i] = 3.4028235e38f;
 			}
 		}
-		if (other_index == NONE)
-			break;
+		bool done = false;
 
-		s_actor_view *other_actor = &actors[list->entries[other_index].actor_index & 0xffff];
+		while (!done && best_index != NONE)
+		{
+			short other_index = NONE;
 
-		if (distance2d((point2f *)&other_actor->position, &points[best_index]) + 0.1f > distances[best_index])
-		{
-			((s_slot_7e *)&other_actor->slots[other_actor->current])->position_index = NONE;
-			break;
-		}
-		distances[best_index] = 3.4028235e38f;
-		best_index = NONE;
-		best_distance = 3.4028235e38f;
-		for (short k = 1; k < count; k++)
-		{
-			if (best_distance > distances[k])
+			for (short j = 0; j < 10; j++)
 			{
-				best_distance = distances[k];
-				best_index = k;
+				s_slot_7e *other = (s_slot_7e *)function_1b1080(j, list);
+
+				if (other && other->position_index == best_index)
+				{
+					other_index = j;
+					break;
+				}
+			}
+			if (other_index == NONE)
+			{
+				done = true;
+			}
+			else
+			{
+				s_actor_view *other_actor = actor_get(list->entries[other_index].actor_index);
+
+				if (distance2d((point2f *)&other_actor->position, &points[best_index]) + 0.1f > distances[best_index])
+				{
+					/* the other actor is not nearer to it by more than 0.1: take its position */
+					((s_slot_7e *)&other_actor->slots[other_actor->current])->position_index = NONE;
+					done = true;
+				}
+				else
+				{
+					distances[best_index] = 3.4028235e38f;
+					best_index = NONE;
+					best_distance = 3.4028235e38f;
+					for (short k = 1; k < count; k++)
+					{
+						if (best_distance > distances[k])
+						{
+							best_distance = distances[k];
+							best_index = k;
+						}
+					}
+				}
 			}
 		}
+		if (best_index >= 0 && best_index < 10 && position)
+			*position = points[best_index];
+		state->position_index = best_index;
+		result = best_index;
 	}
-	if (best_index >= 0 && best_index < 10 && position)
-		*position = points[best_index];
-	state->position_index = best_index;
-	return best_index;
+	return result;
 }
 
 /* whether the actor stands on the right side of its formation position */
@@ -364,40 +398,22 @@ bool function_1b1970(long actor_index, short mode, vector2f const *forward,
 			if (normalize2d(&direction) != 0.0f)
 			{
 				real forward_dot = forward->i * direction.x + forward->j * direction.y;
-				real left_dot = left->i * direction.x + left->j * direction.y;
 
 				if (index % 2 == 0)
-				{
-					if (left_dot <= 0.0f)
-					{
-						result = true;
-						goto done;
-					}
-				}
-				else if (left_dot >= 0.0f)
-				{
-					result = true;
-					goto done;
-				}
-				if (forward_dot >= 0.9f)
-					result = true;
+					result = !(left->i * direction.x + left->j * direction.y > 0.0f) || forward_dot >= 0.9f;
+				else
+					result = !(left->i * direction.x + left->j * direction.y < 0.0f) || forward_dot >= 0.9f;
 			}
 		}
 		break;
 	}
-done:
 	return result;
 }
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
 // @retail 0x1b1a90
 void __stdcall function_1b1a90(long actor_index, s_slot *slot, s_slot_target_list *list)
 {
-	long actor_offset = (actor_index & 0xffff) * sizeof(s_actor_view);
-	byte *actor_base = g_4f55f0->data;
-	_ReadWriteBarrier();
-#define actor (*(s_actor_view *)(actor_base + actor_offset))
+	s_actor_view *actor = actor_get(actor_index);
 
 	if (list->entries[0].actor_index == NONE)
 		return;
@@ -416,18 +432,19 @@ void __stdcall function_1b1a90(long actor_index, s_slot *slot, s_slot_target_lis
 	{
 		if (!state->unknown0c)
 		{
-			if (actor.unknown50c)
+			if (actor->unknown50c)
 				function_1f4280(actor_index);
 			if (leader->unknown5d0)
 			{
-				point2f point;
+				point3f point;
 
-				if (function_1b0e40(&point, (point2f *)&leader->position, &forward, state->position_index, list->mode, &left))
+				if (function_1b0e40(state->position_index, (point2f *)&leader->position, &forward, (point2f *)&point,
+					list->mode, &left))
 				{
 					point2f direction;
 
-					direction.x = point.x - actor.position.x;
-					direction.y = point.y - actor.position.y;
+					direction.x = point.x - actor->position.x;
+					direction.y = point.y - actor->position.y;
 					normalize2d(&direction);
 					if (leader->unknown290.i * direction.x + leader->unknown290.j * direction.y < 0.5f)
 					{
@@ -435,51 +452,48 @@ void __stdcall function_1b1a90(long actor_index, s_slot *slot, s_slot_target_lis
 					}
 					else
 					{
-						actor.unknown456 = true;
-						actor.unknown458.i = direction.x;
-						actor.unknown458.j = direction.y;
-						actor.unknown458.k = 0.0f;
+						actor->unknown456 = true;
+						actor->unknown458.i = direction.x;
+						actor->unknown458.j = direction.y;
+						actor->unknown458.k = 0.0f;
 					}
 				}
 			}
 		}
-		if (actor.unknown086 >= 7)
+		if (actor->unknown086 >= 7)
 		{
 			if (state->position_index != NONE)
-				actor.unknown488 = function_1b1970(actor_index, list->mode, &forward, &left, state->position_index);
+				actor->unknown488 = function_1b1970(actor_index, list->mode, &forward, &left, state->position_index);
 			else
-				actor.unknown488 = false;
-			actor.unknown41c = 3;
-			actor.unknown420 = 2;
+				actor->unknown488 = false;
+			actor->unknown41c = 3;
+			actor->unknown420 = 2;
 		}
-		actor.unknown44a = true;
-		actor.unknown449 = true;
+		actor->unknown44a = true;
+		actor->unknown449 = true;
 	}
 	else
 	{
-		actor.unknown4cc = 0.2f;
-		if (actor.unknown504 == 2)
+		actor->unknown4cc = 0.2f;
+		if (actor_get(actor_index)->unknown504 == 2)
 		{
-			vector2f direction;
+			vector3f direction;
 
-			function_1b0f20(list, &direction);
-			actor.unknown420 = 4;
-			actor.unknown424.vector.i = direction.i;
-			actor.unknown424.vector.j = direction.j;
-			actor.unknown44d = true;
-			actor.unknown41c = 3;
-			actor.unknown424.vector.k = 0.0f;
+			function_1b0f20(list, (vector2f *)&direction);
+			direction.k = 0.0f;
+			actor->unknown420 = 4;
+			actor->unknown424.vector = direction;
+			actor->unknown44d = true;
+			actor->unknown41c = 3;
 		}
-		else if (actor.unknown086 >= 7)
+		else if (actor->unknown086 >= 7)
 		{
-			actor.unknown488 = false;
-			actor.unknown420 = 2;
-			actor.unknown41c = 3;
+			actor->unknown488 = false;
+			actor->unknown420 = 2;
+			actor->unknown41c = 3;
 		}
 	}
-#undef actor
 }
-#pragma function(_ReadWriteBarrier)
 
 /* invites the actors of the actor's group (or squad) of the same team */
 struct s_1b1d90_locals
@@ -575,12 +589,15 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
                 goto done;
             if (function_25ab50(local_2->unknown88))
             {
-                s_type_c3b527 *local_5 = (s_type_c3b527 *)point_get(local_2->unknown88);
-                { local_3 = function_1f4460(arg_0, local_5, *(long *)((byte *)local_5 + 0x10), NONE, false); goto done; }
+                s_point_entry *local_5 = point_entry_get(local_2->unknown88);
+                if (!function_1f4460(arg_0, &local_5->location, local_5->unknown30, NONE, false))
+                    local_3 = false;
+                goto done;
             }
             if (!REFERENCE_EQUAL(local_0->unknown418, g_470fa0) && function_1f86f0(arg_0))
                 function_262800(arg_0, local_0->unknown418, false);
-            s_2605d0_request local_6 = {0};
+            s_2605d0_request local_6;
+            memset(&local_6, 0, sizeof(local_6));
             local_6.type = 4;
             local_6.unknown015 = true;
             local_6.unknown05b = true;
@@ -605,16 +622,16 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
             if (local_2->unknown84 != NONE && function_25ab50(local_2->unknown84) &&
                 function_25ab50(local_2->unknown88))
             {
-                s_type_c3b527 *local_16 = (s_type_c3b527 *)point_get(local_2->unknown84);
+                s_point_entry *local_16 = point_entry_get(local_2->unknown84);
                 s_type_c3b527 *local_17 = (s_type_c3b527 *)point_get(local_2->unknown88);
                 vector3f local_18;
-                function_210be0(local_16, local_17, &local_18);
+                function_210be0(&local_16->location, local_17, &local_18);
                 local_13.i = local_18.i;
                 local_13.j = local_18.j;
                 if (normalize2d((point2f *)&local_13) == 0.0f)
                     local_13 = *g_468778;
-                local_12 = *local_16;
-                local_14 = *(long *)((byte *)local_16 + 0x10);
+                /* as in retail, this path leaves local_12 unfilled */
+                local_14 = local_16->unknown30;
                 local_15 = true;
             }
             else
@@ -640,40 +657,41 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
                     real local_22 = local_11->position.x - local_19.x;
                     real local_23 = local_11->position.y - local_19.y;
                     if (local_23 * local_23 + local_22 * local_22 > 0.2f ||
-                        1.0 - ((double)local_13.j * local_11->unknown290.j +
-                            (double)local_13.i * local_11->unknown290.i) > 0.05000000074505806)
+                        1.0 - (local_13.j * local_11->unknown290.j +
+                            local_13.i * local_11->unknown290.i) > 0.05f)
                     {
                         local_21 = false;
                         if (local_0->unknown040 && !function_1f4460(arg_0, &local_12, local_14, NONE, false))
                             local_3 = false;
-                        local_2->unknown80 = local_21;
-                        goto done;
                     }
                 }
-                for (short local_24 = 0; local_24 < 10; ++local_24)
+                if (local_21)
                 {
-                    s_slot_target_entry *local_25 = &local_2->entries[local_24];
-                    if (local_25->type == 3 && local_25->actor_index != arg_0)
+                    for (short local_24 = 0; local_24 < 10; ++local_24)
                     {
-                        short local_26 = function_1b10e0(local_24, local_2);
-                        if (local_26 == NONE)
+                        s_slot_target_entry *local_25 = &local_2->entries[local_24];
+                        if (local_25->type == 3 && local_25->actor_index != arg_0)
                         {
-                            local_21 = false;
-                            break;
-                        }
-                        s_actor_view *local_27 = actor_get(local_25->actor_index);
-                        point2f local_28;
-                        if (function_1b0e40(&local_28, (point2f *)&local_19, &local_13,
-                            local_26, local_2->mode, &local_20))
-                        {
-                            real local_29 = local_27->position.x - local_28.x;
-                            real local_30 = local_27->position.y - local_28.y;
-                            if (local_30 * local_30 + local_29 * local_29 > 0.2f ||
-                                1.0 - ((double)local_13.j * local_27->unknown290.j +
-                                    (double)local_13.i * local_27->unknown290.i) > 0.05000000074505806)
+                            short local_26 = function_1b10e0(local_24, local_2);
+                            if (local_26 == NONE)
                             {
                                 local_21 = false;
                                 break;
+                            }
+                            s_actor_view *local_27 = actor_get(local_25->actor_index);
+                            point2f local_28;
+                            if (function_1b0e40(local_26, (point2f *)&local_19, &local_13, &local_28,
+                                local_2->mode, &local_20))
+                            {
+                                real local_29 = local_27->position.x - local_28.x;
+                                real local_30 = local_27->position.y - local_28.y;
+                                if (local_30 * local_30 + local_29 * local_29 > 0.2f ||
+                                    1.0 - (local_13.j * local_27->unknown290.j +
+                                        local_13.i * local_27->unknown290.i) > 0.05f)
+                                {
+                                    local_21 = false;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -683,23 +701,29 @@ bool __stdcall function_1b13b0(long arg_0, s_slot *arg_1, long arg_2)
             }
             if (!local_0->unknown040)
                 goto done;
-            point2f local_31;
-            if (local_1->position_index == NONE)
             {
-                if (function_1b1100(arg_0, &local_13, local_1, local_2, (point2f *)&local_19,
-                    &local_20, &local_31) == NONE)
+                point3f local_31;
+                bool local_34 = false;
+                if (local_1->position_index == NONE)
+                {
+                    if (function_1b1100(arg_0, local_1, local_2, (point2f *)&local_19, &local_13,
+                        &local_20, (point2f *)&local_31) != NONE)
+                        local_34 = true;
+                }
+                else
+                    local_34 = function_1b0e40(local_1->position_index, (point2f *)&local_19, &local_13,
+                        (point2f *)&local_31, local_2->mode, &local_20);
+                if (!local_34)
                     { local_3 = false; goto done; }
+                local_31.z = local_0->position.z;
+                s_type_c3b527 local_32;
+                long local_33 = function_26d0e0(&local_31, &local_32, function_1fa7f0());
+                if (local_33 == NONE)
+                    { local_3 = false; goto done; }
+                if (!function_1f4460(arg_0, &local_32, local_33, NONE, false))
+                    local_3 = false;
+                goto done;
             }
-            else if (!function_1b0e40(&local_31, (point2f *)&local_19, &local_13,
-                local_1->position_index, local_2->mode, &local_20))
-                { local_3 = false; goto done; }
-            local_19.x = local_31.x;
-            local_19.y = local_31.y;
-            local_19.z = local_0->position.z;
-            long local_33 = function_26d0e0(&local_19, &local_12, function_1fa7f0());
-            if (local_33 == NONE)
-                { local_3 = false; goto done; }
-            { local_3 = function_1f4460(arg_0, &local_12, local_33, NONE, false); goto done; }
         }
     }
 done:

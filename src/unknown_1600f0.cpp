@@ -1480,11 +1480,10 @@ score_background_161420(data + 0x20c, 0x60);
 score_background_161420(data + 0x270, 0x60);
     for (long team = 0; team < panel.team_count; ++team)
     {
-        byte const *row = (byte const *)&panel.teams[team];
-        score_background_161420(row, 0x44);
-        score_background_161420(row + 0x48, 0x60);
-        score_background_161420(row + 0xac, 0x44);
-        score_background_161420(row + 0xf4, 0x44);
+        score_background_161420((byte const *)&panel.teams[team].place, 0x44);
+        score_background_161420((byte const *)&panel.teams[team].name, 0x60);
+        score_background_161420((byte const *)&panel.teams[team].score, 0x44);
+        score_background_161420((byte const *)&panel.teams[team].time, 0x44);
     }
     for (long player = 0; player < panel.player_count; ++player)
     {
@@ -1498,13 +1497,15 @@ score_background_161420(data + 0x270, 0x60);
         connection_widget_draw((s_text_widget_c const *)(row + 0x184));
         if (row[0x1c4]) function_15ff80((s_engine_border_state const *)row);
     }
+    s_33a0b_default const *backdrop_tint = g_4686d4;
+    color4f const *label_tint = g_4686cc;
     font_get(g_4e28f4[6]);
     g_4e73a0.font = 6;
-    function_13ec70(g_4686cc);
-    if (g_4686d4)
+    function_13ec70(label_tint);
+    if (backdrop_tint)
     {
         g_4e73a0.shadow = true;
-        g_4e73a0.field_24 = *(color4f const *)g_4686d4;
+        g_4e73a0.field_24 = *(color4f const *)backdrop_tint;
     }
     else g_4e73a0.shadow = false;
     g_4e73a0.style = NONE;
@@ -1515,23 +1516,20 @@ score_background_161420(data + 0x270, 0x60);
 score_text_161420(data + 0x144, 0x60);
 score_text_161420(data + 0x1a8, 0x60);
 score_text_161420(data + 0x20c, 0x60);
-score_text_161420(data + 0x270, 0x60);
     for (long team = 0; team < panel.team_count; ++team)
     {
-        byte const *row = (byte const *)&panel.teams[team];
-        score_text_161420(row, 0x44);
-        score_text_161420(row + 0x48, 0x60);
-        score_text_161420(row + 0xac, 0x44);
-        score_text_161420(row + 0xf4, 0x44);
+        score_text_161420((byte const *)&panel.teams[team].place, 0x44);
+        score_text_161420((byte const *)&panel.teams[team].name, 0x60);
+        score_text_161420((byte const *)&panel.teams[team].score, 0x44);
+        score_text_161420((byte const *)&panel.teams[team].time, 0x44);
     }
     for (long player = 0; player < panel.player_count; ++player)
     {
-        byte const *row = (byte const *)&panel.players[player];
-        score_text_161420(row, 0x44);
-        score_text_161420(row + 0x90, 0x60);
-        score_text_161420(row + 0xf4, 0x44);
-        score_text_161420(row + 0x13c, 0x44);
-        score_text_161420(row + 0x184, 0x3c);
+        score_text_161420((byte const *)&panel.players[player].row.place, 0x44);
+        score_text_161420((byte const *)&panel.players[player].row.name, 0x60);
+        score_text_161420((byte const *)&panel.players[player].row.score, 0x44);
+        score_text_161420((byte const *)&panel.players[player].row.time, 0x44);
+        score_text_161420((byte const *)&panel.players[player].row.connection, 0x3c);
     }
 }
 

@@ -315,6 +315,8 @@ static __forceinline long real_to_long(real value);
 // @retail 0x24bda2
 void c_widget::v12(long a)
 {
+	real offset_y;
+	real offset_x;
 	short x;
 	short y;
 	s_bounds bounds;
@@ -357,8 +359,8 @@ void c_widget::v12(long a)
 			to.y0 = (real)(placement->main_y + bounds.c);
 			to.y1 = to.y0 - from.y1;
 			to.x1 = to.x0 + from.x1;
-			real offset_x = (real)y;
-			real offset_y = (real)x;
+			offset_y = (real)y;
+			offset_x = (real)x;
 			to.x0 += offset_x;
 			to.y0 += offset_y;
 			to.x1 += offset_x;
@@ -389,8 +391,8 @@ void c_widget::v12(long a)
 			to.y0 = (real)(placement->second_y + bounds.c);
 			to.y1 = to.y0 - from.y1;
 			to.x1 = to.x0 + from.x1;
-			real offset_x = (real)y;
-			real offset_y = (real)x;
+			offset_y = (real)y;
+			offset_x = (real)x;
 			to.x0 += offset_x;
 			to.y0 += offset_y;
 			to.x1 += offset_x;

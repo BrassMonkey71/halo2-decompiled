@@ -90,7 +90,8 @@ bool function_1debd0(dword const *arg_1, s_bsp3d const *arg_0, short arg_2, long
    point2f local_12 = { *(real const *)((byte const *)local_11 + local_7), *(real const *)((byte const *)local_11 + local_8) };
    point2f local_14 = { arg_6->x - local_12.x, arg_6->y - local_12.y };
    real const *local_16 = (real const *)&local_3[local_9->field_0[!local_10]].field_0;
-   point2f local_17 = { *(real const *)((byte const *)local_16 + local_7) - local_12.x, *(real const *)((byte const *)local_16 + local_8) - local_12.y };
+   point2f local_15 = { *(real const *)((byte const *)local_16 + local_7), *(real const *)((byte const *)local_16 + local_8) };
+   point2f local_17 = { local_15.x - local_12.x, local_15.y - local_12.y };
    if (local_17.y * local_14.x - local_14.y * local_17.x > 0.0f) goto done;
    local_5 = local_9->field_4[local_10];
   } while (local_5 != local_4);
@@ -414,7 +415,7 @@ void function_1de2c0(s_1de2c0 *arg_0, long arg_1)
   s_1ddda2 const *local_12 = arg_0->field_0->field_34;
   s_1ddda3 const *local_13 = arg_0->field_0->field_3c;
   long local_15 = local_14;
-  bool local_28 = *(bool const volatile *)&arg_0->field_21e;
+  bool local_28 = arg_0->field_21e;
   long local_16 = local_28 + arg_0->field_21c * 2;
   long local_17 = g_440b94[local_16][0] * sizeof(real), local_18 = g_440b94[local_16][1] * sizeof(real);
   do
@@ -422,7 +423,7 @@ void function_1de2c0(s_1de2c0 *arg_0, long arg_1)
    s_1ddda2 const *local_19 = &local_12[local_15];
    bool local_20 = local_19->field_a == arg_1;
    volatile long local_26 = local_20;
-   long local_27 = *(bool const volatile *)&arg_0->field_21e;
+   long local_27 = arg_0->field_21e;
    real const *local_21 = (real const *)&local_13[local_19->field_0[local_20]].field_0;
    real const *local_24 = (real const *)&local_13[local_19->field_0[!local_20]].field_0;
    long local_22 = *(short const volatile *)&arg_0->field_21c * 2 + local_27;

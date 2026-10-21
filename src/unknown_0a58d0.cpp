@@ -145,9 +145,8 @@ bool function_a5bd0(s_entity_info const *info, s_z_initial_state *state)
 s_simulation_entity *simulation_entity_try_get(s_simulation_entity_table *table, long entity_index)
 {
 	s_simulation_entity *result = 0;
-	long absolute_index = entity_index & 0x3ff;
-	if (table->entities[absolute_index].identifier == entity_index)
-		result = table->entities + absolute_index;
+	if (table->entities[entity_index & 0x3ff].identifier == entity_index)
+		result = &table->entities[entity_index & 0x3ff];
 	return result;
 }
 
@@ -970,7 +969,7 @@ void __stdcall function_a7870(long index)
 
 
 #include "flags_writer.h"
-void simulation_write_position(long bits, s_bitstream *stream, real const *position, bool keep_inside);
+void simulation_write_position(s_bitstream *stream, real const *position, long bits, bool keep_inside);
 void function_194830(s_bitstream *stream, bool value);
 void function_194d30(s_bitstream *stream, vector3f const *up, vector3f const *forward);
 void function_194c10(s_bitstream *stream, vector3f const *vector, real lo, real hi, long bits);
@@ -1005,7 +1004,7 @@ bool function_a69a0(long a, long b, long c, long d, long e, bool f, long g)
  if (flags_writer_begin(&writer, 1, "position-exists"))
  {
   bool absolute = (byte)a != 0 || f;
-  simulation_write_position(16, stream, (real const *)state, absolute);
+  simulation_write_position(stream, (real const *)state, 16, absolute);
  }
  flags_writer_end(&writer);
  if (flags_writer_begin(&writer, 2, "forward-and-up-exists"))
@@ -1061,63 +1060,50 @@ matrix3x3 *function_141e10(matrix3x3 *out, quaternionf const *q);
 
 PRIVATE inline void z_orientation_matrix(vector3f const *forward, vector3f const *up, matrix3x3 *matrix)
 {
+ vector3f *left = &matrix->left;
  matrix->forward = *forward;
+ left->i = up->j * forward->k - forward->j * up->k;
+ left->j = forward->i * up->k - forward->k * up->i;
+ left->k = up->i * forward->j - forward->i * up->j;
  matrix->up = *up;
- matrix->left.i = up->j * forward->k - forward->j * up->k;
- matrix->left.j = forward->i * up->k - forward->k * up->i;
- matrix->left.k = up->i * forward->j - forward->i * up->j;
 }
 
 // @retail 0xa9b40
 void function_a9b40(long index, s_z_copy_state *state)
 {
  byte *object = (byte *)((s_object_header *)g_4e0300->data)[index & 0xffff].object;
- struct { real a, b; } local_saved_angle_current_angle_record = { 0.0f, 0.0f };
+ real saved_angle = 0.0f;
+ real current_angle = 0.0f;
  matrix3x3 saved_matrix, current_matrix;
  quaternionf saved_rotation, current_rotation, blended;
- vector3f axis;
- vector3f *saved_up = &state->forward;
- vector3f *saved_forward = &state->up;
- vector3f const *current_forward = (vector3f const *)(object + 0x70);
+ vector3f saved_axis, current_axis;
+ z_orientation_matrix(&state->up, &state->forward, &saved_matrix);
  vector3f const *current_up = (vector3f const *)(object + 0x7c);
- z_orientation_matrix(saved_forward, saved_up, &saved_matrix);
- z_orientation_matrix(current_forward, current_up, &current_matrix);
+ z_orientation_matrix((vector3f const *)(object + 0x70), current_up, &current_matrix);
+ vector3f const *current_forward = (vector3f const *)(object + 0x70);
  function_141f60(&saved_matrix, &saved_rotation);
  function_141f60(&current_matrix, &current_rotation);
- function_11d790(&saved_rotation, &axis, &local_saved_angle_current_angle_record.a);
- function_11d790(&current_rotation, &axis, &local_saved_angle_current_angle_record.b);
- if (local_saved_angle_current_angle_record.b - local_saved_angle_current_angle_record.a > 0.0001f)
+ function_11d790(&saved_rotation, &saved_axis, &saved_angle);
+ function_11d790(&current_rotation, &current_axis, &current_angle);
+ if (current_angle - saved_angle > 0.0001f)
  {
   real weight = 0.35f;
-  real dot = current_rotation.w * saved_rotation.w + current_rotation.k * saved_rotation.k +
-   current_rotation.j * saved_rotation.j + current_rotation.i * saved_rotation.i;
+  real dot = saved_rotation.i * current_rotation.i + saved_rotation.j * current_rotation.j +
+   saved_rotation.k * current_rotation.k + saved_rotation.w * current_rotation.w;
   if (dot < 0.0f) weight = -0.35f;
   blended.i = current_rotation.i * weight + saved_rotation.i * 0.65f;
   blended.j = current_rotation.j * weight + saved_rotation.j * 0.65f;
   blended.k = current_rotation.k * weight + saved_rotation.k * 0.65f;
   blended.w = current_rotation.w * weight + saved_rotation.w * 0.65f;
-  real squared = blended.w * blended.w + blended.k * blended.k + blended.j * blended.j + blended.i * blended.i;
-  if (squared > 0.0f)
-  {
-   real scale = 1.0f / sqrt(squared);
-   blended.i = (real)(blended.i * scale);
-   blended.j = (real)(blended.j * scale);
-   blended.k = (real)(blended.k * scale);
-   blended.w = (real)(blended.w * scale);
-  }
-  else
-  {
-   blended.i = blended.j = blended.k = 0.0f;
-   blended.w = 1.0f;
-  }
+  quaternion_unit_or_identity(&blended);
   function_141e10(&current_matrix, &blended);
-  *saved_forward = current_matrix.forward;
-  *saved_up = current_matrix.up;
+  state->up = current_matrix.forward;
+  state->forward = current_matrix.up;
  }
  else
  {
-  *saved_forward = *current_forward;
-  *saved_up = *current_up;
+  state->up = *current_forward;
+  state->forward = *current_up;
   state->flags &= ~2;
  }
 }

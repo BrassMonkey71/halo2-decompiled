@@ -565,6 +565,8 @@ void function_1e6980(s_time_entry *entries, short a, byte b)
 #include <math.h>
 #include <xmmintrin.h>
 
+real magnitude3d(vector3f const *v);
+
 bool g_46fcc4 = true;
 bool g_51e9bc;
 
@@ -589,10 +591,7 @@ void function_1e6360(s_biped_physics_output *output, real rate, long object_inde
  *(real *)((byte *)state + 0x28) = rate;
  state->enabled = true;
  byte *definition = (byte *)state->definition;
- real input_fraction = 1.0f - ((real)sqrt(state->control.i * state->control.i +
-  state->control.j * state->control.j + state->control.k * state->control.k) < 1.0f ?
-  (real)sqrt(state->control.i * state->control.i + state->control.j * state->control.j +
-   state->control.k * state->control.k) : 1.0f);
+ real input_fraction = 1.0f - (magnitude3d(&state->control) < 1.0f ? magnitude3d(&state->control) : 1.0f);
  real factor = 1.0f;
  if (*(real *)(definition + 0x90) > 0.0f)
  {
@@ -600,13 +599,12 @@ void function_1e6360(s_biped_physics_output *output, real rate, long object_inde
   else if (blend > 0.0f) factor = (*(real *)(definition + 0x90) - 1.0f) * blend + 1.0f;
  }
  factor *= *(real *)((byte *)state + 0x134);
- real scale = *(real *)((byte *)state + 0x20);
  vector3f limits;
- limits.i = (*(real *)(definition + 0x78) * scale) * factor;
- limits.j = (*(real *)(definition + 0x7c) * scale) * factor;
- limits.k = limits.j;
+ limits.i = (*(real *)(definition + 0x78) * *(real *)((byte *)state + 0x20)) * factor;
+ limits.j = (*(real *)(definition + 0x7c) * *(real *)((byte *)state + 0x20)) * factor;
+ limits.k = (*(real *)(definition + 0x7c) * *(real *)((byte *)state + 0x20)) * factor;
  real acceleration = ((1.0f - input_fraction) * *(real *)(definition + 0x80) +
-  *(real *)(definition + 0x84) * input_fraction) * scale * factor;
+  *(real *)(definition + 0x84) * input_fraction) * *(real *)((byte *)state + 0x20) * factor;
  state->speed = acceleration;
  *(real *)&state->field_148 = acceleration;
  state->velocity.i = state->control.i * limits.i;
@@ -617,11 +615,12 @@ void function_1e6360(s_biped_physics_output *output, real rate, long object_inde
   vector3f movement;
   real angular;
   ((s_animation_state *)*(long *)((byte *)state + 0x1c))->movement_rate_get(object_index, &movement, &angular);
+  real scale = *(real *)((byte *)state + 0x20);
   movement.i *= scale;
   movement.j *= scale;
   movement.k *= scale;
   vector3f direction = movement;
-  real length_squared = direction.k * direction.k + direction.j * direction.j + direction.i * direction.i;
+  real length_squared = direction.i * direction.i + direction.j * direction.j + direction.k * direction.k;
   if (length_squared != 0.0f)
   {
    real inverse = inverse_sqrt_1e6360(length_squared);
@@ -646,9 +645,13 @@ void function_1e6360(s_biped_physics_output *output, real rate, long object_inde
   x *= (bits & 64) ? 1.0f : 0.5f;
   y *= (bits & 128) ? 1.0f : 0.5f;
   z *= (bits & 256) ? 1.0f : 0.5f;
-  state->velocity.i += x * 0.2f * limits.i;
-  state->velocity.j += y * 0.2f * limits.j;
-  state->velocity.k += z * 0.2f * limits.k;
+  vector3f offset;
+  offset.i = x * 0.2f * limits.i;
+  offset.j = y * 0.2f * limits.j;
+  offset.k = z * 0.2f * limits.k;
+  state->velocity.i += offset.i;
+  state->velocity.j += offset.j;
+  state->velocity.k += offset.k;
  }
 }
 
@@ -705,8 +708,8 @@ void function_1e5bb0(s_biped_physics_output *output, void *physics, void *animat
  s_animation_state *animation = (s_animation_state *)animation_state;
  byte *component = g_51e9b8->data + (component_index & 0xffff) * 0xa0;
  state->mode = *(byte *)physics;
- state->component_index = component_index;
  state->definition = definition;
+ state->component_index = component_index;
  state->physics8 = *(long *)((byte *)physics + 8);
  state->physicsc = *(long *)((byte *)physics + 0xc);
  state->value = value;
@@ -768,8 +771,7 @@ void function_1e5bb0(s_biped_physics_output *output, void *physics, void *animat
      vector3f old_cross, new_cross;
      initial_cross(facing_goal, &state->forward, &old_cross);
      initial_cross(facing_goal, &rotated, &new_cross);
-     bool moved_away = false;
-     if (alignment > 0.99f && alignment > initial_dot(&rotated, facing_goal)) moved_away = true;
+     bool moved_away = alignment > 0.99f && alignment > initial_dot(&rotated, facing_goal);
      if (initial_dot(&state->up, &old_cross) * initial_dot(&state->up, &new_cross) <= 0.0f || moved_away)
      {
       state->forward = *facing_goal;

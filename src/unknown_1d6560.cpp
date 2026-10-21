@@ -103,25 +103,20 @@ void __stdcall function_1d6560(s_havok_component *component, s_physics_model_own
 // @retail 0x1d69d0
 long function_1d69d0(s_havok_component *component, long kind, s_physics_model_owner *owner, long level, long rigid_body_index)
 {
-	s_physics_object_header *header = &((s_physics_object_header *)g_4e0300->data)[component->object_index & 0xffff];
-	long type = header->type;
+	long object_index = component->object_index;
 	s_physics_rigid_body *rigid_body = &owner->model->rigid_bodies[rigid_body_index];
 	long result;
 
 	if (kind == 7)
 	{
-		switch (type)
+		switch (((s_physics_object_header *)g_4e0300->data)[object_index & 0xffff].type)
 		{
 		case 1:
-			result = 0xc;
-			break;
-		default:
-			result = 1;
-			break;
+			return 0xc;
 		}
-		return result;
+		return 1;
 	}
-	switch (type)
+	switch (((s_physics_object_header *)g_4e0300->data)[object_index & 0xffff].type)
 	{
 	case 11:
 		if (level <= 1)
@@ -134,10 +129,14 @@ long function_1d69d0(s_havok_component *component, long kind, s_physics_model_ow
 		}
 		break;
 	case 1:
-		result = (rigid_body->flags & 8) ? 14 : 12;
+		if (rigid_body->flags & 8)
+			result = 14;
+		else
+			result = 12;
 		break;
 	case 0:
-		result = (bool)(((dword)header->object[0x10a] >> 2) & 1) ? 11 : 9;
+		/* retail looks the object up again from the component here */
+		result = (bool)(((dword)((byte *)havok_object_get(component->object_index))[0x10a] >> 2) & 1) ? 11 : 9;
 		break;
 	case 7:
 		if (kind == 6)
@@ -146,7 +145,10 @@ long function_1d69d0(s_havok_component *component, long kind, s_physics_model_ow
 		}
 		else
 		{
-			result = (rigid_body->flags & 8) ? 7 : 6;
+			if (rigid_body->flags & 8)
+				result = 7;
+			else
+				result = 6;
 		}
 		break;
 	default:
@@ -477,7 +479,7 @@ c_havok_reference_counted *__stdcall function_1d5ec0(s_havok_component *componen
                     physics_mass_frame(&relative, &transform);
                     if (child->type() == 0x15)
                     {
-                        transform.setMulEq(*(hkTransform *)((byte *)child + 0x10));
+                        transform.transform_compose_in_place(*(hkTransform *)((byte *)child + 0x10));
                         child = *(c_physics_shape_view **)((byte *)child + 0xc);
                     }
                 }

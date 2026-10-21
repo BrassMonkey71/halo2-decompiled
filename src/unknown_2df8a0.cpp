@@ -4,6 +4,7 @@
 // pair is enabled by bit (second & 31) of word (first & 31) of a 32-word
 // table. The filter answers through four interfaces: for two keys, and for
 // two objects whose keys it reads.
+#include <stddef.h>
 
 class hkBool
 {
@@ -71,7 +72,9 @@ __forceinline long part_key_2dfa20(kinds_2dfa20 const *const *kinds, chain_2dfa2
 	{
 		if ((bool)(((*kinds)->flags[link->object->slot_5()] >> 2) & 1))
 		{
-			return link->object->key(chain->part);
+			keyed_2df8f0 const *const object = link->object;
+			long const part = chain->part;
+			return object->key(part);
 		}
 		link = link->parent;
 	}
@@ -143,6 +146,15 @@ public:
 		return result;
 	}
 };
+
+// Retail 0x2dfbf0 installs four interface vptrs before field_18; its
+// 32-word table ends at +0x9c. These assert storage only, not vtable identity.
+typedef char assert_pair_filter_size[(sizeof(c_2dfbf0) == 0x9c) ? 1 : -1];
+typedef char assert_pair_filter_field[(offsetof(c_2dfbf0, field_18) == 0x18) ? 1 : -1];
+typedef char assert_pair_filter_table[(offsetof(c_2dfbf0, enabled) == 0x1c) ? 1 : -1];
+typedef char assert_pair_reference_size[(sizeof(c_contact_rule_fallback) == 8) ? 1 : -1];
+typedef char assert_pair_allocation_size[(offsetof(c_contact_rule_fallback, memory_size) == 4) ? 1 : -1];
+typedef char assert_pair_reference_count[(offsetof(c_contact_rule_fallback, reference_count) == 6) ? 1 : -1];
 
 // @retail 0x2df8a0
 hkBool c_contact_rule_fallback::accepts(long a, long b)

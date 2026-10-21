@@ -282,11 +282,11 @@ PRIVATE inline real shape_dot_reverse(vector3f const *a, vector3f const *b)
 
 // @retail 0x2461a0
 bool function_2461a0(
-	real *t,
 	s_sphere const *sphere,
+	point3f const *point,
 	plane3f *plane,
 	vector3f const *direction,
-	point3f const *point)
+	real *t)
 {
 	bool result = false;
 	vector3f d;
@@ -312,10 +312,10 @@ bool function_2461a0(
 			if (discriminant >= g_45dbd8)
 			{
 				/* retail compares the unrounded root and divides the rounded one */
-				double root = b - sqrt(discriminant);
+				real root = b - sqrt(discriminant);
 				if (a >= root)
 				{
-					*t = (real)root / a;
+					*t = root / a;
 					result = true;
 				}
 			}
@@ -350,7 +350,9 @@ bool function_246360(
 	vector3f const *u = direction;
 	vector3f const *v = &capsule->vector;
 	real a = length_sq3f(v);
-	real uv = v->k * u->k + v->j * u->j + v->i * u->i;
+	real uv = v->k * u->k;
+	uv += v->j * u->j;
+	uv += v->i * u->i;
 	real uu = length_sq3f(u);
 	real den = uu * a - uv * uv;
 	if (den == g_45dbd8)
@@ -445,11 +447,11 @@ bool function_246360(
 
 // @retail 0x2466b0
 bool function_2466b0(
-	real *t,
-	plane3f *out,
 	point3f const *start,
 	vector3f const *direction,
-	s_prism const *prism)
+	s_prism const *prism,
+	real *t,
+	plane3f *out)
 {
 	real b = plane_distance_to_point(&prism->plane, start);
 	real a;
@@ -580,9 +582,9 @@ bool function_2469b0(s_shapes const *shapes, point3f const *start,
 		{
 			real time;
 			plane3f plane;
-			if (((type == 0 && function_2461a0(&time, &shapes->spheres[index], &plane, direction, start)) ||
+			if (((type == 0 && function_2461a0(&shapes->spheres[index], start, &plane, direction, &time)) ||
 				(type == 1 && function_246360(direction, &shapes->capsules[index], start, &time, &plane)) ||
-				(type == 2 && function_2466b0(&time, &plane, start, direction, &shapes->prisms[index]))) &&
+				(type == 2 && function_2466b0(start, direction, &shapes->prisms[index], &time, &plane))) &&
 				best_time > time && dot3f(direction, &plane.n) < -0.0001f)
 			{
 				best_time = time;
@@ -595,9 +597,10 @@ bool function_2469b0(s_shapes const *shapes, point3f const *start,
 	if (best_type != NONE)
 	{
 		result->time = best_time;
-		result->position.x = direction->i * best_time + start->x;
-		result->position.y = direction->j * best_time + start->y;
-		result->position.z = direction->k * best_time + start->z;
+		point3f *position = &result->position;
+		position->x = direction->i * best_time + start->x;
+		position->y = direction->j * best_time + start->y;
+		position->z = direction->k * best_time + start->z;
 		result->plane = best_plane;
 		switch (best_type)
 		{

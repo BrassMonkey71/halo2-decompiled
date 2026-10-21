@@ -1341,7 +1341,7 @@ void function_79850(s_network_observer *observer, long index)
 	long local_0 = intervals + 1;
 	long local_1 = delay * budget / (intervals * 8000);
 	long limited_burst = local_0 * local_1;
-	long local_2 = *(volatile long *)((byte *)observer->configuration + 0xe0);
+	long local_2 = *(long *)((byte *)observer->configuration + 0xe0);
 	limited_burst = local_2 > limited_burst ? local_2 : limited_burst;
 	if (burst > limited_burst) burst = limited_burst;
 	function_79600(observer, index, budget, burst, rate);
@@ -1780,39 +1780,31 @@ void function_7a110(s_network_observer *observer, long index)
 	}
 }
 
-struct s_7a330
-{
-	byte field_0[0xa8];
-	s_observer_bandwidth_channel field_a8;
-};
-
 // @retail 0x7a330
 void function_7a330(s_network_observer *observer, long index)
 {
-	long const *index_reference = &index;
-	s_7a330 *local_0 = (s_7a330 *)((byte *)observer + *index_reference * sizeof(s_network_observer_channel));
-	if (local_0->field_a8.probe_state == 0)
+	if (observer->channels[index].probe_state == 0)
 	{
 		long elapsed = 0;
-		long last = local_0->field_a8.probe_reset_time;
+		long last = observer->channels[index].probe_reset_time;
 		if (last != NONE) elapsed = observer_time_get() - last;
-		if (local_0->field_a8.probe_reset_time == NONE || elapsed >= *(long *)((byte *)observer->configuration + 0x1f0))
+		if (observer->channels[index].probe_reset_time == NONE || elapsed >= *(long *)((byte *)observer->configuration + 0x1f0))
 		{
-			if (local_0->field_a8.constrained_cycles >= *(long *)((byte *)observer->configuration + 0x1ec))
+			if (observer->channels[index].constrained_cycles >= *(long *)((byte *)observer->configuration + 0x1ec))
 			{
-				local_0->field_a8.probe_state = 1;
+				observer->channels[index].probe_state = 1;
 				observer->flag4f3c = true;
 			}
 		}
 	}
-	else if (local_0->field_a8.unconstrained_cycles > 0)
+	else if (observer->channels[index].unconstrained_cycles > 0)
 		function_79d90(observer, index);
-	else if (local_0->field_a8.probe_state == 2)
+	else if (observer->channels[index].probe_state == 2)
 	{
 		switch (function_7a1c0(observer, index))
 		{
 		case 0:
-			local_0->field_a8.probe_state = 3;
+			observer->channels[index].probe_state = 3;
 			break;
 		case 1:
 			function_7a110(observer, index);
@@ -1825,12 +1817,12 @@ void function_7a330(s_network_observer *observer, long index)
 	else
 	{
 		long tolerance;
-		if (!local_0->field_a8.has_callback) tolerance = *(volatile long *)((byte *)observer->configuration + 0x1d4);
-		else tolerance = *(volatile long *)((byte *)observer->configuration + 0x1d8);
+		if (!observer->channels[index].has_callback) tolerance = *(long *)((byte *)observer->configuration + 0x1d4);
+		else tolerance = *(long *)((byte *)observer->configuration + 0x1d8);
 		bool exhausted = false;
-		if (!local_0->field_a8.backoff && local_0->field_a8.loss_penalty <= 0)
+		if (!observer->channels[index].backoff && observer->channels[index].loss_penalty <= 0)
 		{
-			if (local_0->field_a8.smoothed_delay - local_0->field_a8.smoothed_interval > local_0->field_a8.baseline_delay + tolerance)
+			if (observer->channels[index].smoothed_delay - observer->channels[index].smoothed_interval > observer->channels[index].baseline_delay + tolerance)
 				function_7a160(observer, index);
 			else if (!function_79de0(observer, index, &exhausted) && exhausted)
 				function_79d90(observer, index);

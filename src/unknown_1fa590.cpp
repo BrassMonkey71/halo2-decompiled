@@ -9,7 +9,7 @@
 #include <math.h>
 #include "slot_handler.h"
 
-void function_11d180(vector3f *left, vector3f const *in, vector3f *out, vector3f const *up, vector3f *forward);
+void function_11d180(vector3f const *in, vector3f const *up, vector3f *forward, vector3f *left, vector3f *out);
 
 struct s_motion_adjustment
 {
@@ -36,7 +36,7 @@ void __stdcall function_1fa810(long *ticks, s_motion_adjustment_result *out, s_m
 	vector3f left;
 	vector3f up;
 	vector3f forward;
-	function_11d180(&left, &state->forward, &up, g_4687b0, &forward);
+	function_11d180(&state->forward, g_4687b0, &forward, &left, &up);
 	vector3f target;
 	target.i = state->target.i * state->scale;
 	target.j = state->target.j * state->scale;
@@ -415,7 +415,9 @@ long function_1fa3a0(long structure_index, long surface_index, long object_index
                 {
                     s_contact_surface_owner *owner = &table->owners[owner_index];
                     long first = owner->first;
-                    if (first != NONE && surface_index >= 0 && surface_index <= owner->last - first)
+                    if (first == NONE || surface_index < 0 || surface_index > owner->last - first)
+                        result = NONE;
+                    else
                     {
                         result = first + surface_index;
                         if (result < 0 || result >= table->count)

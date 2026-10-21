@@ -919,6 +919,9 @@ bool function_1140b0(long unit_index, long name)
 	return result;
 }
 
+/* kept out of line: retail calls it from every caller */
+__declspec(noinline) bool __stdcall function_113e90(long unit_index, long name, real blend, c_animation_channel **output, long mode);
+
 // @retail 0x113e90
 bool __stdcall function_113e90(long unit_index, long name, real blend, c_animation_channel **output, long mode)
 {
@@ -955,8 +958,13 @@ bool __stdcall function_113e90(long unit_index, long name, real blend, c_animati
 		return true;
 	}
 	long first, second;
-	if ((function_10f630(unit_index, &first, &second) && second == name) ||
-		function_10f430(unit_index, 0x7000101, 0x7000101, 0x7000101, name, blend, false, 0))
+	if (function_10f630(unit_index, &first, &second) && second == name)
+	{
+		if (output)
+			*output = &UNIT_ANIMATION_STATE(unit)->channels[0];
+		return true;
+	}
+	if (function_10f430(unit_index, 0x7000101, 0x7000101, 0x7000101, name, blend, false, 0))
 	{
 		if (output)
 			*output = &UNIT_ANIMATION_STATE(unit)->channels[0];
@@ -1219,16 +1227,15 @@ bool __stdcall function_110ab0(long unit_index)
 {
 	// Retail keeps this argument on the stack.
 	long const *unit_reference = &unit_index;
-	unit_index = *unit_reference;
 	s_unit_animation_object *unit = UNIT_ANIMATION_OBJECT(unit_index);
 	s_unit_animation_control *control = UNIT_ANIMATION_CONTROL(unit);
 	s_animation_state *state = UNIT_ANIMATION_STATE(unit);
 	long overlay = control->channel_9c.unknown08;
 	long name = state->unknown7c;
 	long controlling = unit->field_13c;
-	volatile bool result = false;
+	bool result = false;
 	bool depleted = false;
-	volatile bool interruptible = false;
+	bool interruptible = false;
 	if (controlling != NONE)
 	{
 		long first = held_object_110ab0(unit_index, *(char *)((byte *)UNIT_ANIMATION_OBJECT(unit_index) + 0x212));
@@ -1796,20 +1803,18 @@ struct s_request_114b60
 	s_request_extra_114b60 extra;
 };
 
+__declspec(noinline) bool unit_submit_entry_request(short fallback_index, short entry_index, long unit_index, long priority, void const *extra);
+
 // @retail 0x114b60
 bool unit_submit_entry_request(short fallback_index, short entry_index, long unit_index, long priority, void const *extra)
 {
-	bool local_0 = false;
-	// Retail keeps the object on the stack and reuses the priority slot for the tag.
-	long const *unit_reference = &unit_index;
-	unit_index = *unit_reference;
-	short request_priority = (short)priority;
 	short index = entry_index;
+	short request_priority = (short)priority;
 	if (index == NONE)
 	{
 		index = function_20ba00(fallback_index);
 		if (index == NONE)
-			goto local_1;
+			return false;
 	}
 	priority = NONE;
 	if (function_114520(unit_index, index, request_priority, NULL, &priority))
@@ -1824,19 +1829,17 @@ bool unit_submit_entry_request(short fallback_index, short entry_index, long uni
 		if (extra)
 		{
 			memcpy(&request.extra, extra, sizeof(request.extra));
-			function_114680(unit_index, &request);
-			local_0 = true;
-			goto local_1;
 		}
-		request.extra.marker = NONE;
-		request.extra.object_index = NONE;
-		request.extra.flags = 0;
+		else
+		{
+			request.extra.marker = NONE;
+			request.extra.object_index = NONE;
+			request.extra.flags = 0;
+		}
 		function_114680(unit_index, &request);
-		local_0 = true;
-		goto local_1;
+		return true;
 	}
-local_1:
-	return local_0;
+	return false;
 }
 
 /* the same request with the entry first, for callers written in that order */

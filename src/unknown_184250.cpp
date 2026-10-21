@@ -26,12 +26,17 @@ struct s_184252
 	real field_24;
 };
 
-struct __declspec(align(16)) s_184253
+/* a four-float vector with its SSE view */
+union s_184253
 {
-	real field_0;
-	real field_4;
-	real field_8;
-	real field_c;
+	struct
+	{
+		real field_0;
+		real field_4;
+		real field_8;
+		real field_c;
+	};
+	__m128 quad;
 };
 
 struct s_184254
@@ -76,10 +81,17 @@ struct s_184255
 	byte field_8[0x20 - 8];
 };
 
+/* a block of s_184255 elements */
+struct s_184256_block
+{
+	long count;
+	s_184255 *elements;
+};
+
 struct s_184256
 {
-	byte field_0[0x210];
-	s_184255 *field_210;
+	byte field_0[0x20c];
+	s_184256_block field_20c;
 };
 
 void voice_fpu_enter(void);
@@ -113,21 +125,26 @@ void __stdcall function_184250(s_type_1e6529 const *arg_0)
 			local_6.field_8 = 0x80000200;
 			voice_fpu_enter();
 			real radius = local_2 < 0.0f ? 0.0f : local_2;
-			s_184253 local_7;
-			_mm_store_ps(&local_7.field_0, _mm_load_ps(&local_4.field_0));
-			local_7.field_c = radius;
-			((c_184250 *)g_4f55b0)->function_18425b(&local_7, &local_6);
-			voice_fpu_leave();
-			s_184256 *bounds = (s_184256 *)g_4e0348;
-			for (long local_8 = 0; local_8 < local_6.field_4; local_8++)
 			{
-				s_184255 *local_9 = &bounds->field_210[local_6.field_0[local_8]];
-				long local_10 = local_9->field_0;
-				long local_11 = local_9->field_2;
-				if ((bool)(byte)function_184000(local_11, local_10))
+				s_184253 local_7;
+				local_7.quad = local_4.quad;
+				local_7.field_c = radius;
+				((c_184250 *)g_4f55b0)->function_18425b(&local_7, &local_6);
+			}
+			voice_fpu_leave();
+			if (local_6.field_4 > 0)
+			{
+				s_184256_block const *block = &((s_184256 *)g_4e0348)->field_20c;
+				for (long local_8 = 0; local_8 < local_6.field_4; local_8++)
 				{
-					function_184060(local_10, (byte)local_11, (s_type_1e6529 *)arg_0, local_9->field_4);
-					local_3 = true;
+					s_184255 *local_9 = &block->elements[local_6.field_0[local_8]];
+					long local_11 = local_9->field_2;
+					long local_10 = local_9->field_0;
+					if ((bool)(byte)function_184000(local_10, local_11))
+					{
+						function_184060(local_10, (byte)local_11, (s_type_1e6529 *)arg_0, local_9->field_4);
+						local_3 = true;
+					}
 				}
 			}
 		}
@@ -203,15 +220,20 @@ struct s_184068
 	long definition_index;
 };
 
-struct s_184069
+struct s_184069_block
 {
-	byte unknown00[0x1c];
+	byte unknown00[0xc];
 	real base_scale;
 	real minimum;
 	real maximum;
-	byte unknown28[0x50 - 0x28];
+	byte unknown18[0x40 - 0x18];
 	long group0;
 	long group1;
+};
+struct s_184069
+{
+	byte unknown00[0x10];
+	s_184069_block block;
 };
 
 struct s_globals_element;
@@ -226,14 +248,15 @@ void function_a8ee0(long first, long second);
 void function_1c55e0(real const *bounds);
 
 // @retail 0x184060
-void function_184060(long index, byte bit_index, s_type_1e6529 *input_data, long surface_index)
+void function_184060(long index, byte bit, s_type_1e6529 *input_data, long surface_index)
 {
+	long bit_index = bit;
 	s_184061 const *input = (s_184061 const *)input_data;
 	if (!*g_4ed280 || input->definition_index == NONE || !((bool)(byte)function_184000(index, bit_index)))
 		return;
 
 	s_184067 *globals = (s_184067 *)g_4e0348;
-	s_184063 *surfaces = index == NONE ? globals->surfaces : &globals->owners[globals->references[index].owner_index].surfaces;
+	s_184063 *surfaces = index != NONE ? &globals->owners[globals->references[index].owner_index].surfaces : globals->surfaces;
 	short material_index = surfaces->references[surface_index].material_index;
 	s_184068 *material = (s_184068 *)function_188690(globals->materials[material_index].material_index);
 	if (material->definition_index == NONE)
@@ -242,35 +265,28 @@ void function_184060(long index, byte bit_index, s_type_1e6529 *input_data, long
 	if (!(*resistance > 0.0f))
 		return;
 
-	s_184069 const *definition = (s_184069 const *)g_4e3b44[input->definition_index & 0xffff].bytes;
+	s_184069_block const *definition = &((s_184069 const *)g_4e3b44[input->definition_index & 0xffff].bytes)->block;
 	real scale = (function_259d0((dword *)g_4e7408, NULL, 0, definition->minimum, definition->maximum) - definition->base_scale) * input->scale + definition->base_scale;
 	real probability = function_d5bc0(definition->group0, definition->group1, material->group0, material->group1);
 	probability *= scale;
 	probability /= *resistance;
-	if (TEST_FIELD_BIT((input->flags >> 8) & 1))
+	if (TEST_FIELD_BIT((input->flags >> 8) & 1) ? 10.0f >= *resistance : probability >= function_259a0((dword *)g_4e7408))
 	{
-		if (!(10.0f >= *resistance))
-			return;
-	}
-	else if (!(probability >= function_259a0((dword *)g_4e7408)))
-		return;
+		dword *bits = (dword *)function_183fc0(index);
+		bits[bit_index >> 5] &= ~(1 << (bit_index & 31));
+		function_184440(index, bit_index, (s_18444a const *)input_data, surface_index);
+		function_2e90a0(s_184251(false));
+		function_a87a0(index, bit_index, surface_index, (byte const *)input_data);
+		function_a8ee0(bit_index, index);
 
-	dword *bits = (dword *)function_183fc0(index);
-	bits[bit_index >> 5] &= ~(1 << (bit_index & 31));
-	function_184440(index, bit_index, (s_18444a const *)input_data, surface_index);
-	function_2e90a0(s_184251(false));
-	function_a87a0(index, bit_index, surface_index, (byte const *)input_data);
-	function_a8ee0(bit_index, index);
-
-	globals = (s_184067 *)g_4e0348;
-	long count = globals->bounds_count;
-	for (long i = 0; i < count; ++i)
-	{
-		s_184255 *bounds = &globals->bounds[i];
-		if (bounds->field_0 == index && bounds->field_2 == bit_index)
+		for (long i = 0; i < ((s_184067 *)g_4e0348)->bounds_count; ++i)
 		{
-			function_1c55e0((real const *)((byte *)bounds + 8));
-			break;
+			s_184255 *bounds = &((s_184067 *)g_4e0348)->bounds[i];
+			if (bounds->field_0 == index && bounds->field_2 == bit_index)
+			{
+				function_1c55e0((real const *)((byte *)bounds + 8));
+				break;
+			}
 		}
 	}
 }

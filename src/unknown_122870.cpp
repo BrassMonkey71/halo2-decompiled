@@ -103,8 +103,8 @@ static __forceinline void *physical_memory_malloc_low(long size, dword protect)
 	void *result = NULL;
 	long stage = g_global_f9ae07.field_0;
 	long *bottom = &g_global_f9ae07.field_c_6[stage];
-	long address = g_global_f9ae07.field_c_6[stage];
 	long aligned_size = (size + 0xfff) & 0xfffff000;
+	long address = g_global_f9ae07.field_c_6[stage];
 	long top = address + aligned_size;
 
 	if (top <= g_global_f9ae07.field_20[stage])
@@ -134,11 +134,12 @@ static inline long cache_file_sector_align(long size)
 // @retail 0x1228f0
 bool cache_files_load_map(char const *map_name)
 {
-	bool result = false;
 	long scenario_index = NONE;
+	bool result = false;
 
 	g_55aca8 = cache_file_find(map_name);
-	cache_file_globals.header = *(s_cache_header *)g_557c90[g_55aca8].unknown04;
+	s_cache_file *file = &g_557c90[g_55aca8];
+	cache_file_globals.header = *(s_cache_header *)file->unknown04;
 	if (cache_header_verify(&cache_file_globals.header) && version_is_compatible(cache_file_globals.header.build_version))
 	{
 		cache_file_globals.field_4_7 = physical_memory_malloc_low(cache_file_globals.header.unknown1c, PAGE_READWRITE);
@@ -157,27 +158,30 @@ bool cache_files_load_map(char const *map_name)
 				result = function_122d60(cache_file_location_make(NONE, cache_file_globals.header.tag_data_offset + cache_file_globals.header.tag_data_size),
 					cache_file_sector_align(cache_file_globals.header.unknown18),
 					(byte *)cache_file_globals.field_4_7 - cache_file_globals.header.unknown18 + cache_file_globals.header.unknown1c);
-				if (result)
-				{
-					s_cache_tags_header *tags = (s_cache_tags_header *)cache_file_globals.field_4_7;
-
-					if (tags->instances && tags->instance_count > 0 && tags->signature == 'tags')
-					{
-						cache_file_globals.tags = tags;
-						result = true;
-						cache_file_globals.loaded = result;
-						scenario_index = tags->scenario_index;
-						g_4e3b44 = (s_tag_instance *)tags->instances;
-					}
-					else
-					{
-						result = false;
-					}
-				}
 				if (!result)
 				{
 					g_510a08 = 0;
 					g_510819 = true;
+				}
+				else
+				{
+					s_cache_tags_header *tags = (s_cache_tags_header *)cache_file_globals.field_4_7;
+
+					if (!tags->instances || tags->instance_count <= 0 || tags->signature != 'tags')
+						result = false;
+					if (result)
+					{
+						cache_file_globals.tags = tags;
+						g_4e3b44 = (s_tag_instance *)tags->instances;
+						result = true;
+						cache_file_globals.loaded = result;
+						scenario_index = tags->scenario_index;
+					}
+					else
+					{
+						g_510a08 = 0;
+						g_510819 = true;
+					}
 				}
 			}
 		}
@@ -191,12 +195,16 @@ bool cache_files_load_map(char const *map_name)
 			function_213890();
 			g_55aca8 = NONE;
 		}
+		/* a statement the release build compiles out: retail keeps the
+		   close's join as its own block (the instance table is reloaded there) */
+		do {} while (false);
 	}
 	g_4686c0 = scenario_index;
 	if (scenario_index != NONE)
 	{
 		g_4e0350 = (s_palette_source_globals *)CACHE_TAG_INSTANCES[scenario_index & 0xffff].address;
 		g_4e034c = (s_tag_header_globals *)CACHE_TAG_INSTANCES[cache_file_globals.tags->globals_index & 0xffff].address;
+		return true;
 	}
 	return result;
 }

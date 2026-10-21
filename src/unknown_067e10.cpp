@@ -110,7 +110,7 @@ void function_c6ef0(s_unit_state_c6ef0 *state);
 
 struct s_simulation_controller;
 void simulation_controller_initialize(s_simulation_controller *controller, c_class_6a600 *world,
-	long field_00, long field_04, long field_08, const s_machine_address *machine, const t_player_key *key);
+	long field_00, long field_04, long field_08, const t_player_key *key, const s_machine_address *machine);
 void function_155710(long index);
 bool function_78a10(long index, s_network_observer *observer, long *delay, real *rate, long *received_rate, long *loss_percent);
 
@@ -180,7 +180,7 @@ void function_694c0(c_class_6a600 *world, long player_index)
 	if (local)
 		function_155710(local_index);
 	simulation_controller_initialize((s_simulation_controller *)&world->players[index], world,
-		index, player_index, kind, &player->machine, &player->key);
+		index, player_index, kind, &player->key, &player->machine);
 }
 #pragma inline_depth()
 
@@ -1749,13 +1749,14 @@ void function_69b50(c_class_6a600 *world, dword mask, const byte *input);
 // @retail 0x684e0
 void function_684e0(byte *block)
 {
- c_class_6a600 *world = SIMULATION_WORLD;
- if (world->state != 3 && world->state != 5)
+ long state = SIMULATION_WORLD->state;
+ if (state != 3 && state != 5)
  {
-  if (world->state == 2) function_69880(world, block);
-  else if (world->state == 4)
+  c_class_6a600 *world = SIMULATION_WORLD;
+  if (state == 2) function_69880(world, block);
+  else if (state == 4)
   {
-   function_69a00(block + 0xc, world, *(dword *)(block + 8));
+   function_69a00(block + 0xc, SIMULATION_WORLD, *(dword *)(block + 8));
    function_69b50(world, *(dword *)(block + 0x5cc), block + 0x610);
   }
  }
@@ -1853,8 +1854,7 @@ void function_67f60(void)
 // @retail 0x6ae20
 bool function_6ae20(c_class_6a600 *world)
 {
- bool alternate = world->state != 2;
- long mode = 2 + 2 * alternate;
+ long mode = 4 - 2 * (world->state == 2);
  s_simulation_world_owner *owner = world->owner;
  s_simulation_distribution *distribution = world->distribution;
  long local = *(long *)((byte *)world + 0x14);

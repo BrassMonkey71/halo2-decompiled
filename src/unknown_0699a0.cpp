@@ -38,7 +38,7 @@ static __forceinline void function_84751(s_player_action *arg_0)
 #pragma inline_depth(8)
 // @retail 0x84750
 void simulation_controller_initialize(s_simulation_controller *controller, c_class_6a600 *world,
-	long field_00, long field_04, long field_08, const s_machine_address *machine, const t_player_key *key)
+	long field_00, long field_04, long field_08, const t_player_key *key, const s_machine_address *machine)
 {
 	controller->field_00 = field_00;
 	controller->field_04 = field_04;
@@ -277,23 +277,28 @@ void function_8b4d0(s_event_distribution *distribution, long type, long entity_c
 				if (entities[i] != NONE)
 					(&node->unknown10)[i] = entities[i];
 			}
-			if (size > 0 && !function_8b0a0(node, size, data))
+			bool data_copied = true;
+			if (size > 0)
+				data_copied = function_8b0a0(node, size, data);
+			if (data_copied)
 			{
-				function_89e70(distribution->owner, node);
-				return;
-			}
-			if (definition->v4())
-			{
-				for (long i = 0; i < entity_count; i++)
+				if (definition->v4())
 				{
-					if (entities[i] != NONE)
+					for (long i = 0; i < entity_count; i++)
 					{
-						s_datum_450cb8 *datum = &distribution->entities->data[entities[i] & 0x3ff];
-						datum->counter++;
+						if (entities[i] != NONE)
+						{
+							s_datum_450cb8 *datum = &distribution->entities->data[entities[i] & 0x3ff];
+							datum->counter++;
+						}
 					}
 				}
+				replication_node_start(node, distribution->owner, mask);
 			}
-			replication_node_start(node, distribution->owner, mask);
+			else
+			{
+				function_89e70(distribution->owner, node);
+			}
 		}
 	}
 }

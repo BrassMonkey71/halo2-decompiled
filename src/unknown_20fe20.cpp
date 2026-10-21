@@ -9,6 +9,8 @@
 #include "object_iterator.h"
 #include "unknown_1428b0.h"
 #include "unknown_20fe20.h"
+#include "unknown_11cc90.h"
+#include "vector_angles.h"
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
@@ -121,64 +123,74 @@ struct s_audio_object_state_20f960
 long function_20f960(long index, s_audio_priority_table *table, bool *expired)
 {
 	bool result = false;
-	byte *record = g_4f9398->data + (index & 0xffff) * 0x54;
+	s_record_pool *records = g_4f9398;
+	byte *record = records->data + (index & 0xffff) * 0x54;
 	long time = g_510c54->game_time;
 	s_audio_priority_definition *definition = &table->entries[*(short *)(record + 2)];
 	if (expired)
 		*expired = false;
-	if (!*((byte *)g_4f55d0 + 0x20) || *(short *)((byte *)g_4f55d0 + 0x22) > 0)
-		goto rejected;
+	if (*((byte *)g_4f55d0 + 0x20) && *(short *)((byte *)g_4f55d0 + 0x22) <= 0)
 	{
 		real seconds = g_510c54->field_2_3 * *(real *)((byte *)definition + 0x20);
 		long ticks = real_to_long(seconds);
-		if (time - *(long *)(record + 0x10) > ticks)
-			goto report_expiration;
-	}
-	{
-		byte *object = *(byte **)(g_4e0300->data + (*(long *)(record + 4) & 0xffff) * 12 + 8);
-		result = true;
-		if (TEST_FIELD_BIT(((s_audio_object_state_20f960 *)object)->blocked))
-			goto rejected;
-		long actor_index = *(long *)(object + 0x12c);
-		if (actor_index == NONE)
-			goto done;
-		byte *actor = g_4f55f0->data + (actor_index & 0xffff) * 0x888;
-		if (*(short *)(actor + 0x86) > *(short *)((byte *)definition + 0x16) ||
-			time - *(long *)(actor + 0x4c) < g_510c54->field_2_3 * 3)
-			goto rejected;
-		short type = *(short *)(record + 0x24);
-		if (type >= 0 && type < 200 && *(long *)(record + 0x28) != NONE)
+		long start = *(long *)(record + 0x10);
+		if (time - start <= ticks)
 		{
-			switch (type)
+			byte *object = *(byte **)(g_4e0300->data + (*(long *)(record + 4) & 0xffff) * 12 + 8);
+			result = true;
+			if (TEST_FIELD_BIT(((s_audio_object_state_20f960 *)object)->blocked))
 			{
-			case 138:
-			case 142:
-			case 150:
-			case 159:
-			case 194:
-			case 196:
-			case 198:
+				result = false;
+			}
+			else
+			{
+				long actor_index = *(long *)(object + 0x12c);
+				if (actor_index != NONE)
 				{
-					s_audio_object_state_20f960 *target = (s_audio_object_state_20f960 *)function_badc0(*(long *)(record + 0x28), NONE);
-					if (!target || TEST_FIELD_BIT(target->blocked))
-						goto rejected;
+					byte *actor = g_4f55f0->data + (actor_index & 0xffff) * 0x888;
+					if (*(short *)(actor + 0x86) > *(short *)((byte *)definition + 0x16) ||
+						time - *(long *)(actor + 0x4c) < g_510c54->field_2_3 * 3)
+					{
+						result = false;
+					}
+					else
+					{
+						short type = *(short *)(record + 0x24);
+						if (type >= 0 && type < 200 && *(long *)(record + 0x28) != NONE)
+						{
+							switch (type)
+							{
+							case 138:
+							case 142:
+							case 150:
+							case 159:
+							case 194:
+							case 196:
+							case 198:
+								{
+									s_audio_object_state_20f960 *target = (s_audio_object_state_20f960 *)function_badc0(*(long *)(record + 0x28), NONE);
+									if (!target || TEST_FIELD_BIT(target->blocked))
+										result = false;
+								}
+								break;
+							}
+						}
+					}
 				}
-				break;
 			}
 		}
-		goto done;
 	}
-rejected:
-	result = false;
-report_expiration:
-	if (expired)
+	else
+	{
+		result = false;
+	}
+	if (!result && expired)
 	{
 		bool value = false;
 		if (*(long *)(g_4f9398->data + (index & 0xffff) * 0x54 + 0x2c))
 			value = true;
 		*expired = value;
 	}
-done:
 	return result;
 }
 
@@ -1049,17 +1061,10 @@ static inline real random_step(void)
 
 static inline real pin_real(real x, real lower, real upper)
 {
-	if (x < lower)
-	{
-		x = lower;
-	}
-	else if (x > upper)
-	{
-		x = upper;
-	}
-
-	return x;
+	return x < lower ? lower : (x > upper ? upper : x);
 }
+
+vector2f *function_11df30(vector2f *angles, vector3f const *v);
 
 // @retail 0x2118c0
 void function_2118c0(void)
@@ -1078,10 +1083,8 @@ void function_2118c0(void)
 		{
 			s_cell_tag *tag = (s_cell_tag *)g_4e3b44[source->tag_index & 0xffff].bytes;
 			vector3f const &direction = source->direction;
-			double azimuth;
-			double elevation;
+			vector2f angles;
 			real scale;
-			long j;
 
 			cell->value4 += random_step();
 			cell->value4 = pin_real(cell->value4, 0.0f, 1.0f);
@@ -1094,20 +1097,15 @@ void function_2118c0(void)
 
 			cell->interpolation = (tag->value4 - tag->value0) * cell->value4 + tag->value0;
 
-			azimuth = atan2(direction.j, direction.i);
-			elevation = atan2(direction.k, sqrt(direction.j * direction.j + direction.i * direction.i));
-			elevation += tag->valuec * cell->valuec * 0.5f;
-			azimuth += cell->value8 * tag->value8 * 0.5f;
+			function_11df30(&angles, &direction);
+			angles.j += tag->valuec * cell->valuec * 0.5f;
 
-			cell->direction.i = (real)cos(azimuth) * (real)cos(elevation);
-			cell->direction.j = (real)sin(azimuth) * (real)cos(elevation);
-			cell->direction.k = (real)sin(elevation);
+			direction_from_angles(&cell->direction, angles.i + cell->value8 * tag->value8 * 0.5f, angles.j);
 
 			scale = source->scale * cell->interpolation;
-			for (j = 0; j < 3; j++)
-			{
-				cell->direction.n[j] *= scale;
-			}
+			cell->direction.i *= scale;
+			cell->direction.j *= scale;
+			cell->direction.k *= scale;
 
 			cell->active = true;
 		}
@@ -1147,12 +1145,16 @@ void function_211cc0(void)
 
 	do
 	{
+		word w0 = (word)((k - 1) & 7);
+		word w2 = (word)((k + 1) & 7);
+		word w3 = (word)((k + 2) & 7);
+
 		m = 1;
 
 		do
 		{
-			real previous = (real)(k - 1);
 			real t = (real)m * 0.125f + (real)k;
+			real previous = (real)(k - 1);
 			real ta = t - (previous + 2.0f);
 			real tb = t - (previous + 1.0f);
 			real tc = t - previous;
@@ -1161,22 +1163,29 @@ void function_211cc0(void)
 
 			do
 			{
-				vector3f *out = &g_4f93bc[b * 8 + k][m];
-				vector3f *p3 = &g_4f93bc[b * 8 + (word)((k + 2) & 7)][0];
-				vector3f *p2 = &g_4f93bc[b * 8 + (word)((k + 1) & 7)][0];
+				long row = b << 3;
+				vector3f *p3 = g_4f93bc[row + w3];
+				vector3f *p2 = g_4f93bc[row + w2];
 				vector3f *p1 = &g_4f93bc[b * 8 + k][0];
-				vector3f *p0 = &g_4f93bc[b * 8 + (word)((k - 1) & 7)][0];
+				vector3f *p0 = g_4f93bc[row + w0];
+				vector3f *out = &g_4f93bc[b * 8 + k][m];
 				long i;
 
 				for (i = 0; i < 3; i++)
 				{
-					real s0 = p3->n[i] - p2->n[i];
-					real s1 = p2->n[i] - p1->n[i];
-					real s2 = p1->n[i] - p0->n[i];
-					real d2 = s1 - s2;
-					real d3 = (s0 - s1) - d2;
+					real v3 = p3->n[i];
+					real v2 = p2->n[i];
+					real v1 = p1->n[i];
+					real v0 = p0->n[i];
 
-					out->n[i] = ((d3 * ta * (1.0f / 3.0f) + d2) * tb * 0.5f + s2) * tc + p0->n[i];
+					/* the forward differences, in place */
+					v3 -= v2;
+					v2 -= v1;
+					v1 -= v0;
+					v3 -= v2;
+					v2 -= v1;
+					v3 -= v2;
+					out->n[i] = ((v3 * ta * (1.0f / 3.0f) + v2) * tb * 0.5f + v1) * tc + v0;
 				}
 
 				b++;
@@ -2214,6 +2223,7 @@ long function_20e580(long ai_index, s_audio_priority_table *table, byte const *r
 
 #include "units.h"
 #include "slot_handler.h"
+#include "slot_owner.h"
 long function_1b8c80(long object_index);
 bool function_277790(long actor_index, long other_actor_index);
 
@@ -2291,7 +2301,7 @@ long function_20ec80(long target_index, s_audio_priority_table *table, byte cons
     real best = 0.0f;
     real chosen_weight = 0.0f;
     real chosen_distance = 0.0f;
-    long chosen_type = NONE;
+    short chosen_type = NONE;
     long chosen_tag = NONE;
     if (target_index != NONE)
     {
@@ -2299,26 +2309,29 @@ long function_20ec80(long target_index, s_audio_priority_table *table, byte cons
         long actor_index = *(long *)(object + 0x12c);
         if (actor_index != NONE)
         {
-            byte *actor = g_4f55f0->data + (actor_index & 0xffff) * 0x888;
-            short slot = *(short *)(actor + 0x190);
-            while (slot >= 0)
+            s_slot_owner_entry *owner = (s_slot_owner_entry *)(g_4f55f0->data + (actor_index & 0xffff) * sizeof(s_slot_owner_entry));
+            /* the highest slot whose handler is of kind 1 or 2 and enabled */
+            short slot = NONE;
+            for (short i = owner->current; i >= 0; i--)
             {
-                short handler_type = *(short *)(actor + 0x90 + slot * 0x40);
-                if (handler_type != NONE)
+                s_slot *candidate_slot = &owner->slots[i];
+                if (candidate_slot->type != NONE)
                 {
-                    s_slot_handler *handler = g_46eeb8[handler_type];
+                    s_slot_handler *handler = g_46eeb8[candidate_slot->type];
                     if ((handler->kind == 2 || handler->kind == 1) && *(byte *)&handler->unknown3c)
+                    {
+                        slot = i;
                         break;
+                    }
                 }
-                --slot;
             }
-            if (slot >= 0)
+            if (slot != NONE)
             {
-                long action_index = *(long *)(actor + 0xa0 + slot * 0x40);
-                byte *entry = g_502424->data + (action_index & 0xffff) * 0xbc + 4;
-                long remaining = 10;
-                do
+                long action_index = *(long *)((byte *)&owner->slots[slot] + 0x10);
+                byte *element = (byte *)element_502424_get(action_index);
+                for (long i = 0; i < 10; i++)
                 {
+                    byte *entry = element + 4 + i * 0xc;
                     long index = *(long *)entry;
                     if (index != NONE && *(short *)(entry + 4) == 3 && index != *(long *)(object + 0x12c) &&
                         (!require_related || function_277790(*(long *)(object + 0x12c), index)))
@@ -2347,8 +2360,7 @@ long function_20ec80(long target_index, s_audio_priority_table *table, byte cons
                             }
                         }
                     }
-                    entry += 0xc;
-                } while (--remaining);
+                }
             }
         }
     }

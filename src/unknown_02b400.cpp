@@ -1085,9 +1085,9 @@ bool __stdcall function_391f0(byte *state)
     D3DDevice_SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
     D3DDevice_SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
     D3DDevice_SetRenderState(D3DRS_ALPHAREF, 0);
-    D3DDevice_SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+    D3DDevice_SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
     D3DDevice_SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-    D3DDevice_SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
+    D3DDevice_SetRenderState(D3DRS_ZENABLE, 2);
     D3DDevice_SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
     if (!lines) function_143c0(*(long *)(state + 4), 0, 3, 0.0f);
     function_1cf80();

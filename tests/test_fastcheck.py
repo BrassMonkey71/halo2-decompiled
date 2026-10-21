@@ -179,7 +179,7 @@ def test_fast_applies_the_address_field_rule(fake_tree, monkeypatch, capsys):
     assert check.fast_check({0x1000}, FieldRetail(), 2, root=str(root)) == 1
     out = capsys.readouterr().out
     assert 'MATCH' not in out and 'fast check: 0 of 1 match' in out
-    assert ('DIFF   00001000 f1000 at +0x1 (6 bytes, retail 6)\n'
+    assert ('DIFF   00001000 f1000 at +0x1 (6 bytes, retail 6), score 1\n'
             "  !! address field at +0x1: ours leads to g_4e0300 (0x4e0300 in retail), retail's to 0x4e0304\n") in out
     assert out.rstrip().splitlines()[-2].endswith('; 1 demoted from matched for a differing field')
     report = json.loads((root / 'build' / 'report-fast.json').read_text())

@@ -668,6 +668,8 @@ bool function_25d970(s_prop_datum *datum)
 	return false;
 }
 
+__declspec(noinline) bool function_25d9b0(long prop_index);
+
 // @retail 0x25d9b0
 bool function_25d9b0(long prop_index)
 {
@@ -1201,31 +1203,36 @@ short function_25cb60(long arg_0, long arg_1, short arg_2, void *arg_3, void *ar
 // @retail 0x25c9d0
 short function_25c9d0(long arg_0, long arg_1, bool arg_2, long arg_3, void *arg_4, byte *arg_5, long arg_6)
 {
-	s_actor_view *local_0 = actor_get(arg_0);
-	s_squad_datum *local_1 = local_0->unknown030 != NONE ? squad_get(local_0->unknown030) : NULL;
+	short result;
+	s_squad_datum *local_1 = actor_get(arg_0)->unknown030 != NONE ? squad_get(actor_get(arg_0)->unknown030) : NULL;
 	s_prop_datum *local_2 = prop_ref_get(arg_1);
 	byte *local_3 = (byte *)function_badc0(local_2->object_index, 3);
 	bool local_4 = local_2->type == 1;
-	bool local_5 = (local_1 && local_1->flag0) || local_0->unknown084 == 1 || local_0->unknown228;
+	bool local_5 = (local_1 && local_1->flag0) || actor_get(arg_0)->unknown084 == 1 || actor_get(arg_0)->unknown228;
 	if (local_3 && (arg_2 ? *(real *)(local_3 + 0x2b0) > 0.05f : *(real *)(local_3 + 0x2b0) > 0.8f))
 	{
 		if (local_4)
-			return 0;
-		local_5 |= arg_2 && local_2->unknown28 > 4.f;
+			local_5 = true;
+		else
+			local_5 |= arg_2 && local_2->unknown28 > 4.f;
 	}
 	if (local_5)
-		return 0;
-	bool local_6 = true;
-	if (local_0->unknown270 == 4 || local_0->unknown004 == 15 ||
-		(!local_4 && local_2->type != 3) ||
-		(local_2->state >= 1 && local_2->state <= 2) || local_0->unknown223)
-		local_6 = false;
-	volatile long local_7;
-	if (local_0->unknown086 >= 3)
-		local_7 = 2;
+		result = 0;
 	else
-		local_7 = local_0->unknown084 >= 4;
-	return function_263810((point3f const *)arg_5, arg_0, (point3f const *)arg_4, (point3f const *)(arg_5 + 0xc), 2, (short)arg_3, local_6, (bool *)arg_6);
+	{
+		bool local_6 = true;
+		if (actor_get(arg_0)->unknown270 == 4 || actor_get(arg_0)->unknown004 == 15 ||
+			(!local_4 && local_2->type != 3) ||
+			(local_2->state >= 1 && local_2->state <= 2) || actor_get(arg_0)->unknown223)
+			local_6 = false;
+		volatile long local_7;
+		if (actor_get(arg_0)->unknown086 >= 3)
+			local_7 = 2;
+		else
+			local_7 = actor_get(arg_0)->unknown084 >= 4;
+		result = function_263810((point3f const *)arg_4, arg_0, (point3f const *)arg_5, (point3f const *)(arg_5 + 0xc), 2, (short)arg_3, local_6, (bool *)arg_6);
+	}
+	return result;
 }
 
 /* decides whether the actor reacts to its current prop */
@@ -1311,10 +1318,7 @@ bool function_25ccd0(s_type_5cfb45 *arg_0, long arg_1, short arg_2, s_2640c0 *ar
 	{
 		*(point3f *)((byte *)arg_0 + 0x10) = arg_0->position;
 	}
-	/* retail calls the cluster test here */
-#pragma inline_depth(0)
 	arg_0->unknown69 = function_11c120((s_location *)((byte *)arg_0 + 0x28), (point3f *)((byte *)arg_0 + 0x10), NULL);
-#pragma inline_depth()
 	arg_0->unknown3c = NONE;
 	arg_0->unknown65 = false;
 	arg_0->unknown66 = false;
@@ -1327,7 +1331,7 @@ bool function_25ccd0(s_type_5cfb45 *arg_0, long arg_1, short arg_2, s_2640c0 *ar
 		{
 			arg_0->unknown3c = function_1caa10(local_3->parent_index);
 			arg_0->unknown65 = *(long *)((byte *)local_7 + 0x24c) == arg_1 || local_3->type == 15;
-			arg_0->unknown66 = *(long *)((byte *)local_7 + 0x248) == arg_1 && function_f0f90(local_3->parent_index);
+			arg_0->unknown66 = *(long *)((byte *)local_7 + 0x248) == arg_1 && function_f0f90(arg_0->unknown3c);
 		}
 		else if ((1 << local_7->type) & 3)
 		{

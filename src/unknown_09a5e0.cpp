@@ -401,24 +401,16 @@ void c_game_engine_player_entity_definition::v21(s_entity_slot *entity)
 	}
 }
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
 // @retail 0x9aeb0
 bool c_game_engine_player_entity_definition::v22(s_entity_slot *entity, long b, short *slot, long d, long e, long f)
 {
 	short index = *slot;
-	_ReadWriteBarrier();
-	s_mp_globals *local_0 = g_4e9ae8;
 
-	if (g_55e4d0[local_0->engine_index])
-	{
-		if (local_0->slots[index] != NONE)
-			local_0->slots[index] = NONE;
-	}
-	local_0->slots[index] = entity->id;
+	if (slot_identifier(index) != NONE)
+		g_4e9ae8->slots[index] = NONE;
+	g_4e9ae8->slots[index] = entity->id;
 	return true;
 }
-#pragma function(_ReadWriteBarrier)
 
 // @retail 0x9b180
 bool c_game_engine_player_entity_definition::v23(s_entity_slot *entity, long b, long c, long d)
@@ -1098,7 +1090,7 @@ bool c_vehicle_flip_event_definition::v11(long a, long const *entities, long c, 
 			{
 				_ReadWriteBarrier();
 				s_typed_object_header *current_headers = (s_typed_object_header *)g_4e0300->data;
-				if (!TEST_FIELD_BIT(((s_object_view *)current_headers[unit_index & 0xffff].object)->flag2) &&
+				if (!TEST_FIELD_BIT(((s_object_view *)OBJECT(unit_index))->flag2) &&
 					!TEST_FIELD_BIT(((s_object_view *)current_headers[vehicle_index & 0xffff].object)->flag2))
 				{
 					s_unit_flip_request request;
@@ -1758,7 +1750,7 @@ static inline void event_write_direction(s_bitstream *stream, vector3f const *di
 	function_194bc0(stream, direction);
 }
 
-void simulation_write_position(long bits, s_bitstream *stream, real const *position, bool keep_inside);
+void simulation_write_position(s_bitstream *stream, real const *position, long bits, bool keep_inside);
 void simulation_read_position(s_bitstream *stream, real *position, long bits);
 
 struct s_surface_damage_event_data
@@ -1786,7 +1778,7 @@ void c_breakable_surface_damage_event_definition::v9(long a, void const *data, s
 		function_194bc0(stream, &event->direction);
 	real const *local_0 = &event->position.i;
 	real const *const *local_1 = &local_0;
-	simulation_write_position(13, stream, *local_1, false);
+	simulation_write_position(stream, *local_1, 13, false);
 	scenario_object_name_encode(event->object_name, stream);
 }
 
@@ -1797,7 +1789,7 @@ void c_unit_grenade_release_event_definition::v9(long a, void const *data, s_bit
 	stream_write_checked(stream, event->type, 1);
 	real const *local_0 = &event->position.i;
 	real const *const *local_1 = &local_0;
-	simulation_write_position(16, stream, *local_1, false);
+	simulation_write_position(stream, *local_1, 16, false);
 	function_194bc0(stream, &event->velocity);
 }
 

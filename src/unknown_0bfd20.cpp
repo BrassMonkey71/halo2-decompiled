@@ -65,7 +65,7 @@ void function_0bfd20(long object_index)
 }
 
 // @retail 0xbfe20
-void function_0bfe20(dword *flags, long bit, bool value)
+inline void function_0bfe20(dword *flags, long bit, bool value)
 {
 	if (value)
 		*flags |= 1 << bit;
@@ -87,7 +87,7 @@ void function_0bfe40(word *flags, long bit, bool value)
 __declspec(noinline) bool function_0bfe60(const dword *flags, long bit);
 
 // @retail 0xbfe60
-bool function_0bfe60(const dword *flags, long bit)
+inline bool function_0bfe60(const dword *flags, long bit)
 {
 	return (flags[bit >> 5] & (1 << (bit & 31))) != 0;
 }
@@ -158,10 +158,11 @@ bool function_bfc90(long object_index)
 	return result;
 }
 
-static __forceinline void object_short_set_ab(s_record_pool *objects, long index, short value)
+static __forceinline void object_short_set_ab(long object_index, short value)
 {
-    s_object_hdr *object = ((s_object_header *)objects->data)[index].object;
     long clamped = value;
+    s_record_pool *objects = g_4e0300;
+    s_object_hdr *object = ((s_object_header *)objects->data)[object_index & 0xffff].object;
     if (clamped < 0) clamped = 0;
     else if (clamped > 0x7ffe) clamped = 0x7ffe;
     object->value104 = (short)clamped;
@@ -171,9 +172,8 @@ static __forceinline void object_short_set_ab(s_record_pool *objects, long index
 void function_bf830(long object_index, real shield, short value)
 {
     s_record_pool *objects = g_4e0300;
-    object_index &= 0xffff;
-    ((s_object_header *)objects->data)[object_index].object->shield = shield;
-    object_short_set_ab(objects, object_index, value);
+    ((s_object_header *)objects->data)[object_index & 0xffff].object->shield = shield;
+    object_short_set_ab(object_index, value);
 }
 
 // @retail 0xbfcc0

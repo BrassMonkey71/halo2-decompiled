@@ -129,7 +129,7 @@ long __stdcall function_180d80(s_180d84 const *arg_0, transform4x3f const *arg_1
             local_3.j *= 0.00390625f;
             local_3.k *= 0.00390625f;
         }
-        for (short local_5 = 0; local_5 < arg_5->field_5802; local_5++)
+        for (long local_5 = 0; local_5 < arg_5->field_5802; local_5++)
             local_4 += (arg_5->field_5002[local_5] - 1) / 2;
         long local_5 = function_13d370((s_physical_object *)g_509448, (short)local_4 * 0x40, 1);
         if (local_5 != NONE)
@@ -156,9 +156,9 @@ long __stdcall function_180d80(s_180d84 const *arg_0, transform4x3f const *arg_1
                         local_0[local_12].field_0.x = local_13->field_0.x + local_3.i;
                         local_0[local_12].field_0.y = local_13->field_0.y + local_3.j;
                         local_0[local_12].field_0.z = local_13->field_0.z + local_3.k;
+                        real local_17 = local_0[local_12].field_0.x - arg_3->point.x;
                         real local_15 = local_0[local_12].field_0.y - arg_3->point.y;
                         real local_16 = local_0[local_12].field_0.z - arg_3->point.z;
-                        real local_17 = local_0[local_12].field_0.x - arg_3->point.x;
                         real local_18 = local_16 * local_16 + local_15 * local_15 + local_17 * local_17;
                         if (local_12 == 0 || local_18 > local_9) local_9 = local_18;
                     }
@@ -187,7 +187,7 @@ long __stdcall function_180d80(s_180d84 const *arg_0, transform4x3f const *arg_1
                             local_8[0] = local_0[local_13];
                             local_8[1] = local_0[local_13 + local_16];
                             local_8[2] = local_0[local_13 + local_16 + 1];
-                            local_8[3] = local_0[local_16 + 2 < local_15 ? local_13 + local_16 + 2 : local_13];
+                            local_8[3] = local_0[local_16 + 2 >= local_15 ? local_13 : local_13 + local_16 + 2];
                             if (arg_1)
                             {
                                 function_180d83(arg_1, &local_8[0].field_0);

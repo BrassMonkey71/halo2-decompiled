@@ -126,8 +126,10 @@ real function_1d9430(s_1d9240 const *p)
 #define PIN(value, lower, upper) ((value) < (lower) ? (lower) : (value) > (upper) ? (upper) : (value))
 
 /* 6t^5 - 15t^4 + 10t^3, clamped to [0, 1] */
+__declspec(noinline) inline real function_1d9670(real t);
+
 // @retail 0x1d9670
-real function_1d9670(real t)
+inline real function_1d9670(real t)
 {
 	real t3 = t * t * t;
 	real t4 = t3 * t;
@@ -144,7 +146,6 @@ real function_10e8e0(real t);
 real function_1d9370(s_1d9240 const *p)
 {
 	real result = 0.0f;
-
 	if (p->count)
 	{
 		real count = (real)p->count;
@@ -168,9 +169,7 @@ real function_1d9370(s_1d9240 const *p)
 			break;
 		case 4:
 		{
-			real u = 1.0f - result;
-
-			result = 1.0f - u * u * u;
+			result = 1.0f - (1.0f - result) * (1.0f - result) * (1.0f - result);
 			break;
 		}
 		}

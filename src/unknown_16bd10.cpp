@@ -292,11 +292,10 @@ void function_16bf70(long animation_graph_index, long animation_name, long unit_
 {
 	if (animation_graph_index != NONE)
 	{
-		c_type_709360 id;
 		s_animation_state state;
 
 		state.initialize(animation_graph_index, NONE, true);
-		id = graph_tag_get(state.graph_tag_index)->animation_by_name(animation_name);
+		c_type_709360 id = graph_tag_get(state.graph_tag_index)->animation_by_name(animation_name);
 		if (id.index != NONE)
 		{
 			s_animation *animation = function_1daea0(graph_tag_get(state.graph_tag_index), id);
@@ -307,11 +306,12 @@ void function_16bf70(long animation_graph_index, long animation_name, long unit_
 
 				camera->mode = _camera_scripting_mode_animation;
 				camera->active = true;
+				short frame_count = animation->frame_count;
 				camera->animation.cutscene_flag_index = cutscene_flag_index;
 				camera->animation.graph_tag_index = animation_graph_index;
 				camera->animation.animation_name = animation_name;
 				camera->animation.start_time = g_510c54->game_time;
-				camera->ticks = camera_seconds_to_ticks_round(((real)animation->frame_count - 1.0f) * (1.0f / 30.0f));
+				camera->ticks = camera_seconds_to_ticks_round(((real)frame_count - 1.0f) * (1.0f / 30.0f));
 				if (unit_index != NONE && function_badc0(unit_index, 3) && function_11b930(unit_index))
 				{
 					camera->object_index = unit_index;
@@ -358,7 +358,7 @@ void function_16c2f0(short camera_point_index, short ticks, long object_index)
 		seconds = (real)ticks * (1.0f / 30.0f);
 		long point_type = point->type;
 		s_camera_point_state *state = &camera->point;
-		state->type = (short)point_type;
+		camera->point.type = (short)point_type;
 		state->point_index = camera_point_index;
 		camera->position = point->position;
 		function_11df60((vector3f const *)point->orientation, &camera->forward, &camera->up);
@@ -398,7 +398,9 @@ void function_16c2f0(short camera_point_index, short ticks, long object_index)
 
 				*offset = *(vector3f *)&matrix.position;
 				left = offset + 1;
-				cross3f(&camera->forward, &camera->up, left);
+				vector3f const *up = &camera->up;
+				vector3f const *forward = &camera->forward;
+				cross3f(forward, up, left);
 				function_30bf0(left);
 			}
 				break;
@@ -871,7 +873,6 @@ void __stdcall function_16c840(long user_index, long unused, s_observer_command 
 		{
 			real t = camera_velocity_profile_evaluate(&camera->pan.profile, g_510c54->game_time - camera->pan.start_time);
 			quaternionf rotation;
-			real length_squared;
 
 			command->timer = 0.0f;
 			t = PIN(t, 0.0f, 1.0f);
@@ -881,23 +882,7 @@ void __stdcall function_16c840(long user_index, long unused, s_observer_command 
 				function_141f60(function_142d10(&camera->up, &camera->forward, &matrix), &rotation);
 			}
 			function_11da10(&rotation, &camera->pan.rotation, &rotation, t);
-			length_squared = rotation.i * rotation.i + rotation.j * rotation.j + rotation.k * rotation.k + rotation.w * rotation.w;
-			if (length_squared > 0.0f)
-			{
-				real inverse = 1.0f / (real)sqrt(length_squared);
-
-				rotation.i *= inverse;
-				rotation.j *= inverse;
-				rotation.k *= inverse;
-				rotation.w *= inverse;
-			}
-			else
-			{
-				rotation.i = 0.0f;
-				rotation.j = 0.0f;
-				rotation.k = 0.0f;
-				rotation.w = 1.0f;
-			}
+			quaternion_unit_or_identity(&rotation);
 			transform4x3f transform;
 
 			function_141e10(&transform.rotation, &rotation);

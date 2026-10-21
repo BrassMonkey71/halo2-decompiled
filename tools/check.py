@@ -17,6 +17,12 @@ of whose fields differs does not match (settle_statuses); an unverified field
 does not count. Fields are settled across the whole run, so statuses are
 final only then.
 
+Every function that does not match also gets a difference score: its
+differing instructions plus the difference in length, in bytes (0 =
+matched). It is printed on the DIFF line and stored in the report entry, so
+progress on a near miss shows before it matches; --scores lists the
+unmatched functions of the last full check with their scores, as CSV.
+
 --fast checks the listed functions on a reduced image instead (see
 tools/reduced.py): one image holding each function's own source, the sources
 of its callees in retail all the way down, those of the functions and globals
@@ -539,7 +545,9 @@ def settle_statuses(report):
             continue
         e['status'] = 'near' if t['differs'] <= NEAR else 'todo'
         e['first_difference'] = t['differing'][0]['offset']
-        print(f'DIFF   {key} {e["name"]} at +{e["first_difference"]:#x} ({e["ours"]} bytes, retail {e["size"]})')
+        e['score'] = t['differs']  # each differing field counts as one differing instruction
+        print(f'DIFF   {key} {e["name"]} at +{e["first_difference"]:#x} ({e["ours"]} bytes, retail {e["size"]}), '
+              f'score {e["score"]}')
         for d in t['differing']:
             expected = '' if d['expected'] is None else f' ({d["expected"]} in retail)'
             print(f'  !! address field at +{d["offset"]:#x}: ours leads to {d["ours"]}{expected}, '
@@ -591,6 +599,15 @@ def check_function(full, start, theirs, theirs_va, absolute, relative, lo, hi, i
     return ('near' if near else 'todo'), min(offsets), lines, len(ours)
 
 
+def difference_score(status, lines, length, retail_length):
+    """How far a function is from retail: its differing instructions (the
+    listing's !! lines) plus the difference in length, in bytes. 0 when it
+    matches. Only reported; no status depends on it."""
+    if status == 'matched':
+        return 0
+    return sum(1 for line in lines if line.startswith('  !!')) + abs(length - retail_length)
+
+
 _within = reduced.fields_within  # the part of sorted fixups in [low, high)
 
 
@@ -634,7 +651,8 @@ def check_one(m, row, ours, retail, identity, standin_calls, targets):
     if symbol is None:
         print(f'MISSING {m.retail:08x} {m.name}: not in the image '
               '(the linker folded it into an identical function, or nothing references it)')
-        return dict(name=m.name, source=m.path, status='todo', size=int(row['size']), ours=0, first_difference=0), None
+        return dict(name=m.name, source=m.path, status='todo', size=int(row['size']), ours=0, first_difference=0,
+                    score=None), None
     start, end = ours.linkmap.extent(symbol)
     theirs = retail.read(m.retail, int(row['size']))
     window = (start - 3, end)  # every fixup that touches the function
@@ -643,10 +661,11 @@ def check_one(m, row, ours, retail, identity, standin_calls, targets):
     status, first, lines, length = check_function(
         code, start, theirs, m.retail, absolute, relative,
         retail.base, max(s.va + s.vsize for s in retail.sections), identity)
+    score = difference_score(status, lines, length, len(theirs))
     entry = dict(name=m.name, source=m.path, status=status, size=len(theirs), ours=length, first_difference=first,
-                 targets=function_targets(code, start, theirs, m.retail, absolute, relative, targets))
+                 score=score, targets=function_targets(code, start, theirs, m.retail, absolute, relative, targets))
     if first is not None:
-        print(f'DIFF   {m.retail:08x} {m.name} at +{first:#x} ({length} bytes, retail {len(theirs)})')
+        print(f'DIFF   {m.retail:08x} {m.name} at +{first:#x} ({length} bytes, retail {len(theirs)}), score {score}')
         print('\n'.join(lines))
     elif not awaits_targets(entry):
         print(f'MATCH  {m.retail:08x} {m.name}')
@@ -777,6 +796,23 @@ def fast_check(wanted, retail, jobs, root=ROOT, started=None):
     return 1 if failed else 0
 
 
+def print_scores(path):
+    """--scores: the unmatched functions of the last full check, as CSV (va,
+    score, size, ours, status, source), in address order. A function the
+    image lacks (MISSING) has an empty score."""
+    if not os.path.exists(path):
+        raise SystemExit(f'{path} not found: run the full check (python tools/check.py) first')
+    with open(path, encoding='utf-8') as f:
+        report = json.load(f)
+    print('va,score,size,ours,status,source')
+    for va, e in sorted(report.items()):
+        if e.get('status') != 'matched':
+            score = e.get('score')
+            print(f"{va},{'' if score is None else score},{e.get('size')},{e.get('ours')},{e.get('status')},"
+                  f"{e.get('source', '')}")
+    return 0
+
+
 def main():
     # `@file` reads arguments one per line, so long address lists stay off the
     # command line (antivirus heuristics flag long runs of hex arguments)
@@ -786,7 +822,11 @@ def main():
     ap.add_argument('--fast', action='store_true',
                     help='check the listed functions on a reduced image; writes only build/report-fast.json')
     ap.add_argument('--jobs', type=int, default=None, help=f'with --fast: sources compiled at once (default {FAST_JOBS})')
+    ap.add_argument('--scores', action='store_true',
+                    help='print a CSV of the unmatched functions in build/report.json with their difference scores')
     args = ap.parse_args()
+    if args.scores:
+        sys.exit(print_scores(os.path.join(ROOT, 'build', 'report.json')))
     started = time.perf_counter()
     if args.fast and not args.addresses:
         ap.error('--fast checks the functions it is given: list their retail addresses')

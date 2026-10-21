@@ -171,8 +171,8 @@ void function_1fe120(long actor_index, vector3f *direction)
 		long target_index = actor->unknown274;
 		if (target_index != NONE)
 		{
+			s_moving_object_header *header = &((s_moving_object_header *)g_4e0300->data)[target_index & 0xffff];
 			object_index = target_index;
-			s_moving_object_header *header = &((s_moving_object_header *)g_4e0300->data)[object_index & 0xffff];
 			if (header->type == 1)
 			{
 				s_moving_object *object = (s_moving_object *)header->object;
@@ -421,17 +421,13 @@ void function_1fe410(point3f *point, real distance)
     destination.y = sine * distance + start.y;
     destination.z = 0.0f * distance + start.z;
     vector3f direction;
-    direction.i = start.x - point->x;
-    direction.j = start.y - point->y;
-    direction.k = start.z - point->z;
+    vector3d_from_points3d(point, &start, &direction);
     s_point_collision collision;
     collision.material = NONE;
     if (function_1697c0(0x15808c2f, point, &direction, NONE, NONE,
         (s_collision_result_1697c0 *)&collision))
         start = *point;
-    direction.i = destination.x - start.x;
-    direction.j = destination.y - start.y;
-    direction.k = destination.z - start.z;
+    vector3d_from_points3d(&start, &destination, &direction);
     if (function_1697c0(0x5808c2f, &start, &direction, NONE, NONE,
         (s_collision_result_1697c0 *)&collision))
     {

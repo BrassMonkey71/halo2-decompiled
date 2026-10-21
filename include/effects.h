@@ -83,12 +83,12 @@ struct s_effect_particle_system_definition
 	short unknown10;
 	word location_mode;
 	byte unknown14[2];
-	byte flag0 : 1;
-	byte flag1 : 1;
-	byte flag2 : 1;
-	byte flag3 : 1;
-	byte : 4;
-	byte unknown17[0x30 - 0x17];
+	word flag0 : 1;
+	word flag1 : 1;
+	word flag2 : 1;
+	word flag3 : 1;
+	word : 12;
+	byte unknown18[0x30 - 0x18];
 	long unknown30;
 	byte unknown34[4];
 };
@@ -287,8 +287,7 @@ struct s_particle_system_datum
 	long effect_index;
 	s_location location;
 	long unknown24;
-	real random_a;
-	real random_b;
+	real random[2];
 	long location_index;
 	long unknown34;
 	long next_index;

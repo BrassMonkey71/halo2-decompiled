@@ -565,10 +565,8 @@ void function_17c0e0(long contrail_index, short count, bool force)
 	if (count)
 	{
 		s_object_marker markers[4];
-		long *object = ((s_contrail_object_header *)g_4e0300->data)[contrail->object_index & 0xffff].object;
-		short marker_count = function_b8d30(contrail->object_index,
-			((s_contrail_object_definition *)g_4e3b44[*object & 0xffff].bytes)->markers[contrail->marker_index].marker_name,
-			markers, 4, false);
+		long marker_name = ((s_contrail_object_definition *)g_4e3b44[*((s_contrail_object_header *)g_4e0300->data)[contrail->object_index & 0xffff].object & 0xffff].bytes)->markers[contrail->marker_index].marker_name;
+		short marker_count = function_b8d30(contrail->object_index, marker_name, markers, 4, false);
 
 		if (marker_count > 0)
 		{

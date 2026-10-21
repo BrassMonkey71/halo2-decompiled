@@ -8,6 +8,7 @@
 
 // @flags /O2 /arch:SSE /Gr
 #include "projection_storage.h"
+#include "normalize3d.h"
 
 /* limits read by the range checks below (zero in the retail image; set at run time) */
 real g_54e854;
@@ -54,7 +55,7 @@ void function_1701f0(long player_index)
 	real *third = state->third;
 	real *second = state->second;
 	real *time = state->times;
-	for (long group = 0; group < 6; ++group, ++time)
+	for (long group = 0; group < 6; ++group)
 	{
 		real t = *time - g_4e9bd0;
 		if (t > 0.0f)
@@ -75,12 +76,12 @@ void function_1701f0(long player_index)
 		}
 		else
 			memset(out, 0, g_468d3c[group] * sizeof(real));
-		long count = g_468d3c[group];
-		out += count;
-		fifth += count;
-		fourth += count;
-		third += count;
-		second += count;
+		out += g_468d3c[group];
+		fifth += g_468d3c[group];
+		fourth += g_468d3c[group];
+		third += g_468d3c[group];
+		second += g_468d3c[group];
+		++time;
 	}
 }
 
@@ -189,19 +190,20 @@ void function_170bb0(real *out, real const *second, real const *first)
 
 PRIVATE inline void rotate_vector_170d70(vector3f *v, vector3f const *axis, real sine, real cosine)
 {
-	real projection = (v->i * axis->i + axis->k * v->k + axis->j * v->j) * (1.f - cosine);
-	real cross_j = axis->i * v->k - v->i * axis->k;
-	real cross_k = v->i * axis->j - axis->i * v->j;
-	v->i = v->i * cosine + projection * axis->i - (axis->k * v->j - axis->j * v->k) * sine;
-	v->j = projection * axis->j + cosine * v->j - cross_j * sine;
-	v->k = projection * axis->k + cosine * v->k - cross_k * sine;
+	real cross_i = v->j * axis->k - v->k * axis->j;
+	real projection = (v->i * axis->i + v->j * axis->j + v->k * axis->k) * (1.f - cosine);
+	real cross_j = v->k * axis->i - v->i * axis->k;
+	real cross_k = v->i * axis->j - v->j * axis->i;
+	v->i = v->i * cosine + projection * axis->i - cross_i * sine;
+	v->j = v->j * cosine + projection * axis->j - cross_j * sine;
+	v->k = v->k * cosine + projection * axis->k - cross_k * sine;
 }
 
 // @retail 0x170d70
 void function_170d70(vector3f const *rotation, vector3f *a, vector3f *b)
 {
 	vector3f axis = *rotation;
-	real angle = normalize_inline(&axis);
+	real angle = normalize3d(&axis);
 
 	if (angle != 0.f)
 	{
@@ -928,17 +930,17 @@ static inline void view_cross_product(vector3f const *a, vector3f const *b, vect
 }
 
 /* the rotation of `angle` about `axis` */
-static inline void rotation_matrix_from_axis_angle_171d90(s_rotation_matrix *m, vector3f const *axis, real angle)
+static __forceinline void rotation_matrix_from_axis_angle_171d90(s_rotation_matrix *m, vector3f const *axis, real angle)
 {
-	real s = (real)sin(angle);
-	real c = (real)cos(angle);
 	real i2 = axis->i * axis->i;
 	real j2 = axis->j * axis->j;
 	real k2 = axis->k * axis->k;
+	real s = (real)sin(angle);
+	real c = (real)cos(angle);
 	real one_minus_c = 1.f - c;
-	real tij = (one_minus_c * axis->i) * axis->j;
-	real tik = (one_minus_c * axis->k) * axis->i;
 	real tjk = (one_minus_c * axis->k) * axis->j;
+	real tik = (one_minus_c * axis->k) * axis->i;
+	real tij = (one_minus_c * axis->i) * axis->j;
 
 	m->m00 = (1.f - i2) * c + i2;
 	m->m01 = tij - s * axis->k;
@@ -1176,7 +1178,7 @@ s_projected_polygon_173520 *function_173520(long polygon_index, s_polygon_cache_
 				point3f const *local_cb4759 = clipped;
 				long remaining = count;
 				if (remaining > 0)
-				do
+				for (; remaining != 0; --remaining)
 				{
 					point2f *point = result->points + index;
 					real inverse = -1.0f / local_cb4759->z;
@@ -1194,7 +1196,7 @@ s_projected_polygon_173520 *function_173520(long polygon_index, s_polygon_cache_
 					result->distance = result->distance > distance ? distance : result->distance;
 					index += step;
 					++local_cb4759;
-				} while (--remaining != 0);
+				}
 				if (result->state == 3)
 				{
 					if (inside)
@@ -1569,7 +1571,7 @@ void function_171830(point3f const *point, vector3f const *forward,
 		else
 			direction = (real)(upper >= 0.0f);
 		real blend = upper_fraction > lower_fraction ? lower : upper;
-		if (direction != 0.0f)
+		if (direction == 0.0f)
 			blend = 0.0f - blend;
 		fraction = (1.0f - blend) * best_fraction + blend * center_fraction;
 	}

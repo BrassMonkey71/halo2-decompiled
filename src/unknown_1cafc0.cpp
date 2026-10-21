@@ -647,8 +647,8 @@ PRIVATE __forceinline long transition_set_get(long set)
 }
 
 // @retail 0x1cccd0
-c_type_709360 *s_animation_state::transition_lookup(c_type_709360 *result, long set, long mode, long weapon_class,
-	long weapon_type, long *transition_set)
+c_type_709360 s_animation_state::transition_lookup(long set, long mode, long weapon_class, long weapon_type,
+	long *transition_set)
 {
 	c_type_709360 animation_id;
 	long found_set = transition_set_get(set);
@@ -669,8 +669,7 @@ c_type_709360 *s_animation_state::transition_lookup(c_type_709360 *result, long 
 			animation_id.index = NONE;
 		}
 	}
-	*result = animation_id;
-	return result;
+	return animation_id;
 }
 
 /* the frame event type that marks where a transition of one kind may start */
@@ -715,7 +714,7 @@ PRIVATE inline short animation_event_next(s_animation const *animation, long typ
 }
 
 // @retail 0x1ccda0
-c_type_709360 *s_animation_state::transition_find(c_type_709360 *result, long mode, long set, bool *blend)
+c_type_709360 s_animation_state::transition_find(long mode, long set, bool *blend)
 {
 	c_type_709360 local_0;
 
@@ -779,8 +778,7 @@ c_type_709360 *s_animation_state::transition_find(c_type_709360 *result, long mo
 		else
 			*blend = found;
 	}
-	*result = local_0;
-	return result;
+	return local_0;
 }
 
 /* out-of-line copies of channel inlines (unknown_0b66c0.cpp, unknown_0e6800.cpp) */
@@ -828,11 +826,9 @@ bool s_animation_state::animation_set(long mode, long weapon_class, long weapon_
 
 		if (!(state_flags & 0x200))
 		{
-			c_type_709360 temporary;
-
-			transition_id = *transition_find(&temporary, names.mode, names.set, &blend);
+			transition_id = transition_find(names.mode, names.set, &blend);
 			blend &= !(flags & 1);
-			blend &= ((state_flags >> 10) & (channel_valid(&channels[0]) && !function_0e6800(&channels[0]))) & 1;
+			blend &= (((dword)state_flags >> 10) & (channel_valid(&channels[0]) && !function_0e6800(&channels[0]))) & 1;
 			if (blend)
 			{
 				unknown6e |= 1;
@@ -867,9 +863,7 @@ bool s_animation_state::animation_set(long mode, long weapon_class, long weapon_
 			transition_set = NONE;
 			if (!(state_flags & 0x100))
 			{
-				c_type_709360 temporary;
-
-				blend_id = *transition_lookup(&temporary, names.set, names.mode, names.weapon_class, names.weapon_type, &transition_set);
+				blend_id = transition_lookup(names.set, names.mode, names.weapon_class, names.weapon_type, &transition_set);
 			}
 			channels_clear();
 			if (channel_start(&channels[0], animation_id, found.set, NONE, NONE, 0, channel_flags))
@@ -1110,7 +1104,7 @@ void s_animation_state::orientations_blend(s_blend_orientation const *targets, s
 }
 
 // @retail 0x1cb5f0
-bool function_1cb5f0(long node_count, s_animation_state *state, real seconds, s_blend_orientation *orientations,
+bool function_1cb5f0(s_animation_state *state, real seconds, long node_count, s_blend_orientation *orientations,
 	s_blend_orientation const *targets)
 {
 	bool result = false;
@@ -1165,7 +1159,7 @@ bool s_animation_state::update(animation_event_callback callback, long user, lon
 	{
 		if (channel_is_unflagged1(&channels[2]))
 		{
-			function_1cb5f0(node_count, this, 0.267f, orientations, targets);
+			function_1cb5f0(this, 0.267f, node_count, orientations, targets);
 		}
 		channels[2].clear();
 		if (channel_valid(&channels[0]) && (channels[0].flags & 1))

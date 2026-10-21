@@ -76,8 +76,10 @@ bool function_0b6780(const s_index_triple *triple)
 	return triple->index3 != NONE && triple->index != NONE && triple->index2 != NONE;
 }
 
+__declspec(noinline) short function_0b67a0(const s_small_index *data);
+
 // @retail 0x000b67a0
-short function_0b67a0(const s_small_index *data)
+inline short function_0b67a0(const s_small_index *data)
 {
 	signed char index = data->index;
 	if (index >= 0 && index < data->count)
@@ -123,6 +125,13 @@ long s_text512_ab::find(long start, char const *substring) const
 	return result;
 }
 
+static __forceinline char *upload_copy_ab(char *destination, char const *source, long size)
+{
+	strncpy(destination, source, size);
+	destination[size - 1] = 0;
+	return destination;
+}
+
 // @retail 0xb6220
 bool function_b6220(char const *volatile string, long start, long count, char *destination)
 {
@@ -133,8 +142,7 @@ bool function_b6220(char const *volatile string, long start, long count, char *d
 		if (count > 0x200)
 			count = 0x200;
 		start += (long)string;
-		strncpy(destination, (char const *)start, count);
-		destination[count - 1] = 0;
+		upload_copy_ab(destination, (char const *)start, count);
 		result = true;
 	}
 	return result;
@@ -159,13 +167,6 @@ struct s_upload_file_ab
 };
 
 
-
-static __forceinline char *upload_copy_ab(char *destination, char const *source, long size)
-{
-    strncpy(destination, source, size);
-    destination[size - 1] = 0;
-    return destination;
-}
 
 // @retail 0xb62b0
 s_upload_ab *function_b62b0(s_upload_ab *upload)
@@ -301,16 +302,7 @@ struct s_http_connection_ab
 
 bool function_b51b0(s_transport_endpoint *endpoint, s_type_99af70 const *address);
 
-static __forceinline bool http_address_valid_ab(s_type_99af70 const *address)
-{
-    long length = address->address_length;
-    if (length == NONE || length == 4)
-        return address->ipv4_address != 0;
-    if (length == 16)
-        for (long i = 0; i < 8; i++)
-            if (address->ipv6_address[i]) return true;
-    return false;
-}
+bool function_7af40(s_type_99af70 const *address);
 
 // @retail 0xb5d40
 bool s_http_connection_ab::connect(long address, word port, char const *path, bool flag)
@@ -321,7 +313,7 @@ bool s_http_connection_ab::connect(long address, word port, char const *path, bo
     connection->address.port = htons(port);
     connection->hostname[0] = 0;
     function_b6290(connection->hostname, "%d.%d.%d.%d", (byte)address, (byte)(address >> 8), (byte)(address >> 16), (byte)(address >> 24));
-    if (http_address_valid_ab(&connection->address))
+    if (function_7af40(&connection->address))
     {
         s_transport_endpoint *endpoint = connection->endpoint;
         endpoint->socket = NONE;

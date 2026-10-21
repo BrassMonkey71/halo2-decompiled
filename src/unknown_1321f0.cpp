@@ -157,7 +157,9 @@ struct s_132a30_light
 	byte unknown10[8];
 	point3f center;
 	real radius;
-	byte unknown28[0x110 - 0x28];
+	byte unknown28[0x48 - 0x28];
+	short unknown48;
+	byte unknown4a[0x110 - 0x4a];
 };
 
 // @retail 0x132a30
@@ -766,49 +768,46 @@ void __stdcall function_133520(s_bit_vector_pool *arg_1)
 {
 	s_visibility_bsp *local_1 = (s_visibility_bsp *)g_4e0348;
 	long local_2 = 0;
-	if (local_2 < arg_1->lists[3]->count)
+	while (local_2 < arg_1->lists[3]->count)
 	{
-		do
+		c_entry_list *local_3 = arg_1->lists[3];
+		long local_4 = (short)local_3->longs_a[(short)local_2];
+		s_visible_instance *local_5 = &local_1->instances[(short)local_4];
+		dword local_6 = function_1332f0(arg_1, local_3->shorts_b[(short)local_2]);
+		point3f const *local_12 = &local_5->center;
+		real local_7 = local_12->z * g_4b9e38 + local_12->y * g_4b9e2c + local_12->x * g_4b9e20 + g_4b9e44;
+		if (!(local_7 >= 0.0f))
+			local_7 = 0.0f - local_7;
+		if (!(local_7 > 0.1f))
+			local_7 = 0.1f;
+		real local_9 = (local_5->radius / local_7) * g_4b9ed0 * 2.0f;
+		short local_8 = (*(s_bit_vector_pool *volatile *)&arg_1)->lists[3]->shorts_d[(short)local_2];
+		if (local_5->radius < 0.13f)
+			local_9 *= 1.75f;
+		real local_10 = (local_9 - 25.0f) * (1.0f / 7.0f);
+		if (0.0f > local_10)
+			local_10 = 0.0f;
+		else
 		{
-			c_entry_list *local_3 = arg_1->lists[3];
-			long local_4 = (short)local_3->longs_a[(short)local_2];
-			s_visible_instance *local_5 = &local_1->instances[(short)local_4];
-			dword local_6 = function_1332f0(arg_1, local_3->shorts_b[(short)local_2]);
-			point3f const *local_12 = &local_5->center;
-			real local_7 = local_12->z * g_4b9e38 + local_12->y * g_4b9e2c + local_12->x * g_4b9e20 + g_4b9e44;
-			if (!(local_7 >= 0.0f))
-				local_7 = 0.0f - local_7;
-			if (!(local_7 > 0.1f))
-				local_7 = 0.1f;
-			real local_9 = (local_5->radius / local_7) * g_4b9ed0 * 2.0f;
-			short local_8 = (*(s_bit_vector_pool *volatile *)&arg_1)->lists[3]->shorts_d[(short)local_2];
-			if (local_5->radius < 0.13f)
-				local_9 *= 1.75f;
-			real local_10 = (local_9 - 25.0f) * (1.0f / 7.0f);
-			if (0.0f > local_10)
-				local_10 = 0.0f;
-			else
-			{
-				real local_13 = local_10;
-				local_10 = 1.0f;
-				if (!(local_13 > 1.0f))
-					local_10 = local_13;
-			}
-			byte local_11 = (byte)(long)(local_10 * 255.0f);
-			if (!(arg_1->lists[3]->shorts_b[(short)local_2] & 0x800))
-				local_6 |= 0x40;
-			else
-				local_6 |= 1;
-			if (local_11 > 0)
-			{
-				function_2cbf0(0, 0, local_4, local_6 | 0x1008, NONE, 0xffffffff,
-					0, NULL, local_8, local_11, local_5, NONE, local_9, NONE, NONE,
-					false, false, false, 0.0f, 0.0f, 0.0f, 0, local_12, local_5->radius);
-			}
-			else
-				arg_1->lists[3]->shorts_b[(short)local_2] |= 1;
-			local_2++;
-		} while (local_2 < (*(s_bit_vector_pool *volatile *)&arg_1)->lists[3]->count);
+			real local_13 = local_10;
+			local_10 = 1.0f;
+			if (!(local_13 > 1.0f))
+				local_10 = local_13;
+		}
+		byte local_11 = (byte)(long)(local_10 * 255.0f);
+		if (!(arg_1->lists[3]->shorts_b[(short)local_2] & 0x800))
+			local_6 |= 0x40;
+		else
+			local_6 |= 1;
+		if (local_11 > 0)
+		{
+			function_2cbf0(0, 0, local_4, local_6 | 0x1008, NONE, 0xffffffff,
+				0, NULL, local_8, local_11, local_5, NONE, local_9, NONE, NONE,
+				false, false, false, 0.0f, 0.0f, 0.0f, 0, local_12, local_5->radius);
+		}
+		else
+			arg_1->lists[3]->shorts_b[(short)local_2] |= 1;
+		local_2++;
 	}
 }
 
@@ -930,48 +929,48 @@ struct s_visibility_link
 };
 __forceinline long visibility_next(s_record_pool *pool, long *next)
 {
-	long result = NONE;
+	long result;
 	if (*next != NONE)
 	{
 		s_visibility_link *link = (s_visibility_link *)(pool->data + (*next & 0xffff) * pool->size);
-		*next = link->next;
-		if (*next != NONE)
-			_mm_prefetch((char const *)(pool->data + (*next & 0xffff) * pool->size), _MM_HINT_T0);
+		long following = link->next;
+		if (following != NONE)
+			_mm_prefetch((char const *)(pool->data + (following & 0xffff) * pool->size), _MM_HINT_T0);
+		*next = following;
 		result = link->object_index;
 	}
+	else
+		result = NONE;
 	return result;
 }
 
 // @retail 0x132220
 void __stdcall function_132220(s_bit_vector_pool *data)
 {
-	s_sort_context *context = (s_sort_context *)data->context;
 	short extra_cluster = NONE;
-	for (long i = 0; i < context->count; i++)
+	for (long i = 0; i < ((s_sort_context *)data->context)->count; i++)
 	{
-		short cluster = context->entries[i].value;
-		s_record_pool *pool = (s_record_pool *)g_4de2e4;
+		s_sort_context *context = (s_sort_context *)data->context;
+		s_sort_entry *entry = &context->entries[i];
+		long cluster = entry->value;
 		bool selected = function_16e210(cluster, g_4b9f8c);
 		long next;
 		long index;
 		if (!(data->flags2a60 & 0x40))
 		{
 			next = ((long *)g_4de2e0)[cluster];
-			for (index = visibility_next(pool, &next); index != NONE; index = visibility_next(pool, &next))
+			for (index = visibility_next((s_record_pool *)g_4de2e4, &next); index != NONE; index = visibility_next((s_record_pool *)g_4de2e4, &next))
 			{
 				if (!(data->flags2a60 & 0x400) || *((byte *)((s_visibility_object_header *)g_4e0300->data)[index & 0xffff].object + 0xaa) == 7)
-				{
 					function_133050(data, index, (short)i, selected, false);
-					pool = (s_record_pool *)g_4de2e4;
-				}
 			}
-			next = ((long *)g_4de2d4)[context->entries[i].value];
+			next = ((long *)g_4de2d4)[entry->value];
 			for (index = visibility_next((s_record_pool *)g_4de2d8, &next); index != NONE; index = visibility_next((s_record_pool *)g_4de2d8, &next))
 				function_133050(data, index, (short)i, selected, false);
 		}
 		if (data->mode == 0 && !(data->flags2a60 & 0x10))
 		{
-			next = ((long *)g_4e0310)[context->entries[i].value];
+			next = ((long *)g_4e0310)[entry->value];
 			for (index = visibility_next((s_record_pool *)g_4e0314, &next); index != NONE; index = visibility_next((s_record_pool *)g_4e0314, &next))
 				function_132a30(data, index, i, false);
 		}
@@ -981,7 +980,6 @@ void __stdcall function_132220(s_bit_vector_pool *data)
 			if (*(long *)(bsp + 0xac) > 0)
 				extra_cluster = (*(short **)(bsp + 0xb0))[g_4b9eec];
 		}
-		context = (s_sort_context *)data->context;
 	}
 	if (data->mode == 0 && !(data->flags2a60 & 0x10) && data->location.cluster_index != NONE)
 	{
@@ -991,7 +989,7 @@ void __stdcall function_132220(s_bit_vector_pool *data)
 		{
 			long index = indices[i];
 			s_132a30_light *light = &((s_132a30_light *)g_4e030c->data)[index & 0xffff];
-			if (*(short *)((byte *)light + 0x48) == NONE && function_c3140(index) && light->stamp != g_4e0308)
+			if (((s_132a30_light *)g_4e030c->data)[index & 0xffff].unknown48 == NONE && function_c3140(index) && light->stamp != g_4e0308)
 			{
 				if (data->lists[1]->add(index, 0, 0, NONE))
 					function_c3110(index);

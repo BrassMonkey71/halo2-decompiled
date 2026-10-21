@@ -328,7 +328,7 @@ bool function_1f55e0(long actor_index, point3f *point, vector3f *direction)
 	{
 		long state = heading_unit_get_state(unit);
 
-		if (state == 6 || state == 7)
+		if ((short)state == 6 || (short)state == 7)
 		{
 			if (unit->movement_type == 4)
 			{
@@ -347,7 +347,7 @@ bool function_1f55e0(long actor_index, point3f *point, vector3f *direction)
 			long second;
 
 			function_10f630(actor->unit_index, &first, &second);
-			if (unit->movement_type == 5 || state == 5 || first == 0x50000cb)
+			if (unit->movement_type == 5 || (short)state == 5 || first == 0x50000cb)
 			{
 				direction->i = unit->forward.i * -1.0f;
 				direction->j = unit->forward.j * -1.0f;
@@ -833,24 +833,24 @@ real function_210ac0(s_type_c3b527 const *a, point3f const *b);
 bool function_1f8660(long actor_index);
 
 // @retail 0x1f5ab0
-void __stdcall function_1f5ab0(long actor_index, vector3f const *input, vector3f *movement_out,
-    short *type_out, vector3f *facing_out, bool *blocked)
+void __stdcall function_1f5ab0(long actor_index, vector3f const *input, vector3f *facing_out,
+    short *type_out, vector3f *movement_out, bool *blocked)
 {
     byte *actor = (byte *)actor_get(actor_index);
+    real distance = 3.402823466e38f;
     byte *entry = NULL;
     byte *surface = NULL;
     vector3f movement;
     vector3f facing = *(vector3f *)(actor + 0x290);
     movement = *g_4687a4;
-    point3f position = *(point3f *)(actor + 0x238);
-    real distance = 3.402823466e38f;
     actor[0x6d1] = false;
-    long const &unit_index = *(long *)(actor + 0x18);
-    if (unit_index != NONE)
+    point3f position = *(point3f *)(actor + 0x238);
+    if (*(long *)(actor + 0x18) != NONE)
     {
-        byte *unit = (byte *)object_get(unit_index);
+        byte *unit = (byte *)object_get(*(long *)(actor + 0x18));
         position.z = *(real *)(unit + *(short *)(unit + 0x116) + 0x30);
     }
+    long const &unit_index = *(long *)(actor + 0x18);
     if (actor[0x5d0] && !actor[0x5d2] && *(signed char *)(actor + 0x53a) >= 0 && *(signed char *)(actor + 0x53a) < *(signed char *)(actor + 0x539))
     {
         if (function_1f8660(actor_index))
@@ -935,12 +935,12 @@ void __stdcall function_1f5ab0(long actor_index, vector3f const *input, vector3f
         }
     }
 done:
-    if (movement_out)
-        *movement_out = movement;
-    if (type_out)
-        *type_out = 0;
     if (facing_out)
         *facing_out = facing;
+    if (type_out)
+        *type_out = 0;
+    if (movement_out)
+        *movement_out = movement;
 }
 
 // @retail 0x1f9e70

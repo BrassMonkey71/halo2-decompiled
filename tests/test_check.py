@@ -3,9 +3,9 @@ import json
 import pytest
 
 from build import Marked
-from check import (Identity, Targets, check_function, check_unique_markers, compare, extract, function_targets,
-                   literal_size, masked_offsets, parse_addresses, relative_ok, resolve, settle_statuses, settle_targets,
-                   StandinCalls, targets_summary, write_report)
+from check import (Identity, Targets, check_function, check_unique_markers, compare, difference_score, extract,
+                   function_targets, literal_size, masked_offsets, parse_addresses, relative_ok, resolve,
+                   settle_statuses, settle_targets, StandinCalls, targets_summary, write_report)
 from linkmap import LinkMap
 
 MAP = """ Preferred load address is 00400000
@@ -94,6 +94,24 @@ def test_failed_relative_field_checked_even_when_bytes_equal():
     jump_out = bytes.fromhex('e9' '10000000' 'c3')
     status, first, _, _ = run(jump_out, 0x401000, jump_self, 0x1000, relative={0x401001})
     assert first == 1 and status == 'near'
+
+
+def test_difference_score_is_zero_when_matched():
+    status, _, lines, length = run(bytes.fromhex('b8' '01000000' 'c3'), 0x401000, bytes.fromhex('b8' '01000000' 'c3'))
+    assert status == 'matched' and difference_score(status, lines, length, 6) == 0
+
+
+def test_difference_score_counts_differing_instructions_and_length():
+    ours = bytes.fromhex('b8' '01000000' '90' 'c3')    # mov eax, 1; nop; ret
+    theirs = bytes.fromhex('b8' '02000000' 'c3')       # mov eax, 2; ret
+    status, _, lines, length = run(ours, 0x401000, theirs)
+    differing = sum(1 for line in lines if line.startswith('  !!'))
+    assert status == 'todo' and differing >= 1
+    assert difference_score(status, lines, length, len(theirs)) == differing + 1
+    # one fewer differing instruction scores lower
+    same_length = bytes.fromhex('b8' '02000000' '90' 'c3')
+    status2, _, lines2, length2 = run(same_length, 0x401000, theirs)
+    assert difference_score(status2, lines2, length2, len(theirs)) < difference_score(status, lines, length, len(theirs))
 
 
 def test_failed_field_counts_as_differing_instruction():
@@ -601,7 +619,7 @@ def test_a_function_whose_bytes_match_but_whose_field_differs_does_not_match(cap
     assert settle_statuses(report) == [report['00001000']]
     assert report['00001000']['status'] == 'near' and report['00001000']['first_difference'] == 1
     assert capsys.readouterr().out.splitlines() == [
-        'DIFF   00001000 caller at +0x1 (21 bytes, retail 21)',
+        'DIFF   00001000 caller at +0x1 (21 bytes, retail 21), score 1',
         "  !! address field at +0x1: ours leads to g_4e0300 (0x4e0300 in retail), retail's to 0x4e0304"]
 
 

@@ -24,18 +24,13 @@ struct s_havok_refcount_header
 class c_havok_abstract_allocator : public s_havok_refcount_header
 {
 public:
-	/* three zeros, then NONE; as loops, the stores stay in a block of
-	   their own ahead of the derived constructors' (0x146b80) */
+	/* three zeros, then NONE, in one loop: its stores stay in a block of
+	   their own ahead of the derived constructors' (0x146b80, 0x22c3e0) */
 	c_havok_abstract_allocator()
 	{
-		long i;
-		for (i = 0; i < 3; i++)
+		for (long i = 0; i < 4; i++)
 		{
-			m_unknown08[i] = 0;
-		}
-		for (; i < 4; i++)
-		{
-			m_unknown08[i] = NONE;
+			m_unknown08[i] = i == 3 ? NONE : 0;
 		}
 	}
 
@@ -52,7 +47,21 @@ public:
 	virtual void method9(void) {}
 	virtual void method10(void) {}
 
+	/* sets the first two of m_unknown08 (library code, 0x2d6fc0) */
+	void function_2d6fc0(void *buffer, long size);
+
 	long m_unknown08[4];
+};
+
+/* one of the pool's lists, empty when built */
+struct s_havok_pool_list
+{
+	s_havok_pool_list()
+	{
+		first = 0;
+	}
+
+	long first;
 };
 
 /* Havok's pool memory (vtable 0x457620; constructor 0x22c3e0) */
@@ -61,21 +70,39 @@ class c_havok_page_pool_allocator : public c_havok_abstract_allocator
 public:
 	c_havok_page_pool_allocator();
 
-	virtual void *allocate(long size, long memory_class) { return 0; }
-	virtual void deallocate(void *address) {}
-	virtual void *allocate_aligned(long alignment, long size, long memory_class) { return 0; }
-	virtual void deallocate_aligned(void *address) {}
-	virtual void *allocate16(long size, long memory_class) { return 0; }
-	virtual void deallocate16(void *address, long size, long memory_class) {}
-	virtual void method6(long unknown) {}
-	virtual void method7(long unknown) {}
+	virtual void *allocate(long size, long memory_class);
+	virtual void deallocate(void *address);
+	virtual void *allocate_aligned(long alignment, long size, long memory_class);
+	virtual void deallocate_aligned(void *address);
+	virtual void *allocate16(long size, long memory_class);
+	virtual void deallocate16(void *address, long size, long memory_class);
+	virtual void method6(long unknown);
+	virtual void method7(long unknown);
 
 	/* the fraction of the pool's blocks in use (0x22cb90) */
 	real get_used_fraction(void);
 
-	byte unknown18[0xf0340 - 0x18];
+	long unknown18;
+	long unknown1c;
+	long unknown20;
+	long unknown24[17];
+	/* the largest size each size class serves */
+	long class_sizes[17];
+	/* the size class of each size up to 0x200 */
+	byte small_classes[0x201];
+	byte unknown2ad[3];
+	/* the size class of each multiple of 0x400 up to 0x2000 */
+	long large_classes[8];
+	long unknown2d0[4];
+	long page_size;
+	long unknown2e4;
+	s_havok_pool_list unknown2e8[17];
+	long unknown32c;
+	byte pages[0xf0340 - 0x330];
 	long page_count;
-	byte unknownf0344[0xf03d0 - 0xf0344];
+	long unknownf0344[17];
+	long unknownf0388[17];
+	byte unknownf03cc[4];
 };
 
 /* a fixed buffer: allocations grow up from its start, and the table of

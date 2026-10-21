@@ -7,6 +7,7 @@
 #include "globals.h"
 #include "data_array.h"
 #include "unknown_0259d0.h"
+#include "vector_products.h"
 #include "unknown_1cec30.h"
 #include "impacts.h"
 #include "unknown_1428b0.h"
@@ -610,13 +611,6 @@ bool impact_matches_data(
 			return true;
 	}
 	return false;
-}
-
-PRIVATE inline void cross3f(vector3f const *a, vector3f const *b, vector3f *result)
-{
-	result->i = a->j * b->k - a->k * b->j;
-	result->j = a->k * b->i - a->i * b->k;
-	result->k = a->i * b->j - a->j * b->i;
 }
 
 PRIVATE __forceinline real function_227811(vector3f const *arg_0, vector3f const *arg_1)
@@ -2098,19 +2092,10 @@ void function_226ce0(void)
 					s_impact_data data;
 					long impact_index;
 
-					data.unknown00 = false;
-					data.component_a = g_5021bc.iterator.datum_index;
-					data.unknown08 = constraint->rigid_body_index_a;
-					data.material_a.m_index = constraint->material_a;
-					data.component_b = constraint->component_b;
-					data.unknown14 = constraint->rigid_body_index_b;
-					data.material_b.m_index = constraint->material_b;
-					data.position = constraint->position;
-					data.normal = constraint->normal;
-					data.type = NONE;
-					data.unknown38 = false;
-					data.shape.type = NONE;
-					data.shape.index = NONE;
+					impact_data_set(&data, false, g_5021bc.iterator.datum_index, constraint->rigid_body_index_a,
+						c_type_47f957(constraint->material_a), constraint->component_b,
+						constraint->rigid_body_index_b, c_type_47f957(constraint->material_b),
+						&constraint->position, &constraint->normal, NONE, NULL);
 					impact_index = havok_component_impact_find(component, (s_havok_impact_contact const *)&data, true);
 					if (impact_index == NONE)
 					{
@@ -2317,9 +2302,12 @@ static __forceinline bool impact_component_center_get(s_havok_component *compone
 		hkRigidBody *rigid_body = component->rigid_bodies.data[function_0b67a0((s_small_index const *)component)].rigid_body;
 
 		point3f const *local_0 = (point3f const *)((byte *)rigid_body->m_motion + 0x70);
-		center->x = local_0->x;
-		center->y = local_0->y;
-		center->z = local_0->z;
+		real x = local_0->x;
+		real z = local_0->z;
+		real y = local_0->y;
+		center->x = x;
+		center->y = y;
+		center->z = z;
 		return true;
 	}
 	return false;
@@ -2353,14 +2341,14 @@ void impact_sound_location_get(s_impact const *impact, s_impact_sound_location *
 			if (impact->component_b != NONE)
 			{
 				s_havok_component *component_b = havok_component_get(impact->component_a);
-				point3f volatile center_a;
+				point3f center_a;
 				point3f center_b;
 				bool has_a = false;
 				bool has_b = false;
 
-				if (impact_component_center_get(component, (point3f *)&center_a))
+				if (impact_component_center_get(component, &center_a))
 				{
-					arg_26d7e7->position = *(point3f *)&center_a;
+					arg_26d7e7->position = center_a;
 					has_a = true;
 				}
 				if (impact_component_center_get(component_b, &center_b))
@@ -2370,9 +2358,9 @@ void impact_sound_location_get(s_impact const *impact, s_impact_sound_location *
 				}
 				if (has_a && has_b)
 				{
-					arg_26d7e7->position.x = (center_b.x + center_a.x) * 0.5f;
-					arg_26d7e7->position.y = (center_b.y + center_a.y) * 0.5f;
-					arg_26d7e7->position.z = (center_b.z + center_a.z) * 0.5f;
+					arg_26d7e7->position.x = (center_a.x + center_b.x) * 0.5f;
+					arg_26d7e7->position.y = (center_a.y + center_b.y) * 0.5f;
+					arg_26d7e7->position.z = (center_a.z + center_b.z) * 0.5f;
 				}
 			}
 			else

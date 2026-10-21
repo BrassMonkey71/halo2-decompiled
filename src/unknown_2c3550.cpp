@@ -245,7 +245,7 @@ short avoidance_add_node(s_avoidance_search *search, point2f const *point, bool 
 		node->cost = node->distance + cost;
 		node->parent = parent;
 		node->marked = false;
-		*(long *)node->children = NONE;
+		memset(node->children, NONE, sizeof(node->children));
 		if (reaches_goal_obstacle && search->best_distance > node->distance)
 		{
 			search->best_distance = node->distance;
@@ -335,13 +335,6 @@ static __forceinline point2f *avoidance_scale2d(point2f const *direction, real d
 	scaled->y = direction->y * distance;
 	scaled->x = distance * direction->x;
 	return scaled;
-}
-
-static __forceinline point2f *avoidance_add2d(point2f const *a, point2f const *b, point2f *out)
-{
-	out->x = a->x + b->x;
-	out->y = a->y + b->y;
-	return out;
 }
 
 static __forceinline point2f *avoidance_point_along2d(point2f const *origin, point2f const *direction,
@@ -456,10 +449,8 @@ bool avoidance_search_step(s_avoidance_search *search, s_pathfinding_data const 
 					if (trace.sector == search->value18 || node->distance < 0.2f)
 					{
 						point2f point;
-						point2f movement;
 
-						avoidance_scale2d(direction, trace.distance, &movement);
-						avoidance_add2d(&node->position, &movement, &point);
+						avoidance_point_along2d(&node->position, direction, trace.distance, &point);
 						search->value1e = avoidance_add_node(search, &point, false, search->value18, NONE, NONE,
 							node->cost - node->distance + trace.distance, (short)index);
 						added = 1;
@@ -479,7 +470,8 @@ bool avoidance_search_step(s_avoidance_search *search, s_pathfinding_data const 
 						offset.y = search->goal.y - obstacle->center.y;
 						point = node->position;
 						avoidance_scale2d(direction, trace.distance, &movement);
-						avoidance_add2d(&point, &movement, &point);
+						point.x += movement.x;
+						point.y += movement.y;
 						real dx = point.x - search->goal.x;
 						real dy = point.y - search->goal.y;
 						if (dy * dy + dx * dx < obstacle->radius * obstacle->radius &&
@@ -605,7 +597,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
  s_path_step_view const *steps, bool avoid, short *out_count,
  s_path_step_view *out, bool *complete, long *object_index, long *type, bool *flag)
 {
- bool result = true;
+ long result = true;
  s_pathfinding_data const *pathfinding = (s_pathfinding_data const *)state->pathfinding;
  real radius = state->source.radius > 0.2f ? state->source.radius : 0.2f;
  bool final_complete = *complete;
@@ -656,7 +648,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
   if (*out_count >= 4)
   {
    *complete = false;
-   return result;
+   goto done;
   }
   point3f const *start = step > 0 ? &previous_point : &state->source.point.point;
   long start_node = step > 0 ? previous_node : state->source.unknown24;
@@ -761,7 +753,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
      {
       if (step == count - 1 && flag)
        for (short i = 0; i < obstacles->count; ++i) if (obstacles->obstacles[i].flags & 2) *flag = true;
-      return false;
+      result = false; goto done;
      }
     }
     if (search->value28)
@@ -793,7 +785,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
      if (*out_count >= 4) { truncated = true; break; }
      out[(*out_count)++] = inserted[i];
     }
-    if (truncated) { *complete = false; return result; }
+    if (truncated) { *complete = false; goto done; }
    }
    else
    {
@@ -852,6 +844,7 @@ bool __stdcall function_2c41b0(long actor_index, s_type_f17a25 *state, short cou
   }
   first_output = *out_count;
  }
+done:
  return result;
 }
 

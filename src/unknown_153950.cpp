@@ -399,7 +399,8 @@ void function_154df0(long index, s_speed_bounds *bounds, s_speed_slot *slot, vec
 {
 	real timer = (real)slot->timer80;
 
-	if (bounds->duration > timer || priority > slot->priority9c || (priority >= slot->priority9c && bounds->duration > g_510c54->rate * timer))
+	bool update = bounds->duration > timer || priority > slot->priority9c || (priority >= slot->priority9c && bounds->duration > g_510c54->rate * timer);
+	if (update)
 	{
 		vector3f w;
 		vector3f v;
@@ -411,8 +412,9 @@ void function_154df0(long index, s_speed_bounds *bounds, s_speed_slot *slot, vec
 		s_unknown_185ab0_entry *view = g_4ed284->entries + index;
 		s_view_angles angles = view->angles;
 
-		w.i = (real)(cos(angles.yaw) * cos(angles.pitch));
-		w.j = (real)(sin(angles.yaw) * cos(angles.pitch));
+		double horizontal = cos(angles.pitch);
+		w.i = (real)(cos(angles.yaw) * horizontal);
+		w.j = (real)(sin(angles.yaw) * horizontal);
 		w.k = 0.0f;
 		function_30bf0(&w);
 

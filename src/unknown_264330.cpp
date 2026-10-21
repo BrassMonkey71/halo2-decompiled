@@ -38,7 +38,7 @@ bool __stdcall function_25d020(long actor_index, long object_index, long type,
 	long prop_index, long a, long b);
 
 // @retail 0x265680
-void __stdcall function_265680(long volatile actor_index)
+void __stdcall function_265680(long actor_index)
 {
 	byte *actor = g_4f55f0->data + (actor_index & 0xffff) * 0x888;
 	if (*(short *)(actor + 0x358) <= 0) return;
@@ -48,60 +48,58 @@ void __stdcall function_265680(long volatile actor_index)
 	function_b9dd0(*(long *)(actor + 0x360), &position);
 	vector3f &velocity = *(vector3f *)(actor + 0x37c);
 	velocity = *(vector3f *)(object + 0x88);
+	point3f &midpoint = *(point3f *)(actor + 0x3a0);
 	s_2641c0 context;
 	if (function_2641c0(actor_index, &context, &position))
 	{
-		double x = position.x - (double)context.field_c.x;
-		double y = position.y - (double)context.field_c.y;
-		double z = position.z - (double)context.field_c.z;
-		*(real *)(actor + 0x394) = (real)sqrt(z * z + y * y + x * x);
-		real dz = *(real *)(actor + 0x3a8) - context.field_c.z;
-		real dy = *(real *)(actor + 0x3a4) - context.field_c.y;
-		real dx = *(real *)(actor + 0x3a0) - context.field_c.x;
-		*(real *)(actor + 0x398) = dz * dz + dy * dy + dx * dx;
+		vector3f offset;
+		vector3d_from_points3d(&context.field_c, &position, &offset);
+		*(real *)(actor + 0x394) = (real)sqrt(length_sq3f(&offset));
+		real dx = midpoint.x - context.field_c.x;
+		real dy = midpoint.y - context.field_c.y;
+		real dz = midpoint.z - context.field_c.z;
+		*(real *)(actor + 0x398) = dx * dx + dy * dy + dz * dz;
 	}
 	point3f &prediction = *(point3f *)(actor + 0x388);
 	prediction.x = velocity.i * 1.5f + position.x;
 	prediction.y = velocity.j * 1.5f + position.y;
 	prediction.z = velocity.k * 1.5f + position.z;
-	point3f &midpoint = *(point3f *)(actor + 0x3a0);
-	midpoint.x = (position.x + prediction.x) * 0.5f;
-	midpoint.y = (position.y + prediction.y) * 0.5f;
-	midpoint.z = (position.z + prediction.z) * 0.5f;
-	double x = position.x - (double)midpoint.x;
-	double y = position.y - (double)midpoint.y;
-	double z = position.z - (double)midpoint.z;
-	*(real *)(actor + 0x39c) = (real)(sqrt(z * z + y * y + x * x) + *(real *)(actor + 0x36c));
+	point3f const *origin = (point3f const *)(actor + 0x370);
+	midpoint.x = (origin->x + prediction.x) * 0.5f;
+	midpoint.y = (origin->y + prediction.y) * 0.5f;
+	midpoint.z = (origin->z + prediction.z) * 0.5f;
+	vector3f offset;
+	vector3d_from_points3d((point3f const *)(actor + 0x3a0), &position, &offset);
+	*(real *)(actor + 0x39c) = (real)sqrt(length_sq3f(&offset)) + *(real *)(actor + 0x36c);
 	s_record_pool *references = g_502418;
 	byte *reference = record_pool_lookup(references, *(long *)(actor + 0x368));
 	if (!reference) { *(short *)(actor + 0x358) = 0; return; }
-	bool active = *(short *)(reference + 0x24) >= 1 && *(short *)(reference + 0x24) <= 2;
-	bool attached = false;
 	bool related = false;
+	bool attached = false;
+	bool active = *(short *)(reference + 0x24) >= 1 && *(short *)(reference + 0x24) <= 2;
 	switch (*(short *)(actor + 0x358))
 	{
-	case 1:
-		if (function_10f5f0(*(long *)(actor + 0x360)) == 0xc000043)
-		{
-			real duration;
-			real elapsed = function_10f690(*(long *)(actor + 0x360), &duration);
-			*(short *)(actor + 0x3ac) = (short)function_1469f0(duration - elapsed);
-		}
-		else *(short *)(actor + 0x3ac) = NONE;
-		break;
 	case 2:
-		attached = *(long *)(actor + 0x18) != NONE && *(long *)(object + 0x14) == *(long *)(actor + 0x18);
+		if (*(long *)(actor + 0x18) != NONE && *(long *)(object + 0x14) == *(long *)(actor + 0x18))
+			attached = true;
 		if (*(real *)(object + 0x158) > 0.0f && *(real *)(object + 0x15c) > 0.0f)
 			*(short *)(actor + 0x3ac) = (short)real_to_long((1.0f - *(real *)(object + 0x158)) / *(real *)(object + 0x15c));
 		else *(short *)(actor + 0x3ac) = NONE;
 		if (attached && !actor[0x35e])
 			function_1fb7e0(0xae, actor_index, NULL, *(long *)(actor + 0x360), NONE);
 		break;
+	case 4:
+		{
+			short index = NONE;
+			if (function_2651e0(*(long *)(actor + 0x360), &index)) *(short *)(actor + 0x3ac) = index;
+			else { *(short *)(actor + 0x3ac) = NONE; *(short *)(actor + 0x358) = 0; }
+		}
+		break;
 	case 3:
 		{
 			vector3f const &v = *(vector3f *)(object + 0x88);
 			byte *definition = g_4e3b44[*(long *)object & 0xffff].bytes;
-			if (0.04f > v.i * v.i + v.j * v.j + v.k * v.k ||
+			if (0.2f * 0.2f > v.i * v.i + v.j * v.j + v.k * v.k ||
 				*(real *)(actor + 0x394) > *(real *)(definition + 4) + 10.0f)
 				*(short *)(actor + 0x358) = 0;
 			else if (active) goto finished;
@@ -117,12 +115,14 @@ void __stdcall function_265680(long volatile actor_index)
 			}
 		}
 		break;
-	case 4:
+	case 1:
+		if (function_10f5f0(*(long *)(actor + 0x360)) == 0xc000043)
 		{
-			short index = NONE;
-			if (function_2651e0(*(long *)(actor + 0x360), &index)) *(short *)(actor + 0x3ac) = index;
-			else { *(short *)(actor + 0x3ac) = NONE; *(short *)(actor + 0x358) = 0; }
+			real duration;
+			real elapsed = function_10f690(*(long *)(actor + 0x360), &duration);
+			*(short *)(actor + 0x3ac) = (short)function_1469f0(duration - elapsed);
 		}
+		else *(short *)(actor + 0x3ac) = NONE;
 		break;
 	}
 	if (!active)
@@ -459,16 +459,12 @@ void function_262ba0(long actor_index)
 			}
 			else *(real *)(p + 0x10) = 0.0f;
 			break;
-		case 1:
-			if (!p[0x27] && function_25d610(node))
+		case 4:
+			if (!p[0x27]) { function_25c860(index); *(real *)(p + 0x10) = 0.0f; }
+			else
 			{
-				if (function_25da40(node))
-				{
-					tracking = function_25d740((s_prop_node *)node);
-					*(short *)(p + 0x24) = 2;
-					if (tracking) *(short *)((byte *)tracking + 0xa0) = (short)real_to_long((real)g_510c54->field_2_3 * 0.33f);
-				}
-				else goto release_tracking;
+				*(real *)(p + 0x10) += function_2683f0(actor_index, index, (char)p[0x26]);
+				if (*(real *)(p + 0x10) >= 1.0f) function_25c230(actor_index, index, NONE);
 			}
 			break;
 		case 2:
@@ -487,6 +483,18 @@ void function_262ba0(long actor_index)
 					if (y * y + x * x > 1.0f) break;
 				}
 				function_25c860(index);
+			}
+			break;
+		case 1:
+			if (!p[0x27] && function_25d610(node))
+			{
+				if (function_25da40(node))
+				{
+					tracking = function_25d740((s_prop_node *)node);
+					*(short *)(p + 0x24) = 2;
+					if (tracking) *(short *)((byte *)tracking + 0xa0) = (short)real_to_long((real)g_510c54->field_2_3 * 0.33f);
+				}
+				else function_25c820(index, actor_index);
 			}
 			break;
 		case 3:
@@ -512,14 +520,6 @@ void function_262ba0(long actor_index)
 				long decrement = index == *(long *)(actor + 0x338) ? (view[0x69] ? 2 : 0) : (view[0x69] ? 3 : 1);
 				*(short *)(view + 0x8e) -= (short)decrement;
 				if (*(short *)(view + 0x8e) < 0) goto release_tracking;
-			}
-			break;
-		case 4:
-			if (!p[0x27]) { function_25c860(index); *(real *)(p + 0x10) = 0.0f; }
-			else
-			{
-				*(real *)(p + 0x10) += function_2683f0(actor_index, index, (char)p[0x26]);
-				if (*(real *)(p + 0x10) >= 1.0f) function_25c230(actor_index, index, NONE);
 			}
 			break;
 		}

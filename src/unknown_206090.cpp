@@ -117,6 +117,7 @@ PRIVATE __forceinline void function_206096(vector3f const *arg_0, real arg_1, ve
 }
 
 #pragma inline_depth(1)
+#include "vector_products.h"
 // @retail 0x206090
 bool __stdcall function_206090(s_vehicle_physics_state *arg_0, vector3f *arg_1, vector3f *arg_2)
 {
@@ -137,7 +138,7 @@ bool __stdcall function_206090(s_vehicle_physics_state *arg_0, vector3f *arg_1, 
         local_9->i = *(real *)(local_7 + 0x34) - local_0->field_60.i;
         local_9->j = *(real *)(local_7 + 0x38) - local_0->field_60.j;
         local_9->k = *(real *)(local_7 + 0x3c) - local_0->field_60.k;
-        function_206092(&local_5, local_9, local_10);
+        cross3f(&local_5, local_9, local_10);
         function_206095(local_10, &local_4);
         real local_11 = PIN(*(real *)(local_1 + 0x30) * local_0->field_8c * 0.31830987f, -1.0f, 1.0f);
         local_11 = (local_0->field_74.i >= 0.0f ? -1.0f : 1.0f) * local_11;
@@ -240,7 +241,7 @@ bool __stdcall function_206090(s_vehicle_physics_state *arg_0, vector3f *arg_1, 
                     s_havok_component *local_49 = havok_component_get(*(long *)(local_45 + 0x24));
                     long local_50 = *(long *)(local_45 + 0x28);
                     hkRigidBody *local_51 = local_49->rigid_bodies.data[local_50].rigid_body;
-                    if (!local_51->m_fixed && local_51->m_motion->getType() != 6)
+                    if (!local_51->m_fixed && local_51->m_motion->kind_code() != 6)
                     {
                         real local_52 = MAX(1.0f, havok_component_rigid_body_get(local_50, local_49)->m_motion->getMass());
                         real local_53 = PIN(local_52, local_0->field_6c * 0.0625f, local_0->field_6c * 16.0f);

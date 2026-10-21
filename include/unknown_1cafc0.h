@@ -58,9 +58,8 @@ struct s_animation_state
 	void names_resolve(s_animation_names *names, long mode, long weapon_class, long weapon_type, long set);
 	bool animation_lookup(s_animation_names *names, s_animation_names *found, long mode, long weapon_class,
 		long weapon_type, long set, long lookup_flags, c_type_709360 *result);
-	c_type_709360 *transition_lookup(c_type_709360 *result, long set, long mode, long weapon_class, long weapon_type,
-		long *transition_set);
-	c_type_709360 *transition_find(c_type_709360 *result, long mode, long set, bool *blend);
+	c_type_709360 transition_lookup(long set, long mode, long weapon_class, long weapon_type, long *transition_set);
+	c_type_709360 transition_find(long mode, long set, bool *blend);
 	void transition_offset_compute();
 	bool animation_set(long mode, long weapon_class, long weapon_type, long set, long state_flags, long channel_flags);
 	bool initialize(long graph_tag_index, long model_tag_index, bool flag);

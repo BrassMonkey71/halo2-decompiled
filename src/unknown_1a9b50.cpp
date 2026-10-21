@@ -574,9 +574,10 @@ static __forceinline long real_to_long(real value);
 bool __stdcall function_1aab50(long arg_0, s_slot *arg_1)
 {
 	s_1aa0d0 *local_0 = (s_1aa0d0 *)arg_1;
-	bool local_2 = false;
+	bool local_2;
 	if (!local_0->field_13 && !local_0->field_14 && !local_0->field_2d)
 	{
+		local_2 = true;
 		s_actor_view *local_1 = actor_get(arg_0);
 		s_1aab50 *local_3 = (s_1aab50 *)function_1e4f90(arg_0);
 		s_prop_node_view *local_4 = NULL;
@@ -655,10 +656,10 @@ bool __stdcall function_1aab50(long arg_0, s_slot *arg_1)
 					{
 						real local_19 = local_3->field_28;
 						real local_20;
-						real local_21;
 						vector3f local_22;
-						if (function_fa1a0(local_19, 1.0f, &local_8->field_4, &local_1->position, &local_15, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_21, &local_20) ||
-							(local_3->field_2c > local_15 && function_fa1a0(local_15 + 0.03f, 1.0f, &local_8->field_4, &local_1->position, NULL, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_21, &local_20)))
+						/* retail reuses the speed variable as the vertical speed output and stores that result below */
+						if (function_fa1a0(local_19, 1.0f, &local_8->field_4, &local_1->position, &local_15, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_19, &local_20) ||
+							(local_3->field_2c > local_15 && function_fa1a0(local_15 + 0.03f, 1.0f, &local_8->field_4, &local_1->position, NULL, NULL, NULL, false, &local_22, NULL, NULL, NULL, &local_19, &local_20)))
 						{
 							if (normalize2d((point2f *)&local_22) == 0.0f)
 							{
@@ -742,8 +743,9 @@ bool __stdcall function_1aab50(long arg_0, s_slot *arg_1)
 			function_1f4280(arg_0);
 		if (!local_0->field_17 && !local_0->field_18 && !local_0->field_12)
 			function_1a9e00(arg_0, local_0->field_34, local_0->field_2d);
-		local_2 = true;
 	}
+	else
+		local_2 = false;
 	return local_2;
 }
 
@@ -818,8 +820,8 @@ bool __stdcall function_1aa750(long arg_0, s_slot *arg_1, bool arg_2)
 	bool local_11;
 	s_actor_view *local_0 = actor_get(arg_0);
 	s_1aa0d1 *local_1 = (s_1aa0d1 *)function_1e4f90(arg_0);
-	s_ai_object *local_2 = ai_object_get(local_0->unknown018);
 	s_1aa751 *local_3 = (s_1aa751 *)((byte *)arg_1 + 0xc);
+	s_ai_object *local_2 = ai_object_get(local_0->unknown018);
 	local_11 = false;
 	if (!((local_2->flags19 & 1) && ((local_2->flags19 & 2) || !(*(byte *)local_1 & 1))))
 	{
@@ -840,21 +842,21 @@ bool __stdcall function_1aa750(long arg_0, s_slot *arg_1, bool arg_2)
 			long local_8 = arg_2 ? 0xa000040 : local_3->field_a ? 0xe00067d : 0x500000a;
 			if (unit_animation_get_timing(unit_index, 0x7000101, local_8, &local_4, &local_6, &local_5, &local_7))
 			{
-				if (local_4 == NONE)
+				short local_16 = local_4;
+				if (local_16 == NONE)
 				{
 					if (arg_2)
 					{
 						local_6 = 0.0f;
-						local_3->field_24 = 0;
+						local_16 = 0;
 					}
 					else
 					{
+						local_16 = local_5 / 2;
 						local_6 = local_7 * 0.5f;
-						local_3->field_24 = local_5 / 2;
 					}
 				}
-				else
-					local_3->field_24 = local_4;
+				local_3->field_24 = local_16;
 			}
 			else
 				local_3->field_24 = 0;
@@ -864,16 +866,21 @@ bool __stdcall function_1aa750(long arg_0, s_slot *arg_1, bool arg_2)
 			if (!arg_2)
 			{
 				s_1aa750 *local_9 = (s_1aa750 *)function_1e4a50(local_0->unknown054);
-				real local_10 = local_9 ? local_9->field_4 + 0.2f : 0.0f;
+				real local_10 = 0.0f;
+				if (local_9)
+					local_10 = local_9->field_4 + 0.2f;
 				local_10 += local_6;
 				local_3->field_28 = local_3->field_28 > local_10 ? local_3->field_28 : local_10;
 				local_8 = local_3->field_a ? 0xe00067d : 0xc0006cd;
-				local_5 = 0;
-				local_7 = 0.0f;
-				if (unit_animation_get_timing(local_0->unknown018, 0x7000101, local_8, &local_4, &local_6, &local_5, &local_7))
+				real local_15 = 0.0f;
+				short local_14;
+				real local_13;
+				short local_12 = 0;
+				unit_index = local_0->unknown018;
+				if (unit_animation_get_timing(unit_index, 0x7000101, local_8, &local_12, &local_13, &local_14, &local_15))
 				{
-					local_3->field_26 = local_5;
-					local_3->field_2c = local_7;
+					local_3->field_26 = local_12;
+					local_3->field_2c = local_15;
 				}
 			}
 			local_11 = true;

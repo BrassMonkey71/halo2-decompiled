@@ -9,6 +9,8 @@
 #include "stream_holder_2d8e70.h"
 #include "convex_search_3048a0.h"
 #include "point_triangle_308d90.h"
+#include "string_helpers_2d8c90.h"
+#include "placed_shape_312800.h"
 
 // @stub 0x2e5a90
 void s_1c3a40::function_2e5a90(handlers_2e5d50 const *handlers, long first_type, long second_type,
@@ -18,30 +20,8 @@ void s_1c3a40::function_2e5a90(handlers_2e5d50 const *handlers, long first_type,
 
 // handlers of the pair table (0x2e5d50) not decompiled yet
 
-// @stub 0x2ea640
-void __cdecl function_2ea640(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
 
-// @stub 0x2ead90
-void __cdecl function_2ead90(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
-// @stub 0x2eb670
-void __cdecl function_2eb670(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
-
-// @stub 0x2ece90
-void __cdecl function_2ece90(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2ecfa0
-void __cdecl function_2ecfa0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 struct walk_3028c0;
 struct segment_3028c0;
@@ -57,11 +37,6 @@ void class_301a60::function_301a60(walk_3028c0 *walk, char const *cells, segment
 {
 }
 
-// @stub 0x308d90
-int __cdecl function_308d90(__m128 const *point, __m128 const *corners, float const *terms, closest_308d90 *out)
-{
-	return 0;
-}
 
 // @stub 0x3048a0
 int class_3048a0::function_3048a0(convex_2fefd0 const *first, convex_2fefd0 const *second, c_query_transform const *transform, pair_state_2fefd0 *state, closest_3048a0 *closest)
@@ -69,10 +44,6 @@ int class_3048a0::function_3048a0(convex_2fefd0 const *first, convex_2fefd0 cons
 	return 0;
 }
 
-// @stub 0x2ee8b0
-void __cdecl function_2ee8b0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
@@ -80,117 +51,17 @@ void __cdecl function_2ee8b0(void const *a, void const *b, void const *input, vo
 
 
 
-// @stub 0x2f13e0
-void __cdecl function_2f13e0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f1690
-void __cdecl function_2f1690(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
-
-// @stub 0x2f3d00
-void __cdecl function_2f3d00(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f40e0
-void __cdecl function_2f40e0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f5960
-void __cdecl function_2f5960(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f6db0
-void __cdecl function_2f6db0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f8110
-void __cdecl function_2f8110(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f84a0
-void __cdecl function_2f84a0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-
-
-// @stub 0x2f99d0
-void __cdecl function_2f99d0(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
-
-// @stub 0x2fad70
-void __cdecl function_2fad70(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
-
-// @stub 0x2fe830
-void __cdecl function_2fe830(void const *a, void const *b, void const *input, void *collector, void *second_collector)
-{
-}
 
 
 // Havok round 17: callees of matched functions not decompiled yet
 
-// @stub 0x312150
-void class_3115a0::function_312150(description_3115a0 const *description)
-{
-}
-
-class class_30aff0
-{
-public:
-	void function_30aff0(void const *description);
-};
-
-// @stub 0x30aff0
-void class_30aff0::function_30aff0(void const *description)
-{
-}
-
-class class_30c330
-{
-public:
-	void function_30c330(void const *record);
-};
-
-// @stub 0x30c330
-void class_30c330::function_30c330(void const *record)
-{
-}
-// @stub 0x2eab70
-void class_2eab70::function_2eab70(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
-// @stub 0x2ecf20
-void class_2ecf20::function_2ecf20(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
-
-// @stub 0x2f63d0
-void class_2f63d0::function_2f63d0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f8330
-void class_2f8330::function_2f8330(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 // @stub 0x2e9d90
 void class_2e9d90::function_2e9d90(void const *a, void const *b, void const *input, pair_query_2e90f0 query)
@@ -204,16 +75,6 @@ void class_2e96a0::function_2e96a0(void const *a, void const *b, void const *inp
 
 // @stub 0x2e90f0
 void __cdecl function_2e90f0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2e4ff0
-class_2e4ff0::~class_2e4ff0()
-{
-}
-
-// @stub 0x30bf50
-class_30bf50::~class_30bf50()
 {
 }
 
@@ -235,33 +96,6 @@ class class_3008d0
 public:
 	void function_300290(cell_box_300290 const *box, unsigned char const *node);
 };
-
-// @stub 0x300290
-void class_3008d0::function_300290(cell_box_300290 const *box, unsigned char const *node)
-{
-}
-
-class class_2fff90
-{
-public:
-	class_2fff90(void const *tree, const c_query_transform *matrix, const __m128 *extent, float tolerance, s_surface_key_array *keys);
-};
-
-// @stub 0x2fff90
-class_2fff90::class_2fff90(void const *tree, const c_query_transform *matrix, const __m128 *extent, float tolerance, s_surface_key_array *keys)
-{
-}
-
-class class_300150
-{
-public:
-	class_300150(void const *tree, const s_query_bounds *bounds, s_surface_key_array *keys);
-};
-
-// @stub 0x300150
-class_300150::class_300150(void const *tree, const s_query_bounds *bounds, s_surface_key_array *keys)
-{
-}
 
 struct s_244980_ray;
 struct s_244980_output;
@@ -286,18 +120,6 @@ struct class_2df670
 
 
 
-class class_2d99d0
-{
-public:
-	int function_2d9850();
-};
-
-// @stub 0x2d9850
-int class_2d99d0::function_2d9850()
-{
-	return 0;
-}
-
 struct element_2e1090;
 struct bounds_2e0020;
 
@@ -312,52 +134,10 @@ void class_2e1090::function_2e0020(element_2e1090 const *element, bounds_2e0020 
 {
 }
 
-// @stub 0x2ed030
-void class_2ed030::function_2ed030(void const *a, void const *b, void *collector)
-{
-}
 
-// @stub 0x2f7c40
-void class_2f7c40::function_2f7c40(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f90a0
-void class_2f90a0::function_2f90a0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2fb150
-void class_2fb150::function_2fb150(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 // @stub 0x2fe350
 void __cdecl function_2fe350(void const *query, const __m128 *half_extents, float tolerance, void *out)
-{
-}
-
-struct member_30c8e0;
-
-class owner_30c8e0
-{
-public:
-	void function_30df80(member_30c8e0 *member);
-};
-
-// @stub 0x30df80
-void owner_30c8e0::function_30df80(member_30c8e0 *member)
-{
-}
-
-class class_30f030
-{
-public:
-	void function_30f030(void *island, void *other);
-};
-
-// @stub 0x30f030
-void class_30f030::function_30f030(void *island, void *other)
 {
 }
 
@@ -368,15 +148,12 @@ class c_311100
 public:
 	void function_30fcb0(s_311100 const *description);
 	void function_30fef0(s_311100 const *description);
+	void function_30e720();
 };
 
-// @stub 0x30fcb0
-void c_311100::function_30fcb0(s_311100 const *description)
-{
-}
-
-// @stub 0x30fef0
-void c_311100::function_30fef0(s_311100 const *description)
+// a part of a world's step (1563 bytes, not decompiled)
+// @stub 0x30e720
+void c_311100::function_30e720()
 {
 }
 
@@ -387,71 +164,20 @@ public:
 	void function_317950(void const *input);
 };
 
-// @stub 0x3175e0
-void narrow_phase_317c00::function_3175e0(void const *step, void const *input)
-{
-}
-
-// @stub 0x317950
-void narrow_phase_317c00::function_317950(void const *input)
-{
-}
-
 // Havok round havok18: callees of the queries passed on with their sides changed
 
-// @stub 0x2ece10
-void class_2ece10::function_2ece10(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
-// @stub 0x2f1270
-void class_2f1270::function_2f1270(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
-// @stub 0x2f4f00
-void class_2f4f00::function_2f4f00(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f7f10
-void class_2f7f10::function_2f7f10(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
-// @stub 0x2f0100
-void class_2f0100::function_2f0100(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f1080
-void class_2f1080::function_2f1080(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f1b80
-void class_2f1b80::function_2f1b80(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 // @stub 0x2f4440
 void class_2f4440::function_2f4440(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2fa2f0
-void class_2fa2f0::function_2fa2f0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2fec10
-void class_2fec10::function_2fec10(void const *a, void const *b, void const *input, void *collector, void *second_collector)
 {
 }
 
@@ -459,11 +185,20 @@ class class_308180;
 
 struct contact_307f90;
 
+// whether a contact was found
+class answer_307f90
+{
+public:
+	answer_307f90() {}
+
+	char value;
+};
+
 class query_2ef260
 {
 public:
 	void function_3080a0(class_308180 *manifold);
-	void function_307f90(bool *found, contact_307f90 *contact);
+	void function_307f90(answer_307f90 *found, contact_307f90 *contact);
 };
 
 // whether two boxes overlap, returned through a hidden pointer
@@ -481,26 +216,14 @@ public:
 	answer_306580 function_306580();
 };
 
-// @stub 0x306580
-answer_306580 class_306580::function_306580()
-{
-	return answer_306580();
-}
-
 // @stub 0x307f90
-void query_2ef260::function_307f90(bool *found, contact_307f90 *contact)
+void query_2ef260::function_307f90(answer_307f90 *found, contact_307f90 *contact)
 {
 }
 
 // @stub 0x3080a0
 void query_2ef260::function_3080a0(class_308180 *manifold)
 {
-}
-
-// @stub 0x2d8f10
-stream_holder_2d8e70 &stream_holder_2d8e70::function_2d8f10(char const *text)
-{
-	return *this;
 }
 
 struct pending_2ddbd0;
@@ -516,38 +239,9 @@ void class_2dce60::function_2dce60(pending_2ddbd0 *pending, void const *root, __
 {
 }
 
-// @stub 0x2e1d10
-class_2e4ff0::class_2e4ff0(long arg_0, long arg_1, int bits)
-{
-}
-
 // @stub 0x3009e0
 void class_2df670::function_3009e0(pending_301800 *pending, void const *root, fixed_ray_301800 const *ray)
 {
-}
-
-struct bool_3058b0
-{
-	bool value;
-
-	bool_3058b0(bool value_)
-	{
-		value = value_;
-	}
-};
-
-struct feature_305f60;
-
-class pair_305f60
-{
-public:
-	bool_3058b0 function_306f80(feature_305f60 *feature);
-};
-
-// @stub 0x306f80
-bool_3058b0 pair_305f60::function_306f80(feature_305f60 *feature)
-{
-	return bool_3058b0(false);
 }
 
 class class_309b50
@@ -586,7 +280,89 @@ void class_30f710::function_30f710()
 {
 }
 
-// @stub 0x3114d0
-class_3114d0::class_3114d0(void const *a, void const *b)
+// motion objects 0x311940 builds
+class class_31ad80 { public: class_31ad80(void const *position, void const *orientation); };
+class class_3193c0 { public: class_3193c0(void const *position, void const *orientation); void function_319740(unsigned long value); };
+class class_31a6b0 { public: class_31a6b0(void const *position, void const *orientation); };
+
+// @stub 0x31ad80
+class_31ad80::class_31ad80(void const *position, void const *orientation)
+{
+}
+
+// @stub 0x3193c0
+class_3193c0::class_3193c0(void const *position, void const *orientation)
+{
+}
+
+// an XDK networking routine (10 bytes, a slot of 0x31a6b0's vtable)
+// @stub 0x319740
+void class_3193c0::function_319740(unsigned long value)
+{
+}
+
+// Havok round 23: callees of the functions this round writes
+
+// the C++ library's string length, out of line
+// @stub 0x2d8d80
+unsigned int __cdecl string_length_2d8d80(char const *string)
+{
+	return 0;
+}
+
+// orders each pair by the second words of its two objects, then the pairs
+// @stub 0x372b50
+void __cdecl function_372b50(pair_30d870 *pairs, long count)
+{
+}
+
+// passes on the pairs of overlapping objects that begin and end
+// @stub 0x3728c0
+void dispatcher_3728c0::function_3728c0(pair_30d870 const *added, long added_count, pair_30d870 const *removed,
+	long removed_count, pair_listener_315a10 *listener)
+{
+}
+
+// a rotation matrix set from a quaternion
+// @stub 0x372500
+void rotation_372500::function_372500(__m128 const *quaternion)
+{
+}
+
+// the islands' step handed on (925 bytes, not decompiled)
+// @stub 0x31c100
+void __cdecl function_31c100(void *step_10, void *step_20, void *step_50, void *world_info,
+	void *simulation, void *islands, long island_count, long field_58, long field_5c)
+{
+}
+
+// frees a block too large for Havok's pool (library code, called through g_461ddc)
+// @stub 0x2d6fb0
+void __cdecl function_2d6fb0(void *address)
+{
+}
+
+// the game's test for slowing a body on a contact (src/unknown_279410.cpp,
+// disabled there; called from Havok code, so standard cdecl)
+struct s_component_contact_pair;
+class hkEntity;
+// @stub 0x279410
+bool __cdecl function_279410(s_component_contact_pair const *pair, hkEntity *moving,
+	hkEntity *opposing, float limit, float reduction, float approach)
+{
+	return false;
+}
+
+// the walk that tests a tree's nodes against planes (3124 bytes, not decompiled)
+struct pending_2ddbd0;
+struct fixed_point_2dc220;
+class class_2dc220
+{
+public:
+	void function_2dc220(pending_2ddbd0 *pending, void const *root, fixed_point_2dc220 const *fixed_point);
+};
+
+// @stub 0x2dc220
+void class_2dc220::function_2dc220(pending_2ddbd0 *pending, void const *root, fixed_point_2dc220 const *fixed_point)
 {
 }

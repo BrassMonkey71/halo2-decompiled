@@ -26,7 +26,7 @@ public:
 	pair_30f6b0 *pending;
 	int pending_count;
 
-	void function_30f030(void *island, void *other);
+	void *function_30f030(void *island, void *other);
 	void function_30f6b0();
 };
 

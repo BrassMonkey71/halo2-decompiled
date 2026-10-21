@@ -407,14 +407,20 @@ static __forceinline long cluster_link_next_ab(s_record_pool *array, long *next)
     long result;
     if (*next != NONE)
     {
-        s_cluster_link_ab *link = (s_cluster_link_ab *)(array->data + (*next & 0xffff) * array->size);
-        *next = link->next;
-        if (*next != NONE)
-            _mm_prefetch((char const *)(array->data + (*next & 0xffff) * array->size), _MM_HINT_T0);
+        long size = array->size;
+        byte *data = array->data;
+        s_cluster_link_ab *link = (s_cluster_link_ab *)(data + (*next & 0xffff) * size);
+        long following = link->next;
+
+        if (following != NONE)
+            _mm_prefetch((char const *)(data + (following & 0xffff) * size), _MM_HINT_T0);
+        *next = following;
         result = link->object_index;
     }
     else
+    {
         result = NONE;
+    }
     return result;
 }
 
@@ -426,42 +432,53 @@ short function_bb430(long mask, short cluster_count, short const *clusters, shor
         mask = NONE;
     ++g_4de2fc;
     g_4de2f8 = true;
-    { long i = 0; if (i < cluster_count) do {
-        short cluster = clusters[(short)i];
+    for (short i = 0; i < cluster_count; i++)
+    {
+        short cluster = clusters[i];
         long next;
         long object;
+
         if (mask & 1)
         {
             next = ((long *)g_4de2e0)[cluster];
-            while ((object = cluster_link_next_ab((s_record_pool *)g_4de2e4, &next)) != NONE)
+            object = cluster_link_next_ab((s_record_pool *)g_4de2e4, &next);
+            while (object != NONE)
             {
-                if (g_4de300[object & 0xffff] != g_4de2fc)
+                long index = object & 0xffff;
+                if (g_4de300[index] != g_4de2fc)
                 {
-                    g_4de300[object & 0xffff] = g_4de2fc;
+                    g_4de300[index] = g_4de2fc;
                     if (count >= maximum)
-                        goto done;
+                    {
+                        g_4de2f8 = false;
+                        return count;
+                    }
                     objects[count++] = object;
                 }
+                object = cluster_link_next_ab((s_record_pool *)g_4de2e4, &next);
             }
         }
         if (mask & 2)
         {
             next = ((long *)g_4de2d4)[cluster];
-            while ((object = cluster_link_next_ab((s_record_pool *)g_4de2d8, &next)) != NONE)
+            object = cluster_link_next_ab((s_record_pool *)g_4de2d8, &next);
+            while (object != NONE)
             {
-                if (g_4de300[object & 0xffff] != g_4de2fc)
+                long index = object & 0xffff;
+                if (g_4de300[index] != g_4de2fc)
                 {
-                    g_4de300[object & 0xffff] = g_4de2fc;
+                    g_4de300[index] = g_4de2fc;
                     if (count >= maximum)
-                        goto done;
+                    {
+                        g_4de2f8 = false;
+                        return count;
+                    }
                     objects[count++] = object;
                 }
+                object = cluster_link_next_ab((s_record_pool *)g_4de2d8, &next);
             }
         }
-    
-++i;
-} while (i < cluster_count); }
-done:
+    }
     g_4de2f8 = false;
     return count;
 }

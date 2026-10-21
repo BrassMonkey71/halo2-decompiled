@@ -428,7 +428,7 @@ void function_212f40(long preset, s_game_variant *variant)
         function_0bfe20(&variant->flags48, 0, preset == 4);
         variant->unknown54 = 360;
         variant->unknownd4 = 2;
-        variant->flags48 &= ~2;
+        function_0bfe20(&variant->flags48, 1, false);
         variant->unknown84 = 0;
         variant->unknownd6 = 8;
         variant->unknownd7 = 1;
@@ -439,17 +439,16 @@ void function_212f40(long preset, s_game_variant *variant)
         variant->unknownd2 = 6; variant->unknownd3 = 6;
         break;
     case 9:
-        variant->unknownd4 = 4; variant->unknowncf = 4; variant->unknownd0 = 4; variant->unknownd1 = 4;
-        variant->unknown50 = 10; variant->unknownd6 = 17; variant->unknownd7 = 1; variant->unknown88 = 2;
-        variant->unknowncd = 7; variant->unknownce = 7; variant->unknownd2 = 6; variant->unknownd3 = 6;
+        variant->unknownd4 = 4; variant->unknown50 = 10; variant->unknownd6 = 17; variant->unknownd7 = 1;
+        variant->unknown88 = 2; variant->unknowncd = 7; variant->unknownce = 7; variant->unknowncf = 4;
+        variant->unknownd0 = 4; variant->unknownd1 = 4; variant->unknownd2 = 6; variant->unknownd3 = 6;
         break;
     case 6: variant->unknownd4 = 14; variant->unknownd6 = 4; variant->unknownd7 = 1; break;
     case 8: variant->unknownd4 = 5; variant->unknownd6 = 11; variant->unknownd7 = 1; break;
     case 10:
-        variant->unknownd4 = 12; function_0bfe20(&variant->flags48, 1, false); variant->unknownd7 = 4;
-        variant->unknowncf = 4; variant->unknownd0 = 4; variant->unknownd1 = 4;
-        variant->unknownd6 = 10; variant->unknowncd = 7; variant->unknownce = 7;
-        variant->unknownd2 = 6; variant->unknownd3 = 6;
+        variant->unknownd4 = 12; function_0bfe20(&variant->flags48, 1, false); variant->unknownd7 = 4; variant->unknownd6 = 10;
+        variant->unknowncd = 7; variant->unknownce = 7; variant->unknowncf = 4; variant->unknownd0 = 4;
+        variant->unknownd1 = 4; variant->unknownd2 = 6; variant->unknownd3 = 6;
         break;
     case 11: variant->unknown50 = 0; variant->unknown4c = 5; variant->unknown7c = 1; break;
     case 1: variant->unknown54 = 360; break;

@@ -857,8 +857,9 @@ PRIVATE __forceinline short squad_valid_command_script(s_squad_placement_table *
 {
 	if (index >= 0 && index < scenario->script_count)
 	{
+		char const *string = name;
 		unsigned long length = 0;
-		while (length < 32 && *name++)
+		while (length < 32 && *string++)
 			length++;
 		if (length > 0 && *(short *)(scenario->scripts + index * 0x28 + 0x20) == 5)
 			return index;
@@ -870,12 +871,11 @@ PRIVATE __forceinline short squad_valid_command_script(s_squad_placement_table *
 void function_201b70(long squad_index, short entry_index, long actor_index)
 {
 	(void)&actor_index;
-	s_squad_placement_table *scenario = (s_squad_placement_table *)g_4e0350;
-	s_squad_placement_definition *squad = &scenario->squads[squad_index & 0xffff];
+	s_squad_placement_definition *squad = &((s_squad_placement_table *)g_4e0350)->squads[squad_index & 0xffff];
 	s_squad_placement_entry *entry = &squad->entries[entry_index];
-	short script_index = squad_valid_command_script(scenario, entry->command_script_index, entry->command_script_name);
+	short script_index = squad_valid_command_script((s_squad_placement_table *)g_4e0350, entry->command_script_index, entry->command_script_name);
 	if (script_index == NONE)
-		script_index = squad_valid_command_script(scenario, squad->command_script_index, squad->command_script_name);
+		script_index = squad_valid_command_script((s_squad_placement_table *)g_4e0350, squad->command_script_index, squad->command_script_name);
 	if (script_index != NONE)
 		function_257ed0(actor_index, script_index, NONE);
 }
@@ -2571,9 +2571,10 @@ PRIVATE __forceinline s_squad_datum *function_201c83(s_squad_record_iterator *ar
         }
         else
         {
-            local_0 = (s_squad_datum *)(local_1->data + local_1->size * local_2);
+            byte *local_3 = local_1->data + local_1->size * local_2;
             arg_0->records.index = local_2;
-            arg_0->records.datum_index = (*(short *)local_0 << 16) | local_2;
+            arg_0->records.datum_index = (*(short *)local_3 << 16) | local_2;
+            local_0 = (s_squad_datum *)local_3;
         }
         arg_0->squad_index = arg_0->records.datum_index & 0xffff;
         arg_0->squad = local_0;
@@ -2627,7 +2628,7 @@ void function_201c80(void)
     while (function_201c83(&local_4))
     {
         long local_5 = local_4.squad_index;
-        if (((word)local_5 + time_copy) % period_half == 0 && *(signed char *)((byte *)local_4.squad + 2) < 0)
+        if (((word)local_5 + time_copy) % period_half == 0 && (*((byte *)local_4.squad + 2) & 0x80))
             function_203360(local_5);
     }
     function_201df0();
