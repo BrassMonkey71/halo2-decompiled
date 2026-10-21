@@ -244,6 +244,8 @@ Thank you to everyone who has contributed to this project so far:
 - [@Roasted-Codes](https://github.com/Roasted-Codes): the first contributor
   matches in Havok, the physics library: its collision-pair dispatch and
   child-agent code.
+- [@ccgman123](https://github.com/ccgman123): a careful diagnosis of seven
+  near misses, and the cleanup that removed an in-body pragma from 0x9d1c0.
 
 [@kirklandsig](https://github.com/kirklandsig) maintains the project: runs the
 build, reviews and merges every pull request, and keeps the
