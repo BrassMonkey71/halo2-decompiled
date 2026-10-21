@@ -376,7 +376,7 @@ bool __stdcall function_1f8a70(long actor_index, long unknown)
 	if (actor->unknown267)
 	{
 		function_1f86a0(actor_index);
-		return false;
+		return result;
 	}
 	if (*((byte *)actor + 0x480))
 		return true;
@@ -551,6 +551,6 @@ bool __stdcall function_1f8a70(long actor_index, long unknown)
 	return result;
 failed:
 	function_1f8750(actor_index);
-	return false;
+	return result;
 }
 
