@@ -55,9 +55,6 @@ public:
 	void function_30e140(entity_316000 *entity);
 };
 
-// score 15 (was 22): register choice only: retail sets the dispatcher's handler
-// through eax (ours edx) and loads the removed pairs' size after pushing the
-// listener; its mirror 0x30df80 is not matched either.
 // @retail 0x30e140
 void class_30e140::function_30e140(entity_316000 *entity)
 {
@@ -74,15 +71,18 @@ void class_30e140::function_30e140(entity_316000 *entity)
 		if (member->fixed)
 		{
 			holder_30dc80 recorder(collidable);
-			dispatcher->handler = (pair_handler_3173f0 *)&recorder;
+			dispatcher_3728c0 *const runner = dispatcher;
+			runner->handler = (pair_handler_3173f0 *)&recorder;
 			dispatcher->function_3728c0(0, 0, removed.data, removed.size, pair_listener);
-			dispatcher->handler = &dispatcher->own_handler;
+			dispatcher_3728c0 *const restored = dispatcher;
+			pair_handler_3173f0 *const own = &restored->own_handler;
+			restored->handler = own;
 			for (int i = 0; i < recorder.values.size; i++)
 			{
 				group_30e140 *group = (group_30e140 *)recorder.values.data[i];
-				pairs_30e140 *pending = &group->pending;
-				((collector_3173f0 *)group)->function_3173f0(0, 0, (pair_30d870 *)pending->data, pending->size);
-				pending->resize(0);
+				long const waiting = group->pending.size;
+				((collector_3173f0 *)group)->function_3173f0(0, 0, (pair_30d870 *)group->pending.data, waiting);
+				group->pending.resize(0);
 			}
 		}
 		else
