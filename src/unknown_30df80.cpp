@@ -75,6 +75,9 @@ public:
 	void function_30df80(member_30c8e0 *member);
 };
 
+// score 41 (was 65): the tolerance, the pending count and the group are read
+// into locals as retail does; retail still keeps the shape's vtable in eax
+// where ours keeps it in edx
 // @retail 0x30df80
 void owner_30c8e0::function_30df80(member_30c8e0 *member)
 {
@@ -84,7 +87,8 @@ void owner_30c8e0::function_30df80(member_30c8e0 *member)
 	}
 	pairs_30d870 added(pair_capacity_234);
 	bounds_312800 bounds;
-	member->collidable.shape->get_bounds(member->collidable.motion->transform, tolerance->value * 0.5f, &bounds);
+	float const tolerance_value = tolerance->value;
+	member->collidable.shape->get_bounds(member->collidable.motion->transform, tolerance_value * 0.5f, &bounds);
 	pair_finder->slot_1(&member->collidable.handle, &bounds, &added);
 	if (added.size > 0)
 	{
@@ -98,13 +102,15 @@ void owner_30c8e0::function_30df80(member_30c8e0 *member)
 			{
 				group_30dc80 *group = recorder.values.data[i];
 				pairs_30df80 *pending = &group->pending;
-				((collector_3173f0 *)group)->function_3173f0((pair_30d870 *)pending->data, pending->size, 0, 0);
+				long const pending_count = pending->size;
+				((collector_3173f0 *)group)->function_3173f0((pair_30d870 *)pending->data, pending_count, 0, 0);
 				pending->resize(0);
 			}
 		}
 		else
 		{
-			member->group->function_3173f0(added.data, added.size, 0, 0);
+			collector_3173f0 *group = member->group;
+			group->function_3173f0(added.data, added.size, 0, 0);
 		}
 	}
 }

@@ -159,24 +159,23 @@ public:
 	void function_305d40(corner_305d40 *out, corner_key_305d40 const *key) const;
 };
 
+// the feature's point is transformed into the box's frame and compared with
+// every contact of the table: when one of them lies within the pair's radius
+// the pair is already touching and no new contact is made
 // @retail 0x305f60
 void pair_305f60::function_305f60(table_305f60 *table, feature_305f60 const *feature, key_305f60 *key)
 {
 	if (key->index <= 5)
 	{
-		transform_305f60 const *transform;
-		__m128 local;
+		__m128 point;
 		if (key->index <= 2)
 		{
-			transform = second_transform;
-			local = feature->second_point;
+			point = transform_305f60_apply(second_transform, feature->second_point);
 		}
 		else
 		{
-			transform = first_transform;
-			local = feature->first_point;
+			point = transform_305f60_apply(first_transform, feature->first_point);
 		}
-		__m128 point = transform_305f60_apply(transform, local);
 		for (int i = 0; i < table->count; i++)
 		{
 			if (table->entries[i].first <= 5)
@@ -253,12 +252,13 @@ void pair_305f60::function_3061c0(table_305f60 *table, key_305f60 key, unsigned 
 {
 	for (int k = 0; k < 7; k++)
 	{
-		if ((g_corner_flips_413690[k] & mask) != 0)
+		unsigned short const flip = g_corner_flips_413690[k];
+		if ((flip & mask) != 0)
 		{
 			continue;
 		}
 		key_305f60 corner = key;
-		corner.field_2 = (corner.field_2 & 0xff0f) | (unsigned short)(key.field_2 ^ g_corner_flips_413690[k]);
+		corner.field_2 = (unsigned short)((key.field_2 ^ flip) | (corner.field_2 & 0xff0f));
 		for (int i = table->count - 1; i >= 0; i--)
 		{
 			if (table->entries[i].first == corner.index && table->entries[i].second == corner.field_2)
@@ -288,12 +288,13 @@ void pair_305f60::function_3062e0(table_305f60 *table, key_305f60 key, unsigned 
 {
 	for (int k = 0; k < 7; k++)
 	{
-		if ((g_corner_flips_413690[k] & mask) != 0)
+		unsigned short const flip = g_corner_flips_413690[k];
+		if ((flip & mask) != 0)
 		{
 			continue;
 		}
 		key_305f60 corner = key;
-		corner.field_2 = (corner.field_2 & 0xff0f) | (unsigned short)(key.field_2 ^ g_corner_flips_413690[k]);
+		corner.field_2 = (unsigned short)((key.field_2 ^ flip) | (corner.field_2 & 0xff0f));
 		for (int i = table->count - 1; i >= 0; i--)
 		{
 			if (table->entries[i].first == corner.index && table->entries[i].second == corner.field_2)
@@ -308,7 +309,8 @@ void pair_305f60::function_3062e0(table_305f60 *table, key_305f60 key, unsigned 
 		{
 			continue;
 		}
-		feature.distance = -(feature.scale * feature.second_point.m128_f32[feature.kind - 3]) - second_extents.m128_f32[feature.kind - 3];
+		int const axis = feature.kind - 3;
+		feature.distance = -(feature.scale * feature.second_point.m128_f32[axis]) - second_extents.m128_f32[axis];
 		if (feature.distance >= limit - 1.192092896e-07f)
 		{
 			function_305f60(table, &feature, &corner);

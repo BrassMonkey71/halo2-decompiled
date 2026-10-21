@@ -544,9 +544,17 @@ long function_122610(long size, void const *pixels, void *destination)
 				case 0:
 					run = 0;
 					goto counted;
+				case 4:
+					run = 5;
+					pixel = color;
+					goto fill;
 				case 1:
 					run = 4;
 					pixel = color | 0xf000;
+					goto fill;
+				case 6:
+					run = 3;
+					pixel = color;
 					goto fill;
 				case 2:
 					run = 3;
@@ -555,16 +563,8 @@ long function_122610(long size, void const *pixels, void *destination)
 				case 3:
 					pixel = color | 0xf000;
 					goto fill;
-				case 4:
-					run = 5;
-					pixel = color;
-					goto fill;
 				case 5:
 					run = 4;
-					pixel = color;
-					goto fill;
-				case 6:
-					run = 3;
 					pixel = color;
 					goto fill;
 				case 7:

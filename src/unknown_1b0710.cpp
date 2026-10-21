@@ -39,8 +39,6 @@ bool __stdcall function_1b0ab0(long actor_index, s_slot *slot);
 
 point3f *function_b9dd0(long object_index, point3f *result);
 
-real distance_sq3f(point3f const *a, point3f const *b); /* unknown_023540.cpp */
-
 void function_26c180(long actor_index);
 void function_26bfa0(long object_index, long *location_index, s_location_view *location);
 real function_30bf0(vector3f *v);
@@ -129,7 +127,9 @@ short __stdcall function_1b0780(long actor_index)
 
 				function_1b0710(element->unknown80, actor_index, NULL, &maximum_distance_squared);
 				function_b9dd0(element->unknown80, &position);
-				if (distance_sq3f(&position, &actor->position) > maximum_distance_squared &&
+				vector3f offset;
+				vector3d_from_points3d(&position, &actor->position, &offset);
+				if (length_sq3f(&offset) > maximum_distance_squared &&
 					(*(long *)&actor->unknown418 == *(long *)&g_470fa0 || !actor->unknown5d0 ||
 					function_210b60((s_type_c3b527 *)function_262b40(actor->unknown418), &actor->position) > maximum_distance_squared))
 				{
@@ -138,7 +138,9 @@ short __stdcall function_1b0780(long actor_index)
 
 					for (short i = 0; i < count; i++)
 					{
-						if (maximum_distance_squared > distance_sq3f(&position, &entries[i].point))
+						vector3f entry_offset;
+						vector3d_from_points3d(&position, &entries[i].point, &entry_offset);
+						if (maximum_distance_squared > length_sq3f(&entry_offset))
 						{
 							result = 3;
 							break;

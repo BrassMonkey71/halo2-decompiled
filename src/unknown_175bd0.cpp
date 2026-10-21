@@ -2185,24 +2185,25 @@ bool __stdcall function_1794e0(long effect_index)
 					effect->origin = *g_468710;
 				visible = false;
 			}
-			if (visible)
+			if (!visible)
 			{
-				if (TEST_FIELD_BIT(effect->flag2))
+				if (TEST_FIELD_BIT(definition->flag0))
 				{
-					if (!TEST_FIELD_BIT(effect->flag4))
-						function_177310(effect_index);
-					else if (function_177610(effect_index))
-						return true;
+					if (function_177610(effect_index))
+						{ effect = 0; goto effect_done; }
 				}
+				else if (!TEST_FIELD_BIT(effect->flag2))
+					function_177260(effect_index, false);
 			}
-			else if (TEST_FIELD_BIT(definition->flag0))
+			else if (TEST_FIELD_BIT(effect->flag2))
 			{
-				if (function_177610(effect_index))
-					return true;
-			}
-			else if (!TEST_FIELD_BIT(effect->flag2))
-			{
-				function_177260(effect_index, false);
+				if (TEST_FIELD_BIT(effect->flag4))
+				{
+					if (function_177610(effect_index))
+						{ effect = 0; goto effect_done; }
+				}
+				else
+					function_177310(effect_index);
 			}
 		}
 		if (TEST_FIELD_BIT(definition->flag3) || TEST_FIELD_BIT(definition->flag4))
@@ -2226,6 +2227,7 @@ bool __stdcall function_1794e0(long effect_index)
 			}
 		}
 	}
+effect_done:
 	return effect == 0;
 }
 

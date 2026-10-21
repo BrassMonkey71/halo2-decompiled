@@ -200,9 +200,10 @@ side_ready:
 		local.i = matrix.forward.k * movement.k + matrix.forward.j * movement.j + matrix.forward.i * movement.i;
 		local.j = matrix.left.k * movement.k + matrix.left.j * movement.j + matrix.left.i * movement.i;
 		local.k = matrix.up.k * movement.k + matrix.up.j * movement.j + matrix.up.i * movement.i;
-		g_51ec30.x += g_470a24 * local.i;
-		g_51ec30.y += g_470a24 * local.j;
-		g_51ec30.z += g_470a24 * local.k;
+		real speed = g_470a24;
+		g_51ec30.x += speed * local.i;
+		g_51ec30.y += speed * local.j;
+		g_51ec30.z += speed * local.k;
 		point3f scaled = g_51ec30;
 		if (matrix.scale != 1.f)
 		{

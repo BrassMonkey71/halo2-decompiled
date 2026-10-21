@@ -435,7 +435,7 @@ bool function_2601f0(long actor_index, s_type_c3b527 const *point, long sector, 
             s_path_source source;
             memset(&source, 0, sizeof(source));
             source.radius = *(real *)((byte *)function_1e4a50(actor->unknown054) + 4);
-            source.object_index = source.unknown0c = NONE;
+            memset(&source.object_index, 0xff, sizeof(source.object_index) + sizeof(source.unknown0c));
             memcpy(&source.point, point, sizeof(source.point));
             source.unknown04 = true;
             source.has_point = true;
@@ -1126,7 +1126,7 @@ weapon_done:
  long group_index = *(long *)(actor + 0x7c);
  if (*(short *)(actor + 0x86) >= 5 && group_index != NONE)
   group = *(short *)(g_502420->data + (group_index & 0xffff) * 0x50 + 0x10) > 1;
- switch (type)
+ switch (request->type)
  {
  case 0: case 2: case 3: case 6:
   if (group)
