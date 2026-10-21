@@ -386,7 +386,7 @@ struct s_2da8c0
 
 
 struct s_1d1540 { void function_30be00(void *arg_0); };
-struct s_1d1541 { void function_30d2b0(void *arg_0); };
+struct s_1d1541 { void *function_30d2b0(void *arg_0); };
 struct s_314320 { s_314320(); };
 struct s_314450
 {

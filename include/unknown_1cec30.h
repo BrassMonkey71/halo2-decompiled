@@ -214,7 +214,7 @@ class hkWorld
 {
 public:
 	hkBool entity_world_remove(hkEntity *entity);
-	void entity_world_insert(hkEntity *entity);
+	hkEntity *entity_world_insert(hkEntity *entity);
 	void world_island_discard(c_havok_body_group *island);
 
 	byte unknown00[8];

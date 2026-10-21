@@ -49,7 +49,7 @@ struct link_30d2b0
 // the owner, as the game's callers declare it, and its layout
 struct s_1d1541
 {
-	void function_30d2b0(void *arg_0);
+	void *function_30d2b0(void *arg_0);
 };
 
 struct owner_30d2b0
@@ -59,10 +59,9 @@ struct owner_30d2b0
 };
 
 // score 14 (was 14): retail loads the second member's group (into ebx) before the
-// first's, and returns the link in eax; the game's callers declare this method
-// void, so the return stays out until that declaration can change.
+// first's; it returns the link.
 // @retail 0x30d2b0
-void s_1d1541::function_30d2b0(void *arg_0)
+void *s_1d1541::function_30d2b0(void *arg_0)
 {
 	link_30d2b0 *link = (link_30d2b0 *)arg_0;
 	class_316c50 *second_group = link->second->group;
@@ -88,4 +87,5 @@ void s_1d1541::function_30d2b0(void *arg_0)
 		}
 	}
 	function_318240((listener_world_315d20 *)this, link);
+	return link;
 }
