@@ -40,8 +40,8 @@ PRIVATE __forceinline real function_1a8fa1(vector3f const *arg_0)
 // @retail 0x1a8fa0
 void function_1a8fa0(long actor_index, real distance, bool *near_point, bool *near_actor, bool *near_segment)
 {
+	s_ai_object *target = ai_object_get(actor_get(actor_index)->unknown360);
 	s_actor_view *actor = actor_get(actor_index);
-	s_ai_object *target = ai_object_get(actor->unknown360);
 	bool segment = false;
 	bool point;
 	bool within;
@@ -63,10 +63,12 @@ void function_1a8fa0(long actor_index, real distance, bool *near_point, bool *ne
 	}
 	{
 		point3f *start = &actor->unknown370;
+		point3f end;
+		end.x = actor->unknown37c.i * 1.5f + start->x;
+		end.y = actor->unknown37c.j * 1.5f + start->y;
+		end.z = actor->unknown37c.k * 1.5f + start->z;
 		vector3f line;
-		line.i = (actor->unknown37c.i * 1.5f + start->x) - start->x;
-		line.j = (actor->unknown37c.j * 1.5f + start->y) - start->y;
-		line.k = (actor->unknown37c.k * 1.5f + start->z) - start->z;
+		vector3d_from_points3d(start, &end, &line);
 		point3f *position = &actor->position;
 		distance += actor->unknown36c;
 		within = function_11e000(position, start, &line) < distance * distance;
