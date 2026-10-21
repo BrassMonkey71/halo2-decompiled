@@ -4615,8 +4615,8 @@ void __stdcall function_fff40(long weapon_index, bool silent, bool immediate)
         long kind = 0x07000001;
         long unit = function_101f20(weapon_index);
         if (unit != NONE && function_cd660(unit)) kind = 0x0400054b;
-        if (state->animation_set(0x05000024, 0x07000101, kind, 0x07000001, 0x82, 0x3f)
-            || (kind == 0x0400054b && state->animation_set(0x05000024, 0x07000101, 0x07000001, 0x07000001, 0x82, 0x3f)))
+        if (state->animation_set(0x07000101, kind, 0x07000001, 0x05000024, 0x82, 0x3f)
+            || (kind == 0x0400054b && state->animation_set(0x07000101, 0x07000001, 0x07000001, 0x05000024, 0x82, 0x3f)))
             *(long *)(current + 0x178) = 9;
     }
     active = *(byte **)(g_4e0300->data + (weapon_index & 0xffff) * 12 + 8);

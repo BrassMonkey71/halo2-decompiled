@@ -1149,19 +1149,14 @@ long function_75890(long time);
 void function_251f8d(c_matchmaking_screen *screen)
 {
     long maximum = 0;
-    struct s_status_values
-    {
-        c_text_widget_45a5e0 *status;
-        long player_count;
-    } status_values;
-    status_values.player_count = 0;
+    long player_count = 0;
     bool capacity;
     {
         long unused;
-        capacity = function_199dc9((long)&status_values.player_count, (long)&unused, (long)&maximum);
+        capacity = function_199dc9((long)&player_count, (long)&unused, (long)&maximum);
     }
     c_text_widget_45a5e0 *title = (c_text_widget_45a5e0 *)screen->find_child(6, 2, false);
-    status_values.status = (c_text_widget_45a5e0 *)screen->find_child(6, 5, false);
+    c_text_widget_45a5e0 *status = (c_text_widget_45a5e0 *)screen->find_child(6, 5, false);
     c_text_widget_45a5e0 *message = (c_text_widget_45a5e0 *)screen->find_child(6, 7, false);
     if (title)
         title->function_253b1a(screen->get_title());
@@ -1180,30 +1175,34 @@ void function_251f8d(c_matchmaking_screen *screen)
     }
     if (message && (long)function_217b70((word *)&screen->value1222) > 0)
         message->function_22f52e()->set_text((word *)&screen->value1222);
-    if (status_values.status)
+    if (status)
     {
         if (capacity)
         {
-            if (status_values.player_count >= maximum)
+            long limit = maximum;
+            if (player_count >= limit)
             {
-                status_values.status->function_253b1a(0x11000762);
-                status_values.status->value6e = true;
+                status->function_253b1a(0x11000762);
+                status->value6e = true;
             }
             else
             {
-                c_text_widget_45a5e0 *status = status_values.status;
+                struct s_string_buffer
+                {
+                    word text[0x100];
+                    void load(c_widget *screen, long handle) { screen->function_230134(handle, text); }
+                } format;
                 word buffer[0x100];
-                word format[0x100];
                 buffer[0] = 0;
-                format[0] = 0;
-                ((c_widget *)screen)->function_230134(0xe000761, format);
-                function_1630e0(buffer, format, maximum - status_values.player_count);
+                format.text[0] = 0;
+                format.load((c_widget *)screen, 0xe000761);
+                function_1630e0(buffer, format.text, limit - player_count);
                 status->function_22f52e()->set_text(buffer);
                 status->value6e = true;
             }
         }
         else
-            status_values.status->value6e = false;
+            status->value6e = false;
     }
 }
 

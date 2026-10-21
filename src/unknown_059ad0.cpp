@@ -1018,17 +1018,18 @@ bool __stdcall network_session_boot_machine(c_class_58d20 *session, const s_sess
 			if (session->function_058d20())
 			{
 				network_session_boot_member(session, member_index);
-				{ result = true; goto local_5acc0; }
 			}
-			s_network_message_peer_identity message;
-			memset(&message, 0, sizeof(message));
-			message.session_id = *(s_session_id *)&session->unknown1c;
-			message.identity = *identity;
-			network_session_send_to_host(session, _network_message_type_boot_machine, sizeof(message), &message);
-			{ result = true; goto local_5acc0; }
+			else
+			{
+				s_network_message_peer_identity message;
+				memset(&message, 0, sizeof(message));
+				message.session_id = *(s_session_id *)&session->unknown1c;
+				message.identity = *identity;
+				network_session_send_to_host(session, _network_message_type_boot_machine, sizeof(message), &message);
+			}
+			result = true;
 		}
 	}
-local_5acc0:
 	return result;
 }
 
