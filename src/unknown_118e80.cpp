@@ -624,7 +624,7 @@ bool __stdcall function_118510(long arg_0, void const *arg_1, bool *arg_2)
             {
                 bool local_11 = local_9 != 0x7000001;
                 bool local_12 = local_10 != 0x7000001;
-                if (local_11 || local_12)
+                if (local_11 | local_12)
                     function_ba350(arg_0, 0.267f);
             }
         }
