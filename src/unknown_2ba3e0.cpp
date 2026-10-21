@@ -270,12 +270,8 @@ void function_2ba100(s_particle_properties_2ba const *definition, void *system, 
                     properties_values[j] = function_246cd0(&properties[j].property, values);
             }
             short cluster = *(short *)((byte *)system + 0x20);
-            short wind_index = NONE;
-            if (cluster != NONE)
-            {
-                byte *clusters = *(byte **)((byte *)g_4e0348 + 0xa0);
-                wind_index = *(short *)(clusters + cluster * 0xb0 + 0x76);
-            }
+            long wind_index = cluster == NONE ? NONE :
+                *(short *)(*(byte **)((byte *)g_4e0348 + 0xa0) + cluster * 0xb0 + 0x76);
             vector3f wind;
             function_211b70(wind_index, particle->position.n, 8, &wind);
             real time = g_510c54->game_time * g_510c54->rate;

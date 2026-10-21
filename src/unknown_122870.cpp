@@ -377,24 +377,23 @@ extern char const *g_468800;
 extern char const *g_468804;
 extern char const *g_468808;
 
-static __forceinline real cache_map_progress(char const *name)
+static __forceinline void cache_map_progress(char const *name, real *output)
 {
-	real progress = 0.0f;
+	*output = 0.0f;
 	long location = map_location_get(name);
 	if (location == 3)
 	{
-		progress = 1.0f;
+		*output = 1.0f;
 	}
 	else if (location == 2)
 	{
 		if (map_names_equal(g_55bd21, name))
-			function_2148b0((long)&progress);
+			function_2148b0((long)output);
 	}
 	else
 	{
-		progress = 0.0f;
+		*output = 0.0f;
 	}
-	return progress;
 }
 
 // @retail 0x122dd0
@@ -405,10 +404,15 @@ real __stdcall function_122dd0(byte *map_name, long mode, long type)
 	real map_weight = 100.0f;
 	real progress = 0.0f;
 	long location = map_location_get((char const *)map_name);
-	real map_progress = cache_map_progress((char const *)map_name);
-	real menu_progress = cache_map_progress(g_468804);
-	real shared_progress = cache_map_progress(g_4687fc);
-	real campaign_progress = cache_map_progress(g_468800);
+	real map_progress;
+	cache_map_progress((char const *)map_name, &map_progress);
+	real query_progress;
+	cache_map_progress(g_468804, &query_progress);
+	real menu_progress = query_progress;
+	cache_map_progress(g_4687fc, &query_progress);
+	real shared_progress = query_progress;
+	real campaign_progress;
+	cache_map_progress(g_468800, &campaign_progress);
 	if (!strcmp((char const *)map_name, g_468808))
 		map_weight = 90.0f;
 	else if (type == 0)
@@ -444,15 +448,15 @@ real __stdcall function_122dd0(byte *map_name, long mode, long type)
 			goto done;
 		}
 	}
-	if (mode == 0)
+	if (mode != 0)
+	{
+		progress = weight - progress;
+	}
+	else
 	{
 		progress /= weight;
 		if (progress < 0.0f) progress = 0.0f;
 		else if (progress > 1.0f) progress = 1.0f;
-	}
-	else
-	{
-		progress = weight - progress;
 	}
 done:
 	if (location == 4) progress = 0.0f;
