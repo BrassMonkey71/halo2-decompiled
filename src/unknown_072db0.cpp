@@ -568,7 +568,7 @@ long __stdcall function_74800(const s_match_player_rating_collection *collection
 		const s_match_player_rating_entry *entry = &collection->players[i];
 		if (entry->key == key)
 		{
-			long other_skill = entry->skill;
+			short other_skill = entry->skill;
 			if (entry->active && entry->team != NONE && !(entry->flags & 3) && other_skill != NONE)
 			{
 				long other_team = entry->team;
@@ -579,8 +579,8 @@ long __stdcall function_74800(const s_match_player_rating_collection *collection
 					other_rank = entry->rank;
 				if (i != selected && other_team != team)
 				{
-					count++;
 					total += function_746b0(other_skill, skill, rank, other_rank);
+					count++;
 				}
 			}
 		}

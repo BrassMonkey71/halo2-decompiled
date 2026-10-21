@@ -116,10 +116,10 @@ bool __stdcall function_20bbb0(short condition, long object_index, real *weight)
             result = actor != NULL;
             break;
         case 3:
-            result = object[0xaa] == 0 && !(bool)((object[0x10a] >> 2) & 1);
+            if (object[0xaa] == 0) result = !(bool)((object[0x10a] >> 2) & 1);
             break;
         case 4:
-            result = object[0xaa] == 0 && (bool)((object[0x10a] >> 2) & 1);
+            if (object[0xaa] == 0) result = (bool)((object[0x10a] >> 2) & 1);
             break;
         case 5:
             result = object[0xaa] == 1 && !function_20bb70(object_index);

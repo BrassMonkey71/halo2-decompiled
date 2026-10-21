@@ -3,9 +3,8 @@
 // source's state.
 #include <xmmintrin.h>
 
-inline void set_zero_31a750(__m128 *rows)
+inline void set_zero_31a750(__m128 *rows, __m128 zero)
 {
-	__m128 zero = _mm_setzero_ps();
 	rows[0] = zero;
 	rows[1] = zero;
 	rows[2] = zero;
@@ -61,15 +60,18 @@ void class_31a750::function_31a750(__m128 *rows) const
 	_mm_store_ps((float *)&rows[2], zero);
 }
 
-// score 5: retail stores the seven zero rows in the order 0x30, 0x10, 0x20,
-// 0x40, 0x50, 0x60, 0x70 and emits the byte store after the zeroing xorps.
+// clears the state: the kind, then the seven rows of zeros, the third row
+// first, as retail has them
 // @retail 0x31a770
 char *class_31a750::function_31a770(long a, long b, s_31a770 *out) const
 {
+	__m128 zero = _mm_setzero_ps();
 	out->kind = 2;
-	set_zero_31a750(&out->rows[0]);
-	set_zero_31a750(&out->rows[3]);
-	out->rows[6] = _mm_setzero_ps();
+	out->rows[2] = zero;
+	out->rows[0] = zero;
+	out->rows[1] = zero;
+	set_zero_31a750(&out->rows[3], zero);
+	out->rows[6] = zero;
 	return (char *)out + 0x80;
 }
 

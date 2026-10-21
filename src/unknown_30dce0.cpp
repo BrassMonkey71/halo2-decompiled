@@ -11,11 +11,6 @@
 struct flag_30dce0
 {
 	bool value;
-
-	flag_30dce0(bool value_)
-	{
-		value = value_;
-	}
 };
 
 struct bool_result_30dce0
@@ -137,6 +132,10 @@ public:
 	void function_30dce0(object_30dce0 *object, bool notify);
 };
 
+// score 161 (was 200): the flag is now a plain byte written into a local, which
+// matches retail's size, but retail keeps this in ebx and the object in esi
+// while ours keeps this in edi and the object in ebx, and retail builds the
+// flag in the argument slot where ours copies it there
 // @retail 0x30dce0
 void world_30dce0::function_30dce0(object_30dce0 *object, bool notify)
 {
@@ -146,9 +145,9 @@ void world_30dce0::function_30dce0(object_30dce0 *object, bool notify)
 	broad_phase->query(&box, &pairs);
 	collidables_30dce0 added;
 	collidables_30dce0 removed;
+	collidable_30dce0 *own = &object->collidable;
 	for (int i = 0; i < pairs.size; i++)
 	{
-		collidable_30dce0 *own = &object->collidable;
 		if ((handle_30dce0 *)pairs.data[i].second != own)
 		{
 			if (filter_owner->filter.accept(own, static_cast<collidable_30dce0 *>((handle_30dce0 *)pairs.data[i].second)).value)
@@ -168,7 +167,7 @@ void world_30dce0::function_30dce0(object_30dce0 *object, bool notify)
 			object->remove_overlap(removed.data[i]);
 			if (removed.data[i]->kind == 2)
 			{
-				removed.data[i]->listener->remove_overlap(&object->collidable);
+				removed.data[i]->listener->remove_overlap(own);
 			}
 		}
 	}
@@ -176,14 +175,15 @@ void world_30dce0::function_30dce0(object_30dce0 *object, bool notify)
 	{
 		object->overlaps_changed();
 	}
+	flag_30dce0 flag = { true };
 	if (added.size != 0)
 	{
 		for (int i = 0; i < added.size; i++)
 		{
-			object->add_overlap(added.data[i], flag_30dce0(true));
+			object->add_overlap(added.data[i], flag);
 			if (added.data[i]->kind == 2)
 			{
-				added.data[i]->listener->add_overlap(&object->collidable, flag_30dce0(true));
+				added.data[i]->listener->add_overlap(own, flag);
 			}
 		}
 	}

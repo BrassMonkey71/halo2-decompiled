@@ -1630,13 +1630,7 @@ void function_269580(long destination_index, long source_index)
 	while ((prop = clump_next_prop(&iterator)) != NULL)
 	{
 		long object_index = *(long *)((byte *)prop + 8);
-		byte *object = NULL;
-		if (object_index != NONE && (object_index & 0xffff) < g_4e0300->high_water_index)
-		{
-			s_object_header_view *header = (s_object_header_view *)(g_4e0300->data + g_4e0300->size * (object_index & 0xffff));
-			if (header->salt && header->salt == (object_index >> 16) && ((1 << header->type) & -1))
-				object = header->object;
-		}
+		byte *object = (byte *)function_badc0(object_index, (dword)NONE);
 		if (!object) continue;
 		if (*(char *)(object + 0xaa) == 12 && *(long *)(object + 0x134) == 0)
 		{
@@ -1988,12 +1982,12 @@ void function_26a210(long clump_index)
     while ((prop = clump_next_prop(&iterator)) != NULL)
     {
         long object_index = *(long *)((byte *)prop + 8);
-        s_object_header_view *header = (s_object_header_view *)datum_get_inlined(g_4e0300, object_index);
-        if (header && ((1 << header->type) & 3) && header->object)
+        s_object *object = function_badc0(object_index, 3);
+        if (object)
         {
-            prop->unknown26[0] = (bool)((*(dword *)(header->object + 0x134) >> 7) & 1);
+            prop->unknown26[0] = (bool)((*(dword *)((byte *)object + 0x134) >> 7) & 1);
             if (prop->unknown23)
-                *((bool *)prop + 0xbf) = (bool)((*(dword *)(header->object + 0x134) >> 8) & 1);
+                *((bool *)prop + 0xbf) = (bool)((*(dword *)((byte *)object + 0x134) >> 8) & 1);
         }
         if (g_470f10[*(short *)((byte *)prop + 2)].kind == 0 && prop->unknown04 == 1)
             function_25ccd0(&prop->state, object_index, NONE, NULL);

@@ -265,24 +265,27 @@ bool function_182800(s_vehicle_ray *ray_data, long excluded_component, void *wor
 {
 	s_query_result *result = (s_query_result *)ray_data;
 	c_bounded_query_world *world = (c_bounded_query_world *)world_data;
-	__m128 local_1 = _mm_setzero_ps();
 	point3f end;
 	end.x = result->origin.x + result->direction.i;
 	end.y = result->origin.y + result->direction.j;
 	end.z = result->origin.z + result->direction.k;
+	s_bounded_ray ray;
+	ray.flag = false;
 	c_nearest_query_callback collector;
 	collector.fraction = 1.0f;
 	collector.result = result;
 	collector.excluded_component = excluded_component;
+	collector.result->fraction = FLT_MAX;
+	point3f origin;
+	origin.x = result->origin.x;
+	origin.y = result->origin.y;
+	origin.z = result->origin.z;
+	ray.from.m128_f32[3] = 0.0f;
+	ray.to.m128_f32[3] = 0.0f;
 	collector.found = false;
-	result->fraction = FLT_MAX;
-	s_bounded_ray ray;
-	ray.flag = false;
-	_mm_store_ss(&ray.from.m128_f32[3], local_1);
-	_mm_store_ss(&ray.to.m128_f32[3], local_1);
 	for (long i = 0; i < 3; i++)
 	{
-		ray.from.m128_f32[i] = function_182801(result->origin.n[i], &world->lower.m128_f32[i], &world->upper.m128_f32[i]);
+		ray.from.m128_f32[i] = function_182801(origin.n[i], &world->lower.m128_f32[i], &world->upper.m128_f32[i]);
 		ray.to.m128_f32[i] = function_182801(end.n[i], &world->lower.m128_f32[i], &world->upper.m128_f32[i]);
 	}
 	_control87(0x9001f, 0x8001f);
@@ -525,7 +528,9 @@ void c_query_batch_collector::collect(s_batch_contact const *contact)
 	long limited = key < 0 ? 0 : (key > count - 1 ? count - 1 : key);
 	if (limited != key) return;
 	point3f origin = *(point3f *)(first->transform + 0x50);
-	point3f position = contact->position;
+	real hit_x = contact->position.x;
+	real hit_y = contact->position.y;
+	real hit_z = contact->position.z;
 	real distance = contact->distance + first->shape->radius;
 	if (!(results[key].fraction > distance)) return;
 	bool valid = true;
@@ -586,7 +591,7 @@ void c_query_batch_collector::collect(s_batch_contact const *contact)
 	if (valid && contact->normal.k > scale)
 	{
 		results[key].found = true;
-		*(point3f *)((byte *)&results[key] + 0xc) = position;
+		real_point3d_set((point3f *)((byte *)&results[key] + 0xc), hit_x, hit_y, hit_z);
 		*(vector3f *)((byte *)&results[key] + 0x18) = contact->normal;
 		results[key].fraction = distance;
 		results[key].index = index;

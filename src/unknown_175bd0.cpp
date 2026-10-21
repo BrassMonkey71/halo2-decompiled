@@ -1956,7 +1956,7 @@ s_particle_system_datum *function_178eb0(long effect_index, long definition_inde
 						particle_system->unknown08 = 1.0f / delay;
 					else
 						particle_system->unknown08 = 1.0f;
-					particle_system_link(particle_system, &effect->last_particle_system_index, &effect->first_particle_system_index);
+					particle_system_link(particle_system, &effect->first_particle_system_index, &effect->last_particle_system_index);
 					particle_system->unknown24 = location_index;
 					function_178c80(0.0f, effect, particle_system, definition, 0.0f, definition->unknown0c != 0);
 					return particle_system;
@@ -2185,24 +2185,25 @@ bool __stdcall function_1794e0(long effect_index)
 					effect->origin = *g_468710;
 				visible = false;
 			}
-			if (visible)
+			if (!visible)
 			{
-				if (TEST_FIELD_BIT(effect->flag2))
+				if (TEST_FIELD_BIT(definition->flag0))
 				{
-					if (!TEST_FIELD_BIT(effect->flag4))
-						function_177310(effect_index);
-					else if (function_177610(effect_index))
-						return true;
+					if (function_177610(effect_index))
+						{ effect = 0; goto effect_done; }
 				}
+				else if (!TEST_FIELD_BIT(effect->flag2))
+					function_177260(effect_index, false);
 			}
-			else if (TEST_FIELD_BIT(definition->flag0))
+			else if (TEST_FIELD_BIT(effect->flag2))
 			{
-				if (function_177610(effect_index))
-					return true;
-			}
-			else if (!TEST_FIELD_BIT(effect->flag2))
-			{
-				function_177260(effect_index, false);
+				if (TEST_FIELD_BIT(effect->flag4))
+				{
+					if (function_177610(effect_index))
+						{ effect = 0; goto effect_done; }
+				}
+				else
+					function_177310(effect_index);
 			}
 		}
 		if (TEST_FIELD_BIT(definition->flag3) || TEST_FIELD_BIT(definition->flag4))
@@ -2226,6 +2227,7 @@ bool __stdcall function_1794e0(long effect_index)
 			}
 		}
 	}
+effect_done:
 	return effect == 0;
 }
 

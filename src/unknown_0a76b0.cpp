@@ -4615,8 +4615,8 @@ void __stdcall function_fff40(long weapon_index, bool silent, bool immediate)
         long kind = 0x07000001;
         long unit = function_101f20(weapon_index);
         if (unit != NONE && function_cd660(unit)) kind = 0x0400054b;
-        if (state->animation_set(0x05000024, 0x07000101, kind, 0x07000001, 0x82, 0x3f)
-            || (kind == 0x0400054b && state->animation_set(0x05000024, 0x07000101, 0x07000001, 0x07000001, 0x82, 0x3f)))
+        if (state->animation_set(0x07000101, kind, 0x07000001, 0x05000024, 0x82, 0x3f)
+            || (kind == 0x0400054b && state->animation_set(0x07000101, 0x07000001, 0x07000001, 0x05000024, 0x82, 0x3f)))
             *(long *)(current + 0x178) = 9;
     }
     active = *(byte **)(g_4e0300->data + (weapon_index & 0xffff) * 12 + 8);
@@ -4634,7 +4634,7 @@ void __stdcall function_fff40(long weapon_index, bool silent, bool immediate)
         *(short *)(object + 0x17c) = 0;
     else
     {
-        object[0x16c] &= ~0x20;
+        *(word *)(object + 0x16c) &= ~0x20;
         *(short *)(object + 0x19e) = (short)unit_action_round_long((real)*(short *)((byte *)g_510c54 + 2) * *(real *)(definition + 0x138));
         *(short *)(object + 0x17c) = first_person_weapon_animation_ticks(weapon_index, 0x05000024, 1);
     }

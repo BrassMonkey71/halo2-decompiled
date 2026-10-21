@@ -151,9 +151,12 @@ bool function_23a220(const point2f *point, short count, const point2f *points, r
 // @retail 0x1edf50
 void c_vertex_shape::ray_test(bool *hit, const s_shape_ray *ray, s_shape_ray_result *result)
 {
-	point3f origin = *(point3f *)&vertices_raw[0];
+	point3f origin;
+	real_point3d_set(&origin, vertices_raw[0], vertices_raw[1], vertices_raw[2]);
+	point3f ray_start;
+	real_point3d_set(&ray_start, ray->start.x, ray->start.y, ray->start.z);
 	vector3f direction;
-	vector3d_from_points3d(&ray->start, &ray->end, &direction);
+	vector3d_from_points3d(&ray_start, &ray->end, &direction);
 	vector3f first, second;
 	vector3d_from_points3d(&origin, (point3f *)&vertices_raw[4], &first);
 	vector3d_from_points3d(&origin, (point3f *)&vertices_raw[8], &second);
@@ -172,7 +175,7 @@ void c_vertex_shape::ray_test(bool *hit, const s_shape_ray *ray, s_shape_ray_res
 	}
 	real fourth = 0.0f;
 	vector3f offset;
-	vector3d_from_points3d(&origin, &ray->start, &offset);
+	vector3d_from_points3d(&origin, &ray_start, &offset);
 	real dot = dot3f(&normal, &direction);
 	real fraction = 0.0f;
 	if (dot != 0.0f)
@@ -185,9 +188,9 @@ void c_vertex_shape::ray_test(bool *hit, const s_shape_ray *ray, s_shape_ray_res
 			short axis = function_120850(&normal);
 			long side = axis * 2 + (normal.n[axis] > 0.0f ? 1 : 0);
 			point3f point;
-			point.x = fraction * direction.i + ray->start.x;
-			point.y = fraction * direction.j + ray->start.y;
-			point.z = fraction * direction.k + ray->start.z;
+			point.x = fraction * direction.i + ray_start.x;
+			point.y = fraction * direction.j + ray_start.y;
+			point.z = fraction * direction.k + ray_start.z;
 			long first_axis = g_440b94[side][0];
 			long second_axis = g_440b94[side][1];
 			point2f projected;

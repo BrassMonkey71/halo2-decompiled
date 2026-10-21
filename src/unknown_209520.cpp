@@ -1122,14 +1122,17 @@ void __stdcall function_2095e0(long object_index)
     byte *object = *(byte **)(g_4e0300->data + (object_index & 0xffff) * 12 + 8);
     if ((bool)((*(dword *)(object + 4) >> 28) & 1))
     {
-        s_record_pool_iterator iterator;
-        iterator.data = g_4f9380;
-        iterator.index = NONE;
-        s_hs_global_value *value;
-        while ((value = (s_hs_global_value *)data_iterator_next_inlined(&iterator)) != NULL)
+        struct
         {
-            long index = iterator.datum_index;
-            bool external = (short)index < 0x41d;
+            s_hs_global_value *value;
+            s_record_pool_iterator iterator;
+        } globals;
+        globals.iterator.data = g_4f9380;
+        globals.iterator.index = NONE;
+        while ((globals.value = (s_hs_global_value *)data_iterator_next_inlined(&globals.iterator)) != NULL)
+        {
+            bool external = (short)globals.iterator.datum_index < 0x41d;
+            long index = globals.iterator.datum_index;
             if (!external)
                 index -= 0x41d;
             short global_index = (index & 0x7fff) | (external ? 0x8000 : 0);
@@ -1138,18 +1141,20 @@ void __stdcall function_2095e0(long object_index)
             if (type >= _hs_type_object && type <= _hs_type_scenery)
             {
                 function_20a2e0(global_index);
-                long slot = (global_index & 0x8000) ? (global_index & 0x7fff) : (global_index & 0x7fff) + 0x41d;
-                if (((s_hs_global_value *)iterator.data->data)[slot].value.d == (dword)object_index)
+                long index_long = global_index;
+                long slot = (index_long & 0x8000) ? (index_long & 0x7fff) : (index_long & 0x7fff) + 0x41d;
+                if (((s_hs_global_value *)globals.iterator.data->data)[slot].value.d == (dword)object_index)
                 {
-                    value->value.d = NONE;
+                    globals.value->value.d = NONE;
                     function_20a490(global_index);
                 }
             }
             else if (type == _hs_type_object_list)
             {
                 function_20a2e0(global_index);
-                long slot = (global_index & 0x8000) ? (global_index & 0x7fff) : (global_index & 0x7fff) + 0x41d;
-                long list_index = ((s_hs_global_value *)iterator.data->data)[slot].value.d;
+                long index_long = global_index;
+                long slot = (index_long & 0x8000) ? (index_long & 0x7fff) : (index_long & 0x7fff) + 0x41d;
+                long list_index = ((s_hs_global_value *)globals.iterator.data->data)[slot].value.d;
                 if (function_1dee00(list_index, object_index))
                 {
                     if (list_index != NONE)
@@ -1160,7 +1165,7 @@ void __stdcall function_2095e0(long object_index)
                         function_2963b0(g_4f55d4, *(long *)(list + 8));
                         record_pool_release(g_4f55d8, list_index);
                     }
-                    value->value.d = NONE;
+                    globals.value->value.d = NONE;
                     function_20a490(global_index);
                 }
             }

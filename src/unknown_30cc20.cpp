@@ -103,7 +103,8 @@ void hkWorld::world_island_discard(c_havok_body_group *island)
 	active_islands.data[island->index] = active_islands.data[active_islands.size - 1];
 	active_islands.data[island->index]->index = island->index;
 	active_islands.size--;
-	island->index = inactive_islands.size - 1;
+	long &index = island->index;
+	index = inactive_islands.size - 1;
 	island->active = false;
 	function_318620((world_318540 *)this, (group_318540 *)island);
 }
@@ -114,9 +115,12 @@ void hkWorld::function_30ccd0(c_havok_body_group *island)
 	active_islands.append(island);
 	inactive_islands.data[island->index] = inactive_islands.data[inactive_islands.size - 1];
 	inactive_islands.data[island->index]->index = island->index;
-	inactive_islands.size--;
-	island->index = active_islands.size - 1;
-	island->active = true;
+	long &size = inactive_islands.size;
+	--size;
+	long &index = island->index;
+	index = active_islands.size - 1;
+	bool &active = island->active;
+	active = true;
 	island->field_34 = 0;
 	island->field_38 = 0;
 	function_318540((world_318540 *)this, (group_318540 *)island);

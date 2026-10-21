@@ -5,6 +5,7 @@
 #include "unknown_11c920.h"
 #include "globals.h"
 #include "unknown_0259d0.h"
+#include "normalize3d.h"
 #include "unknown_20fe20.h"
 #include "unknown_1e3920.h"
 #include "slot_handler.h"
@@ -116,6 +117,7 @@ bool function_1f3230(long actor_index, real radius)
 	if (target->output_index == NONE)
 	{
 		vector3d_from_points3d(&target->point, position, &delta);
+		distance_squared = length_sq3f(&delta);
 	}
 	else
 	{
@@ -123,32 +125,28 @@ bool function_1f3230(long actor_index, real radius)
 
 		function_210850(target, &point);
 		vector3d_from_points3d(&point, position, &delta);
+		distance_squared = length_sq3f(&delta);
 	}
-	distance_squared = delta.k * delta.k + delta.j * delta.j + delta.i * delta.i;
 	bool result = false;
 
 	if (actor->unknown26c == NONE && actor->unknown4ae)
 	{
 		if (actor->path_index == actor->path_count - 1)
 		{
-			s_type_c3b527 *previous;
 			vector3f segment;
 			vector3f offset;
 
 			if (actor->path_index - 1 >= 0)
-				previous = &actor->path[actor->path_index - 1].node;
+				function_210be0(&actor->path[actor->path_index - 1].node, target, &segment);
 			else
-				previous = &actor->path_start;
-
-			function_210be0(previous, target, &segment);
+				function_210be0(&actor->path_start, target, &segment);
 			function_210c90(position, target, &offset);
-			if (dot3f(&offset, &segment) < 0.0f)
-				goto local_0;
+			result = dot3f(&offset, &segment) < 0.0f;
 		}
 	}
 	else if (radius * radius > distance_squared)
 	{
-		goto local_0;
+		result = true;
 	}
 	else if (actor->unknown4ae)
 	{
@@ -160,14 +158,10 @@ bool function_1f3230(long actor_index, real radius)
 
 			function_210c90(position, target, &offset);
 			if (dot3f(&unit->velocity, &offset) < 0.0f)
-				goto local_0;
+				result = true;
 		}
 	}
 
-	goto local_1;
-local_0:
-	result = true;
-local_1:
 	return result;
 }
 
@@ -280,15 +274,17 @@ void __stdcall function_1f3e40(long object_index, vector3f const *forward, vecto
 	real input_j = vector->j;
 	real input_k = vector->k;
 	vector3f world;
-	world.i = g_4687a4->i + object_forward.i * input_i;
-	world.i += object_left.i * input_j;
-	world.i += object_up.i * input_k;
-	world.j = g_4687a4->j + object_forward.j * input_i;
-	world.j += object_left.j * input_j;
-	world.j += object_up.j * input_k;
-	world.k = g_4687a4->k + object_forward.k * input_i;
-	world.k += object_left.k * input_j;
-	world.k += object_up.k * input_k;
+	vector3f contribution;
+	long component;
+	vector3f_scale(&object_forward, input_i, &contribution);
+	for (component = 0; component < 3; ++component)
+		world.n[component] = g_4687a4->n[component] + contribution.n[component];
+	vector3f_scale(&object_left, input_j, &contribution);
+	for (component = 0; component < 3; ++component)
+		world.n[component] += contribution.n[component];
+	vector3f_scale(&object_up, input_k, &contribution);
+	for (component = 0; component < 3; ++component)
+		world.n[component] += contribution.n[component];
 	vector3f result;
 	result.i = forward->k * world.k + forward->j * world.j + forward->i * world.i;
 	result.j = left.k * world.k + left.j * world.j + left.i * world.i;
