@@ -76,11 +76,20 @@ void class_3115a0::function_312150(description_3115a0 const *description)
 		}
 		((motion_312150 *)motion)->field_14 = description->field_a4;
 		((motion_312150 *)motion)->field_18 = description->field_a8;
-		if (!query || query->slot_7() != description->field_b5)
+		// the query is asked whether it lets the body through: when it does
+		// and its answer is the one the description holds, nothing is updated,
+		// so the jump leaves the update to the other cases
+		if (query)
 		{
-			((c_library_311690 *)this)->update(description->field_b5);
+			int const allowed = description->field_b5;
+			if (query->slot_7() == allowed)
+			{
+				goto after_update;
+			}
 		}
+		((c_library_311690 *)this)->update(description->field_b5);
 	}
+after_update:
 	field_4c = description->field_ac;
 	field_50 = description->field_b0;
 }
