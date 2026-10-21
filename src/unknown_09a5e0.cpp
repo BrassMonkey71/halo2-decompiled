@@ -551,7 +551,6 @@ bool c_breakable_surface_group_entity_definition::v24(s_entity_slot *entity)
 	return true;
 }
 
-#pragma optimize("s", on)
 // @retail 0x9d1c0
 bool c_breakable_surface_group_entity_definition::v25(s_entity_slot *entity)
 {
@@ -559,16 +558,17 @@ bool c_breakable_surface_group_entity_definition::v25(s_entity_slot *entity)
 
 	if (slot >= 0 && slot < 8)
 	{
-		if (g_4eca60[slot] != NONE)
-		{
+		/* retail reads the slot into a register and folds -1 into both the
+		   compare and the clear; the volatile read stops the compiler
+		   materialising -1 in a register for the two stores */
+		long id = *(volatile long *)&g_4eca60[slot];
+
+		if (id != NONE)
 			g_4eca60[slot] = NONE;
-		}
-		long id = entity->id;
-		g_4eca60[slot] = id;
+		g_4eca60[slot] = entity->id;
 	}
 	return true;
 }
-#pragma optimize("", on)
 
 // ---- the event definitions ----
 
