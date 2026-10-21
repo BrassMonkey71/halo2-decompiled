@@ -13,17 +13,26 @@ struct feature_3059e0
 	unsigned short type;
 };
 
+// a flag passed by value
+struct flag_3059e0
+{
+	flag_3059e0(bool value_) : value(value_) {}
+	flag_3059e0(flag_3059e0 const &other) : value(other.value) {}
+
+	bool value;
+};
+
 class box_3059e0
 {
 public:
 	char pad_0[0x40];
 	__m128 edges[3];
 
-	void function_3059e0(__m128 *out, unsigned short const *index, feature_3059e0 const *feature, void *unused) const;
+	void function_3059e0(__m128 *out, unsigned short const *index, feature_3059e0 const *feature, flag_3059e0 unused) const;
 };
 
 // @retail 0x3059e0
-void box_3059e0::function_3059e0(__m128 *out, unsigned short const *index, feature_3059e0 const *feature, void *unused) const
+void box_3059e0::function_3059e0(__m128 *out, unsigned short const *index, feature_3059e0 const *feature, flag_3059e0 unused) const
 {
 	int const type = feature->type;
 	if (type <= 2)

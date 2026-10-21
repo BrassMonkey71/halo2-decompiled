@@ -12,6 +12,7 @@
 #include "string_helpers_2d8c90.h"
 #include "placed_shape_312800.h"
 #include "joined_groups_3720a0.h"
+#include "slot_table_372a40.h"
 
 // @stub 0x2e5a90
 void s_1c3a40::function_2e5a90(handlers_2e5d50 const *handlers, long first_type, long second_type,
@@ -58,16 +59,6 @@ int class_3048a0::function_3048a0(convex_2fefd0 const *first, convex_2fefd0 cons
 
 
 
-
-// @stub 0x2e9d90
-void class_2e9d90::function_2e9d90(void const *a, void const *b, void const *input, pair_query_2e90f0 query)
-{
-}
-
-// @stub 0x2e96a0
-void class_2e96a0::function_2e96a0(void const *a, void const *b, void const *input, pair_query_2e90f0 query)
-{
-}
 
 // @stub 0x2e90f0
 void __cdecl function_2e90f0(void const *a, void const *b, void const *input, void *collector)
@@ -128,10 +119,6 @@ void class_2e1090::function_2e0020(element_2e1090 const *element, bounds_2e0020 
 
 
 
-// @stub 0x2fe350
-void __cdecl function_2fe350(void const *query, const __m128 *half_extents, float tolerance, void *out)
-{
-}
 
 struct s_311100;
 
@@ -197,15 +184,7 @@ public:
 	answer_306580 function_306580();
 };
 
-// @stub 0x307f90
-void query_2ef260::function_307f90(answer_307f90 *found, contact_307f90 *contact)
-{
-}
 
-// @stub 0x3080a0
-void query_2ef260::function_3080a0(class_308180 *manifold)
-{
-}
 
 struct pending_2ddbd0;
 
@@ -229,10 +208,6 @@ public:
 	void function_30e140(entity_316000 *entity);
 };
 
-// @stub 0x30e140
-void class_30e140::function_30e140(entity_316000 *entity)
-{
-}
 
 class class_30f710
 {
@@ -240,10 +215,6 @@ public:
 	void function_30f710();
 };
 
-// @stub 0x30f710
-void class_30f710::function_30f710()
-{
-}
 
 // motion objects 0x311940 builds
 class class_31ad80 { public: class_31ad80(void const *position, void const *orientation); };
@@ -361,3 +332,7 @@ helper_3728b0::~helper_3728b0()
 {
 }
 
+// @stub 0x372a40
+slot_table_372a40::slot_table_372a40()
+{
+}
