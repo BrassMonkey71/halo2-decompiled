@@ -70,8 +70,8 @@ byte. The checker reports:
 
 ```
 matched 9383 of 11321 game functions (1431971 of 2784283 bytes, 51.43%)
-matched 864 of 1041 Havok functions (96316 of 234536 bytes, 41.07%)
-matched 10281 of 17654 functions in scope (1530902 of 3904218 bytes, 39.21%)
+matched 871 of 1041 Havok functions (99167 of 234536 bytes, 42.28%)
+matched 10288 of 17654 functions in scope (1533753 of 3904218 bytes, 39.28%)
 ```
 
 Matched code so far includes:
@@ -244,6 +244,8 @@ Thank you to everyone who has contributed to this project so far:
 - [@Roasted-Codes](https://github.com/Roasted-Codes): the first contributor
   matches in Havok, the physics library: its collision-pair dispatch and
   child-agent code.
+- [@ccgman123](https://github.com/ccgman123): a careful diagnosis of seven
+  near misses, and the cleanup that removed an in-body pragma from 0x9d1c0.
 
 [@kirklandsig](https://github.com/kirklandsig) maintains the project: runs the
 build, reviews and merges every pull request, and keeps the

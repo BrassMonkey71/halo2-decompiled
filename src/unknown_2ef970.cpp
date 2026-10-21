@@ -132,6 +132,9 @@ __forceinline void report_contact_2ef9a0(body_2ef9a0 const *a, body_2ef9a0 const
 	}
 }
 
+// score 28 (was 28), 0x2efb10 score 29 (was 29): at the contact point retail keeps the first
+// radius and the distance on the x87 stack (adding the radii as fld/fld/fadd st(1), subtracting
+// with fsubr st(2), then popping both); ours folds the first radius from memory and keeps the sum.
 // @retail 0x2ef9a0
 void sphere_pair_2ef9a0::function_2ef9a0(body_2ef9a0 const *a, body_2ef9a0 const *b, input_2ef9a0 const *input, collector_2ef9a0 *collector)
 {
