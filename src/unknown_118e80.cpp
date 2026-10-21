@@ -11,6 +11,7 @@
 #include "unknown_1cafc0.h"
 #include "object_queries.h"
 #include <math.h>
+#include "vector_products.h"
 
 /* the object as this reads it */
 struct s_forward_flags
@@ -288,13 +289,12 @@ void function_119020(long object_index, vector3f const *impulse)
 	if (TEST_FIELD_BIT(object->frozen) || (bool)((definition->flags >> 3) & 1) || object->mode == 2)
 	{
 		vector3f axis;
-		axis.i = g_4687b0->j * impulse->k - g_4687b0->k * impulse->j;
-		axis.j = g_4687b0->k * impulse->i - g_4687b0->i * impulse->k;
-		axis.k = g_4687b0->i * impulse->j - g_4687b0->j * impulse->i;
+		cross3f(g_4687b0, impulse, &axis);
 		function_30bf0(&axis);
+		real first_axis = axis.i;
 		real fraction = function_x82e52f(&g_4e7408->unknown0, NULL, 0);
 		real scale = fraction * (real)sqrt(impulse->i * impulse->i + impulse->j * impulse->j + impulse->k * impulse->k) * 1.57079637f;
-		object->angular_velocity.i += scale * axis.i;
+		object->angular_velocity.i += scale * first_axis;
 		object->angular_velocity.j += scale * axis.j;
 		object->angular_velocity.k += scale * axis.k;
 	}
