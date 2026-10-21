@@ -765,6 +765,17 @@ struct s_damage_event_data
     byte unknown35[3];
 };
 
+#define PIN(x, lo, hi) ((x) < (lo) ? (lo) : (x) > (hi) ? (hi) : (x))
+
+/* the unit flags word at +0x10a that 0xa80f0 tests */
+struct s_a80f0_unit_flags
+{
+    byte unknown000[0x10a];
+    word unknown0 : 2;
+    word suppressed : 1;
+    word unknown3 : 13;
+};
+
 // @retail 0xa80f0
 void function_a80f0(long index, s_damage_report const *report)
 {
@@ -785,7 +796,7 @@ void function_a80f0(long index, s_damage_report const *report)
         {
             real strength = *(real *)(local_446d88 + 0x40) * *(real *)(definition + 0x14);
             bool send = strength > 0.0001f;
-            if (!send && (mask & 3) && !((object[0x10a] >> 2) & 1))
+            if (!send && (mask & 3) && !TEST_FIELD_BIT(((s_a80f0_unit_flags *)object)->suppressed))
                 send = *(real const *)(input + 0x44) > 0.0f || *(real const *)(input + 0x48) > 0.0f;
             if (!send)
                 send = player != NONE && *(long const *)(input + 0xc) != NONE && *(long const *)(input + 0xc) != player;
@@ -802,16 +813,12 @@ void function_a80f0(long index, s_damage_report const *report)
                 data.direction = *(vector3f const *)(input + 0x18);
                 if (function_30bf0(&data.direction) > 0.0001f)
                     data.has_direction = true;
-                real scale = *(real const *)(input + 0x34);
-                data.scale = scale < 0.0f ? 0.0f : (scale > 2.0f ? 2.0f : scale);
-                real field38 = *(real const *)(input + 0x38);
-                data.field1c = field38 < 0.0f ? 0.0f : (field38 > 2.0f ? 2.0f : field38);
+                data.scale = PIN(*(real const *)(input + 0x34), 0.0f, 2.0f);
+                data.field1c = PIN(*(real const *)(input + 0x38), 0.0f, 2.0f);
                 data.flags = *(dword const *)(input + 4);
                 data.field30 = *(long const *)(input + 0x50);
-                real field44 = *(real const *)(input + 0x44);
-                data.field28 = field44 < 0.0f ? 0.0f : (field44 > 9.0f ? 9.0f : field44);
-                real field48 = *(real const *)(input + 0x48);
-                data.field24 = field48 < 0.0f ? 0.0f : (field48 > 3.0f ? 3.0f : field48);
+                data.field28 = PIN(*(real const *)(input + 0x44), 0.0f, 9.0f);
+                data.field24 = PIN(*(real const *)(input + 0x48), 0.0f, 3.0f);
                 data.field2c = *(short const *)(input + 0x3c);
                 data.field2e = *(short const *)(input + 0x40);
                 data.field34 = input[0];
