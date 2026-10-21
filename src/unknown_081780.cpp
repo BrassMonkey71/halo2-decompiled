@@ -70,8 +70,7 @@ struct s_stream_window_storage
 static __forceinline void stream_window_construct(s_stream_window_storage *window, long capacity)
 {
 	window->size = capacity;
-	window->head = 0;
-	window->count = 0;
+	window->head = window->count = 0;
 	window->valid = false;
 	window->capacity = capacity;
 }
