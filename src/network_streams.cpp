@@ -1042,27 +1042,41 @@ void __stdcall function_095580(void *header, long message_type, long message_siz
 	s_bitstream stream;
 	function_95581(&stream, payload.data, sizeof(payload.data));
 	c_network_unreliable_stream *self = (c_network_unreliable_stream *)header;
-	byte const *local_0 = (byte const *)self->m_unknown0c;
+	c_type_659ceb *types = (c_type_659ceb *)self->m_unknown0c;
 	network_message_write_header(&stream, message_type, message_size);
-	((c_type_659ceb *)local_0)->m_types[message_type].encode(&stream, message_size, (void *)message_data);
+	types->m_types[message_type].encode(&stream, message_size, (void *)message_data);
 	long bits = stream.bit_position + 32;
 	long bytes = (bits + 7) / 8;
-	long encoded_bytes = (stream.bit_position + 7) / 8;
-	long remainder = encoded_bytes % stream.unknown08;
+	stream.size_in_bytes = (stream.bit_position + 7) / 8;
+	long remainder = stream.size_in_bytes % stream.unknown08;
 	if (remainder)
-		encoded_bytes += stream.unknown08 - remainder;
-	stream.size_in_bytes = encoded_bytes;
+		stream.size_in_bytes += stream.unknown08 - remainder;
 	stream.mode = 2;
 	payload.crc = NONE;
 	function_163ba0(&payload.crc, &payload, bytes);
-	local_0 = (byte const *)&payload;
-	while (!self->v1(0))
+	byte const *data = (byte const *)&payload;
+	long sent_bits = 0;
+	bool done = false;
+	while (!done && !self->v1(0))
 	{
 		if (sequence_window_count(&self->m_message_window) < self->m_message_window.capacity)
 		{
-			bool last = bits <= 256;
-			long fragment_bits = last ? bits : 256;
-			long size = (fragment_bits + 7) / 8;
+			long remaining_bits = bits - sent_bits;
+			bool last;
+			long fragment_bits;
+			long size;
+			if (remaining_bits <= 256)
+			{
+				fragment_bits = remaining_bits;
+				last = true;
+				size = (remaining_bits + 7) / 8;
+			}
+			else
+			{
+				last = false;
+				fragment_bits = 256;
+				size = 32;
+			}
 			s_allocator_globals *globals = g_4d87f8;
 			void *block = globals->allocator->allocate(size, 0, 0);
 			if (!block)
@@ -1080,7 +1094,7 @@ void __stdcall function_095580(void *header, long message_type, long message_siz
 				s_stream_message *message = 0;
 				if (index != NONE)
 					message = &self->m_messages[index];
-				memcpy(block, local_0, size);
+				memcpy(block, data, size);
 				memset(message, 0, sizeof(*message));
 				message->flags = 4;
 				message->size = (byte)size;
@@ -1092,10 +1106,10 @@ void __stdcall function_095580(void *header, long message_type, long message_siz
 				message->unknown02 = (word)fragment_bits;
 				message->data = block;
 				self->m_message_bytes += size;
-				bits -= 256;
-				local_0 += 32;
+				sent_bits += 256;
+				data += 32;
 				if (last)
-					break;
+					done = true;
 			}
 			else
 				self->m_unknown05 = true;

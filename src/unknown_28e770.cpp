@@ -129,9 +129,10 @@ void __stdcall function_28e770(long arg_0, long arg_1)
 				local_7 = local_3->field_50;
 			}
 			point3f local_8;
-			vector3f local_9;
+			vector3f direction;
 			long local_10;
-			bool local_11 = swarm_target_get_location(local_7, local_6, &local_10, &local_8, &local_9);
+			vector3f target_velocity;
+			bool local_11 = swarm_target_get_location(local_7, local_6, &local_10, &local_8, &target_velocity);
 			s_28e772 *local_12 = (s_28e772 *)local_1;
 			vector3f *local_14 = &local_12->field_70;
 			vector3f *local_29 = &local_3->field_80;
@@ -163,10 +164,10 @@ void __stdcall function_28e770(long arg_0, long arg_1)
 						local_3->field_56 = false;
 					else
 					{
-						function_28e774(&local_4->field_24, &local_3->field_14, &local_9);
-						if (function_30bf0(&local_9) > 0.0f)
+						function_28e774(&local_4->field_24, &local_3->field_14, &direction);
+						if (function_30bf0(&direction) > 0.0f)
 						{
-							*local_29 = local_9;
+							*local_29 = direction;
 							local_3->field_98 = *g_4687a8;
 						}
 						local_3->field_56 = true;
@@ -227,15 +228,16 @@ void __stdcall function_28e770(long arg_0, long arg_1)
 					function_b9a90(arg_1);
 					if (local_11)
 					{
-						function_b9dd0(arg_1, (point3f *)&local_9);
-						local_13.i = local_9.i - local_8.x;
-						local_13.j = local_9.j - local_8.y;
+						point3f placed_point;
+						function_b9dd0(arg_1, &placed_point);
+						local_13.i = placed_point.x - local_8.x;
+						local_13.j = placed_point.y - local_8.y;
 						local_13.k = 0.0f;
 						if (function_30bf0(&local_13) > 0.0f)
 						{
-							local_8.x = local_13.i + local_9.i;
-							local_8.y = local_9.j + local_13.j;
-							local_8.z = local_9.k + local_13.k;
+							local_8.x = local_13.i + placed_point.x;
+							local_8.y = placed_point.y + local_13.j;
+							local_8.z = placed_point.z + local_13.k;
 							if (function_2900b0(arg_1, &local_8, 0.9f, 2.7f, (vector3f *)&local_3->field_58))
 								local_3->field_57 = true;
 						}
@@ -253,18 +255,19 @@ void __stdcall function_28e770(long arg_0, long arg_1)
 					}
 					if (local_23 > 0)
 					{
-						function_b9dd0(arg_1, (point3f *)&local_9);
-						function_28e774(&local_15.matrix.position, (point3f *)&local_9, &local_9);
-						real local_24 = function_30bf0(&local_9);
+						point3f placed_point;
+						function_b9dd0(arg_1, &placed_point);
+						function_28e774(&local_15.matrix.position, &placed_point, &direction);
+						real local_24 = function_30bf0(&direction);
 						if (local_24 > 0.0f)
 						{
-							*local_29 = local_9;
+							*local_29 = direction;
 							local_3->field_98 = *g_4687a8;
 							if (local_24 < 0.2f)
-								function_28f0e0(&local_9, (s_28f0e0 const *)&local_15, arg_1, local_10);
+								function_28f0e0(&direction, (s_28f0e0 const *)&local_15, arg_1, local_10);
 							else if (local_12->field_17c == 1 && !(bool)local_12->field_12c)
 							{
-								real local_25 = local_12->field_1f0.j * local_9.j + local_12->field_1f0.i * local_9.i + local_9.k * local_12->field_1f0.k;
+								real local_25 = local_12->field_1f0.j * direction.j + local_12->field_1f0.i * direction.i + direction.k * local_12->field_1f0.k;
 								if (local_25 < -0.99f || (local_12->field_1f0.k > 0.70710677f && local_25 > 0.99f))
 									local_3->field_50 = NONE;
 							}
@@ -284,15 +287,15 @@ void __stdcall function_28e770(long arg_0, long arg_1)
 						{
 							*local_29 = local_13;
 							local_3->field_98 = *g_4687a8;
-							function_28e774(&local_3->field_14, &local_4->field_8, &local_9);
-							if (function_30bf0(&local_9) > 0.0f)
+							function_28e774(&local_3->field_14, &local_4->field_8, &direction);
+							if (function_30bf0(&direction) > 0.0f)
 							{
 								real local_27 = (real)local_3->field_26 * g_510c54->rate;
 								local_27 = local_27 < 0.0f ? 0.0f : local_27 > 5.0f ? 5.0f : local_27;
 								real local_28 = (1.0f - local_27 * (1.0f / 3.0f)) * 2.0f;
-								local_29->i += local_28 * local_9.i;
-								local_29->j += local_9.j * local_28;
-								local_29->k += local_9.k * local_28;
+								local_29->i += local_28 * direction.i;
+								local_29->j += direction.j * local_28;
+								local_29->k += direction.k * local_28;
 								if (function_30bf0(local_29) == 0.0f)
 									*local_29 = local_13;
 							}
