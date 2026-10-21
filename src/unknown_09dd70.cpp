@@ -506,7 +506,7 @@ void c_unit_type::v31(long arg_0, long arg_1, long arg_2, long arg_3)
     short local_13 = 0;
     do
     {
-        dword local_14 = local_1 & (1 << (local_13 + 14));
+        bool local_14 = (local_1 & (1 << (local_13 + 14))) != 0;
         if (local_14)
         {
             long local_15 = local_2->field_ac[local_13].field_0;
