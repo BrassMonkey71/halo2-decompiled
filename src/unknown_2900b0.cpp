@@ -175,17 +175,13 @@ __forceinline void function_28f521(vector3f const *arg_0, vector3f const *arg_1,
 	arg_2->k = arg_0->k + arg_1->k;
 }
 
-PRIVATE __forceinline real function_28f5b8(real const volatile &arg_0)
-{
-    return arg_0 < -1.0f ? -1.0f : arg_0 > 1.0f ? 1.0f : arg_0;
-}
+#define PIN(x, lo, hi) ((x) < (lo) ? (lo) : (x) > (hi) ? (hi) : (x))
 
 PRIVATE __forceinline void function_28f5b7(vector3f *arg_0)
 {
-    vector3f volatile *local_0 = arg_0;
-    local_0->i = function_28f5b8(local_0->i);
-    local_0->j = function_28f5b8(local_0->j);
-    local_0->k = function_28f5b8(local_0->k);
+    arg_0->i = PIN(arg_0->i, -1.0f, 1.0f);
+    arg_0->j = PIN(arg_0->j, -1.0f, 1.0f);
+    arg_0->k = PIN(arg_0->k, -1.0f, 1.0f);
 }
 
 // @retail 0x28f3b0

@@ -270,19 +270,16 @@ short __stdcall function_1b6740(long actor_index, long leader_index, long a, lon
 
 	if (actor->unknown07c != NONE && actor->prop_index != NONE)
 	{
-		long index = element_502420_get(actor->unknown07c)->first_actor_index;
 		s_prop_node_view *node = prop_node_get(actor->prop_index);
+		s_element_502420_member_iterator iterator;
+		s_actor_view *other;
 
-		for (;;)
+		iterator.next_index = element_502420_get(actor->unknown07c)->first_actor_index;
+		iterator.index = NONE;
+		while ((other = element_502420_member_next(&iterator)) != 0)
 		{
-			s_actor_view *other = NULL;
-			if (index != NONE)
-				other = actor_get(index);
-			if (!other)
-				break;
-			long other_index = index;
+			long other_index = iterator.index;
 
-			index = other->next_index;
 			if (other != actor && other->unknown221)
 			{
 				short slot_index = actor_behavior_find_level(other_index, 0x22);
