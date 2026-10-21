@@ -622,15 +622,9 @@ bool c_session_state_joining::update()
 	}
 	if (unknown104 != 0)
 	{
-		switch (a->state)
-		{
-		case 5:
-		case 6:
-		case 7:
-		case 8:
+		long state = a->state;
+		if (state == 5 || state == 6 || state == 7 || state == 8)
 			network_session_set_mode(a, 1);
-			break;
-		}
 	}
 	if (flagf8)
 	{

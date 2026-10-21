@@ -176,11 +176,6 @@ public:
 
 
 
-// @stub 0x2f4440
-void class_2f4440::function_2f4440(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
 class class_308180;
 
 struct contact_307f90;
@@ -234,11 +229,6 @@ public:
 	void function_2dce60(pending_2ddbd0 *pending, void const *root, __m128 const *offset);
 };
 
-// @stub 0x2dce60
-void class_2dce60::function_2dce60(pending_2ddbd0 *pending, void const *root, __m128 const *offset)
-{
-}
-
 // @stub 0x3009e0
 void class_2df670::function_3009e0(pending_301800 *pending, void const *root, fixed_ray_301800 const *ray)
 {
@@ -249,12 +239,6 @@ class class_309b50
 public:
 	long function_309b50(long arg_0);
 };
-
-// @stub 0x309b50
-long class_309b50::function_309b50(long arg_0)
-{
-	return 0;
-}
 
 class entity_316000;
 
@@ -362,7 +346,3 @@ public:
 	void function_2dc220(pending_2ddbd0 *pending, void const *root, fixed_point_2dc220 const *fixed_point);
 };
 
-// @stub 0x2dc220
-void class_2dc220::function_2dc220(pending_2ddbd0 *pending, void const *root, fixed_point_2dc220 const *fixed_point)
-{
-}

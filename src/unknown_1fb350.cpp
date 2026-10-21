@@ -296,30 +296,10 @@ struct s_recorded_animation_object_datum
 	s_recorded_animation_object *object;
 };
 
-static inline byte *recorded_animation_datum_try_and_get(s_record_pool *data, long datum_index)
-{
-	byte *result = 0;
-
-	if (datum_index != NONE)
-	{
-		long index = datum_index & 0xffff;
-
-		if (index < data->high_water_index)
-		{
-			byte *datum = data->data + data->size * index;
-
-			if (*(short *)datum != 0 && *(short *)datum == (datum_index >> 16))
-				result = datum;
-		}
-	}
-
-	return result;
-}
-
 /* the object, if it is a unit (types 0 and 1) */
 static inline s_recorded_animation_object *recorded_animation_unit_try_and_get(long object_index)
 {
-	s_recorded_animation_object_datum *datum = (s_recorded_animation_object_datum *)recorded_animation_datum_try_and_get(g_4e0300, object_index);
+	s_recorded_animation_object_datum *datum = (s_recorded_animation_object_datum *)datum_get_inlined(g_4e0300, object_index);
 	s_recorded_animation_object *result = 0;
 
 	if (datum && ((1 << datum->type) & 3))

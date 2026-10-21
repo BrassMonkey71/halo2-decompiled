@@ -70,34 +70,29 @@ struct s_1debd0
 bool function_1debd0(dword const *arg_1, s_bsp3d const *arg_0, short arg_2, long arg_3,
  short arg_4, bool arg_5, point2f const *arg_6)
 {
- bool result = false;
  s_1ddda0 const *local_0 = (s_1ddda0 const *)arg_0;
  s_1debd0 const *local_1 = &((s_1debd0 const *)local_0->field_2c)[arg_3];
- if (!arg_1 || !(local_1->field_4 & 8) || (short)local_1->field_5 >= arg_2 ||
-  (arg_1[local_1->field_5 >> 5] & (1 << (local_1->field_5 & 31))))
+ if (arg_1 && (local_1->field_4 & 8) && (short)local_1->field_5 < arg_2 &&
+  !(arg_1[local_1->field_5 >> 5] & (1 << (local_1->field_5 & 31))))
+  return false;
+
+ long local_4 = local_1->field_2;
+ long local_5 = local_4;
+ do
  {
-  short const *local_6 = g_440b94[arg_4 * 2 + arg_5];
-  long local_7 = local_6[0] * sizeof(real), local_8 = local_6[1] * sizeof(real);
-  s_1ddda2 const *local_2 = local_0->field_34;
-  s_1ddda3 const *local_3 = local_0->field_3c;
-  long local_4 = local_1->field_2;
-  long local_5 = local_4;
-  do
-  {
-   s_1ddda2 const *local_9 = &local_2[local_5];
-   bool local_10 = local_9->field_a == arg_3;
-   real const *local_11 = (real const *)&local_3[local_9->field_0[local_10]].field_0;
-   point2f local_12 = { *(real const *)((byte const *)local_11 + local_7), *(real const *)((byte const *)local_11 + local_8) };
-   point2f local_14 = { arg_6->x - local_12.x, arg_6->y - local_12.y };
-   real const *local_16 = (real const *)&local_3[local_9->field_0[!local_10]].field_0;
-   point2f local_17 = { *(real const *)((byte const *)local_16 + local_7) - local_12.x, *(real const *)((byte const *)local_16 + local_8) - local_12.y };
-   if (local_17.y * local_14.x - local_14.y * local_17.x > 0.0f) goto done;
-   local_5 = local_9->field_4[local_10];
-  } while (local_5 != local_4);
-  result = true;
- }
-done:
- return result;
+  s_1ddda2 const *local_9 = &local_0->field_34[local_5];
+  bool local_10 = local_9->field_a == arg_3;
+  point3f const *local_11 = &local_0->field_3c[local_9->field_0[local_10]].field_0;
+  point3f const *local_16 = &local_0->field_3c[local_9->field_0[!local_10]].field_0;
+  point2f local_12 = { local_11->n[g_440b94[arg_4 * 2 + arg_5][0]], local_11->n[g_440b94[arg_4 * 2 + arg_5][1]] };
+  point2f local_14 = { arg_6->x - local_12.x, arg_6->y - local_12.y };
+  point2f local_15 = { local_16->n[g_440b94[arg_4 * 2 + arg_5][0]], local_16->n[g_440b94[arg_4 * 2 + arg_5][1]] };
+  point2f local_17 = { local_15.x - local_12.x, local_15.y - local_12.y };
+  if (local_17.y * local_14.x - local_14.y * local_17.x > 0.0f)
+   return false;
+  local_5 = local_9->field_4[local_10];
+ } while (local_5 != local_4);
+ return true;
 }
 
 struct s_1dea01
@@ -120,6 +115,12 @@ struct s_1dea00
  long field_18;
  s_1dea02 *field_1c;
 };
+/* whether the plane's normal points along the positive axis */
+PRIVATE inline bool plane3f_axis_positive(plane3f const *plane, short axis)
+{
+ return ((real const *)plane)[axis] > 0.0f;
+}
+
 struct s_296520_tree;
 long function_296520(s_296520_tree *tree, long index, point2f const *point);
 
@@ -145,9 +146,7 @@ long function_1dea00(s_bsp3d const *arg_0, long arg_1, point3f const *arg_6,
    if (local_8 >= local_7 && local_8 >= local_6) local_9 = 2;
    else if (local_7 >= local_6) local_9 = 1;
    else local_9 = 0;
-   bool local_16 = ((real const *)local_5)[local_9] > 0.0f;
-   bool local_17 = (bool)(((dword)local_15 >> 15) & 1);
-   bool local_10 = local_16 != local_17;
+   bool local_10 = plane3f_axis_positive(local_5, local_9) != ((local_15 & 0x8000) != 0);
    point3f local_11;
    local_11.x = arg_7->i * arg_5 + arg_6->x;
    local_11.y = arg_7->j * arg_5 + arg_6->y;
@@ -555,7 +554,7 @@ void __stdcall function_1ddea0(s_1de2c0 *arg_0, long arg_1)
     else if (local_20 >= local_19) local_22 = 1;
     else local_22 = 0;
     arg_0->field_21c = local_22;
-    arg_0->field_21e = (((real const *)local_15)[local_22] > 0.0f) != (bool)(((word)local_13->field_0 >> 15) & 1);
+    arg_0->field_21e = plane3f_axis_positive(local_15, local_22) != ((local_13->field_0 & 0x8000) != 0);
     short const *local_23 = g_440b94[local_22 * 2 + arg_0->field_21e];
     arg_0->field_220.x = ((real const *)&local_18)[local_23[0]];
     arg_0->field_220.y = ((real const *)&local_18)[local_23[1]];

@@ -26,12 +26,17 @@ struct s_184252
 	real field_24;
 };
 
-struct __declspec(align(16)) s_184253
+/* a four-float vector with its SSE view */
+union s_184253
 {
-	real field_0;
-	real field_4;
-	real field_8;
-	real field_c;
+	struct
+	{
+		real field_0;
+		real field_4;
+		real field_8;
+		real field_c;
+	};
+	__m128 quad;
 };
 
 struct s_184254
@@ -76,10 +81,17 @@ struct s_184255
 	byte field_8[0x20 - 8];
 };
 
+/* a block of s_184255 elements */
+struct s_184256_block
+{
+	long count;
+	s_184255 *elements;
+};
+
 struct s_184256
 {
-	byte field_0[0x210];
-	s_184255 *field_210;
+	byte field_0[0x20c];
+	s_184256_block field_20c;
 };
 
 void voice_fpu_enter(void);
@@ -113,21 +125,26 @@ void __stdcall function_184250(s_type_1e6529 const *arg_0)
 			local_6.field_8 = 0x80000200;
 			voice_fpu_enter();
 			real radius = local_2 < 0.0f ? 0.0f : local_2;
-			s_184253 local_7;
-			_mm_store_ps(&local_7.field_0, _mm_load_ps(&local_4.field_0));
-			local_7.field_c = radius;
-			((c_184250 *)g_4f55b0)->function_18425b(&local_7, &local_6);
-			voice_fpu_leave();
-			s_184256 *bounds = (s_184256 *)g_4e0348;
-			for (long local_8 = 0; local_8 < local_6.field_4; local_8++)
 			{
-				s_184255 *local_9 = &bounds->field_210[local_6.field_0[local_8]];
-				long local_11 = local_9->field_2;
-				long local_10 = local_9->field_0;
-				if ((bool)(byte)function_184000(local_10, local_11))
+				s_184253 local_7;
+				local_7.quad = local_4.quad;
+				local_7.field_c = radius;
+				((c_184250 *)g_4f55b0)->function_18425b(&local_7, &local_6);
+			}
+			voice_fpu_leave();
+			if (local_6.field_4 > 0)
+			{
+				s_184256_block const *block = &((s_184256 *)g_4e0348)->field_20c;
+				for (long local_8 = 0; local_8 < local_6.field_4; local_8++)
 				{
-					function_184060(local_10, (byte)local_11, (s_type_1e6529 *)arg_0, local_9->field_4);
-					local_3 = true;
+					s_184255 *local_9 = &block->elements[local_6.field_0[local_8]];
+					long local_11 = local_9->field_2;
+					long local_10 = local_9->field_0;
+					if ((bool)(byte)function_184000(local_10, local_11))
+					{
+						function_184060(local_10, (byte)local_11, (s_type_1e6529 *)arg_0, local_9->field_4);
+						local_3 = true;
+					}
 				}
 			}
 		}
