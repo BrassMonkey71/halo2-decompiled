@@ -140,6 +140,7 @@ struct agent_list_2eab70
 	entries_2eab70 entries;
 };
 
+// score 12 (was 12): each timing flag byte sits 3 bytes higher in retail (ebp-5, -0x11, -0x14a), which also moves the last mark's locals.
 // @retail 0x2eab70
 void class_2eab70::function_2eab70(void const *a, void const *b, void const *input, void *collector)
 {
