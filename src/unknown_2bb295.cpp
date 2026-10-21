@@ -250,7 +250,7 @@ void c_squad_settings_screen::v3()
 				function_2b0a7b(bitmap, function_137550(definition->bitmap_tag_index, 0));
 			}
 		}
-		break;
+		goto done;
 	case 3:
 	{
 		short privacy;
@@ -282,7 +282,7 @@ void c_squad_settings_screen::v3()
 			}
 			function_2b0ad3(0, bitmap, index);
 		}
-		break;
+		goto done;
 	}
 	case 4:
 		name = 0x120005df;

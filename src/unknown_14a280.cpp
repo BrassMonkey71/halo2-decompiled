@@ -372,7 +372,7 @@ real function_14b240(s_14b240_owner const *owner, s_bsp3d_disk const *disk, poin
 }
 
 // @retail 0x14b360
-bool cluster_get_sky(long cluster_index, long *sky_index, bool *found, vector3f *vector)
+bool cluster_get_sky(long cluster_index, long *sky_index, vector3f *vector, bool *found)
 {
 	bool result = false;
 	s_scenario_skies_view *scenario = (s_scenario_skies_view *)g_4e0350;

@@ -106,13 +106,8 @@ void function_133f70(s_133f70 const *arg_1, bool arg_2)
 					long local_9 = *((byte const *)local_2 + 0x75 + local_14 + local_8);
 					if (local_9 == 0xff)
 					local_9 = NONE;
-					bool local_10 = false;
-					bool local_11 = false;
-					if (local_2->field_170 & 2)
-					{
-						local_10 = (bool)((local_2->field_170 >> 3) & 1);
-						local_11 = (bool)((local_2->field_170 >> 4) & 1);
-					}
+					bool local_10 = (local_2->field_170 & 2) && (bool)((local_2->field_170 >> 3) & 1);
+					bool local_11 = (local_2->field_170 & 2) && (bool)((local_2->field_170 >> 4) & 1);
 					function_2cbf0(local_9, local_2->field_2c[local_1], local_2->field_16a, local_7,
 						*(long const *)((byte const *)local_2 + local_13 + 0x44), *(dword const *)((byte const *)local_2 + local_13 - 0x14), local_8,
 						*(byte *const *)((byte const *)local_2 + local_13 + 0x30), local_2->field_1be, local_2->field_1bc,

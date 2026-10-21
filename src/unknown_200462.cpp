@@ -62,28 +62,29 @@ void function_200462(long arg_0)
             continue;
         byte *local_7 = g_4e3b44[*(long *)(local_5 + 4) & 0xffff].bytes;
         short local_8 = *(short *)(local_5 + 0x10);
+        long sprite_index = local_8;
         real local_9 = 1.0f;
         if (local_8 < 0)
             continue;
         if (local_8 < *(long *)(local_7 + 0x3c))
         {
             byte *local_10 = *(byte **)(local_7 + 0x40) + local_8 * 0x3c;
-            local_8 = *(short *)(local_10 + 0x20);
+            sprite_index = *(short *)(local_10 + 0x20);
             if (*(long *)(local_10 + 0x34) > 0)
             {
                 byte *local_11 = *(byte **)(local_10 + 0x38);
                 local_9 = *(real *)(local_11 + 0xc) - *(real *)(local_11 + 8);
             }
         }
-        else if (local_8 || *(long *)(local_7 + 0x3c) || *(long *)(local_7 + 0x44) <= 0)
+        else if (sprite_index || *(long *)(local_7 + 0x3c) || *(long *)(local_7 + 0x44) <= 0)
             continue;
         else
-            local_8 = 0;
-        if (local_8 != NONE)
+            sprite_index = 0;
+        if (sprite_index != NONE)
         {
             local_3 |= 1 << local_4;
             real local_12 = function_200891(local_6, true);
-            byte *local_13 = *(byte **)(local_7 + 0x48) + local_8 * 0x74;
+            byte *local_13 = *(byte **)(local_7 + 0x48) + sprite_index * 0x74;
             local_2 += local_12 * ((real)*(short *)(local_13 + 4) * local_9);
         }
     }

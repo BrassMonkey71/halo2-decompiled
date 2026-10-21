@@ -1947,28 +1947,28 @@ void function_79260(s_network_observer *observer)
 		}
 		if (observer->flag4f3e)
 		{
-			count = 0;
-			total = 0;
+			long sample_count = 0;
+			long rate_total = 0;
 			for (long index = 0; index < MAXIMUM_OBSERVER_CHANNELS; index++)
 			{
 				s_observer_bandwidth_channel *channel = (s_observer_bandwidth_channel *)&observer->channels[index];
 				if (channel->state && channel->active)
 				{
-					count++;
+					sample_count++;
 					long rate = 0;
 					long start = observer->value4f38;
 					long age = observer_time_get() - start;
 					if (age > 0)
 						rate = channel->sent_bytes * 8000 / age;
-					total += rate;
+					rate_total += rate;
 				}
 			}
-			if (count > 0)
+			if (sample_count > 0)
 			{
 				if (observer->value4e0c != NONE)
-					observer->value4e0c = observer->value4e0c + ((total - observer->value4e0c) >> observer->configuration->shift1b4);
+					observer->value4e0c = observer->value4e0c + ((rate_total - observer->value4e0c) >> observer->configuration->shift1b4);
 				else
-					observer->value4e0c = total;
+					observer->value4e0c = rate_total;
 			}
 		}
 		function_79480(observer);
