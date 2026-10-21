@@ -1,7 +1,7 @@
 // @flags /O2 /Ob1 /Gr
 /* UNKNOWN_183EE0.CPP: the structure bsp bit vectors (g_4ed280, allocated by
    183e40) and the eight slot identifiers (g_4eca60) with the tables that map
-   to them (g_4ea960, g_4eaa60, g_4eca80); the lifecycle callbacks of the
+   to them (g_4ea958, g_4eca80); the lifecycle callbacks of the
    entry with 183e40 (initialize_for_new_structure_bsp and
    dispose_from_old_structure_bsp) */
 
@@ -22,7 +22,6 @@ struct s_bsp_bit_vectors
 };
 
 extern byte *g_4ed280;
-extern long g_4ea95c;
 
 struct s_slot_pair
 {
@@ -30,8 +29,6 @@ struct s_slot_pair
 	long b;
 };
 
-byte g_4ea960[0x100];
-byte g_4eaa60[0x400][8];
 s_slot_pair g_4eca80[0x100];
 
 /* the view of the match globals the slot code reads */
@@ -99,7 +96,7 @@ void function_185a30(void)
 		}
 		g_4eca60[i] = NONE;
 	}
-	g_4ea95c = 0;
+	g_4ea958.active_slot_count = 0;
 }
 
 // @retail 0x185a70
@@ -110,8 +107,8 @@ void function_185a70(void)
 		g_4eca80[i].b = NONE;
 		g_4eca80[i].a = NONE;
 	}
-	memset(g_4ea960, 0xff, sizeof(g_4ea960));
-	memset(g_4eaa60, 0xff, sizeof(g_4eaa60));
+	memset(g_4ea958.entry_slots, 0xff, sizeof(g_4ea958.entry_slots));
+	memset(g_4ea958.owner_entry_slots, 0xff, sizeof(g_4ea958.owner_entry_slots));
 }
 
 // @retail 0x183ee0
@@ -136,7 +133,7 @@ void function_183f00(void)
 // @retail 0x183f10
 void function_183f10(void)
 {
-	g_4ea95c = 0;
+	g_4ea958.active_slot_count = 0;
 	for (long i = 0; i < NUMBEROF(g_4eca60); i++)
 	{
 		g_4eca60[i] = NONE;
@@ -207,11 +204,11 @@ long function_184400(long a, long b)
 	{
 		if (b == NONE)
 		{
-			value = g_4ea960[a];
+			value = g_4ea958.entry_slots[a];
 		}
 		else
 		{
-			value = g_4eaa60[b][a];
+			value = g_4ea958.owner_entry_slots[b][a];
 		}
 	}
 	if (value != NONE)
@@ -222,7 +219,7 @@ long function_184400(long a, long b)
 }
 
 void function_a8e90(long slot);
-long g_4ea958;
+s_slot_table_globals g_4ea958;
 
 struct s_slot_group
 {
@@ -245,34 +242,26 @@ PRIVATE inline long slot_identifier(long entry, long owner)
 	byte value = -1;
 	if (entry != NONE)
 	{
-		if (owner == NONE) value = g_4ea960[entry];
-		else value = g_4eaa60[owner][entry];
+		if (owner == NONE) value = g_4ea958.entry_slots[entry];
+		else value = g_4ea958.owner_entry_slots[owner][entry];
 	}
 	if (value != NONE) result = g_4eca60[value >> 5];
 	return result;
 }
 
-extern "C" void _ReadWriteBarrier(void);
-#pragma intrinsic(_ReadWriteBarrier)
-
 __forceinline void slot_assign(long owner, long entry, long index, bool *used)
 {
 	long slot = index / 32;
-	if (owner == NONE) g_4ea960[entry] = (byte)index;
-	else g_4eaa60[owner][entry] = (byte)index;
+	if (owner == NONE) g_4ea958.entry_slots[entry] = (byte)index;
+	else g_4ea958.owner_entry_slots[owner][entry] = (byte)index;
 	g_4eca80[index].b = entry;
 	g_4eca80[index].a = owner;
 	if (!used[slot])
 	{
 		function_a8e90(slot);
-		long count = g_4ea95c;
-		_ReadWriteBarrier();
-		s_game_options_view *options = g_4e6948;
-		g_4ea95c = count + 1;
-		_ReadWriteBarrier();
-		char mode = options->mode;
+		g_4ea958.active_slot_count++;
 		used[slot] = true;
-		if (mode == 4 && slot >= 0 && slot < 8)
+		if (g_4e6948->mode == 4 && slot >= 0 && slot < 8)
 			g_4eca60[slot] = slot;
 	}
 }
@@ -284,10 +273,9 @@ void function_185630()
 	s_slot_entry_list *list = g_4e0340;
 	long count = 0;
 	bool used[8] = { false };
-	struct { long i; long group_index; long j; } counters;  /* one stack block, as retail keeps them */
-	for (counters.i = 0; counters.i < list->count; ++counters.i)
+	for (long i = 0; i < list->count; ++i)
 	{
-		s_slot_entry *entry = &list->entries[counters.i];
+		s_slot_entry *entry = &list->entries[i];
 		if ((entry->flags & 8) && slot_identifier(entry->slot, NONE) == NONE)
 		{
 			slot_assign(NONE, entry->slot, count, used);
@@ -295,16 +283,16 @@ void function_185630()
 		}
 	}
 	s_slot_groups_view *groups = (s_slot_groups_view *)globals;
-	for (counters.group_index = 0; counters.group_index < groups->count; ++counters.group_index)
+	for (long group_index = 0; group_index < groups->count; ++group_index)
 	{
-		s_slot_group *group = &groups->groups[counters.group_index];
-		for (counters.i = 0; counters.i < group->count; ++counters.i)
+		s_slot_group *group = &groups->groups[group_index];
+		for (long i = 0; i < group->count; ++i)
 		{
-			long owner = group->references[counters.i];
+			long owner = group->references[i];
 			s_slot_owner *definition = &globals->owners[globals->references[owner].owner_index];
-			for (counters.j = 0; counters.j < definition->list.count; ++counters.j)
+			for (long j = 0; j < definition->list.count; ++j)
 			{
-				s_slot_entry *entry = &definition->list.entries[counters.j];
+				s_slot_entry *entry = &definition->list.entries[j];
 				if ((entry->flags & 8) && slot_identifier(entry->slot, owner) == NONE)
 				{
 					slot_assign(owner, entry->slot, count, used);
@@ -315,8 +303,8 @@ void function_185630()
 	}
 	if (g_4e6948->mode == 4)
 	{
-		g_4ea95c = 0;
-		for (counters.i = 0; counters.i < 8; ++counters.i) g_4eca60[counters.i] = NONE;
+		g_4ea958.active_slot_count = 0;
+		for (long i = 0; i < 8; ++i) g_4eca60[i] = NONE;
 	}
-	g_4ea958 = count;
+	g_4ea958.assigned_entry_count = count;
 }
