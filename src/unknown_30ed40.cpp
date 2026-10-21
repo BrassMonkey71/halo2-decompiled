@@ -199,6 +199,7 @@ public:
 	void *function_30f030(void *island, void *other);
 };
 
+// score 2 (was 2): the values copy addresses its target as offset + data in retail, data + offset in ours.
 // `other` merged into `island`, both made active first; `other` is deleted
 // @retail 0x30f030
 void *class_30f030::function_30f030(void *island_, void *other_)

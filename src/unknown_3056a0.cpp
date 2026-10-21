@@ -96,6 +96,7 @@ inline int axis_305790(long flags)
 	return (bits & 2) ? 1 : 2;
 }
 
+// score 4 (was 4): the final sete writes al in retail, dl in ours.
 // @retail 0x305790
 void pair_305790::function_305790(manifold_305790 *manifold, long first_flags, long second_flags)
 {

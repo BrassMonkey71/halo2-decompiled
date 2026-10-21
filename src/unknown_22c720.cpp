@@ -94,11 +94,12 @@ void *c_havok_page_pool_allocator::allocate16(long size, long memory_class)
 			unknownf0388[size_class]--;
 			return free_block;
 		}
-		long class_size = class_sizes[size_class];
+		long class_size;
 		char *result;
 		long in_use;
 		if (size <= 0x200)
 		{
+			class_size = class_sizes[size_class];
 			long offset = class_size;
 			if ((unsigned long)(unknown20 + class_size) > (unsigned long)unknown1c)
 			{
@@ -134,6 +135,7 @@ void *c_havok_page_pool_allocator::allocate16(long size, long memory_class)
 		}
 		else
 		{
+			class_size = class_sizes[size_class];
 			if (page_count >= 0x76)
 			{
 				result = 0;
@@ -159,7 +161,6 @@ void *c_havok_page_pool_allocator::allocate16(long size, long memory_class)
 	}
 	return 0;
 }
-
 /* returns a block to its size class's free list */
 // @retail 0x22ca00
 void c_havok_page_pool_allocator::deallocate16(void *address, long size, long memory_class)

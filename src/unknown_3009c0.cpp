@@ -24,6 +24,7 @@ void class_3009c0::drop_one_reference()
 {
 	if (--reference_count == 0)
 	{
-		((class_3009c0_allocator *)g_480118)->free_object(this);
+		class_3009c0_allocator *allocator = (class_3009c0_allocator *)g_480118;
+		allocator->free_object(this);
 	}
 }

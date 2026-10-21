@@ -1572,8 +1572,7 @@ void __stdcall function_b93b0(volatile long parent_index, volatile long index, v
     for (long ancestor = parent_index; ancestor != NONE; ancestor = *(long *)(*(byte **)(pool->data + (ancestor & 0xffff) * 12 + 8) + 0x14))
         if (ancestor == index) return;
     if (!allowed) return;
-    // Read the pool's data field again after the ancestry guard.
-    s_object_header_view *header = (s_object_header_view *)(*(byte *volatile *)&pool->data + offset);
+    s_object_header_view *header = (s_object_header_view *)(pool->data + offset);
     volatile bool was_active = (bool)((header->flags >> 2) & 1);
     byte *parent = (byte *)OBJECT_GET(parent_index);
     if (*(dword *)(object + 4) & 0x80)

@@ -167,7 +167,7 @@ void online_tasks_dispose_all(void)
 		online_task_iterator_new(&iterator);
 		while ((task = (s_type_9df9da *)data_iterator_next_inlined(&iterator)) != 0)
 		{
-			bool dispose;
+			bool dispose = true;
 
 			switch (task->type)
 			{
@@ -187,10 +187,8 @@ void online_tasks_dispose_all(void)
 				dispose = g_4cf78c->actual_count <= 4;
 				break;
 			case 44:
-				dispose = true;
 				break;
 			default:
-				dispose = true;
 				break;
 			}
 			if (dispose)

@@ -52,16 +52,6 @@ int class_3048a0::function_3048a0(convex_2fefd0 const *first, convex_2fefd0 cons
 
 
 
-// @stub 0x2f5960
-void __cdecl function_2f5960(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
-// @stub 0x2f6db0
-void __cdecl function_2f6db0(void const *a, void const *b, void const *input, void *collector)
-{
-}
-
 
 
 
@@ -72,11 +62,6 @@ void __cdecl function_2f6db0(void const *a, void const *b, void const *input, vo
 
 
 
-
-// @stub 0x2f63d0
-void class_2f63d0::function_2f63d0(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 // @stub 0x2e9d90
 void class_2e9d90::function_2e9d90(void const *a, void const *b, void const *input, pair_query_2e90f0 query)
@@ -186,20 +171,10 @@ public:
 
 
 
-// @stub 0x2f4f00
-void class_2f4f00::function_2f4f00(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 
 
 
-
-
-// @stub 0x2f4440
-void class_2f4440::function_2f4440(void const *a, void const *b, void const *input, void *collector)
-{
-}
 
 class class_308180;
 
@@ -254,11 +229,6 @@ public:
 	void function_2dce60(pending_2ddbd0 *pending, void const *root, __m128 const *offset);
 };
 
-// @stub 0x2dce60
-void class_2dce60::function_2dce60(pending_2ddbd0 *pending, void const *root, __m128 const *offset)
-{
-}
-
 // @stub 0x3009e0
 void class_2df670::function_3009e0(pending_301800 *pending, void const *root, fixed_ray_301800 const *ray)
 {
@@ -269,12 +239,6 @@ class class_309b50
 public:
 	long function_309b50(long arg_0);
 };
-
-// @stub 0x309b50
-long class_309b50::function_309b50(long arg_0)
-{
-	return 0;
-}
 
 class entity_316000;
 
@@ -382,7 +346,3 @@ public:
 	void function_2dc220(pending_2ddbd0 *pending, void const *root, fixed_point_2dc220 const *fixed_point);
 };
 
-// @stub 0x2dc220
-void class_2dc220::function_2dc220(pending_2ddbd0 *pending, void const *root, fixed_point_2dc220 const *fixed_point)
-{
-}
