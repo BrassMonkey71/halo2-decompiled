@@ -246,21 +246,22 @@ bool function_3fdf0(long mode, bool single_pass)
     function_174220(true);
     for (long n = 0; n < g_50943c; ++n)
     {
-        short index = (short)g_4c6b00[7].values[n / 2];
-        if (n & 1) index = (short)((dword)g_4c6b00[7].values[n / 2] >> 16);
-        if (index == NONE) continue;
+        word index_bits = ((word const *)g_4c6b00[7].values)[n];
+        if (index_bits == (word)NONE) continue;
+        long index = (short)index_bits;
         s_44940_entry const *entry = &g_4ba138[index];
         if (!((entry->unknown00 & selection) & 0x1fffff) || !(entry->unknown00 & 1) ||
             !entry->unknown10[0xa] || (entry->flags & 0x1f0) != 0x1f0) continue;
+        long transform_index = entry->flags & 0xf;
         byte weight = g_4c0b78.weights[index];
         byte material_index = g_4c0b78.material_indices[index];
         long material = material_index == 0xff ? NONE : g_4c0b78.materials[material_index];
-        byte *geometry = (byte *)function_449e0(index, false, (bool)((entry->unknown00 >> 12) & 1));
+        byte *geometry = (byte *)function_449e0((short)index_bits, false, (bool)((entry->unknown00 >> 12) & 1));
         if (!geometry) continue;
         for (long part = 0; part < *(long *)geometry; ++part)
         {
             s_render_part_context context;
-            if (function_45ce0(index, (byte *)&context, (short)part, (short)(entry->flags & 0xf)) &&
+            if (function_45ce0((short)index_bits, (byte *)&context, (short)part, (short)transform_index) &&
                 function_460d0(*(dword const **)(entry->unknown10 + 4), index, part))
             {
                 long chosen = material == NONE ? context.material : material;

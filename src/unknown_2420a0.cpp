@@ -1056,7 +1056,7 @@ void c_game_engine_markers::v23(long object_index, long unit_index)
 	{
 		if (function_101280(object_index) == 1)
 		{
-			long slot = slot_object_get(object_index)->slot;
+			short slot = slot_object_get(object_index)->slot;
 			s_slot_object *unit = slot_object_get(unit_index);
 
 			if (slot != NONE)
