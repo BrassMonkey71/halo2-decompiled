@@ -160,8 +160,7 @@ answer_3094d0 search_3093e0::function_3094d0(first_step_3094d0 *out)
 	__m128 const *difference = differences;
 	if (dot3_3093e0(*difference, *difference) <= 0.001f * 0.001f)
 	{
-		__m128 const offset = *difference;
-		out->distance = length3_3094d0(offset);
+		out->distance = length3_3094d0(_mm_load_ps(difference->m128_f32));
 		out->direction = direction;
 		out->point = support.first;
 		out->field_24 = 0.5f;
@@ -206,6 +205,9 @@ __forceinline void normalize_309700(__m128 &v)
 	v = _mm_mul_ps(_mm_shuffle_ps(scale, scale, 0), v);
 }
 
+// score 11 (was 17): only stack places differ: retail keeps the second term's size at esp+0x2c
+// (ours 0x3c) and the square direction at 0x30 (ours 0x20), and refines the square direction
+// through the edge's slot; reordering or renaming the locals changes nothing.
 // two directions square to the edge between the first two simplex points
 // (one in the plane of the edge's smallest term, one square to both), and
 // the support point along either that lies further out added to the simplex
@@ -216,9 +218,9 @@ void search_3093e0::function_309700()
 	int smallest = 0;
 	int second = 1;
 	int third = 2;
-	float least = (float)fabs(edge.m128_f32[0]);
-	float const size_1 = (float)fabs(edge.m128_f32[1]);
-	float const size_2 = (float)fabs(edge.m128_f32[2]);
+	float least = fabsf(edge.m128_f32[0]);
+	float const size_1 = fabsf(edge.m128_f32[1]);
+	float const size_2 = fabsf(edge.m128_f32[2]);
 	if (size_1 < least)
 	{
 		second = 0;

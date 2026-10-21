@@ -53,9 +53,14 @@ struct entry_2e0250
 	unsigned short value;
 };
 
+// the order the sort compares by, an empty object passed by value
+struct order_2e01c0
+{
+};
+
 // sorts the 16-bit values from low to high (both included)
 // @retail 0x2e01c0
-void __cdecl function_2e01c0(unsigned short *entries, int low, int high, long context)
+void __cdecl function_2e01c0(unsigned short *entries, int low, int high, order_2e01c0 order)
 {
 	int j = high;
 	int i = low;
@@ -84,11 +89,11 @@ void __cdecl function_2e01c0(unsigned short *entries, int low, int high, long co
 	} while (i <= j);
 	if (low < j)
 	{
-		function_2e01c0(entries, low, j, context);
+		function_2e01c0(entries, low, j, order);
 	}
 	if (i < high)
 	{
-		function_2e01c0(entries, i, high, context);
+		function_2e01c0(entries, i, high, order);
 	}
 }
 
