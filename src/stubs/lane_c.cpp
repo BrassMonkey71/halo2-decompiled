@@ -150,8 +150,6 @@ struct s_havok_component;
 /* in the region, not decompiled yet */
 
 
-// @stub 0x30f2d0
-void hkWorld::entity_world_insert(hkEntity *entity) { }
 
 
 
@@ -388,15 +386,13 @@ struct s_2da8c0
 
 
 struct s_1d1540 { void function_30be00(void *arg_0); };
-struct s_1d1541 { void function_30d2b0(void *arg_0); };
+struct s_1d1541 { void *function_30d2b0(void *arg_0); };
 struct s_314320 { s_314320(); };
 struct s_314450
 {
  void function_314450(s_314320 *arg_0);
  void function_314480(s_314320 const *arg_0);
 };
-// @stub 0x30d2b0
-void s_1d1541::function_30d2b0(void *arg_0) {}
 // @stub 0x314320
 s_314320::s_314320() {}
 // @stub 0x314450

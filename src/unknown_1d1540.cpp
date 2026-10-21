@@ -51,7 +51,7 @@ struct c_contact_query_world { void *add(void *arg_0); };
 struct s_47f048_object { void function_30be40(long arg_0); };
 struct s_1d1542 { byte field_0 : 1; byte field_1 : 7; };
 struct s_1d1540 { void function_30be00(void *arg_0); };
-struct s_1d1541 { void function_30d2b0(void *arg_0); };
+struct s_1d1541 { void *function_30d2b0(void *arg_0); };
 struct s_314320
 {
  long field_0;

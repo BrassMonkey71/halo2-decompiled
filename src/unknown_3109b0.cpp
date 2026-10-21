@@ -74,7 +74,7 @@ public:
 
 struct s_1d1541
 {
-	void function_30d2b0(void *arg_0);
+	void *function_30d2b0(void *arg_0);
 };
 
 class joint_30e3b0;
