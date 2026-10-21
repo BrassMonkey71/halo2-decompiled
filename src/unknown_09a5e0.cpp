@@ -1353,15 +1353,6 @@ bool c_damage_section_response_event_definition::v10(long a, void *data, s_bitst
 
 // ---- the encodings of the "game-engine-player" and "breakable-surface-group" entities ----
 
-/* the pairs of structure bsp and bit that map to the breakable surface slots
-   (src/unknown_183ee0.cpp) */
-struct s_slot_pair
-{
-	long a;
-	long b;
-};
-
-extern s_slot_pair g_4eca80[0x100];
 extern byte *g_4ed280;
 byte *function_183fc0(long index);
 long function_184000(long index, long bit);
