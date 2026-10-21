@@ -961,6 +961,21 @@ void c_class_938e0::function_938e0(const s_type_99af70 *address, long message_ty
 	long connection_index;
 	switch (message_type)
 	{
+	case 5:
+		connection_index = network_link_find_connection(field_4_5, 0, address);
+		if (connection_index != NONE)
+			network_message_handle_connect_refuse(connection_index, (const s_type_2c88a0 *)message);
+		break;
+	case 6:
+		connection_index = network_link_find_connection(field_4_5, 0, address);
+		if (connection_index != NONE)
+			network_message_handle_connect_establish(connection_index, (const s_type_3de205 *)message);
+		break;
+	case 7:
+		connection_index = network_link_find_connection(field_4_5, 0, address);
+		if (connection_index != NONE)
+			network_message_handle_connect_closed(connection_index, (const s_type_ac8d96 *)message);
+		break;
 	case 0:
 		network_message_handler_refuse_connect((const s_connect_request *)message, this, (long)address);
 		break;
@@ -1005,21 +1020,6 @@ void c_class_938e0::function_938e0(const s_type_99af70 *address, long message_ty
 		break;
 	case 11:
 		function_94270((const s_session_id *)message, address);
-		break;
-	case 5:
-		connection_index = network_link_find_connection(field_4_5, 0, address);
-		if (connection_index != NONE)
-			network_message_handle_connect_refuse(connection_index, (const s_type_2c88a0 *)message);
-		break;
-	case 6:
-		connection_index = network_link_find_connection(field_4_5, 0, address);
-		if (connection_index != NONE)
-			network_message_handle_connect_establish(connection_index, (const s_type_3de205 *)message);
-		break;
-	case 7:
-		connection_index = network_link_find_connection(field_4_5, 0, address);
-		if (connection_index != NONE)
-			network_message_handle_connect_closed(connection_index, (const s_type_ac8d96 *)message);
 		break;
 	}
 }

@@ -216,7 +216,7 @@ static inline bool hash_table_find_data(hash_table *table, void *key, void *data
 {
 	hash_node *node = function_13e2d0(table, key);
 
-	if (node && data)
+	if (node && NULL != data)
 	{
 		memcpy(data, node->data, table->data_size);
 		return true;
