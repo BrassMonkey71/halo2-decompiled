@@ -116,7 +116,7 @@ void function_247fd0(s_247fd3 *arg_1, s_particle_system_datum *arg_2,
 			if (local_6 != NONE)
 			{
 				s_particle_system_datum *local_7 = &((s_particle_system_datum *)g_510c74->data)[local_6 & 0xffff];
-				particle_system_link(local_7, &arg_2->last_child_index, &arg_2->first_child_index);
+				particle_system_link(local_7, &arg_2->first_child_index, &arg_2->last_child_index);
 				local_7->parent = arg_2;
 				local_7->unknown4c = local_0;
 				real local_8 = local_1->field_0c > 0.f ? 1.f / local_1->field_0c : 0.f;
@@ -321,7 +321,7 @@ void function_247950(s_particle_system_datum *arg_2, s_particle_spawn_definition
 			if (local_14 != NONE)
 			{
 				s_particle_system_datum *local_15 = DATUM(g_510c74, s_particle_system_datum, local_14);
-				particle_system_link(local_15, &arg_2->last_child_index, &arg_2->first_child_index);
+				particle_system_link(local_15, &arg_2->first_child_index, &arg_2->last_child_index);
 				local_15->parent = arg_2;
 				local_15->unknown4c = local_1;
 				real local_16 = local_2->field_0c > 0.f ? 1.f / local_2->field_0c : 0.f;
