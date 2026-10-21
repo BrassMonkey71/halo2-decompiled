@@ -641,7 +641,17 @@ void c_sound_effects::add_effect_sends_direct(s_sound_send_parameters *parameter
 		{
 			sound_stream_append_mixbin(mixbins, m_buffers->mixbin00, parameters->gain0c + (send_level + parameters->level));
 			sound_stream_append_mixbin(mixbins, m_buffers->mixbin04, parameters->gain10 + (parameters->level + send_level));
-			c_sound_effects::add_send(m_buffers->mixbin08, mode, offset, mixbins);
+			long mixbin08 = m_buffers->mixbin08;
+			switch (mode)
+			{
+			case 0:
+				sound_mixbins_add(mixbins, mixbin08, offset);
+				break;
+			case 1:
+				sound_mixbins_add(mixbins, mixbin08, offset + m_settings.gain);
+				sound_mixbins_add(mixbins, mixbin08, offset + m_settings.gain);
+				break;
+			}
 		}
 		else
 		{
