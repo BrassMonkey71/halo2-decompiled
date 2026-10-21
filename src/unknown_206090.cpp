@@ -117,6 +117,7 @@ PRIVATE __forceinline void function_206096(vector3f const *arg_0, real arg_1, ve
 }
 
 #pragma inline_depth(1)
+#include "vector_products.h"
 // @retail 0x206090
 bool __stdcall function_206090(s_vehicle_physics_state *arg_0, vector3f *arg_1, vector3f *arg_2)
 {
@@ -137,7 +138,7 @@ bool __stdcall function_206090(s_vehicle_physics_state *arg_0, vector3f *arg_1, 
         local_9->i = *(real *)(local_7 + 0x34) - local_0->field_60.i;
         local_9->j = *(real *)(local_7 + 0x38) - local_0->field_60.j;
         local_9->k = *(real *)(local_7 + 0x3c) - local_0->field_60.k;
-        function_206092(&local_5, local_9, local_10);
+        cross3f(&local_5, local_9, local_10);
         function_206095(local_10, &local_4);
         real local_11 = PIN(*(real *)(local_1 + 0x30) * local_0->field_8c * 0.31830987f, -1.0f, 1.0f);
         local_11 = (local_0->field_74.i >= 0.0f ? -1.0f : 1.0f) * local_11;

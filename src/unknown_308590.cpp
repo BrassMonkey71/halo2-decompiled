@@ -16,6 +16,9 @@ struct closest_points_308590
 
 // flags: 1 the first segment's end, 2 its start, 4 the second segment's
 // end, 8 its start
+// not matched yet: retail loads directions before the clamped fraction for
+// the multiply (fld [esp+0x14]; fmul [esp+0xc]) and stores result->first_point
+// before the second scale's broadcast; the compiler loads the fraction first
 // @retail 0x308590
 int __cdecl function_308590(__m128 const *first_start, __m128 const *first_direction, __m128 const *second_start, __m128 const *second_direction, closest_points_308590 *result)
 {

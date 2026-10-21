@@ -120,6 +120,7 @@ public:
 	void function_317d30(void const *step, void const *input);
 };
 
+// score 7 (was 7): the time stamp and loop counter share a slot at esp+0x28 in retail, esp+0xc in ours.
 // @retail 0x317c00
 void narrow_phase_317c00::function_317c00(void const *input)
 {
