@@ -84,7 +84,7 @@ bool function_1af160(long arg_0, s_1af160 *arg_1)
             local_15 = function_2626b0(arg_0, local_15, local_13, local_11, local_14, true);
         if (!REFERENCE_EQUAL(local_15, local_3))
         {
-            real local_20 = (slot_random() * 0.0f + 5.0f) * g_510c54->field_2_3;
+            real local_20 = function_259d0(&g_4e7408->unknown0, __FILE__, __LINE__, 5.0f, 5.0f) * g_510c54->field_2_3;
             arg_1->field_0 = (short)real_to_long(local_20);
         }
         if (!REFERENCE_EQUAL(local_15, g_470fa0))
