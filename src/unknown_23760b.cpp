@@ -616,7 +616,7 @@ char c_virtual_keyboard_screen::move_focus(long direction)
 // @retail 0x237f2a
 bool c_virtual_keyboard_screen::v10(s_widget_event *event)
 {
-	bool result;
+	bool result = false;
 	if (event->type == 1 || event->type == 2 || event->type == 3 || event->type == 4)
 	{
 		char key = move_focus(event->type);
@@ -657,9 +657,8 @@ labels_done:
 		{
 			key = move_focus(event->type);
 		}
-		result = true;
 		v7(&keys[key]);
-		goto done;
+		result = true;
 	}
 	else if (event->type == 5)
 	{
@@ -673,40 +672,36 @@ labels_done:
 		else if (event->param == 6)
 		{
 			move_cursor(-1);
-			goto action_done;
+			result = true;
 		}
 		else if (event->param == 7)
 		{
 			move_cursor(1);
-			goto action_done;
+			result = true;
 		}
 		else if (event->param == 2)
 		{
 			backspace();
-			goto action_done;
+			result = true;
 		}
 		else if (event->param == 14 || event->param == 15)
 		{
 			toggle_shift();
-			goto action_done;
+			result = true;
 		}
 		else if (event->param == 5)
 		{
 			insert(' ');
-			goto action_done;
+			result = true;
 		}
 		else if (event->param == 12)
 		{
 			press_key(_keyboard_key_done);
-			goto action_done;
+			result = true;
 		}
-		goto fallback;
-action_done:
-		return true;
 	}
-fallback:
-	result = c_class_1473c9::v10(event);
-done:
+	if (!result)
+		result = c_class_1473c9::v10(event);
 	return result;
 }
 

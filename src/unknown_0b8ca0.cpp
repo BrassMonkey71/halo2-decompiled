@@ -727,11 +727,11 @@ void __stdcall function_b8600(long object_index, long unknown);
 bool __stdcall function_bdef0(long object_index)
 {
     byte *object = (byte *)OBJECT_GET(object_index);
-    byte const *definition = g_4e3b44[(word)*(long *)object].bytes;
+    byte const *definition = g_4e3b44[*(long *)object & 0xffff].bytes;
     long component_index = *(long *)(object + 0xb4);
-    bool active = (*(word *)(object + 4) & 0x100) != 0;
+    bool active = (bool)((*(dword *)(object + 4) >> 8) & 1);
     bool from_physics = false;
-    if (component_index != NONE && ((1 << object[0xaa]) & 0x800) && (object[0xc0] & 0x40))
+    if (component_index != NONE && ((1 << object[0xaa]) & 0x800) && TEST_FIELD_BIT(((s_object_view *)object)->physics_active))
     {
         s_havok_component *component = (s_havok_component *)(g_51e9b8->data +
             (component_index & 0xffff) * 0xa0);
@@ -741,7 +741,9 @@ bool __stdcall function_bdef0(long object_index)
     {
         byte *node_object = (byte *)OBJECT_GET(object_index);
         transform4x3f const *matrix = (transform4x3f const *)(node_object + *(short *)(node_object + 0x116));
-        point3f center = *(point3f const *)(definition + 8);
+        point3f center;
+        real_point3d_set(&center, *(real const *)(definition + 8),
+            *(real const *)(definition + 0xc), *(real const *)(definition + 0x10));
         if (matrix->scale != 1.0f)
         {
             center.x *= matrix->scale;
@@ -770,7 +772,7 @@ bool __stdcall function_bdef0(long object_index)
     }
     point3f center;
     real radius;
-    if (*(word const *)(definition + 2) & 0x1000)
+    if ((bool)(((dword)*(word const *)(definition + 2) >> 12) & 1))
     {
         center = *(point3f *)(object + 0x50);
         radius = *(real *)(object + 0x5c);
