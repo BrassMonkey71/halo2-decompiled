@@ -226,17 +226,14 @@ real camera_velocity_profile_evaluate(s_camera_velocity_profile const *profile, 
 		accelerations[1] = 0.0f;
 		accelerations[2] = profile->deceleration;
 
-		if (ticks < 0)
+		acceleration_ticks = ticks;
+		if (acceleration_ticks < 0)
 		{
 			acceleration_ticks = 0;
 		}
-		else if (ticks > profile->acceleration_ticks)
+		else if (acceleration_ticks > profile->acceleration_ticks)
 		{
 			acceleration_ticks = profile->acceleration_ticks;
-		}
-		else
-		{
-			acceleration_ticks = ticks;
 		}
 
 		if (ticks - profile->acceleration_ticks < 0)
