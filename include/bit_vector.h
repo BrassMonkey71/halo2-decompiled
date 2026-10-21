@@ -1,4 +1,4 @@
-/* BIT_VECTOR.H: testing and setting one bit of a bit vector held as dwords, which several files expand inline
+/* testing and setting one bit of a bit vector held as dwords, which several files expand inline
    (src/unknown_272b70.cpp and src/unknown_2c0d00.cpp still carry their own copies) */
 
 #ifndef BIT_VECTOR_H
