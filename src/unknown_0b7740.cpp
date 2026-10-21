@@ -463,38 +463,37 @@ struct s_scenario_block_ab
 	byte *elements;
 };
 
+#define SCENARIO_TYPE_AB(type) ((s_scenario_type_ab *)g_468630[type])
+
 // @retail 0xb7a40
 void *__stdcall function_b7a40(s_scenario_identifier_ab const *identifier, long *index_out)
 {
-	void *result = 0;
 	char source = identifier->source;
-	if (source == 1 || source == 0)
+	void *result = NULL;
+	long source_kind = source;
+	if (source_kind == 1 || source_kind == 0)
 	{
 		char type = identifier->type;
-		s_scenario_type_ab *definition = (s_scenario_type_ab *)g_468630[type];
-		if (definition->block_offset != NONE)
+		if (SCENARIO_TYPE_AB(type)->block_offset != NONE)
 		{
-			long size = definition->element_size;
-			s_scenario_block_ab *block = (s_scenario_block_ab *)((byte *)g_4e0350 + definition->block_offset);
-			long count = block->count;
-			long unique_id;
-			byte *element = NULL;
-			if (count > 0)
+			long size = SCENARIO_TYPE_AB(type)->element_size;
+			s_scenario_block_ab *block = (s_scenario_block_ab *)((byte *)g_4e0350 + SCENARIO_TYPE_AB(type)->block_offset);
+			for (long i = 0; i < block->count; i++)
 			{
-				element = block->elements;
-				unique_id = identifier->unique_id;
-			}
-			for (long i = 0; i < count; i++, element += size)
-			{
+				byte *element = block->elements + i * size;
 				s_scenario_identifier_ab *current = (s_scenario_identifier_ab *)(element + 0x28);
-				bool match = (current->unique_id == unique_id) & (current->type == type) & (current->source == source);
+				bool match = true;
+				match &= current->unique_id == identifier->unique_id;
+				match &= current->type == type;
+				match &= current->source == source;
 				if (match && current->source == 0)
 					match &= current->origin_bsp == identifier->origin_bsp;
 				if (match)
 				{
 					if (index_out)
 						*index_out = i;
-					return element;
+					result = element;
+					break;
 				}
 			}
 		}
