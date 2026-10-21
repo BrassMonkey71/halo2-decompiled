@@ -15,6 +15,7 @@
 #include "unknown_2729b0.h"
 #include "data_array.h"
 #include "unknown_25d020.h"
+#include "vector_products.h"
 #include <string.h>
 
 
@@ -444,13 +445,9 @@ short function_263810(point3f const *origin, long actor_index, point3f const *po
 									{
 										vector3f const *forward = (vector3f *)((byte *)object + 0x18c);
 										vector3f side, up;
-										side.i = g_4687b0->j * forward->k - g_4687b0->k * forward->j;
-										side.j = g_4687b0->k * forward->i - g_4687b0->i * forward->k;
-										side.k = g_4687b0->i * forward->j - g_4687b0->j * forward->i;
+										cross3f(g_4687b0, forward, &side);
 										function_30bf0(&side);
-										up.i = side.k * forward->j - side.j * forward->k;
-										up.j = side.i * forward->k - side.k * forward->i;
-										up.k = side.j * forward->i - side.i * forward->j;
+										cross3f(forward, &side, &up);
 										real a, b;
 										function_263740(*actor_reference, &delta, forward, &side, &up, range, scale, &a, &b);
 										if (a > secondary) secondary = a;
