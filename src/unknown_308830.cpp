@@ -57,6 +57,9 @@ inline float first_term_308910(__m128 const &v)
 	return result;
 }
 
+// score 27 (was 27): retail keeps the inverse on the x87 stack through all three products and pops
+// it afterwards, and stores the normal's length after them; ours folds the last product and stores
+// the length first, and starts the determinant one instruction later.
 // a triangle's two edges from its second corner, as the terms that solve for
 // a point's weights in its plane: the edges' squared lengths and their dot
 // product over the determinant, then one over the length of their cross
