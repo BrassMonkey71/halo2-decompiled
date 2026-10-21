@@ -182,7 +182,7 @@ void __stdcall function_186ab0(long arg_0, real arg_1, real arg_2, s_player_acti
         s_186ab5 *local_4 = ((s_186ab6 *)g_4e0300->data)[local_1->field_0 & 0xffff].field_8;
         if (local_1->field_28 != local_4->field_214)
             *(long *)&local_1->field_28 = *(long *)&local_4->field_214;
-        bool local_5 = (local_3.field_1c & 1) != 0;
+        short local_5 = (local_3.field_1c & 1) != 0;
         char local_6 = local_1->field_2a;
         if (local_4->field_213 != NONE)
             local_5 = false;
