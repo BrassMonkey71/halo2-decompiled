@@ -738,16 +738,15 @@ void __stdcall function_118b80(long arg_0)
                 *((byte *)local_1 + 0x12c) |= 0x80;
             else
                 *((byte *)local_1 + 0x12c) &= ~0x80;
+            real threshold_scale = (*(dword *)local_12 & 8) ? 3.0f : 1.0f;
             if (TEST_FIELD_BIT(local_1->flags.flag5))
             {
-                real local_16 = (*(dword *)local_12 & 8) ? 3.0f : 1.0f;
-                if (*((byte *)local_1 + 0x131) * g_510c54->rate > local_16 * 0.15f)
+                if (*((byte *)local_1 + 0x131) * g_510c54->rate > threshold_scale * 0.15f)
                     local_1->flags.flag5 = false;
             }
             else
             {
-                real local_17 = (*(dword *)local_12 & 8) ? 3.0f : 1.0f;
-                if (local_7 || *((byte *)local_1 + 0x130) * g_510c54->rate > local_17 * 0.15f)
+                if (local_7 || *((byte *)local_1 + 0x130) * g_510c54->rate > threshold_scale * 0.15f)
                     local_1->flags.flag5 = true;
             }
         }

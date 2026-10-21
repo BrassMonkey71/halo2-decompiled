@@ -1053,7 +1053,7 @@ bool function_13a3c6(long arg_1, long arg_2, byte const *arg_3, long arg_4)
                 real local_10[4];
                 function_13ad48(arg_2, local_9 + 4, local_10, arg_3, local_7);
                 bool local_12 = function_22b7dd(local_9, arg_2);
-                if (!local_12) local_1 = local_12;
+                if (local_12 != true) local_1 = local_12;
             }
             local_8 += 0x50;
         }
@@ -1072,7 +1072,7 @@ bool function_13a3c6(long arg_1, long arg_2, byte const *arg_3, long arg_4)
                 real local_10[4];
                 function_13ad48(arg_2, local_9 + 4, local_10, arg_3, local_7);
                 bool local_12 = function_22af8d(arg_2, arg_3, (s_bitmap_widget_22ae21 const *)local_9);
-                if (!local_12) local_1 = local_12;
+                if (local_12 != true) local_1 = local_12;
             }
             local_8 += 0x64;
         }
@@ -1091,7 +1091,7 @@ bool function_13a3c6(long arg_1, long arg_2, byte const *arg_3, long arg_4)
                 real local_10[4];
                 function_13ad48(arg_2, local_9 + 4, local_10, arg_3, local_7);
                 bool local_12 = function_22a9bc((s_text_widget const *)local_9, arg_2, (s_text_widget_state const *)arg_3, (color4f const *)local_10);
-                if (!local_12) local_1 = local_12;
+                if (local_12 != true) local_1 = local_12;
             }
             local_8 += 0x54;
         }

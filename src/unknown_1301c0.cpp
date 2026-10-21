@@ -118,20 +118,20 @@ long function_130de0(s_fog_state *fog)
 		if (fog->layers[0].distance >= distance)
 		{
 use_layer0:
+			result = 4;
 			fog->layers[0].color = fog->pending.color;
 			fog->layers[0].intensity = fog->pending.intensity;
 			fog->layers[0].distance = fog->value110;
 			fog->layers[0].height = fog->pending.distance;
-			result = 4;
 		}
 		else if (fog->layers[1].distance >= distance)
 		{
 use_layer1:
+			result = 5;
 			fog->layers[1].color = fog->pending.color;
 			fog->layers[1].intensity = fog->pending.intensity;
 			fog->layers[1].distance = fog->value110;
 			fog->layers[1].height = fog->pending.distance;
-			result = 5;
 		}
 		else
 		{

@@ -237,8 +237,8 @@ void function_13992a(byte *arg_1, long arg_2)
                 *(long *)(arg_1 + 0x22c) = local_18.zone_count;
                 for (long local_20 = 0; local_20 < *(long *)(arg_1 + 0x22c); local_20++)
                 {
-                    *(real *)(arg_1 + 0x250 + local_20 * 4) = local_18.zone_progress[local_20];
                     *(dword *)(arg_1 + 0x230 + local_20 * 4) = local_18.zone_colors[local_20];
+                    *(real *)(arg_1 + 0x250 + local_20 * 4) = local_18.zone_progress[local_20];
                 }
             }
             else arg_1[0x130] = false;
