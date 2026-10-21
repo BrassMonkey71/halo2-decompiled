@@ -57,8 +57,6 @@ public:
  void function_310900(c_2dfbf0 *arg_0, s_30cb70 arg_1);
  void function_30cab0(c_interface_278b40 *arg_0);
 };
-// @stub 0x3101c0
-c_3101c0::c_3101c0(s_3111d0 const &arg_0, long arg_1) {}
 
 
 

@@ -12,6 +12,7 @@
 #include "string_helpers_2d8c90.h"
 #include "placed_shape_312800.h"
 #include "joined_groups_3720a0.h"
+#include "slot_table_372a40.h"
 
 // @stub 0x2e5a90
 void s_1c3a40::function_2e5a90(handlers_2e5d50 const *handlers, long first_type, long second_type,
@@ -58,16 +59,6 @@ int class_3048a0::function_3048a0(convex_2fefd0 const *first, convex_2fefd0 cons
 
 
 
-
-// @stub 0x2e9d90
-void class_2e9d90::function_2e9d90(void const *a, void const *b, void const *input, pair_query_2e90f0 query)
-{
-}
-
-// @stub 0x2e96a0
-void class_2e96a0::function_2e96a0(void const *a, void const *b, void const *input, pair_query_2e90f0 query)
-{
-}
 
 // @stub 0x2e90f0
 void __cdecl function_2e90f0(void const *a, void const *b, void const *input, void *collector)
@@ -361,3 +352,7 @@ helper_3728b0::~helper_3728b0()
 {
 }
 
+// @stub 0x372a40
+slot_table_372a40::slot_table_372a40()
+{
+}
