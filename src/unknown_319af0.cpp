@@ -5,9 +5,10 @@
 
 inline void set_diagonal_319af0(__m128 *rows, float x, float y, float z)
 {
-	rows[0] = _mm_setzero_ps();
-	rows[1] = _mm_setzero_ps();
-	rows[2] = _mm_setzero_ps();
+	__m128 zero = _mm_setzero_ps();
+	_mm_store_ps((float *)&rows[0], zero);
+	_mm_store_ps((float *)&rows[1], zero);
+	_mm_store_ps((float *)&rows[2], zero);
 	rows[0].m128_f32[0] = x;
 	rows[1].m128_f32[1] = y;
 	rows[2].m128_f32[2] = z;

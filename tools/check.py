@@ -11,9 +11,11 @@ Writes build/report.json, updates the status and source columns of
 config/functions.csv, and prints a summary. Each report entry's targets also
 say whether the address fields that leave the function lead to the same
 function, global or constant as retail's (Targets), and a last line totals
-them over the matched functions; in a function that does not match, the
-fields need not line up with retail's. This is a report only and changes no
-status.
+them over the functions whose bytes match; in one whose bytes differ, the
+fields need not line up with retail's. A function whose bytes match but one
+of whose fields differs does not match (settle_statuses); an unverified field
+does not count. Fields are settled across the whole run, so statuses are
+final only then.
 
 Every function that does not match also gets a difference score: its
 differing instructions plus the difference in length, in bytes (0 =
@@ -28,7 +30,8 @@ its body uses by name, and what the last full build (build/halo2.exe and
 build/halo2.map) says pins their calling conventions and which library
 objects it takes. Only those sources are compiled, and the link leaves out
 the rest of the program, so a check takes seconds, not minutes.
-The comparison and its output are the full check's. A CAVEAT line follows a
+The comparison and its output are the full check's, though fields are
+settled across the functions it checks only. A CAVEAT line follows a
 function when the reduced image may build it differently from the full one.
 --fast writes build/report-fast.json and nothing else: the csv and
 build/report.json only ever come from a full build, which stays the judge of
@@ -385,8 +388,9 @@ class Targets:
     marker's row, a constant's name or a scalar's type gives is unverified
     ('past a symbol's end') unless retail agrees, and settle_targets decides
     an offset into a global of unknown size. A call or jump is as
-    Identity.verdict says, an unverified one in the category 'call'. Stage
-    one: this only reports; no verdict changes a function's status."""
+    Identity.verdict says, an unverified one in the category 'call'. A
+    differing field keeps a function whose bytes match from matching
+    (settle_statuses); an unverified one does not."""
 
     def __init__(self, identity, image, retail):
         self.identity, self.image, self.retail = identity, image, retail
@@ -516,16 +520,53 @@ def settle_targets(entries):
                             differing=differing[:DIFFERING_LISTED])
 
 
-def targets_summary(entries):
-    """One line totalling the targets of the matched functions among report entries."""
-    found = [e['targets'] for e in entries if e['status'] == 'matched' and 'targets' in e]
+def awaits_targets(entry):
+    """Whether a report entry's status waits for settle_statuses: its bytes
+    match, but a field (function_targets) differs before settling."""
+    return entry['status'] == 'matched' and any(verdict == 'differs' for _, _, verdict, *_ in entry['targets'])
+
+
+def settle_statuses(report):
+    """Settles the targets of the report's entries (settle_targets), then
+    their statuses: a function whose bytes match but one of whose fields
+    differs does not match. Each differing field counts as one differing
+    instruction, so the function is near when at most NEAR differ and todo
+    otherwise, and its first difference is its first differing field.
+    Prints MATCH, or DIFF with a line for each differing field listed, for
+    the entries awaits_targets held back. Returns the entries it demoted."""
+    waiting = [key for key, e in report.items() if awaits_targets(e)]
+    settle_targets(report.values())
+    demoted = []
+    for key in waiting:
+        e = report[key]
+        t = e['targets']
+        if not t['differs']:
+            print(f'MATCH  {key} {e["name"]}')
+            continue
+        e['status'] = 'near' if t['differs'] <= NEAR else 'todo'
+        e['first_difference'] = t['differing'][0]['offset']
+        e['score'] = t['differs']  # each differing field counts as one differing instruction
+        print(f'DIFF   {key} {e["name"]} at +{e["first_difference"]:#x} ({e["ours"]} bytes, retail {e["size"]}), '
+              f'score {e["score"]}')
+        for d in t['differing']:
+            expected = '' if d['expected'] is None else f' ({d["expected"]} in retail)'
+            print(f'  !! address field at +{d["offset"]:#x}: ours leads to {d["ours"]}{expected}, '
+                  f'retail\'s to {d["retail"]}')
+        demoted.append(e)
+    return demoted
+
+
+def targets_summary(entries, demoted):
+    """One line totalling the targets of the functions among report entries
+    whose bytes match: those that match, and those settle_statuses demoted."""
+    found = [e['targets'] for e in entries if e['status'] == 'matched' and 'targets' in e] + [
+        e['targets'] for e in demoted]
     total = {key: sum(t[key] for t in found) for key in ('verified', 'differs', 'unverified')}
     categories = sum((Counter(t['categories']) for t in found), Counter())
-    differing = sum(t['differs'] > 0 for t in found)
-    return (f'address targets in {len(found)} matched functions: {total["verified"]} verified, '
-            f'{total["differs"]} differ (in {differing} function{"" if differing == 1 else "s"}), '
+    return (f'address targets in {len(found)} function{"" if len(found) == 1 else "s"} whose bytes match: '
+            f'{total["verified"]} verified, {total["differs"]} differ, '
             f'{total["unverified"]} unverified (' + ', '.join(f'{n} {c}' for c, n in categories.most_common())
-            + '); reported only, no status depends on them')
+            + f'); {len(demoted)} demoted from matched for a differing field')
 
 
 def check_function(full, start, theirs, theirs_va, absolute, relative, lo, hi, identity=None):
@@ -604,7 +645,8 @@ def check_one(m, row, ours, retail, identity, standin_calls, targets):
     with a listing, or MISSING. Returns (its report entry, its symbol in the
     image or None). The entry of a function in the image also lists where its
     address fields lead (function_targets, given targets, a Targets), for
-    settle_targets."""
+    settle_statuses, which prints MATCH or DIFF instead for a function whose
+    status waits for its fields (awaits_targets)."""
     symbol = resolve(ours.linkmap, m, standin_calls)
     if symbol is None:
         print(f'MISSING {m.retail:08x} {m.name}: not in the image '
@@ -620,14 +662,14 @@ def check_one(m, row, ours, retail, identity, standin_calls, targets):
         code, start, theirs, m.retail, absolute, relative,
         retail.base, max(s.va + s.vsize for s in retail.sections), identity)
     score = difference_score(status, lines, length, len(theirs))
+    entry = dict(name=m.name, source=m.path, status=status, size=len(theirs), ours=length, first_difference=first,
+                 score=score, targets=function_targets(code, start, theirs, m.retail, absolute, relative, targets))
     if first is not None:
         print(f'DIFF   {m.retail:08x} {m.name} at +{first:#x} ({length} bytes, retail {len(theirs)}), score {score}')
         print('\n'.join(lines))
-    else:
+    elif not awaits_targets(entry):
         print(f'MATCH  {m.retail:08x} {m.name}')
-    return dict(name=m.name, source=m.path, status=status, size=len(theirs), ours=length, first_difference=first,
-                score=score,
-                targets=function_targets(code, start, theirs, m.retail, absolute, relative, targets)), symbol
+    return entry, symbol
 
 
 FAST_IMAGE = os.path.join('build', 'fast', 'reduced.img')
@@ -732,21 +774,21 @@ def fast_check(wanted, retail, jobs, root=ROOT, started=None):
     standin_calls = StandinCalls(ours.linkmap, ours.image, marked)
     identity = Identity(ours.linkmap, rows, markers, standin_calls)
     addresses = Targets(identity, ours.image, retail)
-    report, failed = {}, 0
+    report = {}
     for m in targets:
         entry, symbol = check_one(m, rows[m.retail], ours, retail, identity, standin_calls, addresses)
-        failed += entry['first_difference'] is not None
         notes = caveats[m.retail] + (fast_caveats(ours, symbol, full, identity) if symbol else [])
         for note in notes:
             print(f'CAVEAT {m.retail:08x} {m.name}: {note}')
         report[f'{m.retail:08x}'] = dict(entry, caveats=([NO_FULL_BUILD] if full is None else []) + notes)
-    settle_targets(report.values())
+    demoted = settle_statuses(report)
+    failed = sum(e['first_difference'] is not None for e in report.values())
     write_report(os.path.join(root, FAST_REPORT), report, merge=False)
     done = time.perf_counter()
 
     print(f'fast check: {len(targets) - failed} of {len(targets)} match on a reduced image of {len(units)} sources; '
           'only the full check (python tools/check.py) updates config/functions.csv')
-    print(targets_summary(report.values()))
+    print(targets_summary(report.values(), demoted))
     link, compiled = timings['link'], timings['compiled']
     print(f'time {done - started:.1f}s: prepare {built - started - timings["compile"] - (link or 0):.1f}s, '
           f'compile {compiled} source{"" if compiled == 1 else "s"} {timings["compile"]:.1f}s, '
@@ -821,7 +863,7 @@ def main():
     if unmarked:
         print('no @retail marker in src/ for: ' + ', '.join(f'{a:#x}' for a in sorted(unmarked)))
         sys.exit(1)
-    report, failed, claimed = {}, 0, set()
+    report, claimed = {}, set()
     for m in marked:
         if wanted and m.retail not in wanted:
             continue
@@ -830,15 +872,18 @@ def main():
             raise SystemExit(f'{m.path}: @retail {m.retail:#x} is not a function start in config/functions.csv')
         entry, _ = check_one(m, row, ours, retail, identity, standin_calls, addresses)
         claimed.add(m.retail)
-        failed += entry['first_difference'] is not None
-        row['status'], row['source'] = entry['status'], m.path
+        row['source'] = m.path
         report[f'{m.retail:08x}'] = entry
+    # fields are settled across the whole run, so only now are the statuses final
+    demoted = settle_statuses(report)
+    for va in claimed:
+        rows[va]['status'] = report[f'{va:08x}']['status']
+    failed = sum(e['first_difference'] is not None for e in report.values())
     if not wanted:
         for va, r in rows.items():
             if r['source'] and va not in claimed:
                 r['source'], r['status'] = '', 'todo'
     write_rows(FUNCTIONS_CSV, list(rows.values()))
-    settle_targets(report.values())
     write_report(os.path.join(ROOT, 'build', 'report.json'), report, merge=bool(wanted))
 
     def summary(label, subset):
@@ -850,7 +895,7 @@ def main():
     summary('game functions', [r for r in rows.values() if r['owner'] == 'game'])
     summary('Havok functions', [r for r in rows.values() if r['owner'] == HAVOK])
     summary('functions in scope', [r for r in rows.values() if in_scope_owner(r['owner'])])
-    print(targets_summary(report.values()))
+    print(targets_summary(report.values(), demoted))
     sys.exit(1 if failed else 0)
 
 

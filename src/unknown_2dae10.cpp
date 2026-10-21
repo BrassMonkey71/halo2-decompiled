@@ -22,7 +22,7 @@ public:
 	void function_2dae30(long a, long b, long c);
 };
 
-// @retail 0x2dae30
+// @retail 0x2dae30 standard
 void class_2dae30::function_2dae30(long a, long b, long c)
 {
 }

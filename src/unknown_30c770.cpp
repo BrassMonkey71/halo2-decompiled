@@ -21,7 +21,7 @@ public:
 	void set_all(referenced_2d88a0 *object, long index);
 };
 
-// the third object's second base
+// the third object's other kind of object
 class second_30c770
 {
 public:
@@ -29,11 +29,12 @@ public:
 };
 
 // the third object, of kind 3
-class third_30c770 : public referenced_2d88a0, public second_30c770
+class third_30c770 : public referenced_2d88a0
 {
 public:
 	REFERENCED_NEW_2D88A0(4)
 
+	second_30c770 field_8;
 	long field_c;
 };
 

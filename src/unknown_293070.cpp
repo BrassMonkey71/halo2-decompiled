@@ -392,7 +392,7 @@ void function_293d30(s_scenario_flock const *definition, point3f *point, real *s
 		transform4x3f matrix;
 		if (function_11c380(definition->trigger_volume_index, &matrix))
 		{
-			s_flock_trigger_volume *volume = &((s_scenario_flock_volumes_view *)g_4e0350)->trigger_volumes[definition->trigger_volume_index];
+			s_flock_trigger_volume *volume = &scenario->trigger_volumes[definition->trigger_volume_index];
 			real const *extents = volume->extents;
 			real maximum_strength = 0.0f;
 			vector3f relative;

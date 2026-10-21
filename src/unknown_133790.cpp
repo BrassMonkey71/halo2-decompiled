@@ -260,11 +260,11 @@ void s_bit_vector_pool::function_133ab0(s_133f70 *arg_2, bool arg_3, bool arg_4,
             dword entry_flags = arg_2->field_170;
             if (entry_flags & 1)
             {
+                entry_flags &= ~1;
                 s_133f70 local_5 = *arg_2;
                 local_5.field_1ac |= 0x8000;
                 local_5.field_1d0 = *(long *)((byte *)&local_5 + 0x174);
                 local_5.field_1dc = *(real *)((byte *)&local_5 + 0x184);
-                entry_flags &= ~1;
                 arg_2->field_170 = entry_flags;
                 local_1 = (bool)((entry_flags >> 1) & 1);
                 function_133ab0(&local_5, false, true, arg_5);
@@ -272,11 +272,11 @@ void s_bit_vector_pool::function_133ab0(s_133f70 *arg_2, bool arg_3, bool arg_4,
             dword entry_flags_2 = arg_2->field_170;
             if (entry_flags_2 & 0x20)
             {
+                entry_flags_2 &= ~0x20;
                 s_133f70 local_6 = *arg_2;
                 local_6.field_1ac |= 0x8000;
                 local_6.field_1d0 = *(long *)((byte *)&local_6 + 0x17c);
                 local_6.field_1dc = *(real *)((byte *)&local_6 + 0x18c);
-                entry_flags_2 &= ~0x20;
                 arg_2->field_170 = entry_flags_2;
                 local_1 = (bool)((entry_flags_2 >> 1) & 1);
                 function_133ab0(&local_6, false, true, arg_5);

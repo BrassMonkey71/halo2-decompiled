@@ -27,7 +27,7 @@ void function_18eb80(void)
         if (g_4cf770 && ((s_18eb80 *)g_4cf77c)->field_2f && !g_4cf77a && !g_4ed39c)
         {
             s_18eb80 *local_0 = (s_18eb80 *)g_4cf77c;
-            function_693a0((c_class_6a600 *)local_0);
+            function_693a0((c_class_6a600 *)g_4cf77c);
             local_0->field_2f = false;
         }
         function_11c1b0(NONE, true);
@@ -47,7 +47,9 @@ void function_18eb80(void)
         break;
     case 5:
         texture_cache_dispose_from_old_map();
-        break;
+        g_4e6420--;
+        g_4ed294 = 0;
+        return;
     default:
         __assume(0);
     }

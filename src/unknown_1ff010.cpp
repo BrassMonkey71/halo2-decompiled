@@ -270,42 +270,44 @@ bool function_1ff7d0(long actor_index, point3f const *point, real enemy_radius, 
 			}
 		}
 		else if (friendly_squared > request.squared_distance)
-			goto blocked;
+		{
+			result = false;
+			break;
+		}
 		other = (s_actor_view *)function_1e47d0(&request);
 	}
+	if (result)
 	{
-		long index = NONE;
-		for (;;)
+		s_record_pool_iterator player_cursor;
+		player_cursor.data = g_4e8c24;
+		player_cursor.index = NONE;
+		player_cursor.datum_index = NONE;
+		byte *player;
+		while ((player = data_iterator_next_inlined(&player_cursor)) != NULL)
 		{
-			index = data_next_absolute_index_inlined(g_4e8c24, index + 1);
-			if (index == NONE)
-				break;
-			byte *player = g_4e8c24->data + g_4e8c24->size * index;
-			if (!player)
-				break;
 			long object_index = *(long *)(player + 0x2c);
 			if (object_index != NONE)
 			{
 				s_moving_object *object = moving_object_get(object_index);
 				vector3f delta;
-				delta.i = ((point3f *)((byte *)object + 0x30))->x - point->x;
-				delta.j = ((point3f *)((byte *)object + 0x30))->y - point->y;
-				delta.k = ((point3f *)((byte *)object + 0x30))->z - point->z;
-				real squared_distance = delta.k * delta.k + delta.j * delta.j + delta.i * delta.i;
+				vector3d_from_points3d(point, (point3f const *)((byte *)object + 0x30), &delta);
+				real distance_i = delta.i;
+				real distance_j = delta.j;
+				real distance_k = delta.k;
+				real squared_distance = distance_k * distance_k + distance_j * distance_j + distance_i * distance_i;
 				if (actor->unknown024 != 1 && team_is_enemy(actor->unknown024, 1))
 				{
 					if (enemy_squared > squared_distance)
 						count++;
 				}
 				else if (friendly_squared > squared_distance)
-					goto blocked;
+				{
+					result = false;
+					break;
+				}
 			}
 		}
 	}
-	goto finished;
-blocked:
-	result = false;
-finished:
 	if (count_out)
 		*count_out = count;
 	return result;
