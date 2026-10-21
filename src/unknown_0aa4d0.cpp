@@ -138,13 +138,13 @@ real function_aa4d0(long count, long const *entity_indices, real maximum_distanc
 			}
 		}
 	}
-	relevance = 0.0f;
-	if (maximum_distance > relevance)
+	if (maximum_distance > 0.0f)
 	{
 		real distance_relevance = (maximum_distance - (real)sqrt(minimum_distance_squared)) / maximum_distance;
-		if (!(0.0f > distance_relevance))
-			relevance = distance_relevance;
+		relevance = 0.0f > distance_relevance ? 0.0f : distance_relevance;
 	}
+	else
+		relevance = 0.0f;
 	if (facing && !(relevance > facing_relevance))
 		relevance = facing_relevance;
 done:
