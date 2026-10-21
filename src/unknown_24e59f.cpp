@@ -35,7 +35,7 @@ long __stdcall function_24ecae(s_marker_list const *list, s_24ecae_placement con
 void function_24f0fc(s_marker_list const *list, s_24ecae_placement const *placement, real offset, long count);
 
 /* the unit of the view's local player (its outermost parent), NONE without one */
-static inline long marker_viewer_unit(void)
+static __forceinline long marker_viewer_unit(void)
 {
 	long unit_index = NONE;
 

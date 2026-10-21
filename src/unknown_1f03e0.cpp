@@ -6,6 +6,7 @@
 #include "globals.h"
 #include "unknown_1cec30.h"
 #include "unknown_0259d0.h"
+#include "normalize3d.h"
 #include "data_array.h"
 #include <math.h>
 #include "object_list.h"
@@ -388,8 +389,8 @@ PRIVATE inline void contact_cross(vector3f const *a, vector3f const *b, vector3f
 }
 
 // @retail 0x1f2a80
-void function_1f2a80(vector3f const *velocity, byte const *request, bool moving,
-    vector3f const *desired, long const *indices, long count, vector3f *out)
+void function_1f2a80(byte const *request, bool moving,
+    vector3f const *desired, long const *indices, long count, vector3f *out, vector3f const *velocity)
 {
     byte *component = g_51e9b8->data + (*(long *)(request + 0x40) & 0xffff) * 0xa0;
     long selected = NONE;
@@ -1024,10 +1025,10 @@ bool function_1f2250(vector3f const *velocity, byte const *request, vector3f con
                 contact_cross((vector3f *)(contacts + indices[0] * 0x48 + 0x28),
                     (vector3f *)(contacts + indices[1] * 0x48 + 0x28), &tangent);
                 contact_normalize(&tangent);
-                direction = shape_scale(tangent, dot3f(&tangent, &desired));
+                vector3f_scale(&tangent, dot3f(&tangent, &desired), &direction);
             }
         }
-        function_1f2a80(velocity, request, moving, &desired, indices, count, out);
+        function_1f2a80(request, moving, &desired, indices, count, out, velocity);
     }
     real height = *(real *)(request + 0x24) + *(real *)((*(byte **)request) + 0xc);
     for (long i = 0; i < *(long *)(component + 0x8c); ++i)

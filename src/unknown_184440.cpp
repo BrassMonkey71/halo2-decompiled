@@ -262,7 +262,7 @@ void __stdcall function_184440(long arg_0, long arg_1, s_18444a const *arg_2, lo
             local_2[local_27].y = local_1[local_27].n[local_24];
             local_27++;
             long local_30 = local_28->field_8[!local_29];
-            short local_31 = 0;
+            long local_31 = 0;
             while (local_31 < (short)local_13 && local_0[local_31] != local_30)
                 local_31++;
             if (local_31 == (short)local_13 && local_30 != NONE &&

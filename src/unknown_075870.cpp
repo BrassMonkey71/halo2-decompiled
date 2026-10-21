@@ -418,10 +418,9 @@ long function_07acf0(const s_type_99af70 *address);
 long network_observer_channel_connect_status(s_network_observer *observer, long channel_index)
 {
 	s_network_observer_channel *channel = &observer->channels[channel_index];
-	s_type_99af70 *address = &channel->address;
 	long result = 0;
-	if (function_7af40(address))
-		result = function_07acf0(address);
+	if (function_7af40(&channel->address))
+		result = function_07acf0(&channel->address);
 	return result;
 }
 

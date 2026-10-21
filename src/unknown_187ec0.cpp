@@ -208,32 +208,26 @@ struct s_seat_animations
 // @retail 0x187fe0
 s_seat_animation_entry *function_187fe0(long type, s_seat_animation const *animation, short element_index)
 {
-	s_seat_animation_entry *result;
 	bool first = type == 0;
-	result = NULL;
-	s_seat_animation const *const *animation_holder = &animation;
-	register s_seat_animation const *local_1 = *animation_holder;
-	short const *element_reference = &element_index;
-	short local_0 = *element_reference;
-	long count = first ? local_1->first_count : local_1->second_count;
+	s_seat_animation_entry *result = NULL;
+	long count = first ? animation->first_count : animation->second_count;
+	short index = element_index;
 	s_globals_element *element;
 
-	while ((element = globals_element_get((s_globals_element_block_view *)g_4e034c, local_0)) != NULL)
+	while ((element = globals_element_get((s_globals_element_block_view *)g_4e034c, index)) != NULL)
 	{
 		for (long i = 0; i < count && !result; i++)
 		{
-			s_seat_animation_entry *entry = (first ? local_1->first_entries : local_1->second_entries) + i;
-			if (entry->element_index == local_0)
+			s_seat_animation_entry *entries = first ? animation->first_entries : animation->second_entries;
+			if (entries[i].element_index == index)
 			{
-				result = entry;
+				result = &entries[i];
 				break;
 			}
 		}
-		local_0 = element->parent_index;
+		index = element->parent_index;
 		if (result)
-		{
 			break;
-		}
 	}
 	return result;
 }
