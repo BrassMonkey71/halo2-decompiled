@@ -250,6 +250,10 @@ public:
 	virtual void get_closest(body_2fe830 const *a, body_2fe830 const *b, query_header_2fe830 const *header, closest_collector_2fe830 *collector) {}
 };
 
+// score 190 (was 190): stack layout: retail puts closest at esp+0x30 and
+// result at 0x60, ours the reverse (declaration order, scopes and names do
+// not move them); retail also resets moved_closest before it moves the body
+// in the loop, which here scores 197.
 // the same cast, the closest points found by the object itself; a move that
 // finds no closest points passes on the last hit
 // @retail 0x2fec10
