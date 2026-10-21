@@ -537,7 +537,6 @@ bool function_29f6c0(long list_index, short trigger_volume_index, bool all)
 {
 	bool result = all;
 	s_record_pool *local_1;
-	short const volatile *local_0 = &trigger_volume_index;
 	long reference_index;
 	long object_index = object_list_get_first_inlined(list_index, &reference_index);
 	if (object_index == NONE)
@@ -545,7 +544,7 @@ bool function_29f6c0(long list_index, short trigger_volume_index, bool all)
 	local_1 = g_4e0300;
 	while (object_index != NONE)
 	{
-		if (function_11c470(*local_0, &((s_object_header *)local_1->data)[object_index & 0xffff].object->center))
+		if (function_11c470(trigger_volume_index, &((s_object_header *)local_1->data)[object_index & 0xffff].object->center))
 		{
 			if (!all)
 				{ result = true; break; }

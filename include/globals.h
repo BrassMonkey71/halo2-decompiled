@@ -552,20 +552,31 @@ struct s_allocator_globals
 
 extern s_allocator_globals *g_4d87f8;
 
-/* g_4eca60: the identifiers in the slots of the multiplayer globals' slot
-   table (09a5e0, 183c60) */
-extern long g_4eca60[8];
+/* the pairs of structure bsp and bit that map to the breakable surface slots
+   (183ee0, 09a5e0) */
+struct s_slot_pair
+{
+	long a;
+	long b;
+};
 
-/* g_4ea958: the slot tables that map entries to those slots (183c60, 183ee0) */
+/* g_4ea958: the slot tables that map entries to those slots (183c60, 183ee0),
+   the identifiers in the slots of the multiplayer globals' slot table
+   (g_4eca60: 09a5e0, 183c60) and the structure bsp and bit of each slot
+   index (g_4eca80) */
 struct s_slot_table_globals
 {
 	long assigned_entry_count;
 	long active_slot_count;
 	byte entry_slots[0x100];
 	byte owner_entry_slots[0x400][8];
+	long slot_identifiers[8];
+	s_slot_pair slot_pairs[0x100];
 };
 
 extern s_slot_table_globals g_4ea958;
+#define g_4eca60 (g_4ea958.slot_identifiers)
+#define g_4eca80 (g_4ea958.slot_pairs)
 
 /* g_480118: another allocator (1efac0) */
 extern c_allocator *g_480118;

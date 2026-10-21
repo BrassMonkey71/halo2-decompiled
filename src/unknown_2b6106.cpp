@@ -470,7 +470,6 @@ void function_1a31ff();
 struct s_window_manager_text;
 const char *function_148956(s_window_manager_text *);
 void ascii_string_to_unicode(const char *, word *, long);
-void function_23620d(long, word *);
 long online_task_poll(long);
 bool function_90160(long, s_match_result_data *);
 long qos_lookup(long, long, long, s_qos_target *);
@@ -483,9 +482,11 @@ bool online_title_is_this_title(DWORD);
 void c_y_menu_player_selected_screen::v3()
 {
 	c_y_menu_player_selected_screen *screen = this;
-	word formatted[256], format[256], name[16], group_name[16];
+	word formatted[256];
+	s_global_string_buffer format;
+	word name[16], group_name[16];
 	formatted[0] = 0;
-	format[0] = 0;
+	format.text[0] = 0;
 	if (!window_manager_channel_window_in_use(4, 4)) function_1a31ff();
 	screen->update_selection();
 	s_name_request selection;
@@ -495,31 +496,38 @@ void c_y_menu_player_selected_screen::v3()
 	XUID group;
 	if (function_8c150(g_4771c8, 0, (unsigned __int64 *)user, group_name, &group.qwUserID) && group.qwUserID)
 	{
-		function_23620d(0x220006bd, format);
-		function_1630e0(formatted, format, name, group_name);
+		format.load(0x220006bd);
+		function_1630e0(formatted, format.text, name, group_name);
 		((c_class_1a2c81 *)((byte *)screen + 0x80))->function_22f52e()->set_text(formatted);
 	}
 	else
 		((c_class_1a2c81 *)((byte *)screen + 0x80))->function_22f52e()->set_text(name);
 	if (screen->task_index != NONE)
 	{
-		long state = online_task_poll(screen->task_index);
-		if (state != 0 && state != 1)
+		switch (online_task_poll(screen->task_index))
 		{
-			if (state == 2)
+		case 0:
+			break;
+		case 1:
+			break;
+		case 2:
+		{
+			/* the match search finished: look up the session it found */
+			s_match_result_data result;
+			if (function_90160(screen->task_index, &result))
 			{
-				s_match_result_data result;
-				if (function_90160(screen->task_index, &result))
-				{
-					s_qos_target target;
-					target.kid = result.id;
-					target.key = result.key;
-					target.xna = result.address;
-					screen->qos_handle = qos_lookup(1, 1, 0x10000, &target);
-				}
+				s_qos_target target;
+				target.kid = result.id;
+				target.key = result.key;
+				target.xna = result.address;
+				screen->qos_handle = qos_lookup(1, 1, 0x10000, &target);
 			}
+		}
+			/* fall through: the task is done */
+		default:
 			function_6b640(screen->task_index);
 			screen->task_index = NONE;
+			break;
 		}
 	}
 	else if (screen->qos_handle != NONE && qos_is_complete(screen->qos_handle))

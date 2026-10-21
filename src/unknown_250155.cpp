@@ -1191,14 +1191,15 @@ void function_251f8d(c_matchmaking_screen *screen)
             }
             else
             {
+                c_text_widget_45a5e0 *status = status_values.status;
                 word buffer[0x100];
                 word format[0x100];
                 buffer[0] = 0;
                 format[0] = 0;
                 ((c_widget *)screen)->function_230134(0xe000761, format);
                 function_1630e0(buffer, format, maximum - status_values.player_count);
-                status_values.status->function_22f52e()->set_text(buffer);
-                status_values.status->value6e = true;
+                status->function_22f52e()->set_text(buffer);
+                status->value6e = true;
             }
         }
         else

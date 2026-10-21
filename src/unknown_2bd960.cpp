@@ -1814,26 +1814,23 @@ bool c_engine_peer_b::q2(dword mask, long unused, s_settings_2c0 *settings)
 	s_state_2bf *state = g_51eccc;
 	if (mask & 0x20)
 	{
-		s_record_pool *data = g_4e8c24;
-
-		for (long i = 0; i < (short)state->w114; i++)
+		for (long i = 0; i < (short)g_51eccc->w114; i++)
 		{
 			if ((short)state->w60[i] != NONE)
 			{
 				long slot = settings->holders[i];
-				byte *player = territory_player_from_slot(data, slot);
+				byte *player = territory_player_from_slot(g_4e8c24, slot);
 				long holder = NONE;
 
 				if (player)
 				{
-					holder = data_datum_index(data, slot);
+					holder = data_datum_index(g_4e8c24, slot);
 				}
 				state->l70[i] = holder;
 				s_team_entry_2bf *entry = (s_team_entry_2bf *)function_15e410((short)i);
 				if (entry && entry->item_index != NONE)
 				{
 					territory_update_item_colors(entry->item_index);
-					state = g_51eccc;
 				}
 			}
 		}

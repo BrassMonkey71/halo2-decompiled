@@ -738,20 +738,8 @@ void __stdcall function_1e1a00(long actor_index, long value)
 long __stdcall function_1dfb90(long definition_index);
 void function_1e3b60(long actor_index);
 
-PRIVATE inline short actor_initial_team(long type)
-{
-	switch (type)
-	{
-	case 0: case 2: case 3: case 4: case 5: case 15: return 3;
-	case 1: case 16: case 17: case 18: return 7;
-	case 6: return 1;
-	case 7: case 8: return 2;
-	case 9: case 10: case 11: case 19: return 4;
-	case 12: case 13: return 5;
-	case 14: return NONE;
-	default: __assume(0);
-	}
-}
+/* the initial team of each actor type */
+extern short const g_44aee8[20];
 
 // @retail 0x1e0160
 long __stdcall function_1e0160(long squad_index, long entry_index, long unit_index, bool flag)
@@ -779,7 +767,6 @@ long __stdcall function_1e0160(long squad_index, long entry_index, long unit_ind
 				function_203d70(actor_index, (short)resolved_squad, false);
 			}
 			byte *unit = (byte *)ai_object_get(*unit_reference);
-			extern short const g_44aee8[20];
 			short entry_team = 0;
 			if (resolved_squad != NONE)
 			{
@@ -815,19 +802,16 @@ void __stdcall swarm_leader_attach(long actor_index, long perception_index);
 // @retail 0x1e02f0
 long __stdcall function_1e02f0(long squad_index, long entry_index, long unit_index, long perception_index, bool flag)
 {
- long const volatile *entry_reference = &entry_index;
-
-	
-	
+	long actor_index = NONE;
 	long const *unit_reference = &unit_index;
 	long const *perception_reference = &perception_index;
 	bool const *flag_reference = &flag;
 	byte *squad = NULL;
 	if (squad_index != NONE)
 		squad = g_51e9d8->data + (squad_index & 0xffff) * 0x98;
-	if ((*unit_reference != NONE || *perception_reference != NONE) && *entry_reference != NONE)
+	if ((*unit_reference != NONE || *perception_reference != NONE) && entry_index != NONE)
 	{
-		long actor_index = function_1dfb90(*entry_reference);
+		actor_index = function_1dfb90(entry_index);
 		if (actor_index != NONE)
 		{
 			s_actor_view *actor = actor_get(actor_index);
@@ -843,23 +827,21 @@ long __stdcall function_1e02f0(long squad_index, long entry_index, long unit_ind
 					squad_index = (*(short *)squad << 16) | (squad_index & 0xffff);
 				function_203d70(actor_index, (short)squad_index, false);
 			}
-			byte *unit = *unit_reference == NONE ? NULL : (byte *)ai_object_get(*unit_reference);
-			short team = 0;
+			byte *unit = *unit_reference != NONE ? (byte *)ai_object_get(*unit_reference) : NULL;
+			short entry_team = 0;
 			if (squad_index != NONE)
 			{
 				byte *entry = *(byte **)((byte *)g_4e0350 + 0x164) + (squad_index & 0xffff) * 0x74;
 				if (entry)
-					team = *(short *)(entry + 0x24);
+					entry_team = *(short *)(entry + 0x24);
 			}
-			if (team == 0 && unit)
-			{
-				short unit_team = *(short *)(unit + 0x138);
-				if (unit_team != NONE && unit_team != 0)
-					team = unit_team;
-			}
-			if (team == 0)
-				team = actor_initial_team(actor->unknown004);
-			function_1e1150(actor_index, team);
+			short unit_team;
+			if (entry_team != 0)
+				function_1e1150(actor_index, entry_team);
+			else if (unit && (unit_team = *(short *)(unit + 0x138)) != NONE && unit_team != 0)
+				function_1e1150(actor_index, unit_team);
+			else
+				function_1e1150(actor_index, g_44aee8[actor->unknown004]);
 			if (squad && !squad[0x76] && actor->unknown024 != 0)
 				squad[0x76] = (byte)actor->unknown024;
 			actor->unknown084 = *flag_reference ? 0 : 3;
@@ -869,12 +851,11 @@ long __stdcall function_1e02f0(long squad_index, long entry_index, long unit_ind
 				if (*(long *)((byte *)actor + 0x1c) != NONE)
 					swarm_leader_detach(actor_index);
 				function_1e1a00(actor_index, 0);
+				actor_index = NONE;
 			}
-			else
-				return actor_index;
 		}
 	}
-	return NONE;
+	return actor_index;
 }
 
 #include "unit_requests.h"

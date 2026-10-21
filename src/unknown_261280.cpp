@@ -1126,7 +1126,7 @@ weapon_done:
  long group_index = *(long *)(actor + 0x7c);
  if (*(short *)(actor + 0x86) >= 5 && group_index != NONE)
   group = *(short *)(g_502420->data + (group_index & 0xffff) * 0x50 + 0x10) > 1;
- switch (type)
+ switch (request->type)
  {
  case 0: case 2: case 3: case 6:
   if (group)

@@ -414,12 +414,14 @@ void function_1fe410(point3f *point, real distance)
     real angle = (real)random_next(&g_4e7408->unknown0) * 1.5259022e-05f;
     angle *= 6.2831854820251465f;
     angle -= 3.1415927410125732f;
-    volatile real cosine = (real)cos(angle);
-    volatile real sine = (real)sin(angle);
+    vector3f radial;
+    radial.i = (real)cos(angle);
+    radial.j = (real)sin(angle);
+    radial.k = 0.0f;
     point3f destination;
-    destination.x = cosine * distance + start.x;
-    destination.y = sine * distance + start.y;
-    destination.z = 0.0f * distance + start.z;
+    destination.x = radial.i * distance + start.x;
+    destination.y = radial.j * distance + start.y;
+    destination.z = radial.k * distance + start.z;
     vector3f direction;
     vector3d_from_points3d(point, &start, &direction);
     s_point_collision collision;
@@ -431,11 +433,11 @@ void function_1fe410(point3f *point, real distance)
     if (function_1697c0(0x5808c2f, &start, &direction, NONE, NONE,
         (s_collision_result_1697c0 *)&collision))
     {
-        real fraction = collision.fraction * distance - 0.1f;
-        if (fraction < 0.0f) fraction = 0.0f;
-        destination.x = direction.i * fraction + start.x;
-        destination.y = direction.j * fraction + start.y;
-        destination.z = 0.0f * fraction + start.z;
+        distance = collision.fraction * distance - 0.1f;
+        if (distance < 0.0f) distance = 0.0f;
+        destination.x = radial.i * distance + start.x;
+        destination.y = radial.j * distance + start.y;
+        destination.z = radial.k * distance + start.z;
     }
     *point = destination;
 }
