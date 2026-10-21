@@ -755,8 +755,7 @@ void __stdcall online_messages_enumerate(DWORD controller_index, s_entry *entrie
 bool function_6d080(long controller, s_channel_message *result)
 {
 	bool found = false;
-	s_player_slot_flags *slot = &g_54e8e0[controller];
-	if (!(slot->flags & 3) && online_logon_connected())
+	if (!(g_54e8e0[controller].s_player_slot_flags::flags & 3) && online_logon_connected())
 	{
 		XONLINE_NOTIFICATION_EX_INFO notification;
 		DWORD state_flags;
@@ -765,6 +764,7 @@ bool function_6d080(long controller, s_channel_message *result)
 		{
 			switch (notification.bMessageType)
 			{
+			case 1: result->type = 0; break;
 			case 2: result->type = 1; break;
 			case 3: result->type = 2; break;
 			case 4: result->type = 3; break;
