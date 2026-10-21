@@ -878,27 +878,21 @@ bool function_6c360(s_type_9df9da *task)
 			long status = online_task_get_change_logon_status(task);
 			task->result = 10;
 			if (status == 2)
-			{
-				task->flag_bits.finished = true;
-				task->flag_bits.failed = true;
 				task->result = status;
-			}
-			else
-			{
-				task->flag_bits.finished = true;
-				task->flag_bits.failed = true;
-			}
+			task->flag_bits.finished = true;
+			task->flag_bits.failed = true;
 		}
 		break;
 	case 0:
 	case 0x1513f0:
 		task->result = 0;
-		return true;
+		result = true;
+		break;
 	case 0x1513f1:
 		task->flag_bits.finished = true;
 		task->result = 1;
 		if (function_6bff0(task))
-			return true;
+			result = true;
 		else
 		{
 			task->flag_bits.failed = true;
