@@ -891,37 +891,36 @@ bool function_1907bf(byte frames_down, word msec_down)
 
 PRIVATE __forceinline long controller_direction_magnitude(short value)
 {
-	long result = value;
-	if (value < 0)
-		result = -result;
-	return result;
+	return value >= 0 ? value : -value;
 }
 
 PRIVATE __forceinline long controller_direction_sign(short value)
 {
-	long result = 0;
-	if (value != 0)
-		result = value >= 0 ? 1 : -1;
-	return result;
+	if (value == 0)
+		return 0;
+	return value >= 0 ? 1 : -1;
 }
 
 // @retail 0x190a3d
 void function_190a3d(long controller, short *direction, dword time, long value)
 {
-	short x = direction[0];
-
-	if (x == 0 && direction[1] == 0)
+	if (direction[0] == 0 && direction[1] == 0)
 	{
 		g_55e758.last_time[controller] = 0;
 	}
 	else
 	{
+		short x = direction[0];
+
 		if ((controller_direction_magnitude(x) >= 0x7332 && controller_direction_magnitude(g_55e758.last_direction[controller][0]) < 0x7332) ||
 			(controller_direction_magnitude(direction[1]) >= 0x7332 && controller_direction_magnitude(g_55e758.last_direction[controller][1]) < 0x7332) ||
 			time - g_55e758.last_time[controller] >= 250)
 		{
 			s_controller_event event;
 
+			event.controller = controller;
+			event.value = value;
+			event.amount = NONE;
 			if (controller_direction_magnitude(x) >= 0x7332)
 			{
 				event.type = controller_direction_sign(x) > 0 ? 4 : 2;
@@ -935,9 +934,6 @@ void function_190a3d(long controller, short *direction, dword time, long value)
 				}
 				event.type = controller_direction_sign(y) <= 0 ? 3 : 1;
 			}
-			event.amount = NONE;
-			event.controller = controller;
-			event.value = value;
 			function_147dbe(&event);
 			g_55e758.last_time[controller] = time;
 		}
