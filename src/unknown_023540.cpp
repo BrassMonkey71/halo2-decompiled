@@ -102,6 +102,7 @@ struct s_speed_result
 	s_speed_shake shake;
 };
 void function_154310(long index, s_speed_result *result);
+long function_14de70(long local_player_index);
 void function_2ba10(s_2f970_view const *view, long cluster, long player,
 	byte const *camera, bool enabled, long leaf, bool invalid, vector3f const *sky_color,
 	long unknown0, long object, long object_index, byte kind, long sky_index,
@@ -118,7 +119,7 @@ extern long g_4ba050, g_4ba054[4], g_4ba064[4];
 // @retail 0x2b790
 void function_2b790(s_render_view_2b790 *view, bool enabled)
 {
-	struct location_indices { long cluster, leaf; bool invalid; volatile long object; } location;
+	struct location_indices { long cluster, leaf; bool invalid; long object; } location;
 	s_speed_result speed;
 	memcpy(&speed.shake, g_4686d4, sizeof(speed.shake));
 	location.object = NONE;
@@ -151,7 +152,7 @@ void function_2b790(s_render_view_2b790 *view, bool enabled)
 	function_2f970((s_2f970_view const *)&view->position, sky.bounds);
 	if (view->object_index != NONE)
 	{
-		long player = g_4e8c20->entries[view->object_index];
+		long player = function_14de70(view->object_index);
 		location.object = *(long *)((byte *)g_4e8c24->data + (player & 0xffff) * 0x21c + 0x24);
 		function_154310(view->object_index, &speed);
 	}

@@ -84,36 +84,33 @@ bool function_1af160(long arg_0, s_1af160 *arg_1)
             local_15 = function_2626b0(arg_0, local_15, local_13, local_11, local_14, true);
         if (!REFERENCE_EQUAL(local_15, local_3))
         {
-            real local_20 = (slot_random() * 0.0f + 5.0f) * g_510c54->field_2_3;
+            real local_20 = function_259d0(&g_4e7408->unknown0, __FILE__, __LINE__, 5.0f, 5.0f) * g_510c54->field_2_3;
             arg_1->field_0 = (short)real_to_long(local_20);
         }
         if (!REFERENCE_EQUAL(local_15, g_470fa0))
         {
             arg_1->field_4 = 0;
             local_0->unknown4ae = true;
-            real local_21;
             real local_22;
-            if (function_1af530(arg_0, (long *)&local_22, (long *)&local_21) &&
+            if (function_1af530(arg_0, (long *)&local_22, &local_13) &&
                 local_22 > function_210ac0((s_type_c3b527 const *)local_16, &local_2->position))
                 arg_1->field_8 = true;
         }
         long local_23 = function_1e1f20(arg_0);
         if (local_23 != NONE)
         {
+            bool local_26 = true;
             byte *local_24 = (byte *)function_1e5280(arg_0, ai_object_get(local_23)->definition_index);
             if (local_24)
             {
-                bool local_26 = true;
                 if (*(real *)(local_24 + 0xc) > local_1->unknown28)
                     local_26 = false;
                 else if (!REFERENCE_EQUAL(local_15, g_470fa0))
                 {
                     point3f *local_28 = &function_25d690((s_prop_datum *)local_1)->position;
                     vector3f local_29;
-                    local_29.i = local_28->x - local_12.point.x;
-                    local_29.j = local_28->y - local_12.point.y;
-                    local_29.k = local_28->z - local_12.point.z;
-                    if (*(real *)(local_24 + 0xc) * *(real *)(local_24 + 0xc) > local_29.k * local_29.k + local_29.i * local_29.i + local_29.j * local_29.j)
+                    vector3d_from_points3d(&local_12.point, local_28, &local_29);
+                    if (length_sq3f(&local_29) < *(real *)(local_24 + 0xc) * *(real *)(local_24 + 0xc))
                         local_26 = false;
                 }
                 function_265c30(local_0->prop_index, arg_0, local_26);
