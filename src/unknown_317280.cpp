@@ -81,3 +81,5 @@ owner_317280::~owner_317280()
 }
 
 // @retail 0x317fe0 deleting owner_317280
+// the deleting destructor reached through the second interface, at 0x1c
+// @retail 0x317270 adjustor owner_317280 0x1c

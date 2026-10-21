@@ -1,5 +1,5 @@
 // @flags /O2 /GL-
-// Havok (third-party physics library): accumulating a vector and setting
+// Havok (third-party physics library): a push at a point; accumulating a vector and setting
 // its w to one; and a step of a body's velocities: the accumulated push and
 // turn applied and cleared, gravity added, then both velocities damped.
 #include <xmmintrin.h>
@@ -37,14 +37,34 @@ public:
 	char unknown30[0x10];
 	vector_319cd0 linear_velocity;
 	vector_319cd0 angular_velocity;
-	char unknown60[0x60];
+	char unknown60[0x10];
+	__m128 position;
+	char unknown80[0x40];
 	__m128 push;
 	__m128 sum;
 
+	void push_at(const __m128 &force, const __m128 &point);
 	void add(const __m128 &vector);
 	void function_319cd0(float const *step, __m128 const *gravity);
 };
 
+// the cross product of two vectors
+inline __m128 cross_319c20(__m128 const &a, __m128 const &b)
+{
+	return _mm_sub_ps(
+		_mm_mul_ps(_mm_shuffle_ps(a, a, 0xc9), _mm_shuffle_ps(b, b, 0xd2)),
+		_mm_mul_ps(_mm_shuffle_ps(a, a, 0xd2), _mm_shuffle_ps(b, b, 0xc9)));
+}
+
+// a push at a point: the push, and the turn it gives about the position
+// score 2 (was 2): retail loads the position before the point for the
+// subtraction; a local, a helper and a separate assignment all keep ours.
+// @retail 0x319c20
+void class_319ca0::push_at(const __m128 &force, const __m128 &point)
+{
+	push = _mm_add_ps(push, force);
+	add(cross_319c20(_mm_sub_ps(point, position), force));
+}
 // @retail 0x319ca0
 void class_319ca0::add(const __m128 &vector)
 {
