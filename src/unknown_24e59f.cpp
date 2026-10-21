@@ -52,9 +52,21 @@ static __forceinline long marker_viewer_unit(void)
 // @retail 0x24e59f
 void __stdcall function_24e59f(s_marker_list *list)
 {
+	struct s_marker_collision_result
+	{
+		byte unknown00[8];
+		point3f point;
+		byte unknown14[0x24 - 0x14];
+		short unknown24;
+		byte unknown26[0x4c - 0x26];
+		long surface_references[3];
+		byte surface_flags[2];
+		short surface_index;
+	};
 	/* retail keeps list on the stack (ret 4); its callers push it */
 	s_marker_list *const *list_reference = &list;
-	real distance = distance3d(&(*list_reference)->position, &g_4b9da0);
+	point3f const *position = &(*list_reference)->position;
+	real distance = distance3d(position, &g_4b9da0);
 	real lift = list->r18;
 	if (lift > distance * 0.35)
 		lift = (real)(distance * 0.35);
@@ -62,9 +74,9 @@ void __stdcall function_24e59f(s_marker_list *list)
 	vector3f const *up = g_4687b0;
 	real height = list->r14 + lift;
 	point3f point;
-	point.x = up->i * height + list->position.x;
-	point.y = up->j * height + list->position.y;
-	point.z = up->k * height + list->position.z;
+	point.x = up->i * height + position->x;
+	point.y = up->j * height + position->y;
+	point.z = up->k * height + position->z;
 
 	s_24ecae_placement placement;
 	placement.size = 0.0f;
@@ -81,7 +93,7 @@ void __stdcall function_24e59f(s_marker_list *list)
 
 	point2f offset;
 	real nx, ny;
-	bool on_screen = function_30710(&g_4b9e14, 0, (vector3f const *)&transformed, &offset, (s_view const *)&g_camera_storage);
+	long on_screen = function_30710(&g_4b9e14, 0, (vector3f const *)&transformed, &offset, (s_view const *)&g_camera_storage);
 	if (on_screen)
 	{
 		long half_width = (g_4b9dd6 - g_4b9dd2) / 2;
@@ -109,10 +121,10 @@ void __stdcall function_24e59f(s_marker_list *list)
 		offset.y = (real)((g_4b9dd4 - g_4b9dd0) / 2) * ny;
 		if (function_24e554(list))
 		{
-			s_collision_result_1697c0 collision;
+			s_marker_collision_result collision;
 			collision.unknown24 = NONE;
 			long unit_index = marker_viewer_unit();
-			if (function_16a040(0x16808c2d, &g_4b9da0, &point, unit_index, list->l20, &collision))
+			if (function_16a040(0x16808c2d, &g_4b9da0, &point, unit_index, list->l20, (s_collision_result_1697c0 *)&collision))
 				placement.alternate = true;
 		}
 	}
