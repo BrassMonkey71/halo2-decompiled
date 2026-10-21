@@ -335,11 +335,8 @@ void function_1f3640(long actor_index)
             enabled = false;
         else
         {
-            enabled = false;
-            if (actor->unknown5d0 && *((bool *)actor + 0x485))
-                enabled = true;
-            else if ((!actor->unknown5d0 || active) && *((bool *)actor + 0x484))
-                enabled = true;
+            enabled = (actor->unknown5d0 && *((bool *)actor + 0x485)) ||
+                ((!actor->unknown5d0 || active) && *((bool *)actor + 0x484));
         }
         if (active && !enabled)
         {
