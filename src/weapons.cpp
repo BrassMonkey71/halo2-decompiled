@@ -2235,7 +2235,7 @@ void function_1027b0(long weapon_index, long trigger_index, bool *pressed, bool 
 		{
 			long delta = weapon->value_170 - weapon->value_172;
 			long age = weapon->value_174 + 1;
-			long clamped = 255;
+			byte clamped = 255;
 			if (age <= 255)
 				clamped = age;
 			weapon->value_174 = (char)clamped;
@@ -2252,14 +2252,13 @@ void function_1027b0(long weapon_index, long trigger_index, bool *pressed, bool 
 		*released = true;
 	else if (!*released)
 	{
-		dword flags = *(dword *)((byte *)trigger + 4);
-		if (*pressed && (flags & 0x18))
+		if (*pressed && ((*(dword *)((byte *)trigger + 4)) & 0x18))
 			*pressed = false;
 		if (!*released && *held)
 		{
-			if (flags & 0x10)
+			if ((*(dword *)((byte *)trigger + 4)) & 0x10)
 				*held = false;
-			else if ((*(byte *)definition & 1) && (flags & 8))
+			else if ((*(byte *)definition & 1) && ((*(dword *)((byte *)trigger + 4)) & 8))
 				*held = false;
 		}
 	}
