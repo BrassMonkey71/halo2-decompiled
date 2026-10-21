@@ -8,6 +8,7 @@ src/globals.cpp) */
 #include "unknown_0259d0.h"
 #include "data_array.h"
 #include <stddef.h>
+#include <string.h>
 
 /* the game time globals (0x24 bytes); field_2_3 is read by
    firing position code; scale is 1.0 once initialized */
@@ -923,10 +924,10 @@ struct s_ai_index_pair
 	long unknown0;
 	long unknown4;
 
+	/* both to NONE, as one fill of the pair */
 	void clear()
 	{
-		unknown0 = NONE;
-		unknown4 = NONE;
+		memset(this, NONE, sizeof(*this));
 	}
 };
 
