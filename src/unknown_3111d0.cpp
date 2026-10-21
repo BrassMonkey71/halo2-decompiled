@@ -14,9 +14,11 @@ struct vector_3111d0
 	void set(float x_value, float y_value, float z_value)
 	{
 		x = x_value;
-		y = y_value;
+		float &y_component = y;
+		y_component = y_value;
 		z = z_value;
-		w = 0.0f;
+		float &w_component = w;
+		w_component = 0.0f;
 	}
 };
 

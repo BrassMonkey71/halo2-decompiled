@@ -77,6 +77,10 @@ solver_result_31a0d0 const *motion_31a0d0::function_31a0d0(float const *step, fl
 // the motion moved to a moment within the last step: back by the part of the
 // step its position's last lane records, then on by the part given, which
 // is recorded in its place
+// score 37 (was 37): retail takes the address of the length's slot at the top
+// of the first inlined move and multiplies the time by the step length before
+// the first move's tail; ours takes the address at the store and multiplies
+// after, which also moves the centre's stack slot in the second move
 // @retail 0x31a2b0
 void motion_31a2b0::function_31a2b0(float time, float step_length)
 {

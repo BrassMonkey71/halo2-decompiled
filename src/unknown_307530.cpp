@@ -90,22 +90,21 @@ public:
 	void function_307530(class_308180 *contacts);
 };
 
-// not matched yet: retail advances the entries pointer in ecx and the contact
-// pointer in ebx after it, ours advances the contact pointer first and uses eax
 // @retail 0x307530
 void class_307530::function_307530(class_308180 *contacts)
 {
 	vector_2da6e0 manifold_normal;
 	manifold_normal.rotate(transform, &contacts->normal);
 	int const first_point = (*points)->size - contacts->count;
+	int point_index = first_point;
 	float alignment;
 	for (int i = 0; i < contacts->count;)
 	{
-		__m128 const product = _mm_mul_ps((*points)->data[first_point + i].normal.value, manifold_normal.value);
+		__m128 const product = _mm_mul_ps((*points)->data[point_index].normal.value, manifold_normal.value);
 		_mm_store_ss(&alignment, _mm_add_ss(_mm_shuffle_ps(product, product, 0xaa), _mm_add_ss(_mm_shuffle_ps(product, product, 0x55), product)));
 		if (alignment < 0.95f)
 		{
-			(*points)->data[first_point + i] = (*points)->data[(*points)->size - 1];
+			(*points)->data[point_index] = (*points)->data[(*points)->size - 1];
 			if (contacts->entries[i].point_slot <= 5)
 			{
 				contacts->field_50--;
@@ -116,6 +115,7 @@ void class_307530::function_307530(class_308180 *contacts)
 			continue;
 		}
 		i++;
+		point_index++;
 	}
 	if (contacts->count < 2)
 	{
