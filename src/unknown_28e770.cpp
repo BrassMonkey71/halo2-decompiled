@@ -228,16 +228,16 @@ void __stdcall function_28e770(long arg_0, long arg_1)
 					function_b9a90(arg_1);
 					if (local_11)
 					{
-						point3f object_position;
-						function_b9dd0(arg_1, &object_position);
-						local_13.i = object_position.x - local_8.x;
-						local_13.j = object_position.y - local_8.y;
+						point3f placed_point;
+						function_b9dd0(arg_1, &placed_point);
+						local_13.i = placed_point.x - local_8.x;
+						local_13.j = placed_point.y - local_8.y;
 						local_13.k = 0.0f;
 						if (function_30bf0(&local_13) > 0.0f)
 						{
-							local_8.x = local_13.i + object_position.x;
-							local_8.y = object_position.y + local_13.j;
-							local_8.z = object_position.z + local_13.k;
+							local_8.x = local_13.i + placed_point.x;
+							local_8.y = placed_point.y + local_13.j;
+							local_8.z = placed_point.z + local_13.k;
 							if (function_2900b0(arg_1, &local_8, 0.9f, 2.7f, (vector3f *)&local_3->field_58))
 								local_3->field_57 = true;
 						}
@@ -255,9 +255,9 @@ void __stdcall function_28e770(long arg_0, long arg_1)
 					}
 					if (local_23 > 0)
 					{
-						point3f object_position;
-						function_b9dd0(arg_1, &object_position);
-						function_28e774(&local_15.matrix.position, &object_position, &direction);
+						point3f placed_point;
+						function_b9dd0(arg_1, &placed_point);
+						function_28e774(&local_15.matrix.position, &placed_point, &direction);
 						real local_24 = function_30bf0(&direction);
 						if (local_24 > 0.0f)
 						{
