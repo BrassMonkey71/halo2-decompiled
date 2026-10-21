@@ -525,9 +525,9 @@ void c_query_batch_collector::collect(s_batch_contact const *contact)
 	long limited = key < 0 ? 0 : (key > count - 1 ? count - 1 : key);
 	if (limited != key) return;
 	point3f origin = *(point3f *)(first->transform + 0x50);
-	real position_x = contact->position.x;
-	real position_y = contact->position.y;
-	real position_z = contact->position.z;
+	real hit_x = contact->position.x;
+	real hit_y = contact->position.y;
+	real hit_z = contact->position.z;
 	real distance = contact->distance + first->shape->radius;
 	if (!(results[key].fraction > distance)) return;
 	bool valid = true;
@@ -588,7 +588,7 @@ void c_query_batch_collector::collect(s_batch_contact const *contact)
 	if (valid && contact->normal.k > scale)
 	{
 		results[key].found = true;
-		real_point3d_set((point3f *)((byte *)&results[key] + 0xc), position_x, position_y, position_z);
+		real_point3d_set((point3f *)((byte *)&results[key] + 0xc), hit_x, hit_y, hit_z);
 		*(vector3f *)((byte *)&results[key] + 0x18) = contact->normal;
 		results[key].fraction = distance;
 		results[key].index = index;
