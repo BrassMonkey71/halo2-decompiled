@@ -606,10 +606,10 @@ bool __stdcall function_0b0900(s_bitstream *stream, long unused, s_message_0b090
 					}
 					function_195820(stream, message->entries[entry_index].unknown0e, 0x60);
 					bool entry_valid = function_07ca70(stream, message->entries[entry_index].unknown1c);
-					if (valid && entry_valid)
+					valid = valid && entry_valid;
+					if (valid)
 					{
 						long j;
-						valid = true;
 						if (!message->entries[entry_index].flag1)
 						{
 							long found = NONE;
@@ -635,8 +635,6 @@ bool __stdcall function_0b0900(s_bitstream *stream, long unused, s_message_0b090
 							}
 						}
 					}
-					else
-						valid = false;
 				}
 			}
 		}

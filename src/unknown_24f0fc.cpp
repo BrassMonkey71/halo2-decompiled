@@ -7,19 +7,16 @@
 // @retail 0x24f0fc
 void function_24f0fc(s_marker_list const *list, s_24ecae_placement const *placement, real offset, long count)
 {
-	s_24ecae_globals *globals = (s_24ecae_globals *)g_510c94;
-	if (!globals || list->l4 < 0 || list->l4 >= globals->label_count || !list->b1)
+	if (!g_510c94 || list->l4 < 0 || list->l4 >= ((s_24ecae_globals *)g_510c94)->label_count || !list->b1)
 		return;
-	s_24f0fc_kind const *kind = &globals->labels[list->l4];
+	s_24f0fc_kind const *kind = &((s_24ecae_globals *)g_510c94)->labels[list->l4];
 	if (kind->bitmap_index == NONE || kind->shader_index == NONE || kind->border_bitmap == NONE ||
 		placement->hidden || count == 0)
 		return;
 	point2f center = placement->position;
 	center.y -= placement->scale * 16.0f + offset + 1.0f;
-	real left_width = 32.0f;
-	real right_width = 32.0f;
-	if (count <= 1)
-		left_width = right_width = 16.0f;
+	real left_width = count <= 1 ? 16.0f : 32.0f;
+	real right_width = count <= 1 ? 16.0f : 32.0f;
 	real left = center.x - (placement->scale * left_width + 1.0f);
 	real right = placement->scale * right_width + 1.0f + center.x;
 	real top = center.y - (placement->scale * 16.0f + 1.0f);
@@ -42,7 +39,7 @@ void function_24f0fc(s_marker_list const *list, s_24ecae_placement const *placem
 	bounds.y0 = 0.0f;
 	bounds.y1 = 0.5f;
 	point2f points[4];
-	for (long corner = 0; corner < 4; ++corner)
+	for (short corner = 0; corner < 4; ++corner)
 	{
 		bool upper = corner < 2;
 		bool right_side = corner == 1 || corner == 2;

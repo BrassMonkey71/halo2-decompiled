@@ -7,6 +7,7 @@
 #include "object_markers.h"
 #include "object_iterator.h"
 #include "sound_sources.h"
+#include "vector_products.h"
 
 /* the item (the object data) */
 struct s_item
@@ -838,9 +839,8 @@ void function_10d710(vector3f const *facing, long object_index, point3f const *o
             {
                 real root = (real)sqrt(square);
                 vector3f axis;
-                axis.i = (facing->k * old->j - facing->j * old->k) / root;
-                axis.j = (facing->i * old->k - facing->k * old->i) / root;
-                axis.k = (facing->j * old->i - facing->i * old->j) / root;
+                cross3f(old, facing, &axis);
+                item_vector_scale(&axis, 1.0f / root);
                 real scalar = root * 0.5f;
                 real scale = scalar * scalar * 2.0f - 1.0f;
                 real dot = (forward->k * axis.k + forward->j * axis.j + forward->i * axis.i) * 2.0f;

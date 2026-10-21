@@ -149,9 +149,7 @@ return_exit:
 short function_b8d30(long object_index, long marker_name, s_object_marker *markers, short count, bool flag)
 {
     long marker_object_index = object_index;
-    struct { volatile long node_count; short result; } scratch;
-    short &result = scratch.result;
-    result = 0;
+    short result = 0;
 
     if (!flag)
         marker_object_index = function_b8ca0(object_index);
@@ -162,20 +160,19 @@ short function_b8d30(long object_index, long marker_name, s_object_marker *marke
 
         if (model_index != NONE)
         {
-            byte const *region_permutations = (byte *)object + object->region_permutations_offset;
-            bool mirrored = TEST_FIELD_BIT(object->mirrored);
-            transform4x3f const *field_50 = (transform4x3f *)((byte *)object + object->node_matrices_offset);
-            volatile long &node_count = scratch.node_count;
-            node_count = object->node_matrices_size / sizeof(transform4x3f);
             long render_model_index = TAG_DATA(s_model_definition_view, model_index)->render_model_index;
+            byte const *region_permutations = (byte *)object + object->region_permutations_offset;
+            transform4x3f const *field_50 = (transform4x3f *)((byte *)object + object->node_matrices_offset);
+            bool mirrored = TEST_FIELD_BIT(object->mirrored);
+            volatile long node_count = object->node_matrices_size / sizeof(transform4x3f);
 
             result = function_1d8f50(function_1d8f00(render_model_index, marker_name), render_model_index,
                 region_permutations, NULL, field_50, mirrored, markers, count);
-            if (result)
-                return result;
+
         }
     }
 
+    if (!result)
     {
         s_object_view *object = OBJECT_GET(object_index);
 
@@ -203,7 +200,7 @@ short function_b8d30(long object_index, long marker_name, s_object_marker *marke
             markers->matrix.rotation.left.k = 0.0f - markers->matrix.rotation.left.k;
         }
         if (!marker_name)
-            return 1;
+            result = 1;
     }
     return result;
 }
@@ -1493,31 +1490,35 @@ void function_1d96d0(long index);
 // @retail 0xbc5e0
 void __stdcall function_bc5e0(long index)
 {
-    byte *object = (byte *)OBJECT_GET(index);
+    s_object_view *object = OBJECT_GET(index);
     bool disabled;
-    if (object[0xc0] & 0x40)
+    if (TEST_FIELD_BIT(object->physics_active))
     {
-        byte *component = g_51e9b8->data + (*(long *)(object + 0xb4) & 0xffff) * 0xa0;
-        bool active = havok_component_any_rigid_body_active((s_havok_component *)component);
-        if (active) *(dword *)(component + 4) &= ~0x10000;
-        if ((active || (object[0xc1] & 1)) && *(long *)(component + 0x74) > 0)
+        s_havok_component *component = havok_component_get(object->havok_component_index);
+        bool active = havok_component_any_rigid_body_active(component);
+        if (!active)
         {
-            if (!(*(dword *)(component + 4) & 0x100) && havok_component_main_rigid_body_movable((s_havok_component *)component))
+            if (!TEST_FIELD_BIT(object->physics_disabled)) goto motion_done;
+        }
+        else component->unknown04 &= ~0x10000;
+        if (component->rigid_bodies.size > 0)
+        {
+            if (!TEST_FIELD_BIT(component->flag8) && havok_component_main_rigid_body_movable(component))
             {
                 transform4x3f matrix;
-                function_1d4360((s_havok_component *)component, &matrix);
+                function_1d4360(component, &matrix);
                 vector3f *forward = &matrix.forward, *up = &matrix.up;
-                if (*(dword *)(component + 4) & 2) forward = up = 0;
+                if (TEST_FIELD_BIT(component->flag1)) forward = up = 0;
                 else function_b91d0(index, forward, up);
                 function_b7430(index, &matrix.position, forward, up, 0, false, false, false, true);
                 if (active)
                 {
                     vector3f linear, angular;
                     vector3f *angular_pointer = 0;
-                    havok_component_rigid_body_linear_velocity_get((s_havok_component *)component, 0, &linear);
-                    if (!(*(dword *)(component + 4) & 2))
+                    havok_component_rigid_body_linear_velocity_get(component, 0, &linear);
+                    if (!TEST_FIELD_BIT(component->flag1))
                     {
-                        havok_component_rigid_body_angular_velocity_get((s_havok_component *)component, 0, &angular);
+                        havok_component_rigid_body_angular_velocity_get(component, 0, &angular);
                         angular_pointer = &angular;
                     }
                     function_b7740(index, &linear, angular_pointer, false);
@@ -1526,20 +1527,20 @@ void __stdcall function_bc5e0(long index)
             }
             else function_b7740(index, g_4687a4, g_4687a4, false);
         }
+    motion_done:
         disabled = !active;
-        if (((byte *)g_4e6948)[0xc] != 4 && (*(word *)(object + 0xc0) & 0x800))
+        if (((byte *)g_4e6948)[0xc] != 4 && (*(word *)((byte *)object + 0xc0) & 0x800))
         {
-            function_1d96d0(*(long *)(object + 0xb4));
-            object[0xc1] &= ~8;
+            function_1d96d0(object->havok_component_index);
+            ((byte *)object)[0xc1] &= ~8;
         }
     }
     else
     {
-        long parent = *(long *)(object + 0x14);
+        long parent = object->parent_index;
         disabled = parent == NONE || (((byte *)OBJECT_GET(parent))[0xc1] & 1);
     }
-    if (disabled) object[0xc1] |= 1;
-    else object[0xc1] &= ~1;
+    object->physics_disabled = disabled;
 }
 
 PRIVATE __forceinline void object_attachment_point(transform4x3f const *matrix, point3f const *point, point3f *result)

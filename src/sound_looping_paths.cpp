@@ -432,9 +432,12 @@ void __stdcall function_18bb80(real elapsed)
 					function_18dc90(bsp, cluster, &position, FLT_MAX, indices, NULL, portals, clusters, &count);
 					if (count <= 1)
 					{
-						for (long j = count; j < 2; ++j) clusters[j] = NONE;
-						for (long j = count; j < 2; ++j) portals[j] = NONE;
-						for (long j = count; j < 2; ++j) indices[j] = NONE;
+						for (long j = count; j < 2; ++j)
+						{
+							clusters[j] = NONE;
+							portals[j] = NONE;
+							indices[j] = NONE;
+						}
 						count = 2;
 					}
 					if (portals[0] == NONE) portals[0] = portals[1];
