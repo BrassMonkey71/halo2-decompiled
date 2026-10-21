@@ -174,6 +174,7 @@ void class_2fdcf0::function_2fdaa0(float const *points, long stride, long count)
 	half_extents.scale(0.5f);
 }
 
+// score 8 (was 8): register choice only, in the inlined plane copy (eax and ecx against ecx and edx) and in the call's arguments after it.
 // @retail 0x2fdcf0
 class_2fdcf0::class_2fdcf0(void const *source) :
 	radius_shape_2de750(*(radius_info_2de750 const *)source)

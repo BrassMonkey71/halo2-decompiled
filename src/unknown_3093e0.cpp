@@ -116,6 +116,7 @@ public:
 	void function_309700();
 };
 
+// score 2 (was 2): in the copy branch retail loads the second point before the distance; ours loads the distance first.
 // the support points along a direction and against it, keeping in out the
 // one that lies further along its own direction from the origin
 // @retail 0x3093e0

@@ -4,9 +4,8 @@ import pytest
 
 from build import Marked
 from check import (Identity, Targets, check_function, check_unique_markers, compare, difference_score, extract,
-                   function_targets,
-                   literal_size, masked_offsets, parse_addresses, relative_ok, resolve, settle_targets, StandinCalls,
-                   targets_summary, write_report)
+                   function_targets, literal_size, masked_offsets, parse_addresses, relative_ok, resolve,
+                   settle_statuses, settle_targets, StandinCalls, targets_summary, write_report)
 from linkmap import LinkMap
 
 MAP = """ Preferred load address is 00400000
@@ -595,10 +594,54 @@ def test_targets_count_each_field_that_leaves_the_function():
     settle_targets([entry])
     assert entry['targets'] == dict(verified=2, differs=1, unverified=1, categories={'call': 1},
                                     differing=[dict(offset=1, ours='g_4e0300', expected='0x4e0300', retail='0x4e0304')])
-    # a report only: the function still matches
+    # its bytes match; settle_statuses decides whether the function does
     identity = Identity(LinkMap(TARGET_MAP), {}, [CALLEE])
     assert check_function(ours, 0x401000, theirs, 0x1000, absolute, relative, LO, HI, identity)[:2] == (
         'matched', None)
+
+
+def checked_caller(address, retail_address):
+    """caller's report entry as check_one makes it, before settling: ours
+    reads address, retail's retail_address; the rest is the same on both sides."""
+    ours = caller(0x401000, address, 0x402010, 0x401200, 0x401100)
+    theirs = caller(0x1000, retail_address, 0x450000, 0x3000, 0x2100)
+    absolute, relative = {0x401001, 0x401006}, {0x40100b, 0x401010}
+    identity = Identity(LinkMap(TARGET_MAP), {}, [CALLEE])
+    status, first, _, length = check_function(ours, 0x401000, theirs, 0x1000, absolute, relative, LO, HI, identity)
+    return dict(name='caller', status=status, size=len(theirs), ours=length, first_difference=first,
+                targets=function_targets(ours, 0x401000, theirs, 0x1000, absolute, relative, targets()))
+
+
+def test_a_function_whose_bytes_match_but_whose_field_differs_does_not_match(capsys):
+    # retail reads 4 bytes into g_4e0300 where ours reads its start: one differing field, so near
+    report = {'00001000': checked_caller(0x402000, 0x4e0304)}
+    assert report['00001000']['status'] == 'matched'
+    assert settle_statuses(report) == [report['00001000']]
+    assert report['00001000']['status'] == 'near' and report['00001000']['first_difference'] == 1
+    assert capsys.readouterr().out.splitlines() == [
+        'DIFF   00001000 caller at +0x1 (21 bytes, retail 21), score 1',
+        "  !! address field at +0x1: ours leads to g_4e0300 (0x4e0300 in retail), retail's to 0x4e0304"]
+
+
+@pytest.mark.parametrize('differing, status', [(1, 'near'), (2, 'near'), (3, 'todo')])
+def test_each_differing_field_counts_as_a_differing_instruction(differing, status):
+    fields = [(k, 0x4e0310, 'differs', None, 'g_4e0300', 0x4e0300, None) for k in (1, 6, 11)[:differing]]
+    report = {'00001000': dict(name='f', status='matched', size=16, ours=16, first_difference=None,
+                               targets=fields + [(16, 0x3000, 'unverified', 'call', 'helper', None, None)])}
+    settle_statuses(report)
+    assert report['00001000']['status'] == status and report['00001000']['first_difference'] == 1
+
+
+def test_unverified_fields_do_not_count_against_a_match(capsys):
+    # the call to the unmarked helper is unverified; 4 bytes into g_4e0300 where retail reads 16 in differs until
+    # settled, then may lie past its end (an aggregate offset), so that function's MATCH waits for settling
+    report = {'00001000': checked_caller(0x402000, 0x4e0300), '00002000': checked_caller(0x402004, 0x4e0310),
+              '00003000': dict(name='missing', status='todo', size=4, ours=0, first_difference=0)}
+    assert settle_statuses(report) == []
+    assert [e['status'] for e in report.values()] == ['matched', 'matched', 'todo']
+    assert report['00001000']['targets']['categories'] == {'call': 1}
+    assert report['00002000']['targets']['categories'] == {'call': 1, 'aggregate offset': 1}
+    assert capsys.readouterr().out == 'MATCH  00002000 caller\n'
 
 
 def test_function_targets_leave_out_jump_table_entries():
@@ -633,11 +676,14 @@ def test_call_between_unnamed_functions_is_unverified():
     assert Identity(LinkMap(IDENT_MAP), {0x2200: {'name': '_strncmp'}}, []).verdict(0x401200, 0x2200) == 'verified'
 
 
-def test_targets_summary_totals_the_matched_functions():
+def test_targets_summary_totals_the_functions_whose_bytes_match():
     def entry(status, verified, differs, categories):
         return dict(status=status, targets=dict(verified=verified, differs=differs,
                                                 unverified=sum(categories.values()), categories=categories))
-    entries = [entry('matched', 2, 1, {'call': 1}), entry('matched', 1, 0, {'vtable': 2, 'call': 1}),
-               entry('near', 9, 9, {'call': 9}), dict(status='todo')]
-    assert targets_summary(entries) == ('address targets in 2 matched functions: 3 verified, 1 differ (in 1 function), '
-                                        '4 unverified (2 call, 2 vtable); reported only, no status depends on them')
+    demoted = entry('near', 2, 1, {'call': 1})
+    entries = [demoted, entry('matched', 1, 0, {'vtable': 2, 'call': 1}), entry('near', 9, 9, {'call': 9}),
+               dict(status='todo')]
+    assert targets_summary(entries, [demoted]) == (
+        'address targets in 2 functions whose bytes match: 3 verified, 1 differ, 4 unverified (2 vtable, 2 call); '
+        '1 demoted from matched for a differing field')
+    assert targets_summary(entries[1:], []).endswith('; 0 demoted from matched for a differing field')
