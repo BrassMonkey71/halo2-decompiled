@@ -1271,8 +1271,8 @@ long __stdcall function_c0520(long tag_index, long placement_index, bool force,
             *(long *)(light + 4) = tag_index;
             *(real *)(light + 0xd0) = 1.0f;
             *(real *)(light + 0xcc) = 1.0f;
-            *(long *)(light + 0x10) = NONE;
             *(word *)(light + 2) = ((word)(source[0x3e] & 4) << 3) | 5;
+            *(long *)(light + 0x10) = NONE;
             s_light_shape_ab shape;
             function_c19f0(result, &shape);
             transform4x3f matrix;

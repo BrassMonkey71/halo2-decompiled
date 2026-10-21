@@ -103,13 +103,17 @@ public:
 	void function_317d90(id_pairs_317d90 *pairs) const;
 };
 
+// score 105 (was 111): the three loops share one index, as retail does, but
+// retail keeps the joint count and the number of bodies in registers where
+// ours reads them from the members and the stack
 // @retail 0x317d90
 void class_317d90::function_317d90(id_pairs_317d90 *pairs) const
 {
 	pairs->size = 0;
+	long i;
 	{
 		bodies_317d90 bodies;
-		for (long i = 0; i < joint_count; i++)
+		for (i = 0; i < joint_count; i++)
 		{
 			bodies.size = 0;
 			joints[i]->list_bodies(&bodies);
@@ -133,7 +137,7 @@ void class_317d90::function_317d90(id_pairs_317d90 *pairs) const
 			}
 		}
 	}
-	for (long i = 0; i < constraints_used; i++)
+	for (i = 0; i < constraints_used; i++)
 	{
 		if (!constraints[i]->first->fixed && !constraints[i]->second->fixed)
 		{
@@ -142,7 +146,7 @@ void class_317d90::function_317d90(id_pairs_317d90 *pairs) const
 			pair->second = constraints[i]->second->id;
 		}
 	}
-	for (long i = 0; i < link_count; i++)
+	for (i = 0; i < link_count; i++)
 	{
 		body_317d90 *first = links[i].first->body;
 		body_317d90 *second = links[i].second->body;

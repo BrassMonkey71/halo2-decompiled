@@ -2236,10 +2236,11 @@ void function_1522b0(long player_index, short effect)
 	{
 		long unit_index = engine_player_get(player_index)->unit_index;
 		s_engine_unit_effect *unit = (s_engine_unit_effect *)effect_object_get(unit_index);
+		/* the same unit, looked up again for the second flag */
+		s_engine_unit_effect *same_unit = (s_engine_unit_effect *)effect_object_get(unit_index);
 
-		dword flags = unit->flags134 | 8;
-		*(volatile dword *)&unit->flags134 = flags;
-		unit->flags134 = flags | 0x10;
+		unit->flag3 = true;
+		same_unit->flag4 = true;
 		unit->value2b8 = 0.25f;
 		s_engine_object *object = effect_object_get(unit_index);
 		if (object->simulation_index != NONE)

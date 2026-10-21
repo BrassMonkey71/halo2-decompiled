@@ -662,14 +662,6 @@ void friends_player_set(s_friend_player *player, s_online_player const *source, 
 	player->flagsa8 = source->flags;
 }
 
-void function_23620d(long string_handle, word *buffer);
-
-/* a buffer that strings of the user interface globals' string list load into */
-struct s_global_string_buffer
-{
-	word text[256];
-	void load(long string_handle) { function_23620d(string_handle, text); }
-};
 
 /* the text of a friend's state */
 // @retail 0x1a4714

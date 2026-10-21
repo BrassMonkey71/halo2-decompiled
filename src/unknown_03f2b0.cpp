@@ -1413,7 +1413,7 @@ void function_4b5d0(bool force, long override, long object_index, real distance,
             *(short *)(output + 0x164) = previous;
         bool fallback;
         signed char *sections = (signed char *)(output + 0x71 + slot * 16);
-        bool built = function_4c190(count, object_index, *(bool *)(output + 0x168), *tag,
+        long built = function_4c190(count, object_index, *(bool *)(output + 0x168), *tag,
             (short *)(output + 0x164), previous, sections, &fallback);
         reuse &= !fallback;
         bool level_changed = *(short *)(output + 0x164) != initial_level;

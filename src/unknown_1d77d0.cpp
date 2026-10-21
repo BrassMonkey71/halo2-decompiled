@@ -435,7 +435,8 @@ void __stdcall function_1d77d0(s_havok_component *component, s_physics_model_own
 	component->unknown04 &= ~0x400;
 	for (long i = 0; i < component->unknown7c.size; i++)
 	{
-		if (component->unknown7c.data[i].contact->entity_b == (hkEntity *)function_30c170(g_51e9a4))
+		hkEntity *entity = component->unknown7c.data[i].contact->entity_b;
+		if (entity == (hkEntity *)function_30c170(g_51e9a4))
 		{
 			if (component->unknown18 != NONE &&
 				(hkEntity *)component->rigid_bodies.data[component->unknown18].rigid_body == component->unknown7c.data[i].contact->entity_a)

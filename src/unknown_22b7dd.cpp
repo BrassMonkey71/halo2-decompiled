@@ -38,11 +38,16 @@ struct s_bitmap_sequence_22b7dd
     s_bitmap_sprite_22b7dd *sprites;
 };
 
+struct s_bitmap_sequence_block_22b7dd
+{
+    long count;
+    s_bitmap_sequence_22b7dd *elements;
+};
+
 struct s_bitmap_tag_22b7dd
 {
     byte unknown00[0x3c];
-    long sequence_count;
-    s_bitmap_sequence_22b7dd *sequences;
+    s_bitmap_sequence_block_22b7dd sequences;
     long bitmap_count;
     byte *bitmaps;
 };
@@ -89,10 +94,10 @@ bool function_22b7dd(byte const *arg_1, long arg_2)
         if (sequence_index >= 0)
         {
             byte *bitmap;
-            /* retail compares the count in memory and does not keep it for the else-branch */
-            if (sequence_index < ((s_bitmap_tag_22b7dd volatile *)tag)->sequence_count)
+            s_bitmap_sequence_block_22b7dd const *sequences = &tag->sequences;
+            if (sequence_index < sequences->count)
             {
-                s_bitmap_sequence_22b7dd *sequence = &tag->sequences[sequence_index];
+                s_bitmap_sequence_22b7dd *sequence = &sequences->elements[sequence_index];
                 long bitmap_index;
                 long index = 0;
                 if (sequence->sprite_count > 0)
@@ -113,7 +118,7 @@ bool function_22b7dd(byte const *arg_1, long arg_2)
                 }
                 bitmap = tag->bitmaps + bitmap_index * 0x74;
             }
-            else if (sequence_index == 0 && tag->sequence_count == 0 && tag->bitmap_count > 0)
+            else if (sequence_index == 0 && tag->sequences.count == 0 && tag->bitmap_count > 0)
             {
                 bitmap = tag->bitmaps;
             }
