@@ -119,10 +119,6 @@ void class_2e1090::function_2e0020(element_2e1090 const *element, bounds_2e0020 
 
 
 
-// @stub 0x2fe350
-void __cdecl function_2fe350(void const *query, const __m128 *half_extents, float tolerance, void *out)
-{
-}
 
 struct s_311100;
 
@@ -188,15 +184,7 @@ public:
 	answer_306580 function_306580();
 };
 
-// @stub 0x307f90
-void query_2ef260::function_307f90(answer_307f90 *found, contact_307f90 *contact)
-{
-}
 
-// @stub 0x3080a0
-void query_2ef260::function_3080a0(class_308180 *manifold)
-{
-}
 
 struct pending_2ddbd0;
 
@@ -220,10 +208,6 @@ public:
 	void function_30e140(entity_316000 *entity);
 };
 
-// @stub 0x30e140
-void class_30e140::function_30e140(entity_316000 *entity)
-{
-}
 
 class class_30f710
 {
@@ -231,10 +215,6 @@ public:
 	void function_30f710();
 };
 
-// @stub 0x30f710
-void class_30f710::function_30f710()
-{
-}
 
 // motion objects 0x311940 builds
 class class_31ad80 { public: class_31ad80(void const *position, void const *orientation); };
