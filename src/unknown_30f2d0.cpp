@@ -40,13 +40,12 @@ struct owner_30f2d0
 class hkWorld
 {
 public:
-	void entity_world_insert(hkEntity *entity);
+	hkEntity *entity_world_insert(hkEntity *entity);
 };
 
-// score 6 (was 24): only the return differs: retail returns the member in eax,
-// but the game's callers declare this method void (include/unknown_1cec30.h).
+// returns the entity it inserted
 // @retail 0x30f2d0
-void hkWorld::entity_world_insert(hkEntity *entity)
+hkEntity *hkWorld::entity_world_insert(hkEntity *entity)
 {
 	owner_30f2d0 *owner = (owner_30f2d0 *)this;
 	member_30c8e0 *member = (member_30c8e0 *)entity;
@@ -67,4 +66,5 @@ void hkWorld::entity_world_insert(hkEntity *entity)
 	owner->locked = (char)was_locked;
 	member->reference_count++;
 	function_318080((listener_world_315d20 *)this, member);
+	return entity;
 }

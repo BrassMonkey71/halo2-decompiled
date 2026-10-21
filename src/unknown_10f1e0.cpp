@@ -534,11 +534,11 @@ void function_113d60(long unit_index, real seconds)
 	}
 }
 
-PRIVATE __forceinline long animation_slot_finished(s_unit_animation_control const *control)
+/* whether the slot is counting, up (bit 0 of its flags) or down; bit 1 is set
+   once it has finished */
+PRIVATE __forceinline bool animation_slot_running(s_unit_animation_slot const *slot, bool up)
 {
-	if (control->slots[2].unknown1 && !(control->slots[2].unknown3 & 1) && (control->slots[2].unknown3 & 2))
-		return 1;
-	return 0;
+	return slot->unknown1 && (slot->unknown3 & 1) == up;
 }
 
 // @retail 0x113da0
@@ -546,9 +546,10 @@ long function_113da0(long unit_index)
 {
 	s_unit_animation_object *unit = UNIT_ANIMATION_OBJECT(unit_index);
 	s_unit_animation_control *control = UNIT_ANIMATION_CONTROL(unit);
-	if (!control->slots[2].unknown1)
+	if (!control->slots[2].unknown1 ||
+		(animation_slot_running(&control->slots[2], false) && (control->slots[2].unknown3 & 2)))
 		return 1;
-	return animation_slot_finished(control);
+	return 0;
 }
 
 // @retail 0x113df0
@@ -556,12 +557,8 @@ long function_113df0(long unit_index)
 {
 	s_unit_animation_object *unit = UNIT_ANIMATION_OBJECT(unit_index);
 	s_unit_animation_control *control = UNIT_ANIMATION_CONTROL(unit);
-	if (control->slots[2].unknown1)
-	{
-		long local_0 = control->slots[2].unknown3;
-		if ((local_0 & 1) && (local_0 & 2))
-			return 1;
-	}
+	if (animation_slot_running(&control->slots[2], true) && (control->slots[2].unknown3 & 2))
+		return 1;
 	return 0;
 }
 

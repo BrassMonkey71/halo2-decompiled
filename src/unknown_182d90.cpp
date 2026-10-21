@@ -116,7 +116,7 @@ real __stdcall function_182d90(c_extent_shape *shape, real radius,
 			case 4:
 				result = data->field_c.radius + extent_length(local.rows[3]);
 				*minimum = EXTENT_MIN(*minimum, data->field_c.radius);
-				*maximum = EXTENT_MAX(*maximum, data->field_c.radius * 2.0f);
+				if (!(*maximum > data->field_c.radius * 2.0f)) *maximum = data->field_c.radius * 2.0f;
 				break;
 			case 5:
 				{

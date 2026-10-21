@@ -356,8 +356,10 @@ void function_b3200(void)
 	}
 	if (g_4d8ef4 != NONE)
 	{
+		long count = 0;
 		s_qos_handle *lookup = search_qos_handle(g_4d8ef4);
-		long count = lookup ? lookup->qos->cxnqos : 0;
+		if (lookup)
+			count = lookup->qos->cxnqos;
 		for (long i = 0; i < count; i++)
 		{
 			long status = qos_target_status(g_4d8ef4, i);
@@ -365,9 +367,7 @@ void function_b3200(void)
 			if (status != *(long *)(entry + 0x48))
 			{
 				*(long *)(entry + 0x48) = status;
-				if (status == 4)
-					entry[0x44] = true;
-				else if (status == 2 || status == 5)
+				if (status == 2 || status == 5)
 				{
 					entry[0x44] = true;
 					s_qos_result *result = (s_qos_result *)(entry + 0x4c);
@@ -380,6 +380,8 @@ void function_b3200(void)
 					result->data_size = 0;
 					result->data = NULL;
 				}
+				else if (status == 4)
+					entry[0x44] = true;
 			}
 		}
 		lookup = search_qos_handle(g_4d8ef4);

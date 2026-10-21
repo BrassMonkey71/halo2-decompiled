@@ -13,12 +13,12 @@ void function_268840(void);
 // @retail 0x2011f0
 void function_2011f0(long arg_0)
 {
-    byte *local_1 = *(byte **)((byte *)g_4e0350 + 0x164) + (arg_0 & 0xffff) * 0x74;
     byte *local_2 = g_51e9d8->data + (arg_0 & 0xffff) * 0x98;
+    byte *local_1 = *(byte **)((byte *)g_4e0350 + 0x164) + (arg_0 & 0xffff) * 0x74;
     if (!(*(word *)(local_2 + 2) & 4))
     {
         *(word *)(local_2 + 2) |= 4;
-        dword local_3[4] = {0};
+        dword local_3[4] = {0, 0, 0, 0};
         byte *local_4 = NULL;
         word local_5 = *(word *)(local_1 + 0x26);
         if (local_5 != (word)NONE)

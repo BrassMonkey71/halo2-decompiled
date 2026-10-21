@@ -23,14 +23,6 @@ struct s_bsp_bit_vectors
 
 extern byte *g_4ed280;
 
-struct s_slot_pair
-{
-	long a;
-	long b;
-};
-
-s_slot_pair g_4eca80[0x100];
-
 /* the view of the match globals the slot code reads */
 struct s_slot_entry
 {

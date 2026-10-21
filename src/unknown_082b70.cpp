@@ -123,13 +123,22 @@ struct s_player_object_motion
 	vector3f angular;
 };
 
+/* a player (0x21c bytes, the g_4e8c24 data) */
+struct s_082b70_player
+{
+	byte unknown000[0x2c];
+	long unit_index;
+	byte unknown030[0x21c - 0x30];
+};
+
 // @retail 0x828b0
 bool function_828b0(long player_index, s_player_object_motion *result)
 {
+	s_082b70_player *player = (s_082b70_player *)g_4e8c24->data + (player_index & 0xffff);
 	bool valid = false;
-	long unit_index = *(long *)(g_4e8c24->data + (player_index & 0xffff) * 0x21c + 0x2c);
-	if (unit_index != NONE)
+	if (player->unit_index != NONE)
 	{
+		long unit_index = player->unit_index;
 		long parent = object_get_082b70(unit_index)->parent;
 		if (parent != NONE)
 		{

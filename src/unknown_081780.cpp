@@ -299,16 +299,16 @@ void __stdcall function_81780(long stage)
 	long size;
 	long i;
 
-	if (stage <= 1)
-	{
-		g_4d87f4 = g_4cf760;
-		g_4d87e4 = 1;
-	}
-	else
+	if (stage > 1)
 	{
 		g_4d87f4 = g_4cf764;
 		count = 1;
 		g_4d87e4 = 0;
+	}
+	else
+	{
+		g_4d87f4 = g_4cf760;
+		g_4d87e4 = 1;
 	}
 	g_4d87d0 = count;
 	g_4d87e0 = count;

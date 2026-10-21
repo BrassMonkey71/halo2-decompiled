@@ -120,19 +120,19 @@ void __stdcall function_29ab90(long arg_0, long arg_1, vector3f *arg_2,
 		function_29b2e0(arg_0, arg_1, &local_4, &local_4, local_18, &local_4);
 		*(real *)(local_0 + 0x668) = local_18;
 		function_29ab92(&local_20);
-		real local_21 = function_1f9e70(arg_0, arg_1, (point2f const *)&local_7,
+		local_18 = function_1f9e70(arg_0, arg_1, (point2f const *)&local_7,
 			&local_13, &local_15, &local_20, NULL, local_9, false) * local_2->field_50;
 		*arg_6 = false;
-		if (local_21 > local_16) local_21 = local_16;
+		if (local_18 > local_16) local_18 = local_16;
 		vector3f local_22;
-		local_22.i = local_21;
-		local_22.j = local_21 * 0.0f;
-		local_22.k = local_21 * 0.0f;
+		local_22.i = local_18;
+		local_22.j = local_18 * 0.0f;
+		local_22.k = local_18 * 0.0f;
 		if (local_2->field_68 > 0.0f)
 		{
 			vector3f const *local_23 = &local_1->velocity;
 			real local_24 = local_23->k * local_3->k + local_23->j * local_3->j + local_23->i * local_3->i;
-			real local_25 = local_21 - local_24 / local_2->field_68;
+			real local_25 = local_18 - local_24 / local_2->field_68;
 			long local_26 = local_25 < 0.0f ? -1 : 1;
 			local_22.i = (real)(sqrt(fabs((double)local_25)) * local_2->field_6c * local_26 + local_22.i);
 		}

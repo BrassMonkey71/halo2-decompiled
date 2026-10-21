@@ -192,19 +192,7 @@ void function_8e5e0(long status, long task_index)
  long result;
  switch (status)
  {
- case 0:
-  result = 1;
-  if (type == 0x2a)
-  {
-   if (size > (dword)message->size)
-    result = 9;
-   else if (size != transferred)
-    result = 7;
-   else
-    result = pending_message_request_validate(message->header,
-     (const s_pending_payload_header *)message->data, transferred);
-  }
-  break;
+ case 0: result = 1; break;
  case 1: result = 2; break;
  case 2: result = 3; break;
  case 3: result = 4; break;
@@ -212,6 +200,16 @@ void function_8e5e0(long status, long task_index)
  case 5: result = 6; break;
  case 6: result = 7; break;
  default: result = 2; break;
+ }
+ if (result == 1 && type == 0x2a)
+ {
+  if (size > (dword)message->size)
+   result = 9;
+  else if (size != transferred)
+   result = 7;
+  else
+   result = pending_message_request_validate(message->header,
+    (const s_pending_payload_header *)message->data, transferred);
  }
  function_8e0f0(index, result);
 }
