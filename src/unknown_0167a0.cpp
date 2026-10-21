@@ -78,8 +78,6 @@ PRIVATE inline byte const *material_parameters(long tag)
 void __stdcall function_16b90(byte *state, long tag, long first, long second,
     long third, long fourth, real scale)
 {
-    byte *const *state_reference = &state;
-    byte *local_8da5ff_2 = *state_reference;
     byte const *parameters = material_parameters(tag);
     byte *definition = g_4e3b44[*(long const *)parameters & 0xffff].bytes;
     byte *tables = *(byte **)(definition + 0x5c);
@@ -90,69 +88,69 @@ void __stdcall function_16b90(byte *state, long tag, long first, long second,
     byte *pass_definition = g_4e3b44[*(long *)(pass + 4) & 0xffff].bytes;
     byte *records = *(byte **)(pass_definition + 0x20);
     byte *record = *(byte **)(records + 4) + fourth * 0x132;
-    long changed = record != *(byte **)(local_8da5ff_2 + 0x24) || records != *(byte **)(local_8da5ff_2 + 0x20);
-    long previous = *(long *)local_8da5ff_2;
+    bool changed = record != *(byte **)(state + 0x24) || records != *(byte **)(state + 0x20);
+    long previous = *(long *)state;
     bool different_tag = tag != previous;
-    *(long *)(local_8da5ff_2 + 4) = previous;
-    *(long *)local_8da5ff_2 = tag;
+    *(long *)(state + 4) = previous;
+    *(long *)state = tag;
     real inverse = 100000.0f;
     if (scale > 0.0f) inverse = 1.0f / scale;
-    *(real *)(local_8da5ff_2 + 0x28) = inverse;
-    *(real *)(local_8da5ff_2 + 0x2c) = (real)(log((double)inverse) * 0.6931471824645996f);
-    *(dword *)(local_8da5ff_2 + 0x58) = 0;
+    *(real *)(state + 0x28) = inverse;
+    *(real *)(state + 0x2c) = (real)(log((double)inverse) * 0.6931471824645996f);
+    *(dword *)(state + 0x58) = 0;
     state[0x1514] = false;
-    *(dword *)(local_8da5ff_2 + 0x1518) = 0;
-    *(dword *)(local_8da5ff_2 + 0x151c) = 0;
+    *(dword *)(state + 0x1518) = 0;
+    *(dword *)(state + 0x151c) = 0;
     if (changed || different_tag)
     {
         parameters = material_parameters(tag);
-        *(byte const **)(local_8da5ff_2 + 0xc) = parameters;
+        *(byte const **)(state + 0xc) = parameters;
         definition = g_4e3b44[*(long const *)parameters & 0xffff].bytes;
         tables = *(byte **)(definition + 0x5c);
-        *(byte **)(local_8da5ff_2 + 0x10) = tables;
+        *(byte **)(state + 0x10) = tables;
         entry = *(byte **)(tables + 4) + first * 10;
-        *(byte **)(local_8da5ff_2 + 0x14) = entry;
+        *(byte **)(state + 0x14) = entry;
         packed = *(word *)entry;
         next = ((word *)*(byte **)(tables + 0xc))[(packed & 0x1ff) + second];
         pass = *(byte **)(tables + 0x14) + ((next & 0x1ff) + third) * 10;
-        *(byte **)(local_8da5ff_2 + 0x18) = pass;
+        *(byte **)(state + 0x18) = pass;
         byte *range = *(byte **)(tables + 0x1c) + ((*(word *)(pass + 8) & 0x1ff) + fourth) * 6;
-        *(byte **)(local_8da5ff_2 + 0x1c) = range;
-        *(dword *)(local_8da5ff_2 + 0x30) |= g_485058.v6c[0];
-        *(dword *)(local_8da5ff_2 + 0x34) |= g_485058.v6c[1];
-        *(dword *)(local_8da5ff_2 + 0x38) |= g_485058.v9c[0];
-        *(dword *)(local_8da5ff_2 + 0x3c) |= g_485058.v9c[1];
-        *(dword *)(local_8da5ff_2 + 0x40) |= g_485058.v5c;
+        *(byte **)(state + 0x1c) = range;
+        *(dword *)(state + 0x30) |= g_485058.v6c[0];
+        *(dword *)(state + 0x34) |= g_485058.v6c[1];
+        *(dword *)(state + 0x38) |= g_485058.v9c[0];
+        *(dword *)(state + 0x3c) |= g_485058.v9c[1];
+        *(dword *)(state + 0x40) |= g_485058.v5c;
         function_16f60(state, (word const *)range);
         function_17000(state, (word const *)(range + 4));
         if (changed)
         {
-            byte *old = *(byte **)(local_8da5ff_2 + 0x24);
-            if (old && *(byte **)(local_8da5ff_2 + 0x20))
+            byte *old = *(byte **)(state + 0x24);
+            if (old && *(byte **)(state + 0x20))
                 function_18900((s_render_state_source *)state, (word const *)(old + 0x11c));
-            *(byte **)(local_8da5ff_2 + 0x24) = record;
-            *(byte **)(local_8da5ff_2 + 0x20) = records;
-            *(dword *)(local_8da5ff_2 + 0x44) = *(dword *)(record + 0x10c);
-            *(dword *)(local_8da5ff_2 + 0x48) = *(dword *)(record + 0x110);
-            *(dword *)(local_8da5ff_2 + 0x4c) = *(dword *)(record + 0x104);
-            *(dword *)(local_8da5ff_2 + 0x50) = *(dword *)(record + 0x108);
-            *(dword *)(local_8da5ff_2 + 0x54) = *(dword *)(record + 0x114);
+            *(byte **)(state + 0x24) = record;
+            *(byte **)(state + 0x20) = records;
+            *(dword *)(state + 0x44) = *(dword *)(record + 0x10c);
+            *(dword *)(state + 0x48) = *(dword *)(record + 0x110);
+            *(dword *)(state + 0x4c) = *(dword *)(record + 0x104);
+            *(dword *)(state + 0x50) = *(dword *)(record + 0x108);
+            *(dword *)(state + 0x54) = *(dword *)(record + 0x114);
             function_18900((s_render_state_source *)state, (word const *)(record + 2));
             function_189a0(state, (word const *)(record + 4));
         }
     }
     function_1ae70(state);
-    if (changed || (*(dword *)(local_8da5ff_2 + 0x58) & *(dword *)(local_8da5ff_2 + 0x54)))
+    if (changed || (*(dword *)(state + 0x58) & *(dword *)(state + 0x54)))
     {
-        record = *(byte **)(local_8da5ff_2 + 0x24);
+        record = *(byte **)(state + 0x24);
         state[0x1514] = true;
-        if (!(record[0xf7] & 0xfe)) memcpy(local_8da5ff_2 + 0x1424, record + 6, 0xf0);
+        if (!(record[0xf7] & 0xfe)) memcpy(state + 0x1424, record + 6, 0xf0);
         else function_1ba00(state);
     }
-    if (changed || different_tag || (*(dword *)(local_8da5ff_2 + 0x58) & *(dword *)(local_8da5ff_2 + 0x54)))
-        function_17170(state, (word const *)(*(byte **)(local_8da5ff_2 + 0x1c) + 2));
+    if (changed || different_tag || (*(dword *)(state + 0x58) & *(dword *)(state + 0x54)))
+        function_17170(state, (word const *)(*(byte **)(state + 0x1c) + 2));
     function_174d0(state, first, second, third, fourth);
-    record = *(byte **)(local_8da5ff_2 + 0x24);
+    record = *(byte **)(state + 0x24);
     function_18a90(state, (word const *)record);
     function_19be0(state, (word const *)(record + 0x124));
     function_19ca0(state, (word const *)(record + 0x122));
@@ -780,6 +778,15 @@ void function_17170(byte *state, word const *range)
 
 dword __cdecl pack_color4f(color4f const *color);
 
+static inline real unit_clamp_176a0(real value)
+{
+    if (0.0f > value)
+        value = 0.0f;
+    else if (value > 1.0f)
+        value = 1.0f;
+    return value;
+}
+
 // @retail 0x176a0
 void function_176a0(byte *state, s_packed_shader_range const *range)
 {
@@ -795,14 +802,14 @@ void function_176a0(byte *state, s_packed_shader_range const *range)
             real values[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
             function_1b580(parameter, entry[2] & 7, (long)state, (entry[2] >> 3) & 7, values);
             color4f color;
-            color.red = 0.0f > values[0] ? 0.0f : values[0] > 1.0f ? 1.0f : values[0];
-            color.green = 0.0f > values[1] ? 0.0f : values[1] > 1.0f ? 1.0f : values[1];
-            color.blue = 0.0f > values[2] ? 0.0f : values[2] > 1.0f ? 1.0f : values[2];
-            color.alpha = 0.0f > values[3] ? 0.0f : values[3] > 1.0f ? 1.0f : values[3];
+            color.red = unit_clamp_176a0(values[0]);
+            color.green = unit_clamp_176a0(values[1]);
+            color.blue = unit_clamp_176a0(values[2]);
+            color.alpha = unit_clamp_176a0(values[3]);
             dword value = pack_color4f(&color);
             word packed = *(word const *)entry;
             long slot = packed & 7;
-            word remapping = *(word *)(*(byte **)(state + 0x24) + 0xf6);
+            long remapping = *(word *)(*(byte **)(state + 0x24) + 0xf6);
             byte const *mapping = *(byte **)(*(byte **)(state + 0x20) + 0x24) + ((remapping & 0x1ff) + slot) * 4;
             short source = *(short const *)mapping;
             if (!(remapping & 0xfe00) || source == NONE || ((packed >> 3) & 7) == *(long *)(state + 0x300 + source * 4))

@@ -1378,6 +1378,8 @@ point2f *g_4687c4;
 
 /* the per frame update of a local user's first person weapons: the view's
    sway springs, the weapons' animations, zoom overlays and idles */
+static __forceinline real function_x82e52f(dword *seed, char const *file, long line);
+
 // @retail 0x166d75
 void __stdcall function_166d75(long user_index)
 {

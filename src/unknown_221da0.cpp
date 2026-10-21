@@ -812,7 +812,12 @@ void __stdcall function_221a70(long arg_0, s_voice_position_batch *arg_1)
 						for (long local_11 = 0; local_11 < local_1->cluster_count; local_11++)
 						{
 							if (local_11 != local_10 && (local_8[local_9][local_11 >> 5] & (1 << (local_11 & 31))))
-								local_2[local_11] = local_2[local_11] > local_7 ? local_2[local_11] : local_7;
+							{
+								real gain = local_7;
+								if (local_2[local_11] > local_7)
+									gain = local_2[local_11];
+								local_2[local_11] = gain;
+							}
 						}
 					}
 				}

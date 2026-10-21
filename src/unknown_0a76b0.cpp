@@ -4634,7 +4634,7 @@ void __stdcall function_fff40(long weapon_index, bool silent, bool immediate)
         *(short *)(object + 0x17c) = 0;
     else
     {
-        object[0x16c] &= ~0x20;
+        *(word *)(object + 0x16c) &= ~0x20;
         *(short *)(object + 0x19e) = (short)unit_action_round_long((real)*(short *)((byte *)g_510c54 + 2) * *(real *)(definition + 0x138));
         *(short *)(object + 0x17c) = first_person_weapon_animation_ticks(weapon_index, 0x05000024, 1);
     }

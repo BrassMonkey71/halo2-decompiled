@@ -40,8 +40,8 @@ bool function_1ffbd0(long actor_index, long weapon_index, short barrel_index,
 		if (barrel_index >= 0 && barrel_index < *(long *)(definition + 0x2d0))
 		{
 			byte *barrel = *(byte **)(definition + 0x2d4) + barrel_index * 0xec;
-			s_actor_view *actor = actor_get(actor_index);
 			long projectile_index = *(long *)(barrel + 0x90);
+			s_actor_view *actor = actor_get(actor_index);
 			byte *projectile;
 			if (projectile_index != NONE &&
 				((*(long *)((projectile = g_4e3b44[projectile_index & 0xffff].bytes) + 0xbc) >> 1) & 1) &&

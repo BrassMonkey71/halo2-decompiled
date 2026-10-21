@@ -262,4 +262,14 @@ struct short_rectangle2d;
 s_float_rect *function_23618e(s_float_rect *rect, real depth, short_rectangle2d const *bounds);
 void function_235e5e(s_sprite_element *element, s_float_rect *from, s_float_rect *to, dword color, long a, long b);
 
+/* a string of the user interface globals' string list (unknown_236299.cpp) */
+void function_23620d(long string_handle, word *buffer);
+
+/* a buffer that strings of the user interface globals' string list load into */
+struct s_global_string_buffer
+{
+	word text[256];
+	void load(long string_handle) { function_23620d(string_handle, text); }
+};
+
 #endif
