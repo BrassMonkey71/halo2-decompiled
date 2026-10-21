@@ -65,7 +65,12 @@ struct renumbering_2e2370
 };
 
 void __cdecl function_2d9160(void *array, long capacity, long element_size);
-void __cdecl function_2e01c0(unsigned short *entries, int low, int high, long context);
+// the order the sort compares by, an empty object passed by value
+struct order_2e01c0
+{
+};
+
+void __cdecl function_2e01c0(unsigned short *entries, int low, int high, order_2e01c0 order);
 
 class endpoint_list_2e2190
 {
@@ -142,9 +147,10 @@ void endpoint_list_2e2190::function_2e2190(char *objects, long first_count, long
 // @retail 0x2e2370
 void endpoint_list_2e2190::function_2e2370(char *objects, removed_2e2370 *removed, long axis, renumbering_2e2370 const *renumbering)
 {
+	order_2e01c0 order = {};
 	if (removed->count > 1)
 	{
-		function_2e01c0(removed->indices, 0, removed->count - 1, 0);
+		function_2e01c0(removed->indices, 0, removed->count - 1, order);
 	}
 	long const removed_count = removed->count;
 	long out = removed->indices[0];
