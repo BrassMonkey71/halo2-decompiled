@@ -48,9 +48,9 @@ void function_0bfd20(long object_index)
 	s_object_hdr *object = headers[header_index].object;
 	if (TEST_FIELD_BIT(g_4e3b44[(object->tag_index & 0xffff)].flags->flag0))
 	{
-		s_match_entry *entry = globals->match_entries;
-		for (long i = 0; i < globals->count; i++, entry++)
+		for (long i = 0; i < globals->count; i++)
 		{
+			s_match_entry const *entry = &globals->match_entries[i];
 			bool match = (entry->byte_06 == object->byte_aa) & (entry->byte_07 == object->byte_ab) & (entry->key == object->key);
 			if (match && entry->byte_07 == 0)
 				match &= entry->subkey == object->subkey;
