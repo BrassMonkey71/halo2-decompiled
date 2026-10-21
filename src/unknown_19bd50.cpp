@@ -77,11 +77,16 @@ struct s_map_package
 	byte images[207][0x370];
 };
 
+struct s_level_tags
+{
+	long tag_index;
+	long bitmap_tag_index;
+};
+
 struct s_loaded_map_view
 {
 	long map_id;
-	long tag_index;
-	long bitmap_tag_index;
+	s_level_tags tags;
 	byte names[9][0x40];
 	byte descriptions[9][0x100];
 	char path[0x100];
@@ -126,8 +131,7 @@ bool __stdcall function_19be00(s_content_item *item, s_map_package *package)
 				result = false;
 			else
 			{
-				long tag_index = entry->tag_index;
-				volatile long bitmap_tag_index = entry->bitmap_tag_index;
+				s_level_tags tags = entry->tags;
 				memset(entry, 0, sizeof(*entry));
 				memcpy(entry->descriptions, package->descriptions, sizeof(entry->descriptions));
 				entry->flags = package->flags;
@@ -136,9 +140,10 @@ bool __stdcall function_19be00(s_content_item *item, s_map_package *package)
 				memcpy(entry->names, package->names, sizeof(entry->names));
 				memcpy(entry->path, package->path, sizeof(entry->path));
 				entry->valuec4c = package->valuec54;
-				entry->bitmap_tag_index = bitmap_tag_index;
-				entry->tag_index = tag_index;
-				s_bitmap_data *bitmap = *(s_bitmap_data **)(g_4e3b44[bitmap_tag_index & 0xffff].bytes + 0x48);
+				entry->tags.bitmap_tag_index = tags.bitmap_tag_index;
+				entry->tags.tag_index = tags.tag_index;
+				long const *bitmap_tag_index = &entry->tags.bitmap_tag_index;
+				s_bitmap_data *bitmap = *(s_bitmap_data **)(g_4e3b44[*bitmap_tag_index & 0xffff].bytes + 0x48);
 				function_1cfb0((s_bitmap_view *)bitmap);
 				function_12cb80(bitmap);
 				long stride;

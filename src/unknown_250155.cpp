@@ -2384,8 +2384,7 @@ void function_25042d(c_session_lobby_screen *screen, long valid, s_session_flags
 		for (i = 0; i < count; i++)
 		{
 			s_widget_item *item = &list.items[i];
-			long *player_index = &players[i];
-			s_matchmaking_player *player = (s_matchmaking_player *)function_19aaa5(*player_index);
+			s_matchmaking_player *player = (s_matchmaking_player *)function_19aaa5(players[i]);
 			long local;
 
 			item->flags = 0;
@@ -2415,7 +2414,7 @@ void function_25042d(c_session_lobby_screen *screen, long valid, s_session_flags
 			}
 			for (local = 0; local < 4; local++)
 			{
-				if (*player_index == local_list[local])
+				if (players[i] == local_list[local])
 				{
 					if (screen->teams[local].valid)
 					{
@@ -2475,8 +2474,7 @@ void function_25042d(c_session_lobby_screen *screen, long valid, s_session_flags
 
 	for (i = 0; i < shown_count; i++)
 	{
-		long *player_index = &players[i];
-		s_matchmaking_player *player = (s_matchmaking_player *)function_19aaa5(*player_index);
+		s_matchmaking_player *player = (s_matchmaking_player *)function_19aaa5(players[i]);
 		short text_a;
 		short text_b;
 		short bitmap_a;
@@ -2487,7 +2485,7 @@ void function_25042d(c_session_lobby_screen *screen, long valid, s_session_flags
 		long local;
 		c_class_1a2c81 *bitmap;
 
-		local = local_player_find(local_list, *player_index);
+		local = local_player_find(local_list, players[i]);
 		lobby_slot_widget_indices(screen->mode, i, &text_a, &text_b, &bitmap_a, &bitmap_b);
 		if (!in_matchmaking && session && TEST_FIELD_BIT(session->flag0))
 		{
@@ -2520,9 +2518,9 @@ void function_25042d(c_session_lobby_screen *screen, long valid, s_session_flags
 		{
 			short state;
 
-			if (voice_port_flag0_only(*player_index))
+			if (voice_port_flag0_only(players[i]))
 			{
-				state = !function_53750(*player_index);
+				state = !function_53750(players[i]);
 			}
 			else
 			{

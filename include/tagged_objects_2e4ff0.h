@@ -19,7 +19,10 @@
 		{ \
 			if ((capacity_and_flags & 0x80000000) == 0) \
 			{ \
-				g_memory_2d88a0->release_block(data, (capacity_and_flags & 0x7fffffff) * sizeof(type), 0x12); \
+				long count = capacity_and_flags & 0x7fffffff; \
+				type *block = data; \
+				memory_2d88a0 *allocator = g_memory_2d88a0; \
+				allocator->release_block(block, count * sizeof(type), 0x12); \
 			} \
 		} \
 	};

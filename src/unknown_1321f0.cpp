@@ -726,7 +726,7 @@ struct s_visibility_bsp
 	s_visible_instance *instances;
 };
 
-short function_2cbf0(long arg_1, byte arg_2, long arg_3, dword arg_4,
+short function_2cbf0(long arg_1, long arg_2, short arg_3, dword arg_4,
     long arg_5, dword arg_6, long arg_7, byte *arg_8, short arg_9, byte arg_10,
     void *arg_11, long arg_12, real arg_13, long arg_14, long arg_15,
     bool arg_16, bool arg_17, bool arg_18, real arg_19, real arg_20,

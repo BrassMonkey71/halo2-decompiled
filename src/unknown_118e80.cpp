@@ -320,22 +320,24 @@ bool function_119650(long object_index, long mode, long set, real seconds, long 
 	s_animation_state *state = (s_animation_state *)((byte *)object + object->animation_state_offset);
 	long old_mode = state->unknown70;
 	long old_set = state->unknown7c;
-	bool result = true;
+	bool result;
 	if (mode != 0x7000101 || set != 0x7000101)
 		result = state->animation_set(mode, 0x7000101, 0x7000101, set, flags, 0x3f);
+	else
+		result = true;
 	if (result)
 	{
 		bool mode_changed = old_mode != mode && mode != 0x7000101;
 		bool set_changed = old_set != set && set != 0x7000101;
 		if (mode_changed || set_changed)
 		{
-			volatile real blend = 0.267f;
+			real blend = 0.267f;
 			if (mode_changed)
 				blend = 0.267f;
 			if ((old_set == 0x400000c && direction_state_119650(set)) ||
 				(direction_state_119650(old_set) && (direction_state_119650(set) || set == 0x400000c)))
 				blend = 0.267f;
-			if (blend <= seconds)
+			if (!(blend > seconds))
 				blend = seconds;
 			if (blend > 0.0f)
 				function_ba350(object_index, blend);
