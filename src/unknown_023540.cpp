@@ -92,7 +92,7 @@ struct s_render_view_2b790
 struct s_2f970_view;
 bool function_2f970(s_2f970_view const *view, real *out);
 bool function_2b720(point3f *point, long *cluster, long *leaf);
-bool cluster_get_sky(long cluster_index, long *sky_index, bool *found, vector3f *vector);
+bool cluster_get_sky(long cluster_index, long *sky_index, vector3f *vector, bool *found);
 void function_12e5e0(long cluster_index, byte *out, point3f const *position,
 	vector3f const *forward, byte kind, bool enabled);
 struct s_speed_result
@@ -102,6 +102,7 @@ struct s_speed_result
 	s_speed_shake shake;
 };
 void function_154310(long index, s_speed_result *result);
+long function_14de70(long local_player_index);
 void function_2ba10(s_2f970_view const *view, long cluster, long player,
 	byte const *camera, bool enabled, long leaf, bool invalid, vector3f const *sky_color,
 	long unknown0, long object, long object_index, byte kind, long sky_index,
@@ -118,7 +119,7 @@ extern long g_4ba050, g_4ba054[4], g_4ba064[4];
 // @retail 0x2b790
 void function_2b790(s_render_view_2b790 *view, bool enabled)
 {
-	struct location_indices { long cluster, leaf; bool invalid; volatile long object; } location;
+	struct location_indices { long cluster, leaf; bool invalid; long object; } location;
 	s_speed_result speed;
 	memcpy(&speed.shake, g_4686d4, sizeof(speed.shake));
 	location.object = NONE;
@@ -138,7 +139,7 @@ void function_2b790(s_render_view_2b790 *view, bool enabled)
 	sky.color = *(vector3f const *)&g_4686cc->red;
 	bool found = false;
 	long sky_index;
-	byte kind = cluster_get_sky(location.cluster, &sky_index, &found, &sky.color);
+	byte kind = cluster_get_sky(location.cluster, &sky_index, &sky.color, &found);
 	byte geometry[0x120];
 	function_12e5e0(location.cluster, geometry, &view->position, &view->forward, kind, true);
 	if (found) *(vector3f *)(geometry + 4) = sky.color;
@@ -151,11 +152,11 @@ void function_2b790(s_render_view_2b790 *view, bool enabled)
 	function_2f970((s_2f970_view const *)&view->position, sky.bounds);
 	if (view->object_index != NONE)
 	{
-		long player = g_4e8c20->entries[view->object_index];
+		long player = function_14de70(view->object_index);
 		location.object = *(long *)((byte *)g_4e8c24->data + (player & 0xffff) * 0x21c + 0x24);
 		function_154310(view->object_index, &speed);
 	}
-	if (view->scale > 0.0f)
+	if (view->scale > 0.0001f)
 		function_2ba10((s_2f970_view const *)&view->position, location.cluster, view->player_index,
 			view->camera, enabled, location.leaf, location.invalid, &sky.color, 0, view->object_index,
 			location.object, kind, sky_index, geometry, false, NONE, view->lighting, 0, &speed);

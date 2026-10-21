@@ -16,12 +16,10 @@ struct closest_points_308590
 
 // flags: 1 the first segment's end, 2 its start, 4 the second segment's
 // end, 8 its start
-// not matched yet: retail loads directions before the clamped fraction for
-// the multiply (fld [esp+0x14]; fmul [esp+0xc]) and stores result->first_point
-// before the second scale's broadcast; the compiler loads the fraction first
 // @retail 0x308590
 int __cdecl function_308590(__m128 const *first_start, __m128 const *first_direction, __m128 const *second_start, __m128 const *second_direction, closest_points_308590 *result)
 {
+	float second_fraction = 0.0f;
 	__m128 const between = _mm_sub_ps(*second_start, *first_start);
 	__m128 product = _mm_mul_ps(*first_direction, *second_direction);
 	float directions;
@@ -66,7 +64,7 @@ int __cdecl function_308590(__m128 const *first_start, __m128 const *first_direc
 		flags = 1;
 	}
 
-	float second_fraction = directions * first_fraction - second_along;
+	second_fraction = directions * first_fraction - second_along;
 	if (second_fraction >= second_length_squared)
 	{
 		second_fraction = 1.0f;
@@ -105,7 +103,8 @@ placed:
 	__m128 const first_point = _mm_add_ps(*first_start, _mm_mul_ps(_mm_shuffle_ps(first_scale, first_scale, 0), *first_direction));
 	result->first_point = first_point;
 	__m128 const second_scale = _mm_set_ss(second_fraction);
-	result->offset = _mm_sub_ps(first_point, _mm_add_ps(*second_start, _mm_mul_ps(_mm_shuffle_ps(second_scale, second_scale, 0), *second_direction)));
+	__m128 &offset_field = result->offset;
+	offset_field = _mm_sub_ps(first_point, _mm_add_ps(*second_start, _mm_mul_ps(_mm_shuffle_ps(second_scale, second_scale, 0), *second_direction)));
 	__m128 const squares = _mm_mul_ps(result->offset, result->offset);
 	float distance_squared;
 	_mm_store_ss(&distance_squared, _mm_add_ss(_mm_shuffle_ps(squares, squares, 0xaa), _mm_add_ss(_mm_shuffle_ps(squares, squares, 0x55), squares)));

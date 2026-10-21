@@ -1085,7 +1085,10 @@ void __stdcall function_095580(void *header, long message_type, long message_siz
 				message->flags = 4;
 				message->size = (byte)size;
 				message->unknown08 = NONE;
-				message->flags = last ? 12 : 4;
+				if (last)
+					message->flags |= 8;
+				else
+					message->flags &= ~8;
 				message->unknown02 = (word)fragment_bits;
 				message->data = block;
 				self->m_message_bytes += size;

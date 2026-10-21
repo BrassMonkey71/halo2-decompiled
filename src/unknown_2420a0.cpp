@@ -1056,7 +1056,7 @@ void c_game_engine_markers::v23(long object_index, long unit_index)
 	{
 		if (function_101280(object_index) == 1)
 		{
-			long slot = slot_object_get(object_index)->slot;
+			short slot = slot_object_get(object_index)->slot;
 			s_slot_object *unit = slot_object_get(unit_index);
 
 			if (slot != NONE)
@@ -2784,7 +2784,7 @@ void c_game_engine_markers::v14(long arg_0)
 				bool local_23 = local_16->lc != NONE;
 				bool local_24 = !local_22 && !local_23;
 				bool local_25 = false;
-				bool local_26 = false;
+				byte local_26 = false;
 				color3f local_27;
 				s_color_bits local_28 = *(s_color_bits *)function_7f720(&local_27, (short)local_15);
 				if (local_23)
