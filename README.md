@@ -70,8 +70,8 @@ byte. The checker reports:
 
 ```
 matched 9400 of 11321 game functions (1440089 of 2784283 bytes, 51.72%)
-matched 877 of 1041 Havok functions (101612 of 234536 bytes, 43.32%)
-matched 10311 of 17654 functions in scope (1544316 of 3904218 bytes, 39.56%)
+matched 880 of 1041 Havok functions (103340 of 234536 bytes, 44.06%)
+matched 10314 of 17654 functions in scope (1546044 of 3904218 bytes, 39.60%)
 ```
 
 Matched code so far includes:
@@ -246,6 +246,8 @@ Thank you to everyone who has contributed to this project so far:
   child-agent code.
 - [@ccgman123](https://github.com/ccgman123): a careful diagnosis of seven
   near misses, and the cleanup that removed an in-body pragma from 0x9d1c0.
+- [@marioag0412](https://github.com/marioag0412): the match of 0x1e3480,
+  an object's actor index.
 
 [@kirklandsig](https://github.com/kirklandsig) maintains the project: runs the
 build, reviews and merges every pull request, and keeps the
