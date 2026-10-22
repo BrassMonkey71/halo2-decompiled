@@ -67,6 +67,13 @@ inline long find_box_2e29b0(cell_2e1090 const *cell, unsigned short value)
 	return -1;
 }
 
+// score 385 (was 395): the corners are now stored high then low per axis, and
+// the bounds are read in the expressions (no locals). Still differs: register
+// choice from the start: retail loads both bounds first into xmm4/xmm5 and the
+// 0x4125c0 bias after the scaling, ours the bias first; later the grid-cell
+// walk keeps the endpoint in ebx and xors the bit in place where ours spills
+// the word's address, and the box is 12 bytes shorter. Splitting the scaled
+// terms, a bias local and swapped operands did not help.
 // @retail 0x2e24b0
 void class_2e1090::function_2e24b0(long *owner, bounds_2e0020 const *bounds, pairs_2e1090 *pairs)
 {
@@ -82,22 +89,20 @@ void class_2e1090::function_2e24b0(long *owner, bounds_2e0020 const *bounds, pai
 			unsigned long bits[4];
 		} quantized;
 		unsigned short low_words[3];
-		__m128 const minimum = bounds->lower;
-		__m128 const maximum = bounds->upper;
 		__m128 const ceiling = *(__m128 const *)g_4125d0;
 		__m128 const floor = *(__m128 const *)g_4125e0;
 		quantized.vector = _mm_add_ps(_mm_max_ps(_mm_min_ps(
-			_mm_mul_ps(_mm_add_ps(minimum, lower_offset), scale), ceiling), floor), *(__m128 const *)g_4125c0);
+			_mm_mul_ps(_mm_add_ps(bounds->lower, lower_offset), scale), ceiling), floor), *(__m128 const *)g_4125c0);
 		low_words[0] = (unsigned short)(quantized.bits[0] >> 7);
 		low_words[1] = (unsigned short)(quantized.bits[1] >> 7);
 		low_words[2] = (unsigned short)(quantized.bits[2] >> 7);
 		quantized.vector = _mm_add_ps(_mm_max_ps(_mm_min_ps(
-			_mm_mul_ps(_mm_add_ps(maximum, upper_offset), scale), ceiling), floor), *(__m128 const *)g_4125c0);
+			_mm_mul_ps(_mm_add_ps(bounds->upper, upper_offset), scale), ceiling), floor), *(__m128 const *)g_4125c0);
 		corners.high[0] = (unsigned short)(quantized.bits[0] >> 7) | 1;
-		corners.high[1] = (unsigned short)(quantized.bits[1] >> 7) | 1;
-		corners.high[2] = (unsigned short)(quantized.bits[2] >> 7) | 1;
 		corners.low[0] = low_words[0] & 0xfffe;
+		corners.high[1] = (unsigned short)(quantized.bits[1] >> 7) | 1;
 		corners.low[1] = low_words[1] & 0xfffe;
+		corners.high[2] = (unsigned short)(quantized.bits[2] >> 7) | 1;
 		corners.low[2] = low_words[2] & 0xfffe;
 	}
 	long const index = elements.size;
