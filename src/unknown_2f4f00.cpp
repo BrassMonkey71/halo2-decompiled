@@ -503,10 +503,12 @@ void __cdecl function_2f5960(void const *a, void const *b, void const *input, vo
 	timer_add_2ebc80("Et");
 }
 
-// score 418 (was 993): the frame is laid out differently, the registers differ
+// score 418 (was 418): the frame is laid out differently, the registers differ
 // in places, the edge planes' terms are copied with integer moves where retail
 // uses the FPU, and the code for the edges is placed before the report instead
-// of after the return.
+// of after the return (retail: inside case, report, ret, then the edges'
+// code jumping back). Ending the query inline with a goto to the report and
+// placing the edges' code after it scored 522: the corner loops rotate.
 // The pair passed to the collector when the capsule and the triangle overlap,
 // with the triangle's weights kept in the object
 // @retail 0x2f63d0

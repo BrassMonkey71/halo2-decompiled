@@ -160,10 +160,12 @@ public:
 	void function_2dc220(pending_2ddbd0 *pending, void const *root, fixed_point_2dc220 const *fixed_point);
 };
 
-// score 409 (was 409): the same length and order as retail; the walk's
+// score 376 (was 409): the same length and order as retail; the walk's
 // position is loaded before the first command's range check, the two bounds
 // of a split at the next unit read the node's corner once where retail reads
-// it twice (one instruction shorter there, one longer elsewhere), and a few
+// it twice (two instructions longer, which shifts the listing until the
+// split's second loop), the first side's bound loop loads q[1] once ahead of
+// its branch where retail loads it in each arm (as in 0x2dce60), and a few
 // loads are scheduled one instruction apart.
 // The same walk as 0x2dce60 below, for the nodes a set of planes holds: the
 // box is the third argument
@@ -314,9 +316,12 @@ void class_2dc220::function_2dc220(pending_2ddbd0 *pending, void const *root, fi
 		case 0x61:
 		case 0x62:
 		case 0x63:
-			copy.values[op - 0x60] = commands[1];
+		{
+			long const read = commands[1];
 			commands += 2;
+			copy.values[op - 0x60] = read;
 			goto record_value;
+		}
 		case 0x64:
 		case 0x65:
 		case 0x66:
@@ -475,11 +480,16 @@ public:
 	void function_2dce60(pending_2ddbd0 *pending, void const *root, __m128 const *offset);
 };
 
-// score 252 (was 865): the same length and order as retail; the walk's
+// score 178 (was 235): the same length and order as retail; the walk's
 // position is loaded before the first command's range check, the per-side
 // states and the second side's commands trade stack slots, as do the two
-// bounds of a split at the next unit, a few loads are scheduled one
-// instruction apart, and our build pads one loop where retail pads another.
+// bounds of a split at the next unit (whose high bound is inc here, a
+// two-byte-longer lea in retail), and a few loads are scheduled one
+// instruction apart. The first side's bound loop loads q[1] once ahead of
+// its branch (retail loads it in each arm, five bytes longer), so our code
+// runs 5 bytes short from there; the second loop then gets a 2-byte pad
+// retail lacks, and the jump table's pad differs by one byte, which
+// misaligns the table's listing (about 100 of the score).
 // Walks the commands below a node whose box is `offset` (a lower and an upper
 // corner, narrowed in place as the walk goes down): a split gives each side
 // its box, a side the sphere misses is dropped, a side it holds whole has its
@@ -633,9 +643,12 @@ void class_2dce60::function_2dce60(pending_2ddbd0 *pending, void const *root, __
 		case 0x61:
 		case 0x62:
 		case 0x63:
-			copy.values[op - 0x60] = commands[1];
+		{
+			long const read = commands[1];
 			commands += 2;
+			copy.values[op - 0x60] = read;
 			goto record_value;
+		}
 		case 0x64:
 		case 0x65:
 		case 0x66:
