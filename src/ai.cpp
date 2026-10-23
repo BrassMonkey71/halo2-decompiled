@@ -1205,14 +1205,19 @@ struct s_actor_creation_tag
 
 bool function_1a80e0(long index, short type, s_slot *data, short slot);
 
-static __forceinline long actor_creation_initialize_runtime_state(long actor_index, byte *actor, long const volatile *actor_offset_reference)
+static __forceinline long actor_creation_initialize_runtime_state(
+	long actor_index,
+	byte *actor,
+	// Preserve retail's memory reload of the actor byte offset.
+	long const volatile *actor_offset_reference)
 {
 	memset(actor + 0x3d4, 0, 0x1c);
+	// Preserve retail's memory reload of the pool's data pointer.
 	s_record_pool const volatile *reset_pool = g_4f55f0;
 	*(long *)(actor + 0x3e8) = NONE;
 	*(byte *)(actor + 0x3e4) = 0;
-	byte *reset_data = reset_pool->data;
-	s_actor_view *reset_actor = (s_actor_view *)(reset_data + *actor_offset_reference);
+	byte *reset_actor_storage = reset_pool->data;
+	s_actor_view *reset_actor = (s_actor_view *)(reset_actor_storage + *actor_offset_reference);
 	reset_actor->unknown50c = false;
 	reset_actor->unknown5ac = NONE;
 	reset_actor->unknown5b0 = NONE;
@@ -1223,11 +1228,15 @@ static __forceinline long actor_creation_initialize_runtime_state(long actor_ind
 	return 1;
 }
 
-static __forceinline dword *actor_creation_flags_get(long actor_index, long const volatile *actor_offset_reference)
+//Finds the first tag in the parent chain with a positive count.
+static __forceinline dword *actor_creation_flags_get(long actor_index,
+	// Preserve retail's memory reload of the actor byte offset.
+	long const volatile *actor_offset_reference)
 {
+	// Preserve retail's memory reload of the pool's data pointer.
 	s_record_pool const volatile *tag_pool = g_4f55f0;
-	byte *tag_data = tag_pool->data;
-	long tag_index = ((s_actor_view *)(tag_data + *actor_offset_reference))->unknown054;
+	byte *lookup_actor_storage = tag_pool->data;
+	long tag_index = ((s_actor_view *)(lookup_actor_storage + *actor_offset_reference))->unknown054;
 	while (tag_index != NONE)
 	{
 		s_actor_creation_tag *tag =
@@ -1240,6 +1249,7 @@ static __forceinline dword *actor_creation_flags_get(long actor_index, long cons
 	return NULL;
 }
 
+// Allocates and initializes an actor for the supplied definition
 // @retail 0x1dfb90
 long __stdcall function_1dfb90(long definition_index)
 {
@@ -1309,6 +1319,7 @@ long __stdcall function_1dfb90(long definition_index)
 			*(byte *)(actor + 0x225) = 0;
 			*(byte *)(actor + 0x226) = 0;
 			*(byte *)(actor + 0x224) = 0;
+			// Clears the four slots, then restores their NONE sentinels
 			memset(actor + 0x90, 0, 0x100);
 			long slot_index = 0;
 			do
@@ -1349,9 +1360,9 @@ long __stdcall function_1dfb90(long definition_index)
 			*(byte *)(actor + 0x268) = 0;
 			*(byte *)(actor + 0x267) = 0;
 			*(short *)(actor + 0x270) = 0;
-			long runtime_state = actor_creation_initialize_runtime_state(result, actor, &actor_offset);
-			*(short *)(actor + 0x6fe) = (short)runtime_state;
-			*(byte *)(actor + 0x714) = (byte)runtime_state;
+			long initial_state = actor_creation_initialize_runtime_state(result, actor, &actor_offset);
+			*(short *)(actor + 0x6fe) = (short)initial_state;
+			*(byte *)(actor + 0x714) = (byte)initial_state;
 			*(byte *)(actor + 0x5d0) = 0;
 			*(byte *)(actor + 0x5d1) = 0;
 			*(long *)(actor + 0x634) = NONE;
