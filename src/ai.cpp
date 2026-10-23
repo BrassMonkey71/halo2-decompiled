@@ -1319,7 +1319,7 @@ long __stdcall function_1dfb90(long definition_index)
 			*(byte *)(actor + 0x225) = 0;
 			*(byte *)(actor + 0x226) = 0;
 			*(byte *)(actor + 0x224) = 0;
-			// Clears the four slots, then restores their NONE sentinels
+			// Clears the four slots, then restores their NONE sentinels.
 			memset(actor + 0x90, 0, 0x100);
 			long slot_index = 0;
 			do
